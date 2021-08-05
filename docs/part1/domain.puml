@@ -1,0 +1,86 @@
+@startuml
+
+class Administrator {
+}
+
+class Customer {
+  givenName
+  surname
+}
+
+class Booking {
+  date
+  time
+  totalCost
+}
+
+class Flight {
+  flightCode
+  departureTime
+  arrivalTime
+  origin
+  destination
+  airline
+}
+
+class Airplane {
+  planeCode
+}
+
+class Airport {
+  airportCode
+  name
+  location
+}
+
+class Seat {
+  aisle
+  letter
+}
+
+class Airline {
+  airlineCode
+  name
+}
+
+enum SeatType {
+  FIRST
+  BUSINESS
+  ECONOMY
+}
+
+enum AirplaneType {
+  AIRBUS
+  BOEING
+}
+
+class Passenger {
+  givenName
+  surname
+  nationality
+  passportNumber
+}
+
+class Stopover {
+  duration
+}
+
+Booking "*"--down->"1" Flight: is for
+Booking "*"--down->"0..1" Flight: return flight
+Booking "*"-right->"*" Seat: is for
+Booking "*"-left->"*" Passenger: is for
+Flight "1"-right->"*" Seat: contains
+Customer "1"--->"*" Booking: creates
+Flight "*"--->"1" Airport: destination
+Flight "*"-down->"1" Airport: origin
+Administrator "1"-left->"*" Airport: add/remove
+Airline "1"-right->"*" Flight: creates/deletes
+Flight "*"--->"1" Airplane: uses
+Seat "*"-down->"1" SeatType: represented by
+Airline "1"->"*" Airplane: owns
+Airplane "1"->"*" Seat: contains
+Airplane "*"-down->"1" AirplaneType: represented by
+Flight "1"-right->"*" Stopover: has
+Stopover "*"->"1" Airport: stops at
+
+@enduml
