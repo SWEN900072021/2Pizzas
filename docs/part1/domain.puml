@@ -57,6 +57,7 @@ enum AirplaneType {
 class Passenger {
   givenName
   surname
+  age
   nationality
   passportNumber
 }
@@ -65,22 +66,22 @@ class Stopover {
   duration
 }
 
-Booking "*"--down->"1" Flight: is for
-Booking "*"--down->"0..1" Flight: return flight
-Booking "*"-right->"*" Seat: is for
-Booking "*"-left->"*" Passenger: is for
-Flight "1"-right->"*" Seat: contains
-Customer "1"--->"*" Booking: creates
-Flight "*"--->"1" Airport: destination
-Flight "*"-down->"1" Airport: origin
-Administrator "1"-left->"*" Airport: add/remove
-Airline "1"-right->"*" Flight: creates/deletes
-Flight "*"--->"1" Airplane: uses
-Seat "*"-down->"1" SeatType: represented by
-Airline "1"->"*" Airplane: owns
-Airplane "1"->"*" Seat: contains
-Airplane "*"-down->"1" AirplaneType: represented by
-Flight "1"-right->"*" Stopover: has
-Stopover "*"->"1" Airport: stops at
+Booking "*"--down--"1" Flight: is for >
+Booking "*"--down--"0..1" Flight: return flight >
+Booking "*"-right-"*" Seat: is for >
+Booking "*"-left-"*" Passenger: is for >
+Flight "1"-right-"*" Seat: contains >
+Customer "1"---"*" Booking: creates >
+Flight "*"---"1" Airport: destination >
+Flight "*"-down-"1" Airport: origin >
+Administrator "1"-left-"*" Airport: add/remove >
+Airline "1"-right-"*" Flight: creates/deletes >
+Flight "*"---"1" Airplane: uses >
+Seat "*"-down-"1" SeatType: represented by >
+Airline "1"-"*" Airplane: owns >
+Airplane "1"-"*" Seat: contains >
+Airplane "*"-down-"1" AirplaneType: represented by >
+Flight "1"-right-"*" Stopover: has >
+Stopover "*"-"1" Airport: stops at >
 
 @enduml
