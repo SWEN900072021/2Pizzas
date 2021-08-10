@@ -1,4 +1,6 @@
-@startuml
+@startuml 
+
+header Online Travel Booking Application Domain 
 
 class Administrator {
 }
@@ -6,12 +8,14 @@ class Administrator {
 class Customer {
   givenName
   surname
+  email
 }
 
 class Booking {
   date
   time
   totalCost
+  bookingReference
 }
 
 class Flight {
@@ -62,6 +66,11 @@ class Passenger {
   passportNumber
 }
 
+class User {
+  username
+  password
+}
+
 class Stopover {
   duration
 }
@@ -83,5 +92,8 @@ Airplane "1"-"*" Seat: contains >
 Airplane "*"-down-"1" AirplaneType: represented by >
 Flight "1"-right-"*" Stopover: has >
 Stopover "*"-"1" Airport: stops at >
+Administrator -|> User
+Customer -|> User
+Airline -|> User
 
 @enduml
