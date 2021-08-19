@@ -52,7 +52,7 @@
       "!src/index.jsx",
       "!src/reportWebVitals.js",
       "!src/index.jsx",
-      "!src/App.jsx"
+      "!src/index.js"
     ],
     "coverageThreshold": {
       "global": {
