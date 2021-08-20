@@ -17,7 +17,7 @@
     "test": "react-scripts test --watchAll=false --coverage",
     "eject": "react-scripts eject",
     "lint": "eslint \"./src\"",
-    "lint-fix": "eslint --fix ./src"
+    "lint-fix": "eslint --fix \"./src\""
   },
   "browserslist": {
     "production": [
