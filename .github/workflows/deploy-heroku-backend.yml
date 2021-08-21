@@ -1,0 +1,24 @@
+name: Deploy Backend
+
+on: workflow_dispatch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        working-directory: ./backend
+        run: mvn package
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ env.APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          healthcheck: https://${{ env.APP_NAME }}.herokuapp.com
+          usedocker: true
+          appdir: 'backend'
+          branch: ${GITHUB_REF}
+          delay: 30
+        env:
+          APP_NAME: backend-2-pizzas
