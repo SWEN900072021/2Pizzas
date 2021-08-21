@@ -3,7 +3,6 @@ name: Deploy Frontend
 on: workflow_dispatch
 
 jobs:
-
   deploy:
     runs-on: ubuntu-latest
     steps:
@@ -15,7 +14,8 @@ jobs:
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
           healthcheck: https://${{ env.APP_NAME }}.herokuapp.com
           usedocker: true
+          appdir: 'frontend'
           branch: ${GITHUB_REF}
           delay: 30
-        env: 
+        env:
           APP_NAME: frontend-2-pizzas
