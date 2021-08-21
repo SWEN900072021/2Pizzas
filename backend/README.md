@@ -1,6 +1,6 @@
-# 2 Pizza Peperoni Planes backend
+# 2 Pizza Pepperoni Planes backend
 
-this is the backend for the Peperoni Planes application
+this is the backend for the Pepperoni Planes application
 
 ## Getting Started
 
