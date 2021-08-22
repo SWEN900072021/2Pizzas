@@ -1,4 +1,11 @@
-# we are extending everything from tomcat:8.0 image ...
 FROM tomcat:9.0
 
-COPY ./target/*.war /usr/local/tomcat/webapps/
+COPY ./target/*.war $CATALINA_HOME/webapps/
+ADD ./entrypoint.sh ./entrypoint.sh
+RUN chmod 777 ./entrypoint.sh
+
+ENV PORT=8081
+
+EXPOSE $PORT
+
+CMD [ "bash", "./entrypoint.sh" ]

@@ -1,4 +1,4 @@
-# 2 Pizza Pepperoni Planes backend
+# 2Pizzas Pepperoni Planes Backend
 
 this is the backend for the Pepperoni Planes application
 
@@ -26,8 +26,22 @@ mvn package
 ```
 Find executable at ./target/pepperoni-planes-1.0-SNAPSHOT.war
 
-### Running application
+### Running Application
 
 Requires installation of Apache Tomcat
 Put build .war in webapps directory of Apache Tomcat installation (Tomcat will automatically pick up the .war and begin serving the application) 
 If deploying locally open browser and navigate to http://localhost:8080/pepperoni-planes-1.0-SNAPSHOT/
+
+### Running Application with Docker
+
+Build the docker image
+```shell
+docker build . -f ./Dockerfile -t 2-pizzas-backend
+```
+
+Run the container
+```shell
+docker run -p 8080:8081 -t 2-pizzas-backend
+```
+
+Open browser and navigate to http://localhost:8080/pepperoni-planes-1.0-SNAPSHOT/

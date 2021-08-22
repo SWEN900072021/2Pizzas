@@ -17,7 +17,8 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: ${{ env.APP_NAME }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
-          healthcheck: https://${{ env.APP_NAME }}.herokuapp.com
+          # TODO: configure Tomcat to serve at nicer route
+          healthcheck: https://${{ env.APP_NAME }}.herokuapp.com/pepperoni-planes-1.0-SNAPSHOT/
           usedocker: true
           appdir: 'backend'
           branch: ${GITHUB_REF}
