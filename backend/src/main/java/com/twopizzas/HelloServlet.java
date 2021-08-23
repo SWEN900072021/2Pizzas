@@ -1,10 +1,16 @@
 package com.twopizzas;
 
-import java.io.*;
-import javax.servlet.http.*;
-import javax.servlet.annotation.*;
+import com.twopizzas.di.Component;
+import com.twopizzas.di.Controller;
 
-@WebServlet(name = "helloServlet", value = "/hello-servlet")
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+@Component
+@Controller("/hello-servlet")
 public class HelloServlet extends HttpServlet {
     private String message;
 

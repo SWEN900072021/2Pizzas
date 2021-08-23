@@ -4,7 +4,6 @@ public class ApplicationContext {
 
     private static ApplicationContext instance;
     private String root;
-    private boolean initialized;
 
     private ComponentManager componentManager;
 
@@ -17,32 +16,30 @@ public class ApplicationContext {
         return instance;
     }
 
-    public void setRoot(String root) {
-        this.root = root;
-    }
-
     public ApplicationContext root(String root) {
         this.root = root;
         return this;
     }
 
-    public ApplicationContext init() {
-        if (initialized) {
-            return this;
-        }
+    // for testing only
+    ApplicationContext componentManager(ComponentManager componentManager) {
+        this.componentManager = componentManager;
+        return instance;
+    }
 
+    public ApplicationContext init() {
         if (root == null) {
             throw new ApplicationContextException("init called on ApplicationContext with no root, set root prior to initializing the Application Context");
         }
 
-        componentManager = new ComponentManager(root, new Injector(new ComponentLoader(root)));
+        if (componentManager == null) {
+            componentManager = new ComponentManager(new ComponentInjector(new ComponentLoader(root)), new ComponentStore());
+        }
         componentManager.init();
-        initialized = true;
         return this;
     }
 
     public <T> T getComponent(Class<T> componentClass) throws ApplicationContextException {
-        init();
         return componentManager.getComponent(componentClass);
     }
 }

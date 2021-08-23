@@ -1,25 +1,28 @@
 package com.twopizzas.di;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ComponentManager {
-    private final Injector injector;
-    private Map<Class<?>, Object> componentMap = new HashMap<>();
+    private final ComponentInjector componentInjector;
+    private ComponentStore componentStore;
 
-    ComponentManager(String root, Injector injector) {
-        this.injector = injector;
+    private boolean initialized;
+
+    ComponentManager(ComponentInjector componentInjector, ComponentStore componentStore) {
+        this.componentInjector = componentInjector;
+        this.componentStore = componentStore;
     }
 
     void init() {
-        componentMap = injector.injectAll();
+        if (!initialized) {
+            componentStore = componentInjector.injectAll(componentStore);
+        }
     }
 
     <T> T getComponent(Class<T> clasz) throws ApplicationContextException {
-        if (componentMap.containsKey(clasz)) {
-            // we have built the map ourselves, this is safe
-            return unsafeCast(componentMap.get(clasz));
+        T component = componentStore.get(clasz);
+        if (component != null) {
+            return unsafeCast(component);
         }
+
         throw new ComponentNotFound(clasz);
     }
 
