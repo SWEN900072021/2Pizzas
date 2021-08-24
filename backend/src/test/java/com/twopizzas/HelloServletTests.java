@@ -31,7 +31,7 @@ public class HelloServletTests {
     void init() {
         MockitoAnnotations.initMocks(this);
 
-        servlet = new HelloServlet();
+        servlet = new HelloServlet(new MyHelloComponentImpl());
         servlet.init();
     }
 
