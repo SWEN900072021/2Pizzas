@@ -10,21 +10,25 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
 @ExtendWith(MockitoExtension.class)
 public class ComponentManagerTests {
 
     private ComponentManager componentManager;
 
     @Mock
-    private ComponentInjector componentInjector;
+    private BeanLoader beanLoader;
 
     @Mock
-    private ComponentStore componentStore;
+    private BeanResolver beanResolver;
 
     @BeforeEach
     void setup() {
         MockitoAnnotations.initMocks(this);
-        componentManager = new ComponentManager(componentInjector, componentStore);
+        componentManager = new ComponentManager(beanResolver, beanLoader);
     }
 
     @Test
@@ -34,7 +38,7 @@ public class ComponentManagerTests {
         componentManager.init();
 
         // THEN
-        Mockito.verify(componentInjector).injectAll(Mockito.eq(componentStore));
+        Mockito.verify(beanLoader).load();
     }
 
     @Test
@@ -42,25 +46,56 @@ public class ComponentManagerTests {
     void test2() {
         // GIVEN
         StubComponent component = new StubComponent();
-        Mockito.when(componentStore.get(Mockito.eq(StubComponent.class))).thenReturn(component);
+        Bean<StubComponent> bean = Mockito.mock(Bean.class);
+        Mockito.when(bean.construct(Mockito.any())).thenReturn(component);
+        Mockito.when(beanResolver.resolve(Mockito.any(), Mockito.any())).thenAnswer(
+                arg -> Collections.singletonList(bean)
+        );
 
         // WHEN
-        StubComponent retrieved = componentManager.getComponent(StubComponent.class);
+        ComponentSpecification<StubComponent> specification = Mockito.mock(ComponentSpecification.class);
+        StubComponent retrieved = componentManager.getComponent(specification);
 
         // THEN
         Assertions.assertEquals(component, retrieved);
-        Mockito.verify(componentStore).get(Mockito.eq(StubComponent.class));
+        Mockito.verify(beanResolver).resolve(Mockito.eq(specification), Mockito.any());
+        Mockito.verify(bean).construct(Mockito.eq(componentManager));
     }
 
     @Test
     @DisplayName("GIVEN component does not exist WHEN getComponent invoked THEN throws")
-    void test4() {
+    void test3() {
         // GIVEN
-        Mockito.when(componentStore.get(Mockito.any())).thenReturn(null);
+        Mockito.when(beanResolver.resolve(Mockito.any(), Mockito.any())).thenAnswer(
+                arg -> Collections.emptyList()
+        );
 
         // WHEN + THEN
-        Assertions.assertThrows(ComponentNotFound.class, () -> componentManager.getComponent(StubComponent.class));
-        Mockito.verify(componentStore).get(Mockito.eq(StubComponent.class));
+        ComponentSpecification<StubComponent> specification = Mockito.mock(ComponentSpecification.class);
+        Assertions.assertThrows(ComponentNotFound.class, () -> componentManager.getComponent(specification));
+
+        // THEN
+        Mockito.verify(beanResolver).resolve(Mockito.eq(specification), Mockito.any());
+    }
+
+    @Test
+    @DisplayName("GIVEN multiple components satisfy specification WHEN getComponent invoked THEN throws")
+    void test4() {
+        // GIVEN
+        Bean<StubComponent> bean = Mockito.mock(Bean.class);
+        Mockito.when(bean.getClasz()).thenReturn(StubComponent.class);
+        Bean<StubComponent> bean2 = Mockito.mock(Bean.class);
+        Mockito.when(bean2.getClasz()).thenReturn(StubComponent.class);
+        Mockito.when(beanResolver.resolve(Mockito.any(), Mockito.any())).thenAnswer(
+                arg -> Arrays.asList(bean, bean2)
+        );
+
+        // WHEN + THEN
+        ComponentSpecification<StubComponent> specification = Mockito.mock(ComponentSpecification.class);
+        Assertions.assertThrows(DuplicateComponentException.class, () -> componentManager.getComponent(specification));
+
+        // THEN
+        Mockito.verify(beanResolver).resolve(Mockito.eq(specification), Mockito.any());
     }
 
     private static class StubComponent {}

@@ -1,9 +1,12 @@
 package com.twopizzas.di;
 
-public class ApplicationContext {
+import com.twopizzas.util.AssertionConcern;
+
+public class ApplicationContext extends AssertionConcern {
 
     private static ApplicationContext instance;
     private String root;
+    private String profile;
 
     private ComponentManager componentManager;
 
@@ -17,7 +20,14 @@ public class ApplicationContext {
     }
 
     public ApplicationContext root(String root) {
+        notBlank(notNull(root, "root"), "root");
         this.root = root;
+        return this;
+    }
+
+    public ApplicationContext profile(String profile) {
+        notBlank(notNull(profile, "profile"), "profile");
+        this.profile = profile;
         return this;
     }
 
@@ -33,13 +43,33 @@ public class ApplicationContext {
         }
 
         if (componentManager == null) {
-            componentManager = new ComponentManager(new ComponentInjector(new ComponentLoader(root)), new ComponentStore());
+            componentManager = new ComponentManager(
+                    getBeanResolver(),
+                    new ComponentLoader(root)
+            );
         }
         componentManager.init();
         return this;
     }
 
     public <T> T getComponent(Class<T> componentClass) throws ApplicationContextException {
-        return componentManager.getComponent(componentClass);
+        notNull(componentClass, "componentClass");
+        return componentManager.getComponent(new BaseBeanSpecification<>(componentClass));
+    }
+
+    public <T> T getComponent(Class<T> componentClass, String qualifier) throws ApplicationContextException {
+        notNull(componentClass, "componentClass");
+        notBlank(notNull(qualifier, "qualifier"), "qualifier");
+        return componentManager.getComponent(
+                new QualifiedBeanSpecification<>(qualifier, new BaseBeanSpecification<>(componentClass))
+        );
+    }
+
+    private BeanResolver getBeanResolver() {
+        BeanResolver beanResolver = new BaseBeanResolver();
+        if (profile != null) {
+            beanResolver = new ProfileBeanResolver(beanResolver, profile);
+        }
+        return new PrimaryBeanResolver(beanResolver);
     }
 }

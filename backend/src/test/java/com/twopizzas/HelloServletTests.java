@@ -19,19 +19,24 @@ import java.io.StringWriter;
 @ExtendWith(MockitoExtension.class)
 public class HelloServletTests {
 
+    private static final String MESSAGE = "some message";
+
     @Mock
     private HttpServletRequest request;
 
     @Mock
     private HttpServletResponse response;
 
+    @Mock
+    private MyHelloComponent myHelloComponent;
+
     private HelloServlet servlet;
 
     @BeforeEach
     void init() {
         MockitoAnnotations.initMocks(this);
-
-        servlet = new HelloServlet(new MyHelloComponentImpl());
+        servlet = new HelloServlet(myHelloComponent);
+        Mockito.when(myHelloComponent.getMessage()).thenReturn(MESSAGE);
         servlet.init();
     }
 
@@ -50,7 +55,7 @@ public class HelloServletTests {
         // THEN
         String expectedResponseHtml =
                 "<html><body>" +
-                    "<h1>Hello World!</h1>" +
+                    "<h1>" + MESSAGE + "</h1>" +
                 "</body></html>";
 
         Mockito.verify(response).setContentType(Mockito.eq("text/html"));

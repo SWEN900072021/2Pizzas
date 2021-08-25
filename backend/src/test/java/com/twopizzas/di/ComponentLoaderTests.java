@@ -1,7 +1,7 @@
 package com.twopizzas.di;
 
-import com.twopizzas.di.othertestroot.BadClientComponent;
-import com.twopizzas.di.othertestroot.NotImplemented;
+import com.twopizzas.di.othertestroot.MultipleAutowires;
+import com.twopizzas.di.othertestroot.MultiplePostConstruct;
 import com.twopizzas.di.testroot.*;
 import com.twopizzas.di.testroot.module.ModuleComponent;
 import org.junit.jupiter.api.Assertions;
@@ -9,9 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 public class ComponentLoaderTests {
 
@@ -42,117 +40,173 @@ public class ComponentLoaderTests {
     }
 
     @Test
-    @DisplayName("GIVEN component has no dependencies WHEN getDependencies invoked THEN returns empty")
-    void test2() {
-        // WHEN
-        List<Class<?>> dependencies = componentLoader.getDependencies(TestDependency.class);
+    @DisplayName("GIVEN component has qualifier WHEN getBean invoked THEN returns bean with qualifier")
+    void test1() {
+        Bean<TestDependency> bean = componentLoader.loadBean(TestDependency.class);
 
         // THEN
-        Assertions.assertTrue(dependencies.isEmpty());
+        Assertions.assertNotNull(bean);
+        Assertions.assertEquals("qualifier", bean.getQualifier());
+    }
+
+    @Test
+    @DisplayName("GIVEN components has no qualifier WHEN getBean invoked THEN returns bean without qualifier")
+    void test2() {
+        Bean<TestDependencyOther> bean = componentLoader.loadBean(TestDependencyOther.class);
+
+        // THEN
+        Assertions.assertNotNull(bean);
+        Assertions.assertNull(bean.getQualifier());
+    }
+
+    @Test
+    @DisplayName("GIVEN component has no dependencies WHEN getDependencies invoked THEN returns empty")
+    void test3() {
+        // WHEN
+        Bean<TestDependency> bean = componentLoader.loadBean(TestDependency.class);
+
+        // THEN
+        Assertions.assertNotNull(bean);
+        Assertions.assertTrue(bean.getDependencies().isEmpty());
     }
 
     @Test
     @DisplayName("GIVEN component has no constructor annotated with @Autowired WHEN getDependencies invoked THEN returns empty")
-    void test3() {
+    void test4() throws NoSuchMethodException {
         // WHEN
-        List<Class<?>> dependencies = componentLoader.getDependencies(AbstractComponentImpl.class);
+        Bean<AbstractComponentImpl> bean = componentLoader.loadBean(AbstractComponentImpl.class);
 
         // THEN
-        Assertions.assertNotNull(dependencies);
-        Assertions.assertTrue(dependencies.isEmpty());
+        Assertions.assertNotNull(bean);
+        Assertions.assertTrue(bean.getDependencies().isEmpty());
+        Assertions.assertEquals(AbstractComponentImpl.class.getDeclaredConstructor(), bean.getConstructor());
     }
 
     @Test
     @DisplayName("GIVEN component has constructor with parameters @Autowired WHEN getDependencies invoked THEN returns list of classes")
-    void test4() {
+    void test5() throws NoSuchMethodException {
         // WHEN
-        List<Class<?>> dependencies = componentLoader.getDependencies(TestClientComponent.class);
+        Bean<TestClientComponent> bean = componentLoader.loadBean(TestClientComponent.class);
 
         // THEN
-        Assertions.assertNotNull(dependencies);
-        Assertions.assertEquals(3, dependencies.size());
-        Assertions.assertEquals(TestDependency.class, dependencies.get(0));
-        Assertions.assertEquals(TestDependencyOther.class, dependencies.get(1));
-        Assertions.assertEquals(InterfaceComponentImpl.class, dependencies.get(2));
+        Assertions.assertNotNull(bean);
+        Assertions.assertEquals(3, bean.getDependencies().size());
+        Assertions.assertEquals(TestDependency.class, bean.getDependencies().get(0).getClasz());
+        Assertions.assertEquals(TestDependencyOther.class, bean.getDependencies().get(1).getClasz());
+        Assertions.assertEquals(InterfaceComponent.class, bean.getDependencies().get(2).getClasz());
+        Assertions.assertEquals(TestClientComponent.class.getDeclaredConstructor(
+                TestDependency.class, TestDependencyOther.class, InterfaceComponent.class),
+                bean.getConstructor());
     }
 
     @Test
-    @DisplayName("GIVEN component has no default constructor and no constructor annotated with @Autowired WHEN getDependencies invoked THEN throws")
-    void test5() {
-        // WHEN + THEN
-        Assertions.assertThrows(ApplicationContextException.class, () -> componentLoader.getDependencies(ComponentWithoutConstructor.class));
-    }
-
-    @Test
-    @DisplayName("GIVEN class is concrete component with no sub types WHEN getConcreteComponent invoked THEN returns that class")
+    @DisplayName("GIVEN component has constructor with parameters @Autowired and parameter has @Qualifier WHEN getDependencies invoked THEN returns list of classes")
     void test6() {
         // WHEN
-        Class<? extends TestDependency> concreteClass = componentLoader.getConcreteComponent(TestDependency.class);
+        Bean<TestClientComponent> bean = componentLoader.loadBean(TestClientComponent.class);
 
         // THEN
-        Assertions.assertNotNull(concreteClass);
-        Assertions.assertEquals(TestDependency.class, concreteClass);
+        Assertions.assertNotNull(bean);
+        Assertions.assertEquals(3, bean.getDependencies().size());
+        Assertions.assertEquals(TestDependency.class, bean.getDependencies().get(0).getClasz());
+        Assertions.assertTrue(bean.getDependencies().get(0) instanceof QualifiedBeanSpecification);
+        Assertions.assertEquals("qualifier", ((QualifiedBeanSpecification) bean.getDependencies().get(0)).getQualifier());
     }
 
     @Test
-    @DisplayName("GIVEN class is interface with single component implementation WHEN getConcreteComponent invoked THEN returns implementation")
+    @DisplayName("GIVEN component has no default constructor and no constructor annotated with @Autowired WHEN loadBean invoked THEN throws")
     void test7() {
-        // WHEN
-        Class<? extends InterfaceComponent> concreteClass = componentLoader.getConcreteComponent(InterfaceComponent.class);
-
-        // THEN
-        Assertions.assertNotNull(concreteClass);
-        Assertions.assertEquals(InterfaceComponentImpl.class, concreteClass);
+        // WHEN + THEN
+        Assertions.assertThrows(ApplicationContextException.class, () -> componentLoader.loadBean(ComponentWithoutConstructor.class));
     }
 
     @Test
-    @DisplayName("GIVEN class is abstract with single component implementation WHEN getConcreteComponent invoked THEN returns implementation")
+    @DisplayName("GIVEN component annotated with @Profile WHEN loadBean THEN profiles set")
     void test8() {
         // WHEN
-        Class<? extends AbstractComponent> concreteClass = componentLoader.getConcreteComponent(AbstractComponent.class);
+        Bean<TestDependencyOther> bean = componentLoader.loadBean(TestDependencyOther.class);
 
         // THEN
-        Assertions.assertNotNull(concreteClass);
-        Assertions.assertEquals(AbstractComponentImpl.class, concreteClass);
+        Assertions.assertNotNull(bean);
+        Assertions.assertNotNull(bean.getProfiles());
+        Assertions.assertFalse(bean.getProfiles().isEmpty());
+        Assertions.assertTrue(bean.getProfiles().contains("test"));
     }
 
     @Test
-    @DisplayName("GIVEN class has multiple component implementations WHEN getConcreteComponent invoked THEN throws")
+    @DisplayName("GIVEN component not annotated with @Profile WHEN loadBean THEN profiles empty")
     void test9() {
-        // GIVEN
-        componentLoader = new ComponentLoader("com.twopizzas.di.othertestroot");
-
-        // WHEN + THEN
-        Assertions.assertThrows(ApplicationContextException.class, () -> componentLoader.getConcreteComponent(BadClientComponent.class));
-    }
-
-    @Test
-    @DisplayName("GIVEN class has no component implementations WHEN getConcreteComponent invoked THEN throws")
-    void test10() {
-        // GIVEN
-        componentLoader = new ComponentLoader("com.twopizzas.di.othertestroot");
-
-        // WHEN + THEN
-        Assertions.assertThrows(ApplicationContextException.class, () -> componentLoader.getConcreteComponent(NotImplemented.class));
-    }
-
-    @Test
-    @DisplayName("GIVEN class and correct dependencies WHEN construct invoked THEN returns instance")
-    void test11() {
-        // GIVEN
-        TestDependency dependency = new TestDependency();
-        TestDependencyOther dependencyOther = new TestDependencyOther();
-        InterfaceComponent interfaceComponent = new InterfaceComponentImpl();
-
         // WHEN
-        TestClientComponent component = componentLoader.construct(TestClientComponent.class, Arrays.asList(
-                dependency, dependencyOther, interfaceComponent
-        ));
+        Bean<TestDependency> bean = componentLoader.loadBean(TestDependency.class);
 
         // THEN
-        Assertions.assertNotNull(component);
-        Assertions.assertEquals(dependency, component.getTestDependency());
-        Assertions.assertEquals(dependencyOther, component.getTestDependencyOther());
-        Assertions.assertEquals(interfaceComponent, component.getInterfaceComponent());
+        Assertions.assertNotNull(bean);
+        Assertions.assertNotNull(bean.getProfiles());
+        Assertions.assertTrue(bean.getProfiles().isEmpty());
     }
+
+    @Test
+    @DisplayName("GIVEN component annotated with @Primary WHEN loadBean THEN isPrimary set to true")
+    void test10() {
+        // WHEN
+        Bean<TestDependencyOther> bean = componentLoader.loadBean(TestDependencyOther.class);
+
+        // THEN
+        Assertions.assertNotNull(bean);
+        Assertions.assertTrue(bean.isPrimary());
+    }
+
+    @Test
+    @DisplayName("GIVEN component not annotated with @Primary WHEN loadBean THEN isPrimary set to true")
+    void test11() {
+        // WHEN
+        Bean<TestDependency> bean = componentLoader.loadBean(TestDependency.class);
+
+        // THEN
+        Assertions.assertNotNull(bean);
+        Assertions.assertFalse(bean.isPrimary());
+    }
+
+    @Test
+    @DisplayName("GIVEN component has multiple constructors annotated with @Autowired WHEN loadBean invoked THEN throws")
+    void test12() {
+        // WHEN + THEN
+        Assertions.assertThrows(ApplicationContextException.class, () -> componentLoader.loadBean(MultipleAutowires.class));
+    }
+
+    @Test
+    @DisplayName("GIVEN component has method annotated with @PostConstruct WHEN loadBean invoked THEN returns bean with postConstruct")
+    void test13() {
+        // WHEN
+        Bean<TestDependency> bean = componentLoader.loadBean(TestDependency.class);
+
+        // THEN
+        Assertions.assertNotNull(bean);
+        Assertions.assertNotNull(bean.getConstructor());
+        Assertions.assertEquals(0, bean.getPostConstruct().getParameterTypes().length);
+    }
+
+    @Test
+    @DisplayName("GIVEN component has no method annotated with @PostConstruct WHEN loadBean invoked THEN returns bean without postConstruct")
+    void test14() {
+        // WHEN
+        Bean<TestDependencyOther> bean = componentLoader.loadBean(TestDependencyOther.class);
+
+        // THEN
+        Assertions.assertNotNull(bean);
+        Assertions.assertNull(bean.getPostConstruct());
+    }
+
+    @Test
+    @DisplayName("GIVEN component has multiple methods annotated with @PostConstruct WHEN loadBean invoked THEN returns no args")
+    void test15() {
+        // WHEN
+        Bean<MultiplePostConstruct> bean = componentLoader.loadBean(MultiplePostConstruct.class);
+
+        // THEN
+        Assertions.assertNotNull(bean);
+        Assertions.assertNotNull(bean.getPostConstruct());
+        Assertions.assertEquals(0, bean.getPostConstruct().getParameterTypes().length);
+    }
+
 }

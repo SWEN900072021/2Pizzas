@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -47,10 +48,16 @@ public class ApplicationContextTests {
 
         // WHEN
         Class<?> claz = component.getClass();
-        Object retrieved = applicationContext.getComponent(claz);
+        String qualifier = "qualifier";
+        Object retrieved = applicationContext.getComponent(claz, qualifier);
 
         // THEN
-        Mockito.verify(componentManager).getComponent(Mockito.eq(claz));
+        ArgumentCaptor<ComponentSpecification<?>> captor = ArgumentCaptor.forClass(ComponentSpecification.class);
+        Mockito.verify(componentManager).getComponent(captor.capture());
         Assertions.assertEquals(component, retrieved);
+
+        Assertions.assertTrue(captor.getValue() instanceof QualifiedBeanSpecification);
+        Assertions.assertEquals(component.getClass(), ((QualifiedBeanSpecification) captor.getValue()).getClasz());
+        Assertions.assertEquals(qualifier, ((QualifiedBeanSpecification) captor.getValue()).getQualifier());
     }
 }

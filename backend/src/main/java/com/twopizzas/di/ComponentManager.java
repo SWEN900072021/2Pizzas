@@ -1,33 +1,45 @@
 package com.twopizzas.di;
 
-public class ComponentManager {
-    private final ComponentInjector componentInjector;
-    private ComponentStore componentStore;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
+class ComponentManager {
+
+    private final Collection<Bean<?>> store = new ArrayList<>();;
+    private final BeanResolver beanResolver;
+    private final BeanLoader beanLoader;
     private boolean initialized;
 
-    ComponentManager(ComponentInjector componentInjector, ComponentStore componentStore) {
-        this.componentInjector = componentInjector;
-        this.componentStore = componentStore;
+    ComponentManager(BeanResolver beanResolver, BeanLoader beanLoader) {
+        this.beanResolver = beanResolver;
+        this.beanLoader = beanLoader;
     }
 
     void init() {
         if (!initialized) {
-            componentStore = componentInjector.injectAll(componentStore);
+            store.addAll(beanLoader.load());
         }
     }
 
-    <T> T getComponent(Class<T> clasz) throws ApplicationContextException {
-        T component = componentStore.get(clasz);
-        if (component != null) {
-            return unsafeCast(component);
-        }
-
-        throw new ComponentNotFound(clasz);
+    <T> T getComponent(ComponentSpecification<T> specification) throws ApplicationContextException {
+        return getBean(specification).construct(this);
     }
 
-    @SuppressWarnings({"unchecked"})
-    private <T> T unsafeCast(Object o) {
-        return (T) o;
+    <T> Bean<T> getBean(ComponentSpecification<T> specification) {
+        Collection<Bean<T>> beans = beanResolver.resolve(specification, store);
+
+        if (beans.size() > 1) {
+            throw new DuplicateComponentException(String.format("multiple components found for component specification %s, expected only one component but found %s",
+                    specification.describe(),
+                    beans.stream().map(Bean::getClasz).map(Class::getName).collect(Collectors.joining(", "))
+            ));
+        }
+
+        if (beans.size() == 1) {
+            return beans.iterator().next();
+        }
+
+        throw new ComponentNotFound(specification.getClass());
     }
 }

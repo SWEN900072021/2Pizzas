@@ -1,7 +1,6 @@
 package com.twopizzas.di.testroot;
 
-import com.twopizzas.di.Autowired;
-import com.twopizzas.di.Component;
+import com.twopizzas.di.*;
 
 @Component
 public class TestClientComponent {
@@ -11,7 +10,7 @@ public class TestClientComponent {
     private final InterfaceComponent interfaceComponent;
 
     @Autowired
-    TestClientComponent(TestDependency testDependency, TestDependencyOther testDependencyOther, InterfaceComponent interfaceComponent) {
+    public TestClientComponent(@Qualifier("qualifier") TestDependency testDependency, TestDependencyOther testDependencyOther, InterfaceComponent interfaceComponent) {
         this.testDependency = testDependency;
         this.testDependencyOther = testDependencyOther;
         this.interfaceComponent = interfaceComponent;

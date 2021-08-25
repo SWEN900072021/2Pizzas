@@ -4,7 +4,7 @@ import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.di.PostConstruct;
 
-@Component
+@Component("qualifier")
 public class TestDependency {
 
     private boolean initialized;
