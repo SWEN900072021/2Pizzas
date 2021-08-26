@@ -15,6 +15,11 @@ class ProfileBeanResolver extends AssertionConcern implements BeanResolver {
         this.profile = profile;
     }
 
+    // for testing only
+    public String getProfile() {
+        return profile;
+    }
+
     @Override
     public <T> Collection<Bean<T>> resolve(ComponentSpecification<T> specification, Collection<Bean<?>> beans) {
         Collection<Bean<T>> resolved = wrapped.resolve(specification, beans);

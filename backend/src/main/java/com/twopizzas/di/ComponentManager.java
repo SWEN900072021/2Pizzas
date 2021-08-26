@@ -16,6 +16,11 @@ class ComponentManager {
         this.beanLoader = beanLoader;
     }
 
+    // for testing only
+    BeanResolver getBeanResolver() {
+        return beanResolver;
+    }
+
     void init() {
         if (!initialized) {
             store.addAll(beanLoader.load());

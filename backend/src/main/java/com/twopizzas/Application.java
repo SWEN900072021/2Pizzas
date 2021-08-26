@@ -20,8 +20,14 @@ public class Application implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ApplicationContext applicationContext = ApplicationContext.getInstance()
-                .root("com.twopizzas")
-                .init();
+                .root("com.twopizzas");
+
+        String profile = System.getProperty("profile");
+        if (profile != null) {
+            ApplicationContext.getInstance().profile(profile);
+        }
+
+        ApplicationContext.getInstance().init();
 
         ServletContext servletContext = sce.getServletContext();
         findServlets().forEach(
@@ -48,11 +54,11 @@ public class Application implements ServletContextListener {
 
     }
 
-    private static class ServletDefinition {
+    public static class ServletDefinition {
         private final String route;
         private final Class<? extends HttpServlet> clasz;
 
-        private ServletDefinition(String route, Class<? extends HttpServlet> clasz) {
+        public ServletDefinition(String route, Class<? extends HttpServlet> clasz) {
             this.route = route;
             this.clasz = clasz;
         }

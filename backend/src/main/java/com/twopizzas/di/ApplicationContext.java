@@ -37,6 +37,11 @@ public class ApplicationContext extends AssertionConcern {
         return instance;
     }
 
+    // for testing only
+    ComponentManager getComponentManager() {
+        return componentManager;
+    }
+
     public ApplicationContext init() {
         if (root == null) {
             throw new ApplicationContextException("init called on ApplicationContext with no root, set root prior to initializing the Application Context");
@@ -71,5 +76,10 @@ public class ApplicationContext extends AssertionConcern {
             beanResolver = new ProfileBeanResolver(beanResolver, profile);
         }
         return new PrimaryBeanResolver(beanResolver);
+    }
+
+    // for testing only
+    static void reset() {
+        instance = null;
     }
 }

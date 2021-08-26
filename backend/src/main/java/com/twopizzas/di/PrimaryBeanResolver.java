@@ -10,6 +10,11 @@ public class PrimaryBeanResolver implements BeanResolver {
         this.wrapped = wrapped;
     }
 
+    // for testing only
+    BeanResolver getWrapped() {
+        return wrapped;
+    }
+
     @Override
     public <T> Collection<Bean<T>> resolve(ComponentSpecification<T> specification, Collection<Bean<?>> beans) {
         Collection<Bean<T>> resolved = wrapped.resolve(specification, beans);
