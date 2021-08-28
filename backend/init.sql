@@ -154,4 +154,3 @@ DO $FN$
         EXECUTE $$ INSERT INTO passengerBooking VALUES ('1', '1') $$;
     END;
  $FN$;
->>>>>>> Stashed changes
