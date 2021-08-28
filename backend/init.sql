@@ -1,18 +1,10 @@
-
-DROP TABLE IF EXISTS test;
-CREATE TABLE test(
-  id SERIAL,
-  name VARCHAR(255)
-);
-
-INSERT INTO test(name)
-VALUES ('hello');
 DROP SCHEMA public CASCADE;
 
 CREATE SCHEMA public;
 
 CREATE TABLE customer(
      customerId SERIAL PRIMARY KEY,
+     firstName varchar(255),
      surname varchar(255),
      email varchar(255)
 );
@@ -54,12 +46,15 @@ CREATE TABLE airplane(
 );
 
 CREATE TABLE passenger(
-    passengerId SERIAL PRIMARY KEY,
+    bookingId integer,
     givenName varchar(255),
     surname varchar(255),
     age INTEGER,
     nationality varchar(255),
-    passportNumber varchar(255)
+    passportNumber varchar(255),
+    CONSTRAINT bookingFK
+        FOREIGN KEY(bookingId)
+            REFERENCES booking(bookingId)
 );
 
 CREATE TABLE flight(
@@ -92,10 +87,13 @@ CREATE TYPE seatType as ENUM(
     );
 
 CREATE TABLE seat(
-    seatId SERIAL PRIMARY KEY,
+    bookingId integer,
     flightId integer,
     airplaneId integer,
     seatType seatType,
+    CONSTRAINT bookingFK
+        FOREIGN KEY(bookingId)
+            REFERENCES booking(bookingId),
     CONSTRAINT flightFK
         FOREIGN KEY(flightId)
             REFERENCES flight(flightId),
@@ -105,14 +103,17 @@ CREATE TABLE seat(
 );
 
 CREATE TABLE stopover(
-    stopoverId SERIAL PRIMARY KEY,
-    duration interval
+    flightId integer,
+    duration interval,
+    location integer,
+    CONSTRAINT flightFK
+        FOREIGN KEY(flightId)
+            REFERENCES flight(flightId),
+    CONSTRAINT locationFK
+        FOREIGN KEY(location)
+            REFERENCES airport(airportId)
 );
 
-CREATE TABLE flightStopover(
-    flightId integer REFERENCES flight(flightId) ON UPDATE CASCADE ON DELETE CASCADE,
-    stopoverId integer REFERENCES stopover(stopoverId) ON UPDATE CASCADE ON DELETE CASCADE
-);
 
 CREATE TABLE booking(
     bookingId SERIAL PRIMARY KEY,
@@ -121,22 +122,19 @@ CREATE TABLE booking(
     totalCost varchar(255),
     bookingReference varchar(255),
     customerId integer,
+    flight integer NOT NULL,
+    returnFlight integer,
     CONSTRAINT customerFK
         FOREIGN KEY(customerId)
-            REFERENCES customer(customerId)
+            REFERENCES customer(customerId),
+    CONSTRAINT flightFK
+        FOREIGN KEY(flight)
+            REFERENCES flight(flightId),
+    CONSTRAINT returnFlightFK
+        FOREIGN KEY(returnFlight)
+            REFERENCES flight(flightId)
 );
 
-CREATE TABLE passengerBooking(
-    passengerId integer REFERENCES passenger(passengerId) ON UPDATE CASCADE,
-    bookingId integer REFERENCES booking(bookingId) ON UPDATE CASCADE ON DELETE CASCADE,
-    PRIMARY KEY (passengerId, bookingId)
-);
-
-CREATE TABLE bookingSeat(
-    seatId integer REFERENCES seat(seatId) ON DELETE CASCADE,
-    bookingId integer REFERENCES booking(bookingId) ON UPDATE CASCADE ON DELETE CASCADE,
-    PRIMARY KEY (seatId, bookingId)
-);
 
 -- DO $FN$
 -- BEGIN
