@@ -28,8 +28,6 @@ public class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implem
                 return handleCreate(proxy, method, args);
             case "read":
                 return handleRead(proxy, method, args);
-            case "readLazy":
-                return handleReadLazy(proxy, method, args);
             case "readAll":
                 return handleReadAll(proxy, method, args);
             case "update":
@@ -50,29 +48,9 @@ public class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implem
 
         T maybeFound = (T) method.invoke(dataMapper, args);
         if (maybeFound != null) {
-            Entity<ID> mapped = dataContext.getIdentityMapper().get(maybeFound);
-            dataContext.getUnitOfWork().registerClean(mapped);
-            return mapped;
-        }
-        return null;
-    }
-
-    private Object handleReadLazy(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
-        // check if it's in the map first
-        Optional<T> maybeInMap = dataContext.getIdentityMapper().get(clasz, (ID) args[0]);
-        if (maybeInMap.isPresent()) {
-            return maybeInMap.get();
-        }
-
-        T maybeFound = (T) method.invoke(dataMapper, args);
-        if (maybeFound != null) {
-            Entity<ID> mapped = dataContext.getIdentityMapper().get(maybeFound);
-
-            LazyLoadEntityProxy<Entity<ID>, ID> lazyProxy = new LazyLoadEntityProxy<>(mapped, dataContext.getMapperRegistry());
-            Entity<ID> lazyMapped = (Entity<ID>) Proxy.newProxyInstance(mapped.getClass().getClassLoader(), new Class[]{mapped.getClass()}, lazyProxy);
-            dataContext.getUnitOfWork().registerClean(lazyMapped);
-
-            return lazyMapped;
+            Entity<ID> found = dataContext.getIdentityMapper().testAndGet(maybeFound);
+            dataContext.getUnitOfWork().registerClean(found);
+            return found;
         }
         return null;
     }
@@ -81,7 +59,7 @@ public class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implem
         Collection<T> all = (Collection<T>) method.invoke(dataMapper, args);
 
         // switch out search results for what is in the map
-        return all.stream().map(dataContext.getIdentityMapper()::get).collect(Collectors.toList());
+        return all.stream().map(dataContext.getIdentityMapper()::testAndGet).collect(Collectors.toList());
     }
 
     private Object handleCreate(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
@@ -90,7 +68,7 @@ public class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implem
 
         //method.invoke(dataMapper, args);
         dataContext.getUnitOfWork().registerNew(toSave);
-        return dataContext.getIdentityMapper().get(toSave);
+        return dataContext.getIdentityMapper().testAndGet(toSave);
     }
 
     private Object handleUpdate(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {

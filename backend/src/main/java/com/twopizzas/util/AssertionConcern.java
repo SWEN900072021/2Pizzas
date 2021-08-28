@@ -2,7 +2,7 @@ package com.twopizzas.util;
 
 import java.util.Collection;
 
-public class AssertionConcern {
+public abstract class AssertionConcern {
 
     protected <T> T notNull(T value, String name) {
         if (value == null) {

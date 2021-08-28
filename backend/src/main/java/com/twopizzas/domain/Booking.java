@@ -1,6 +1,7 @@
 package com.twopizzas.domain;
 
 import com.twopizzas.data.Entity;
+import com.twopizzas.data.ValueHolder;
 import com.twopizzas.util.AssertionConcern;
 
 import java.sql.Date;
@@ -14,7 +15,7 @@ public class Booking extends AssertionConcern implements Entity<EntityId> {
     private Time time;
     private String totalCost;
     private String bookingReference;
-    private List<Passenger> passengers;
+    private ValueHolder<List<Passenger>> passengers;
 
     Booking(EntityId id) {
         notNull(id, "id");
@@ -27,7 +28,7 @@ public class Booking extends AssertionConcern implements Entity<EntityId> {
     }
 
     public List<Passenger> getPassengers() {
-        return passengers;
+        return passengers.get();
     }
 
 

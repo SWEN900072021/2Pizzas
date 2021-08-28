@@ -4,7 +4,6 @@ import com.twopizzas.data.DataMapper;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.Booking;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.port.data.db.Connection;
 import com.twopizzas.port.data.db.ConnectionPool;
 
 import java.sql.PreparedStatement;
@@ -49,11 +48,6 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
 
     @Override
     public Booking read(EntityId entityId) {
-        return null;
-    }
-
-    @Override
-    public Booking readLazy(EntityId entityId) {
         return null;
     }
 

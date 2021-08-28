@@ -8,15 +8,15 @@ public class MapperRegistryImpl implements MapperRegistry {
     private final Map<Class<? extends Entity<?>>, DataMapper<? extends Entity<?>, ?, ?>> mappers = new HashMap<>();
 
     @Override
-    public <ID, U extends Entity<ID>, T extends DataMapper<U, ID, ?>> T getForClass(Class<U> clasz) {
+    public <T extends Entity<ID>, ID, U extends DataMapper<T, ID, S>, S extends Specification<T>> U getForClass(Class<T> clasz) {
         if (mappers.containsKey(clasz)) {
-            return (T) mappers.get(clasz);
+            return (U) mappers.get(clasz);
         }
         throw new MapperNotFound(clasz);
     }
 
     @Override
-    public <ID, U extends Entity<ID>, T extends DataMapper<U, ID, ?>> void register(Class<U> clasz, T dataMapper) {
+    public <T extends Entity<ID>, ID, U extends DataMapper<T, ID, S>, S extends Specification<T>> void register(Class<T> clasz, U dataMapper) {
         mappers.put(clasz, dataMapper);
     }
 

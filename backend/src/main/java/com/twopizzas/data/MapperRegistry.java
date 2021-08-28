@@ -1,6 +1,6 @@
 package com.twopizzas.data;
 
 interface MapperRegistry {
-    <ID, U extends Entity<ID>, T extends DataMapper<U, ID, ?>> T getForClass(Class<U> entity);
-    <ID, U extends Entity<ID>, T extends DataMapper<U, ID, ?>> void register(Class<U> entity, T dataMapper);
+    <T extends Entity<ID>, ID, U extends DataMapper<T, ID, S>, S extends Specification<T>> U getForClass(Class<T> entity);
+    <T extends Entity<ID>, ID, U extends DataMapper<T, ID, S>, S extends Specification<T>> void register(Class<T> entity, U dataMapper);
 }

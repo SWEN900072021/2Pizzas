@@ -37,7 +37,7 @@ public class MapperRegistryImplTests {
         // register nothing
 
         // WHEN + THEN
-        Assertions.assertThrows(MapperRegistryImpl.MapperNotFound.class, mapperRegistry.getForClass(StubEntity.class));
+        Assertions.assertThrows(MapperRegistryImpl.MapperNotFound.class, () -> mapperRegistry.getForClass(StubEntity.class));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class MapperRegistryImplTests {
         mapperRegistry.register(StubEntity.class, mapper);
 
         // WHEN + THEN
-        Assertions.assertThrows(MapperRegistryImpl.MapperNotFound.class, mapperRegistry.getForClass(StubSuperEntity.class));
+        Assertions.assertThrows(MapperRegistryImpl.MapperNotFound.class, () -> mapperRegistry.getForClass(StubSuperEntity.class));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class MapperRegistryImplTests {
         mapperRegistry.register(StubSuperEntity.class, mapper);
 
         // WHEN + THEN
-        Assertions.assertThrows(MapperRegistryImpl.MapperNotFound.class, mapperRegistry.getForClass(StubEntity .class));
+        Assertions.assertThrows(MapperRegistryImpl.MapperNotFound.class, () -> mapperRegistry.getForClass(StubEntity .class));
     }
 
     static class StubEntity implements Entity<String> {

@@ -1,9 +1,9 @@
 package com.twopizzas.data;
 
 public interface UnitOfWork {
-    void registerNew(Entity<?> entity);
-    void registerDirty(Entity<?> entity);
-    void registerClean(Entity<?> entity);
-    void registerDeleted(Entity<?> entity);
+    <T extends Entity<ID>, ID> void registerNew(T entity);
+    <T extends Entity<ID>, ID> void registerDirty(T entity);
+    <T extends Entity<ID>, ID> void registerClean(T entity);
+    <T extends Entity<ID>, ID> void registerDeleted(T entity);
     void commit();
 }

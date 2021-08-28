@@ -56,18 +56,6 @@ public class ConnectionPool implements DataSource {
         }
     }
 
-    public Connection getConnection() {
-
-        try {
-            return DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.err.println("Cannot get connection: " + e.getMessage());
-        }
-
-        return null;
-
-    }
-
     static class ConnectionPoolTransactionException extends RuntimeException {
         ConnectionPoolTransactionException(String message) {
             super(message);
