@@ -45,18 +45,6 @@ CREATE TABLE airplane(
             REFERENCES airline(airlineId)
 );
 
-CREATE TABLE passenger(
-    bookingId integer,
-    givenName varchar(255),
-    surname varchar(255),
-    age INTEGER,
-    nationality varchar(255),
-    passportNumber varchar(255),
-    CONSTRAINT bookingFK
-        FOREIGN KEY(bookingId)
-            REFERENCES booking(bookingId)
-);
-
 CREATE TABLE flight(
     flightId SERIAL PRIMARY KEY,
     flightCode varchar(255),
@@ -76,28 +64,6 @@ CREATE TABLE flight(
         FOREIGN KEY(destination)
             REFERENCES airport(airportId),
    CONSTRAINT airplaneFK
-        FOREIGN KEY(airplaneId)
-            REFERENCES airplane(airplaneId)
-);
-
-CREATE TYPE seatType as ENUM(
-    'first',
-    'business',
-    'economy'
-    );
-
-CREATE TABLE seat(
-    bookingId integer,
-    flightId integer,
-    airplaneId integer,
-    seatType seatType,
-    CONSTRAINT bookingFK
-        FOREIGN KEY(bookingId)
-            REFERENCES booking(bookingId),
-    CONSTRAINT flightFK
-        FOREIGN KEY(flightId)
-            REFERENCES flight(flightId),
-    CONSTRAINT airplaneFK
         FOREIGN KEY(airplaneId)
             REFERENCES airplane(airplaneId)
 );
@@ -135,6 +101,40 @@ CREATE TABLE booking(
             REFERENCES flight(flightId)
 );
 
+CREATE TABLE passenger(
+    bookingId integer,
+    givenName varchar(255),
+    surname varchar(255),
+    age INTEGER,
+    nationality varchar(255),
+    passportNumber varchar(255),
+    CONSTRAINT bookingFK
+        FOREIGN KEY(bookingId)
+            REFERENCES booking(bookingId)
+);
+
+CREATE TYPE seatType as ENUM(
+    'first',
+    'business',
+    'economy'
+    );
+
+CREATE TABLE seat(
+    bookingId integer,
+    flightId integer,
+    airplaneId integer,
+    seatType seatType,
+    CONSTRAINT bookingFK
+        FOREIGN KEY(bookingId)
+            REFERENCES booking(bookingId),
+    CONSTRAINT flightFK
+        FOREIGN KEY(flightId)
+            REFERENCES flight(flightId),
+    CONSTRAINT airplaneFK
+        FOREIGN KEY(airplaneId)
+            REFERENCES airplane(airplaneId)
+);
+
 
 -- DO $FN$
 -- BEGIN
@@ -145,10 +145,10 @@ CREATE TABLE booking(
 -- END;
 -- $FN$;
 
-DO $FN$
-    BEGIN
-        EXECUTE $$ INSERT INTO passenger VALUES ('1', 'john', 'doe', '25', 'australian', 'p1123') RETURNING * $$;
-        EXECUTE $$ INSERT INTO booking VALUES ('1', '01/01/21', '08:00', '25', '120f3') RETURNING * $$;
-        EXECUTE $$ INSERT INTO passengerBooking VALUES ('1', '1') $$;
-    END;
- $FN$;
+-- DO $FN$
+--     BEGIN
+--         EXECUTE $$ INSERT INTO passenger VALUES ('1', 'john', 'doe', '25', 'australian', 'p1123') RETURNING * $$;
+--         EXECUTE $$ INSERT INTO booking VALUES ('1', '01/01/21', '08:00', '25', '120f3') RETURNING * $$;
+--         EXECUTE $$ INSERT INTO passengerBooking VALUES ('1', '1') $$;
+--     END;
+--  $FN$;
