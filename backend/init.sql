@@ -1,4 +1,4 @@
-<<<<<<< Updated upstream
+
 DROP TABLE IF EXISTS test;
 CREATE TABLE test(
   id SERIAL,
@@ -7,7 +7,6 @@ CREATE TABLE test(
 
 INSERT INTO test(name)
 VALUES ('hello');
-=======
 DROP SCHEMA public CASCADE;
 
 CREATE SCHEMA public;
