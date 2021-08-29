@@ -36,7 +36,7 @@ public class IdentityMapperImpl implements IdentityMapper {
         }
     }
 
-    public <T extends Entity<ID>, ID> void assertNotGone(Class<T> entity, ID id) {
+    public <ID> void assertNotGone(Class<?> entity, ID id) {
         if (goneIds.contains(id)) {
             throw new DataConsistencyViolation(
                     String.format("attempted to get entity %s %s which has been marked 'gone'",

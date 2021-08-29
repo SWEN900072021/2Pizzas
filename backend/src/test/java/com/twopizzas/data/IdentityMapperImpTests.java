@@ -31,11 +31,24 @@ public class IdentityMapperImpTests {
     }
 
     @Test
+    @DisplayName("GIVEN entity in mapper WHEN get entity by class and wrong id THEN returns empty")
+    void test1() {
+        // GIVEN
+        StubEntity entity = new StubEntity("someId");
+        mapper.testAndGet(entity);
+
+        // WHEN
+        Optional<StubEntity> maybeEntity = mapper.get(StubEntity.class, "someOtherId");
+
+        // THEN
+        Assertions.assertFalse(maybeEntity.isPresent());
+    }
+
+    @Test
     @DisplayName("GIVEN no entity in mapper WHEN testAndGet THEN returns entity and puts in mapper")
     void test2() {
         // GIVEN
-        StubEntity entity = Mockito.mock(StubEntity.class);
-        Mockito.when(entity.getId()).thenReturn("someId");
+        StubEntity entity = new StubEntity("someId");
 
         // WHEN
         StubEntity put = mapper.testAndGet(entity);
@@ -50,8 +63,7 @@ public class IdentityMapperImpTests {
     @DisplayName("GIVEN entity in mapper WHEN get entity by class and id THEN returns entity")
     void test3() {
         // GIVEN
-        StubEntity entity = Mockito.mock(StubEntity.class);
-        Mockito.when(entity.getId()).thenReturn("someId");
+        StubEntity entity = new StubEntity("someId");
         mapper.testAndGet(entity);
 
         // WHEN
@@ -67,8 +79,7 @@ public class IdentityMapperImpTests {
     @DisplayName("GIVEN entity in mapper WHEN testAndGet entity THEN returns stored entity")
     void test4() {
         // GIVEN
-        StubEntity entity = Mockito.mock(StubEntity.class);
-        Mockito.when(entity.getId()).thenReturn("someId");
+        StubEntity entity = new StubEntity("someId");
         mapper.testAndGet(entity);
 
         // WHEN
@@ -133,5 +144,41 @@ public class IdentityMapperImpTests {
 
         // WHEN + THEN
         Assertions.assertThrows(DataConsistencyViolation.class, () -> mapper.get(StubEntity.class, entity.getId()));
+    }
+
+    @Test
+    @DisplayName("GIVEN entity in mapper WHEN get with wrong class THEN returns empty")
+    void test9() {
+        // GIVEN
+        StubEntity entity = new StubEntity("someId");
+        mapper.testAndGet(entity);
+
+        // WHEN
+        Optional<OtherStubEntity>  retrieved = mapper.get(OtherStubEntity.class, entity.getId());
+
+        // THEN
+        Assertions.assertFalse(retrieved.isPresent());
+    }
+
+    @Test
+    @DisplayName("GIVEN entity in mapper WHEN get with sub class THEN returns empty")
+    void test10() {
+        // GIVEN
+        StubEntity entity = new StubEntity("someId");
+        mapper.testAndGet(entity);
+
+        // WHEN
+        Optional<StubSubEntity>  retrieved = mapper.get(StubSubEntity.class, entity.getId());
+
+        // THEN
+        Assertions.assertFalse(retrieved.isPresent());
+    }
+
+    static class OtherStubEntity implements Entity<String> {
+
+        @Override
+        public String getId() {
+            return null;
+        }
     }
 }
