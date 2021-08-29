@@ -41,46 +41,25 @@ public class MapperRegistryImplTests {
     }
 
     @Test
-    @DisplayName("GIVEN mapper registered for sub class WHEN getForClass invoked for super class THEN throws")
+    @DisplayName("GIVEN mapper registered for super class WHEN getForClass invoked for sub class THEN throws")
     void test3() {
         // GIVEN
         StubMapper mapper = Mockito.mock(StubMapper.class);
         mapperRegistry.register(StubEntity.class, mapper);
 
         // WHEN + THEN
-        Assertions.assertThrows(MapperRegistryImpl.MapperNotFound.class, () -> mapperRegistry.getForClass(StubSuperEntity.class));
+        Assertions.assertThrows(MapperRegistryImpl.MapperNotFound.class, () -> mapperRegistry.getForClass(StubSubEntity.class));
     }
 
     @Test
-    @DisplayName("GIVEN mapper registered for super class WHEN getForClass invoked for sub class THEN throws")
+    @DisplayName("GIVEN mapper registered for sub class WHEN getForClass invoked for super class THEN throws")
     void test4() {
         // GIVEN
-        StubSuperMapper mapper = Mockito.mock(StubSuperMapper.class);
-        mapperRegistry.register(StubSuperEntity.class, mapper);
+        StubSubMapper mapper = Mockito.mock(StubSubMapper.class);
+        mapperRegistry.register(StubSubEntity.class, mapper);
 
         // WHEN + THEN
         Assertions.assertThrows(MapperRegistryImpl.MapperNotFound.class, () -> mapperRegistry.getForClass(StubEntity .class));
     }
 
-    static class StubEntity implements Entity<String> {
-        @Override
-        public String getId() {
-            return null;
-        }
-    }
-
-    interface StubSpecification extends Specification<StubEntity> { }
-
-    interface StubMapper extends DataMapper<StubEntity, String, StubSpecification> { }
-
-    static class StubSuperEntity extends StubEntity {
-        @Override
-        public String getId() {
-            return null;
-        }
-    }
-
-    interface StubSuperSpecification extends Specification<StubSuperEntity> { }
-
-    interface StubSuperMapper extends DataMapper<StubSuperEntity, String, StubSuperSpecification> { }
 }
