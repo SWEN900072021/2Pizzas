@@ -8,4 +8,5 @@ public interface DataMapper<T extends Entity<ID>, ID, S extends Specification<T>
     List<T> readAll(S specification);
     void update(T entity);
     void delete(T entity);
+    Class<T> getEntityClass();
 }

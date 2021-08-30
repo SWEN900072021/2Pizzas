@@ -209,4 +209,57 @@ public class ComponentLoaderTests {
         Assertions.assertEquals(0, bean.getPostConstruct().getParameterTypes().length);
     }
 
+    @Test
+    @DisplayName("GIVEN component scope is PROTOTYPE WHEN loadBean THEN returns BaseBean instance")
+    void test16() {
+        // WHEN
+        Bean<TestDependency> bean = componentLoader.loadBean(TestDependency.class);
+
+        // THEN
+        Assertions.assertNotNull(bean);
+        Assertions.assertTrue(bean instanceof BaseBean);
+    }
+
+    @Test
+    @DisplayName("GIVEN component scope is SINGLETON WHEN loadBean THEN returns SingletonBeanProxy wrapping BaseBean instance")
+    void test17() {
+        // WHEN
+        Bean<TestDependencyOther> bean = componentLoader.loadBean(TestDependencyOther.class);
+
+        // THEN
+        Assertions.assertNotNull(bean);
+        Assertions.assertTrue(bean instanceof SingletonBeanProxy);
+        Assertions.assertNotNull(((SingletonBeanProxy<TestDependencyOther>) bean).getWrapped());
+        Assertions.assertTrue(((SingletonBeanProxy<TestDependencyOther>) bean).getWrapped() instanceof BaseBean);
+    }
+
+    @Test
+    @DisplayName("GIVEN component scope is PROTOTYPE and is threadlocal WHEN loadBean THEN returns ThreadLocalBeanProxy wrapping BaseBean instance")
+    void test18() {
+        // WHEN
+        Bean<ThreadLocalComponentPrototype> bean = componentLoader.loadBean(ThreadLocalComponentPrototype.class);
+
+        // THEN
+        Assertions.assertNotNull(bean);
+        Assertions.assertTrue(bean instanceof ThreadLocalBeanProxy);
+        Assertions.assertNotNull(((ThreadLocalBeanProxy<ThreadLocalComponentPrototype>) bean).getWrapped());
+        Assertions.assertTrue(((ThreadLocalBeanProxy<ThreadLocalComponentPrototype>) bean).getWrapped() instanceof BaseBean);
+    }
+
+    @Test
+    @DisplayName("GIVEN component scope is SINGLETON and is threadlocal WHEN loadBean THEN returns SingletonBeanProxy wrapping ThreadLocalBeanProxy wrapping BaseBean instance")
+    void test19() {
+        // WHEN
+        Bean<ThreadLocalComponentSingleton> bean = componentLoader.loadBean(ThreadLocalComponentSingleton.class);
+
+        // THEN
+        Assertions.assertNotNull(bean);
+        Assertions.assertTrue(bean instanceof SingletonBeanProxy);
+        Assertions.assertNotNull(((SingletonBeanProxy<ThreadLocalComponentSingleton>) bean).getWrapped());
+        Assertions.assertTrue(((SingletonBeanProxy<ThreadLocalComponentSingleton>) bean).getWrapped() instanceof ThreadLocalBeanProxy);
+        ThreadLocalBeanProxy<ThreadLocalComponentSingleton> wrapped = (ThreadLocalBeanProxy<ThreadLocalComponentSingleton>) ((SingletonBeanProxy<ThreadLocalComponentSingleton>) bean).getWrapped();
+        Assertions.assertNotNull(wrapped.getWrapped());
+        Assertions.assertTrue(wrapped.getWrapped() instanceof BaseBean);
+    }
+
 }

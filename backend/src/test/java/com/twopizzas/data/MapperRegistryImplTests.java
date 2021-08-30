@@ -8,11 +8,11 @@ import org.mockito.Mockito;
 
 public class MapperRegistryImplTests {
 
-    private MapperRegistry mapperRegistry;
+    private DataMapperRegistry mapperRegistry;
 
     @BeforeEach
     void setup() {
-        mapperRegistry = new MapperRegistryImpl();
+        mapperRegistry = new DataMapperRegistryImpl();
     }
 
     @Test
@@ -37,7 +37,7 @@ public class MapperRegistryImplTests {
         // register nothing
 
         // WHEN + THEN
-        Assertions.assertThrows(MapperRegistryImpl.MapperNotFound.class, () -> mapperRegistry.getForClass(StubEntity.class));
+        Assertions.assertThrows(DataMapperRegistryImpl.MapperNotFound.class, () -> mapperRegistry.getForClass(StubEntity.class));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class MapperRegistryImplTests {
         mapperRegistry.register(StubEntity.class, mapper);
 
         // WHEN + THEN
-        Assertions.assertThrows(MapperRegistryImpl.MapperNotFound.class, () -> mapperRegistry.getForClass(StubSubEntity.class));
+        Assertions.assertThrows(DataMapperRegistryImpl.MapperNotFound.class, () -> mapperRegistry.getForClass(StubSubEntity.class));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class MapperRegistryImplTests {
         mapperRegistry.register(StubSubEntity.class, mapper);
 
         // WHEN + THEN
-        Assertions.assertThrows(MapperRegistryImpl.MapperNotFound.class, () -> mapperRegistry.getForClass(StubEntity .class));
+        Assertions.assertThrows(DataMapperRegistryImpl.MapperNotFound.class, () -> mapperRegistry.getForClass(StubEntity .class));
     }
 
 }

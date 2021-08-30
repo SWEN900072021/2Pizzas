@@ -10,11 +10,11 @@ import java.util.Optional;
 
 public class IdentityMapperImpTests {
 
-    IdentityMapper mapper;
+    IdentityMapper<StubEntity, String> mapper;
 
     @BeforeEach
     void setup() {
-        mapper = new IdentityMapperImpl();
+        mapper = new GenericIdentityMapperImpl<>(StubEntity.class);
     }
 
     @Test
@@ -144,41 +144,5 @@ public class IdentityMapperImpTests {
 
         // WHEN + THEN
         Assertions.assertThrows(DataConsistencyViolation.class, () -> mapper.get(StubEntity.class, entity.getId()));
-    }
-
-    @Test
-    @DisplayName("GIVEN entity in mapper WHEN get with wrong class THEN returns empty")
-    void test9() {
-        // GIVEN
-        StubEntity entity = new StubEntity("someId");
-        mapper.testAndGet(entity);
-
-        // WHEN
-        Optional<OtherStubEntity>  retrieved = mapper.get(OtherStubEntity.class, entity.getId());
-
-        // THEN
-        Assertions.assertFalse(retrieved.isPresent());
-    }
-
-    @Test
-    @DisplayName("GIVEN entity in mapper WHEN get with sub class THEN returns empty")
-    void test10() {
-        // GIVEN
-        StubEntity entity = new StubEntity("someId");
-        mapper.testAndGet(entity);
-
-        // WHEN
-        Optional<StubSubEntity>  retrieved = mapper.get(StubSubEntity.class, entity.getId());
-
-        // THEN
-        Assertions.assertFalse(retrieved.isPresent());
-    }
-
-    static class OtherStubEntity implements Entity<String> {
-
-        @Override
-        public String getId() {
-            return null;
-        }
     }
 }

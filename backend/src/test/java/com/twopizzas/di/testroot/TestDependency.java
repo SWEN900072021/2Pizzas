@@ -1,10 +1,9 @@
 package com.twopizzas.di.testroot;
 
-import com.twopizzas.di.Autowired;
-import com.twopizzas.di.Component;
-import com.twopizzas.di.PostConstruct;
+import com.twopizzas.di.*;
 
 @Component("qualifier")
+@Scope(ComponentScope.PROTOTYPE)
 public class TestDependency {
 
     private boolean initialized;

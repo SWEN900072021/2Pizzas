@@ -2,7 +2,7 @@ package com.twopizzas.data;
 
 public interface DataContext {
     UnitOfWork getUnitOfWork();
-    IdentityMapper getIdentityMapper();
-    MapperRegistry getMapperRegistry();
+    IdentityMapperRegistry getIdentityMapperRegistry();
+    DataMapperRegistry getDataMapperRegistry();
     DataSource getDataSource();
 }

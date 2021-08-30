@@ -8,4 +8,9 @@ public class InterfaceComponentImpl implements InterfaceComponent {
 
     @Autowired
     public InterfaceComponentImpl() { }
+
+    @Override
+    public String getString() {
+        return this.getClass().getCanonicalName();
+    }
 }

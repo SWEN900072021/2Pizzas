@@ -69,7 +69,7 @@ public class UnitOfWorkImpl implements UnitOfWork {
     }
 
     private <T extends Entity<ID>, ID> DataMapper<T, ID, Specification<T>> getMapper(T entity) {
-        return dataContext.getMapperRegistry().getForClass(entity.getClass());
+        return dataContext.getDataMapperRegistry().getForClass(entity.getClass());
     }
 
     private <T extends Entity<ID>, ID> void doUpdate(T entity) {

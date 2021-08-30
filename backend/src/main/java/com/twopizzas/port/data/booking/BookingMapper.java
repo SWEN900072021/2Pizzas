@@ -83,4 +83,9 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
         } catch (SQLException e) {
         }
     }
+
+    @Override
+    public Class<Booking> getEntityClass() {
+        return Booking.class;
+    }
 }

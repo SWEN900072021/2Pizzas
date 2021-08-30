@@ -42,28 +42,26 @@ public class ComponentLoader implements BeanLoader {
         Constructor<T> constructor = getAutowiredConstructor(clasz);
         List<ComponentSpecification<?>> dependencies = getDependencies(constructor);
         Method postConstructor = getPostConstructor(clasz);
+        boolean threadLocal = isThreadLocal(clasz);
 
         ComponentScope scope = getScope(clasz);
-        switch (scope) {
-            case PROTOTYPE:
-                return new BaseBean<>(clasz,
-                        qualifier,
-                        profiles,
-                        primary,
-                        constructor,
-                        dependencies,
-                        postConstructor);
-            case SINGLETON:
-                return new SingletonBean<>(clasz,
-                        qualifier,
-                        profiles,
-                        primary,
-                        constructor,
-                        dependencies,
-                        postConstructor);
-            default:
-                throw new LoadBeanException(clasz, String.format("no bean exists for unknown component scope %s", scope));
+        Bean<T> baseBean = new BaseBean<>(clasz,
+                qualifier,
+                profiles,
+                primary,
+                constructor,
+                dependencies,
+                postConstructor);
+
+        if (threadLocal) {
+            baseBean = new ThreadLocalBeanProxy<>(baseBean);
         }
+
+        if (scope == ComponentScope.SINGLETON) {
+            baseBean = new SingletonBeanProxy<>(baseBean);
+        }
+
+        return baseBean;
     }
 
     // package private for testing
@@ -127,6 +125,11 @@ public class ComponentLoader implements BeanLoader {
 
     private boolean isPrimary(Class<?> clasz) {
         Primary annotation = clasz.getAnnotation(Primary.class);
+        return annotation != null;
+    }
+
+    private boolean isThreadLocal(Class<?> clasz) {
+        ThreadLocalComponent annotation = clasz.getAnnotation(ThreadLocalComponent.class);
         return annotation != null;
     }
 
