@@ -1,18 +1,25 @@
 package com.twopizzas.data;
 
+import com.twopizzas.di.Autowired;
+import com.twopizzas.di.ThreadLocalComponent;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
+@ThreadLocalComponent
 public class UnitOfWorkImpl implements UnitOfWork {
 
-    private final DataContext dataContext;
-    private final Collection<Entity<?>> newEntities = new ArrayList<>();
-    private final Collection<Entity<?>> cleanEntities = new ArrayList<>();
-    private final Collection<Entity<?>> dirtyEntities = new ArrayList<>();
-    private final Collection<Entity<?>> removedEntities = new ArrayList<>();
+    private final DataSource dataSource;
+    private final DataMapperRegistry dataMapperRegistry;
+    private Collection<Entity<?>> newEntities = new ArrayList<>();
+    private Collection<Entity<?>> cleanEntities = new ArrayList<>();
+    private Collection<Entity<?>> dirtyEntities = new ArrayList<>();
+    private Collection<Entity<?>> removedEntities = new ArrayList<>();
 
-    UnitOfWorkImpl(DataContext dataContext) {
-        this.dataContext = dataContext;
+    @Autowired
+    UnitOfWorkImpl(DataSource dataSource, DataMapperRegistry dataMapperRegistry) {
+        this.dataSource = dataSource;
+        this.dataMapperRegistry = dataMapperRegistry;
     }
 
     @Override
@@ -52,14 +59,25 @@ public class UnitOfWorkImpl implements UnitOfWork {
 
     @Override
     public void commit() {
+        if (newEntities.isEmpty() && dirtyEntities.isEmpty() && removedEntities.isEmpty()) {
+            // nothing to do!
+            return;
+        }
+
         // open a new db transaction
-        dataContext.getDataSource().startNewTransaction();
+        dataSource.startNewTransaction();
         // apply each action
         newEntities.forEach(this::doCreate);
         dirtyEntities.forEach(this::doUpdate);
         removedEntities.forEach(this::doDelete);
         // commit
-        dataContext.getDataSource().commitTransaction();
+        dataSource.commitTransaction();
+
+        // reset for next commit
+        newEntities = new ArrayList<>();
+        cleanEntities = new ArrayList<>();
+        dirtyEntities = new ArrayList<>();
+        removedEntities = new ArrayList<>();
     }
 
     private void assertTrueOrThrow(boolean shouldBeTrue, String message) {
@@ -69,7 +87,7 @@ public class UnitOfWorkImpl implements UnitOfWork {
     }
 
     private <T extends Entity<ID>, ID> DataMapper<T, ID, Specification<T>> getMapper(T entity) {
-        return dataContext.getDataMapperRegistry().getForClass(entity.getClass());
+        return dataMapperRegistry.getForClass(entity.getClass());
     }
 
     private <T extends Entity<ID>, ID> void doUpdate(T entity) {

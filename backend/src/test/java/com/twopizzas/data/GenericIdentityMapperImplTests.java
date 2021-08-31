@@ -8,13 +8,13 @@ import org.mockito.Mockito;
 
 import java.util.Optional;
 
-public class IdentityMapperImpTests {
+public class GenericIdentityMapperImplTests {
 
-    IdentityMapper<StubEntity, String> mapper;
+    IdentityMapper mapper;
 
     @BeforeEach
     void setup() {
-        mapper = new GenericIdentityMapperImpl<>(StubEntity.class);
+        mapper = new GenericIdentityMapperImpl();
     }
 
     @Test
@@ -144,5 +144,36 @@ public class IdentityMapperImpTests {
 
         // WHEN + THEN
         Assertions.assertThrows(DataConsistencyViolation.class, () -> mapper.get(StubEntity.class, entity.getId()));
+    }
+
+    @Test
+    @DisplayName("GIVEN mapper with entities WHEN reset THEN entities cleared")
+    void test9() {
+        // GIVEN
+        StubEntity entity = new StubEntity("someId");
+        mapper.testAndGet(entity);
+
+        // WHEN
+        mapper.reset();
+
+        // THEN
+        Optional<? extends StubEntity> maybeEntity = mapper.get(entity.getClass(), entity.getId());
+        Assertions.assertFalse(maybeEntity.isPresent());
+    }
+
+    @Test
+    @DisplayName("GIVEN mapper with gone entities WHEN reset THEN entities cleared")
+    void test10() {
+        // GIVEN
+        StubEntity entity = new StubEntity("someId");
+        mapper.testAndGet(entity);
+        mapper.markGone(entity);
+
+        // WHEN
+        mapper.reset();
+
+        // THEN
+        Optional<? extends StubEntity> maybeEntity = mapper.get(entity.getClass(), entity.getId());
+        Assertions.assertFalse(maybeEntity.isPresent());
     }
 }

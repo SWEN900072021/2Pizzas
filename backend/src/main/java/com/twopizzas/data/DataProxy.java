@@ -10,12 +10,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implements InvocationHandler {
-    private final DataContext dataContext;
+    private final IdentityMapper identityMapper;
     private final DataMapper<T, ID, ?> dataMapper;
+    private final UnitOfWork unitOfWork;
 
-    DataProxy(DataMapper<T, ID, ?> dataMapper, DataContext dataContext) {
+    DataProxy(DataMapper<T, ID, ?> dataMapper, IdentityMapper identityMapper, UnitOfWork unitOfWork) {
         this.dataMapper = dataMapper;
-        this.dataContext = dataContext;
+        this.identityMapper = identityMapper;
+        this.unitOfWork = unitOfWork;
     }
 
     @Override
@@ -38,7 +40,6 @@ public class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implem
 
     private Object handleRead(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
         // check if it's in the map first
-        IdentityMapper<T, ID> identityMapper = dataContext.getIdentityMapperRegistry().getForClass(dataMapper.getEntityClass());
         Optional<T> maybeInMap = identityMapper.get(dataMapper.getEntityClass(), (ID) args[0]);
         if (maybeInMap.isPresent()) {
             return maybeInMap.get();
@@ -47,7 +48,7 @@ public class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implem
         T maybeFound = dataMapper.getEntityClass().cast(method.invoke(dataMapper, args));
         if (maybeFound != null) {
             Entity<ID> found = identityMapper.testAndGet(maybeFound);
-            dataContext.getUnitOfWork().registerClean(found);
+            unitOfWork.registerClean(found);
             return found;
         }
         return null;
@@ -57,7 +58,6 @@ public class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implem
         Collection<T> all = (Collection<T>) method.invoke(dataMapper, args);
 
         // switch out search results for what is in the map
-        IdentityMapper<T, ID> identityMapper = dataContext.getIdentityMapperRegistry().getForClass(dataMapper.getEntityClass()) ;
         return all.stream().map(identityMapper::testAndGet).collect(Collectors.toList());
     }
 
@@ -65,16 +65,15 @@ public class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implem
         T toSave = dataMapper.getEntityClass().cast(args[0]);
         notNull(toSave, "entity");
 
-        //method.invoke(dataMapper, args);
-        dataContext.getUnitOfWork().registerNew(toSave);
-        return dataContext.getIdentityMapperRegistry().getForClass(dataMapper.getEntityClass()).testAndGet(toSave);
+        unitOfWork.registerNew(toSave);
+        return identityMapper.testAndGet(toSave);
     }
 
     private Object handleUpdate(Object[] args) {
         T toSave = dataMapper.getEntityClass().cast(args[0]);
         notNull(toSave, "entity");
 
-        dataContext.getUnitOfWork().registerDirty(toSave);
+        unitOfWork.registerDirty(toSave);
         return toSave;
     }
 
@@ -82,8 +81,8 @@ public class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implem
         T toDelete = dataMapper.getEntityClass().cast(args[0]);
         notNull(toDelete, "entity");
 
-        dataContext.getIdentityMapperRegistry().getForClass(dataMapper.getEntityClass()).markGone(toDelete);
-        dataContext.getUnitOfWork().registerDeleted(toDelete);
+        identityMapper.markGone(toDelete);
+        unitOfWork.registerDeleted(toDelete);
         return null;
     }
 }

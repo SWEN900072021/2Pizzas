@@ -20,6 +20,7 @@ public class MapperRegistryImplTests {
     void test() {
         // GIVEN
         StubMapper mapper = Mockito.mock(StubMapper.class);
+        Mockito.when(mapper.getEntityClass()).thenReturn(StubEntity.class);
         mapperRegistry.register(StubEntity.class, mapper);
 
         // WHEN
@@ -45,6 +46,7 @@ public class MapperRegistryImplTests {
     void test3() {
         // GIVEN
         StubMapper mapper = Mockito.mock(StubMapper.class);
+        Mockito.when(mapper.getEntityClass()).thenReturn(StubEntity.class);
         mapperRegistry.register(StubEntity.class, mapper);
 
         // WHEN + THEN
@@ -56,10 +58,22 @@ public class MapperRegistryImplTests {
     void test4() {
         // GIVEN
         StubSubMapper mapper = Mockito.mock(StubSubMapper.class);
+        Mockito.when(mapper.getEntityClass()).thenReturn(StubSubEntity.class);
         mapperRegistry.register(StubSubEntity.class, mapper);
 
         // WHEN + THEN
         Assertions.assertThrows(DataMapperRegistryImpl.MapperNotFound.class, () -> mapperRegistry.getForClass(StubEntity .class));
     }
 
+    @Test
+    @DisplayName("GIVEN mapper already registered WHEN register mapper for same class THEN throws")
+    void test5() {
+        // GIVEN
+        StubSubMapper mapper = Mockito.mock(StubSubMapper.class);
+        Mockito.when(mapper.getEntityClass()).thenReturn(StubSubEntity.class);
+        mapperRegistry.register(StubSubEntity.class, mapper);
+
+        // WHEN + THEN
+        Assertions.assertThrows(DataMapperRegistryImpl.MapperRegistrationException.class, () -> mapperRegistry.register(StubSubEntity.class, mapper));
+    }
 }
