@@ -30,7 +30,7 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
         " WHERE id = ?;";
 
     @Override
-    public void create(Booking entity) {
+    public Booking create(Booking entity) {
         PreparedStatement createStatement = null;
 
         try {
@@ -44,6 +44,8 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
         } catch (SQLException e) {
         }
 
+        // change this
+        return entity;
     }
 
     @Override
@@ -57,7 +59,7 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
     }
 
     @Override
-    public void update(Booking entity) {
+    public Booking update(Booking entity) {
         PreparedStatement updateStatement = null;
 
         try {
@@ -70,6 +72,9 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
             updateStatement.execute();
         } catch (SQLException e) {
         }
+
+        // change this
+        return  entity;
     }
 
     @Override
