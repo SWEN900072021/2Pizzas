@@ -16,13 +16,11 @@ import java.io.PrintWriter;
 public class HelloServlet extends HttpServlet {
 
     private MyHelloComponent myHelloComponent;
-    private UnitOfWork unitOfWork;
 
     @Autowired
-    HelloServlet(MyHelloComponent myHelloComponent, UnitOfWork unitOfWork) {
+    HelloServlet(MyHelloComponent myHelloComponent) {
         super();
         this.myHelloComponent = myHelloComponent;
-        this.unitOfWork = unitOfWork;
     }
 
     private String message;
@@ -32,7 +30,7 @@ public class HelloServlet extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
 
         // Hello 
@@ -44,7 +42,6 @@ public class HelloServlet extends HttpServlet {
         // make the changes
         // fetching from db and then update -> calls to register with unit of work
 
-        unitOfWork.commit();
     }
 
     public void destroy() {

@@ -39,6 +39,7 @@ public class DataProxyTests {
         // GIVEN
         StubEntity entity = new StubEntity("someId");
         Mockito.when(identityMapper.testAndGet(Mockito.any())).thenReturn(entity);
+        Mockito.when(dataMapper.getEntityClass()).thenReturn(StubEntity.class);
 
         // WHEN
         StubEntity created = dataMapper.create(entity);
@@ -47,5 +48,42 @@ public class DataProxyTests {
         Assertions.assertSame(entity, created);
         Mockito.verify(identityMapper).testAndGet(Mockito.eq(entity));
         Mockito.verify(unitOfWork).registerNew(Mockito.eq(entity));
+        Mockito.verify(wrappedMapper, Mockito.never()).create(Mockito.any());
+    }
+
+    @Test
+    @DisplayName("GIVEN wrapped mapper WHEN update invoked THEN added to identityMapper and registered with unitOfWork")
+    void test2() {
+        // GIVEN
+        StubEntity entity = new StubEntity("someId");
+        Mockito.when(identityMapper.testAndGet(Mockito.any())).thenReturn(entity);
+        Mockito.when(dataMapper.getEntityClass()).thenReturn(StubEntity.class);
+
+        // WHEN
+        StubEntity updated = dataMapper.update(entity);
+
+        // THEN
+        Assertions.assertSame(entity, updated);
+        Mockito.verify(identityMapper).testAndGet(Mockito.eq(entity));
+        Mockito.verify(unitOfWork).registerDirty(Mockito.eq(entity));
+        Mockito.verify(wrappedMapper, Mockito.never()).update(Mockito.any());
+    }
+
+    @Test
+    @DisplayName("GIVEN wrapped mapper WHEN delete invoked THEN added to identityMapper and registered with unitOfWork")
+    void test3() {
+        // GIVEN
+        StubEntity entity = new StubEntity("someId");
+        Mockito.when(identityMapper.testAndGet(Mockito.any())).thenReturn(entity);
+        Mockito.when(dataMapper.getEntityClass()).thenReturn(StubEntity.class);
+
+        // WHEN
+        dataMapper.delete(entity);
+
+        // THEN
+        Mockito.verify(identityMapper).testAndGet(Mockito.eq(entity));
+        Mockito.verify(unitOfWork).registerDeleted(Mockito.eq(entity));
+        Mockito.verify(identityMapper).markGone(Mockito.eq(entity));
+        Mockito.verify(wrappedMapper, Mockito.never()).delete(Mockito.any());
     }
 }
