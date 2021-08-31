@@ -8,7 +8,7 @@ CREATE TABLE "user"(
 );
 
 CREATE TABLE customer(
-     customerId integer UNIQUE,
+     customerId integer PRIMARY KEY,
      firstName varchar(255),
      surname varchar(255),
      email varchar(255),
@@ -18,7 +18,7 @@ CREATE TABLE customer(
 );
 
 CREATE TABLE airline(
-    airlineId integer UNIQUE,
+    airlineId integer PRIMARY KEY,
     airlineCode varchar(255),
     name varchar(255),
     CONSTRAINT airlineFK
@@ -27,7 +27,7 @@ CREATE TABLE airline(
 );
 
 CREATE TABLE administrator(
-    adminId integer UNIQUE,
+    adminId integer PRIMARY KEY,
     CONSTRAINT adminFK
         FOREIGN KEY(adminId)
             REFERENCES "user"(userId) ON DELETE CASCADE
@@ -88,7 +88,7 @@ CREATE TABLE stopover(
     location integer,
     CONSTRAINT flightFK
         FOREIGN KEY(flightId)
-            REFERENCES flight(flightId),
+            REFERENCES flight(flightId) ON DELETE CASCADE,
     CONSTRAINT locationFK
         FOREIGN KEY(location)
             REFERENCES airport(airportId),
@@ -110,10 +110,10 @@ CREATE TABLE booking(
             REFERENCES customer(customerId),
     CONSTRAINT flightFK
         FOREIGN KEY(flight)
-            REFERENCES flight(flightId),
+            REFERENCES flight(flightId) ON DELETE CASCADE,
     CONSTRAINT returnFlightFK
         FOREIGN KEY(returnFlight)
-            REFERENCES flight(flightId)
+            REFERENCES flight(flightId) ON DELETE CASCADE
 );
 
 CREATE TYPE seatType as ENUM(
@@ -130,13 +130,13 @@ CREATE TABLE seat(
     seatType seatType,
     CONSTRAINT bookingFK
         FOREIGN KEY(bookingId)
-            REFERENCES booking(bookingId),
+            REFERENCES booking(bookingId) ON DELETE CASCADE,
     CONSTRAINT flightFK
         FOREIGN KEY(flightId)
-            REFERENCES flight(flightId),
+            REFERENCES flight(flightId) ON DELETE CASCADE,
     CONSTRAINT airplaneFK
         FOREIGN KEY(airplaneId)
-            REFERENCES airplane(airplaneId),
+            REFERENCES airplane(airplaneId) ON DELETE CASCADE,
     PRIMARY KEY (bookingId, seatNumber)
 );
 
@@ -150,9 +150,9 @@ CREATE TABLE passenger(
     passportNumber varchar(255),
     CONSTRAINT bookingFK
       FOREIGN KEY(bookingId)
-          REFERENCES booking(bookingId),
+          REFERENCES booking(bookingId) ON DELETE CASCADE,
     CONSTRAINT seatNumber
         FOREIGN KEY(seatNumber)
-            REFERENCES seat(seatNumber),
+            REFERENCES seat(seatNumber) ON DELETE CASCADE,
     PRIMARY KEY (bookingId, seatNumber)
 );
