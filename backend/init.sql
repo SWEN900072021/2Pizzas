@@ -113,7 +113,7 @@ CREATE TABLE booking(
 CREATE TABLE seat(
     id varchar(36) PRIMARY KEY,
     row varchar(255),
-    column varchar(255),
+    "column" varchar(255),
     flightId varchar(36),
     seatType varchar(255),
     status varchar(255),
@@ -123,7 +123,7 @@ CREATE TABLE seat(
 );
 
 CREATE TABLE passenger(
-    bookingId integer,
+    bookingId varchar(36),
     seatId varchar(36),
     givenName varchar(255),
     surname varchar(255),
@@ -131,6 +131,9 @@ CREATE TABLE passenger(
     nationality varchar(255),
     passportNumber varchar(255),
     CONSTRAINT bookingFK
-      FOREIGN KEY(bookingId)
-          REFERENCES booking(id) ON DELETE CASCADE
+        FOREIGN KEY(bookingId)
+            REFERENCES booking(id) ON DELETE CASCADE,
+    CONSTRAINT seatFK
+        FOREIGN KEY(seatId)
+            REFERENCES seat(id)
 );
