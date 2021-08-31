@@ -1,22 +1,36 @@
 DROP SCHEMA public CASCADE;
-
 CREATE SCHEMA public;
 
+CREATE TABLE "user"(
+    userId SERIAL PRIMARY KEY,
+    username varchar(255),
+    password varchar(255)
+);
+
 CREATE TABLE customer(
-     customerId SERIAL PRIMARY KEY,
+     customerId integer UNIQUE,
      firstName varchar(255),
      surname varchar(255),
-     email varchar(255)
+     email varchar(255),
+     CONSTRAINT customerFK
+        FOREIGN KEY(customerId)
+            REFERENCES "user"(userId) ON DELETE CASCADE
 );
 
 CREATE TABLE airline(
-    airlineId SERIAL PRIMARY KEY,
+    airlineId integer UNIQUE,
     airlineCode varchar(255),
-    name varchar(255)
+    name varchar(255),
+    CONSTRAINT airlineFK
+        FOREIGN KEY(airlineId)
+            REFERENCES "user"(userId) ON DELETE CASCADE
 );
 
 CREATE TABLE administrator(
-    adminId SERIAL PRIMARY KEY
+    adminId integer UNIQUE,
+    CONSTRAINT adminFK
+        FOREIGN KEY(adminId)
+            REFERENCES "user"(userId) ON DELETE CASCADE
 );
 
 CREATE TABLE airport(
@@ -48,8 +62,8 @@ CREATE TABLE airplane(
 CREATE TABLE flight(
     flightId SERIAL PRIMARY KEY,
     flightCode varchar(255),
-    departureTime time,
-    arrivalTime time,
+    departureTime timestamp,
+    arrivalTime timestamp,
     origin integer,
     destination integer,
     airlineId integer,
@@ -77,7 +91,8 @@ CREATE TABLE stopover(
             REFERENCES flight(flightId),
     CONSTRAINT locationFK
         FOREIGN KEY(location)
-            REFERENCES airport(airportId)
+            REFERENCES airport(airportId),
+    PRIMARY KEY (flightId, location)
 );
 
 
@@ -85,7 +100,7 @@ CREATE TABLE booking(
     bookingId SERIAL PRIMARY KEY,
     date DATE,
     time time,
-    totalCost varchar(255),
+    totalCost numeric,
     bookingReference varchar(255),
     customerId integer,
     flight integer NOT NULL,
@@ -101,18 +116,6 @@ CREATE TABLE booking(
             REFERENCES flight(flightId)
 );
 
-CREATE TABLE passenger(
-    bookingId integer,
-    givenName varchar(255),
-    surname varchar(255),
-    age INTEGER,
-    nationality varchar(255),
-    passportNumber varchar(255),
-    CONSTRAINT bookingFK
-        FOREIGN KEY(bookingId)
-            REFERENCES booking(bookingId)
-);
-
 CREATE TYPE seatType as ENUM(
     'first',
     'business',
@@ -120,6 +123,7 @@ CREATE TYPE seatType as ENUM(
     );
 
 CREATE TABLE seat(
+    seatNumber varchar(255) UNIQUE,
     bookingId integer,
     flightId integer,
     airplaneId integer,
@@ -132,23 +136,23 @@ CREATE TABLE seat(
             REFERENCES flight(flightId),
     CONSTRAINT airplaneFK
         FOREIGN KEY(airplaneId)
-            REFERENCES airplane(airplaneId)
+            REFERENCES airplane(airplaneId),
+    PRIMARY KEY (bookingId, seatNumber)
 );
 
-
--- DO $FN$
--- BEGIN
---     FOR counter IN 1..100 LOOP
---         EXECUTE $$ INSERT INTO airline(name, id) VALUES ('airline'||$1, $1) RETURNING * $$
---             USING counter;
---     END LOOP;
--- END;
--- $FN$;
-
--- DO $FN$
---     BEGIN
---         EXECUTE $$ INSERT INTO passenger VALUES ('1', 'john', 'doe', '25', 'australian', 'p1123') RETURNING * $$;
---         EXECUTE $$ INSERT INTO booking VALUES ('1', '01/01/21', '08:00', '25', '120f3') RETURNING * $$;
---         EXECUTE $$ INSERT INTO passengerBooking VALUES ('1', '1') $$;
---     END;
---  $FN$;
+CREATE TABLE passenger(
+    bookingId integer,
+    seatNumber varchar(255),
+    givenName varchar(255),
+    surname varchar(255),
+    age INTEGER,
+    nationality varchar(255),
+    passportNumber varchar(255),
+    CONSTRAINT bookingFK
+      FOREIGN KEY(bookingId)
+          REFERENCES booking(bookingId),
+    CONSTRAINT seatNumber
+        FOREIGN KEY(seatNumber)
+            REFERENCES seat(seatNumber),
+    PRIMARY KEY (bookingId, seatNumber)
+);
