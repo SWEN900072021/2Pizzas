@@ -127,7 +127,7 @@ CREATE TABLE passenger(
     seatId varchar(36),
     givenName varchar(255),
     surname varchar(255),
-    age integer,
+    dob date,
     nationality varchar(255),
     passportNumber varchar(255),
     CONSTRAINT bookingFK
