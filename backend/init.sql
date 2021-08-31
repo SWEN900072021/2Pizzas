@@ -2,157 +2,135 @@ DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
 CREATE TABLE "user"(
-    userId SERIAL PRIMARY KEY,
+    id varchar(36) PRIMARY KEY,
     username varchar(255),
     password varchar(255)
 );
 
 CREATE TABLE customer(
-     customerId integer PRIMARY KEY,
+     id varchar(36) PRIMARY KEY,
      firstName varchar(255),
      surname varchar(255),
      email varchar(255),
      CONSTRAINT customerFK
-        FOREIGN KEY(customerId)
-            REFERENCES "user"(userId) ON DELETE CASCADE
+        FOREIGN KEY(id)
+            REFERENCES "user"(id) ON DELETE CASCADE
 );
 
 CREATE TABLE airline(
-    airlineId integer PRIMARY KEY,
-    airlineCode varchar(255),
+    id varchar(36) PRIMARY KEY,
+    code varchar(255),
     name varchar(255),
     CONSTRAINT airlineFK
-        FOREIGN KEY(airlineId)
-            REFERENCES "user"(userId) ON DELETE CASCADE
+        FOREIGN KEY(id)
+            REFERENCES "user"(id) ON DELETE CASCADE
 );
 
 CREATE TABLE administrator(
-    adminId integer PRIMARY KEY,
+    id varchar(36) PRIMARY KEY,
     CONSTRAINT adminFK
-        FOREIGN KEY(adminId)
-            REFERENCES "user"(userId) ON DELETE CASCADE
+        FOREIGN KEY(id)
+            REFERENCES "user"(id) ON DELETE CASCADE
 );
 
 CREATE TABLE airport(
-    airportId SERIAL PRIMARY KEY,
-    airportCode char(3),
+    id varchar(36) PRIMARY KEY,
+    code char(3),
     name varchar(255),
     location varchar(255),
-    adminId integer,
-    CONSTRAINT adminFK
-        FOREIGN KEY(adminId)
-            REFERENCES administrator(adminId)
-);
-
-CREATE TYPE airplaneType as ENUM(
-    'airbus',
-    'boeing'
+    utcOffset numeric
 );
 
 CREATE TABLE airplane(
-    airplaneId SERIAL PRIMARY KEY,
-    planeCode varchar(255),
-    airplaneType airplaneType,
-    airlineId integer,
-    CONSTRAINT airlineId
-        FOREIGN KEY(airlineId)
-            REFERENCES airline(airlineId)
+    id varchar(36) PRIMARY KEY,
+    code varchar(255),
+    type varchar(255),
+    firstClassRows integer,
+    firstClassColumns integer,
+    businessClassRows integer,
+    businessClassColumns integer,
+    economyClassRows integer,
+    economyClassColumns integer
 );
 
 CREATE TABLE flight(
-    flightId SERIAL PRIMARY KEY,
-    flightCode varchar(255),
+    id varchar(36) PRIMARY KEY,
+    code varchar(255),
     departureTime timestamp,
     arrivalTime timestamp,
-    origin integer,
-    destination integer,
-    airlineId integer,
-    airplaneId integer,
+    origin varchar(36),
+    destination varchar(36),
+    airlineId varchar(36),
+    airplaneId varchar(36),
+    status varchar(255),
     CONSTRAINT airlineFK
         FOREIGN KEY(airlineId)
-            REFERENCES airline(airlineId),
+            REFERENCES airline(id),
     CONSTRAINT originFK
         FOREIGN KEY(origin)
-            REFERENCES airport(airportId),
+            REFERENCES airport(id),
     CONSTRAINT destinationFK
         FOREIGN KEY(destination)
-            REFERENCES airport(airportId),
+            REFERENCES airport(id),
    CONSTRAINT airplaneFK
         FOREIGN KEY(airplaneId)
-            REFERENCES airplane(airplaneId)
+            REFERENCES airplane(id)
 );
 
 CREATE TABLE stopover(
-    flightId integer,
+    flightId varchar(36),
     duration interval,
-    location integer,
+    airportId varchar(36),
     CONSTRAINT flightFK
         FOREIGN KEY(flightId)
-            REFERENCES flight(flightId) ON DELETE CASCADE,
+            REFERENCES flight(id) ON DELETE CASCADE,
     CONSTRAINT locationFK
-        FOREIGN KEY(location)
-            REFERENCES airport(airportId),
-    PRIMARY KEY (flightId, location)
+        FOREIGN KEY(airportId)
+            REFERENCES airport(id),
+    UNIQUE(flightId, airportId)
 );
 
 
 CREATE TABLE booking(
-    bookingId SERIAL PRIMARY KEY,
-    date DATE,
-    time time,
+    id varchar(36) PRIMARY KEY,
+    date timestamp,
     totalCost numeric,
-    bookingReference varchar(255),
-    customerId integer,
-    flight integer NOT NULL,
-    returnFlight integer,
+    reference varchar(255),
+    customerId varchar(36),
+    flight varchar(36) NOT NULL,
+    returnFlight varchar(36),
     CONSTRAINT customerFK
         FOREIGN KEY(customerId)
-            REFERENCES customer(customerId),
+            REFERENCES customer(id),
     CONSTRAINT flightFK
         FOREIGN KEY(flight)
-            REFERENCES flight(flightId) ON DELETE CASCADE,
+            REFERENCES flight(id),
     CONSTRAINT returnFlightFK
         FOREIGN KEY(returnFlight)
-            REFERENCES flight(flightId) ON DELETE CASCADE
+            REFERENCES flight(id)
 );
 
-CREATE TYPE seatType as ENUM(
-    'first',
-    'business',
-    'economy'
-    );
-
 CREATE TABLE seat(
-    seatNumber varchar(255) UNIQUE,
-    bookingId integer,
-    flightId integer,
-    airplaneId integer,
-    seatType seatType,
-    CONSTRAINT bookingFK
-        FOREIGN KEY(bookingId)
-            REFERENCES booking(bookingId) ON DELETE CASCADE,
+    id varchar(36) PRIMARY KEY,
+    row varchar(255),
+    column varchar(255),
+    flightId varchar(36),
+    seatType varchar(255),
+    status varchar(255),
     CONSTRAINT flightFK
         FOREIGN KEY(flightId)
-            REFERENCES flight(flightId) ON DELETE CASCADE,
-    CONSTRAINT airplaneFK
-        FOREIGN KEY(airplaneId)
-            REFERENCES airplane(airplaneId) ON DELETE CASCADE,
-    PRIMARY KEY (bookingId, seatNumber)
+            REFERENCES flight(id) ON DELETE CASCADE
 );
 
 CREATE TABLE passenger(
     bookingId integer,
-    seatNumber varchar(255),
+    seatId varchar(36),
     givenName varchar(255),
     surname varchar(255),
-    age INTEGER,
+    age integer,
     nationality varchar(255),
     passportNumber varchar(255),
     CONSTRAINT bookingFK
       FOREIGN KEY(bookingId)
-          REFERENCES booking(bookingId) ON DELETE CASCADE,
-    CONSTRAINT seatNumber
-        FOREIGN KEY(seatNumber)
-            REFERENCES seat(seatNumber) ON DELETE CASCADE,
-    PRIMARY KEY (bookingId, seatNumber)
+          REFERENCES booking(id) ON DELETE CASCADE
 );
