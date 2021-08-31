@@ -6,7 +6,7 @@ import com.twopizzas.util.AssertionConcern;
 public class AirplaneProfile extends AssertionConcern implements Entity<EntityId> {
     private final EntityId id;
     private String code;
-    private String typeName;
+    private String type;
     private int firstClassRows;
     private int firstClassColumns;
     private int businessClassRows;
@@ -24,17 +24,9 @@ public class AirplaneProfile extends AssertionConcern implements Entity<EntityId
         return id;
     }
 
-    public int getCapacity() {
-        int firstCapacity = firstClassColumns * firstClassRows;
-        int businessClassCapacity = businessClassColumns * businessClassRows;
-        int economyClassCapacity = economyClassColumns * economyClassRows;
-
-        return firstClassCapacity + businessClassCapacity + economyClassCapacity;
-    }
-
     public String getCode() { return code; }
 
-    public String getTypeName() { return typeName; }
+    public String getType() { return type; }
 
     public int getFirstClassRows() { return firstClassRows; }
 
@@ -47,4 +39,12 @@ public class AirplaneProfile extends AssertionConcern implements Entity<EntityId
     public int getEconomyClassRows() { return economyClassRows; }
 
     public int getEconomyClassColumns() { return economyClassColumns; }
+
+    public int getCapacity() {
+        int firstClassCapacity = firstClassRows * firstClassColumns;
+        int businessCapacity = businessClassRows * businessClassColumns;
+        int economyCapacity = economyClassRows * economyClassColumns;
+
+        return firstClassCapacity + businessCapacity + economyCapacity;
+    }
 }

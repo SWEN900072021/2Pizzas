@@ -4,14 +4,14 @@ import com.twopizzas.data.Entity;
 import com.twopizzas.util.AssertionConcern;
 
 public class Airport extends AssertionConcern implements Entity<EntityId> {
-    private final Entity id;
+    private final EntityId id;
 
     private String code;
     private String name;
     private String location;
     private float utcOffset;
 
-    Airport(EntityId id) {
+    Booking(EntityId id) {
         notNull(id, "id");
         this.id = id;
     }
@@ -28,5 +28,4 @@ public class Airport extends AssertionConcern implements Entity<EntityId> {
     public String getLocation() { return location; }
 
     public float getUtcOffset() { return utcOffset; }
-
 }
