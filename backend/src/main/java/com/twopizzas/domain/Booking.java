@@ -16,6 +16,7 @@ public class Booking extends AssertionConcern implements Entity<EntityId> {
     private String totalCost;
     private String bookingReference;
     private ValueHolder<List<Passenger>> passengers;
+    private Flight flight;
 
     Booking(EntityId id) {
         notNull(id, "id");
