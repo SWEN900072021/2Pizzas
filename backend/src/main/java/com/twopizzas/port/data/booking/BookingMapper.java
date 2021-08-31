@@ -17,12 +17,12 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
     // cud = getCurrentTransaction
 
     private static final String createStatementString =
-        "INSERT INTO booking(id, date, time, totalcost, bookingreference) " +
+        "INSERT INTO booking(id, date, totalcost, reference) " +
         " VALUES (?, ?, ?, ?, ?);";
 
     private static final String updateStatementString =
         "UPDATE booking " +
-        " SET date = ?, time = ?, totalcost = ?, bookingreference = ? " +
+        " SET date = ?, date = ?, totalcost = ?, reference = ? " +
         " WHERE id = ?;";
 
     private static final String deleteStatementString =
@@ -35,12 +35,9 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
 
         try {
             createStatement = ConnectionPool.getCurrentTransaction().prepareStatement(createStatementString);
-            createStatement.setString(1, entity.getId().toString());
-            createStatement.setDate(2, entity.getDate());
-            createStatement.setTime(3, entity.getTime());
-            createStatement.setString(4, entity.getTotalCost());
-            createStatement.setString(5, entity.getBookingReference());
+
             createStatement.execute();
+
         } catch (SQLException e) {
         }
 
@@ -64,13 +61,10 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
 
         try {
             updateStatement = ConnectionPool.getCurrentTransaction().prepareStatement(updateStatementString);
-            updateStatement.setDate(1, entity.getDate());
-            updateStatement.setTime(2, entity.getTime());
-            updateStatement.setString(3, entity.getTotalCost());
-            updateStatement.setString(4, entity.getBookingReference());
-            updateStatement.setString(5, entity.getId().toString());
+
             updateStatement.execute();
         } catch (SQLException e) {
+
         }
 
         // change this
