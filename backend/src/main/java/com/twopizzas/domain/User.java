@@ -1,13 +1,15 @@
 package com.twopizzas.domain;
 
 import com.twopizzas.data.Entity;
+import com.twopizzas.util.AssertionConcern;
 
-public abstract class User extends AssertionError implements Entity<EntityId> {
+public abstract class User extends AssertionConcern implements Entity<EntityId> {
     private final EntityId id;
     private String username;
     private String password;
 
     public User(EntityId id, String username, String password) {
+        notNull(id, "id");
         this.id = id;
         this.username = username;
         this.password = password;
