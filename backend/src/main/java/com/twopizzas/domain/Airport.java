@@ -11,7 +11,7 @@ public class Airport extends AssertionConcern implements Entity<EntityId> {
     private String location;
     private float utcOffset;
 
-    Booking(EntityId id) {
+    public Airport(EntityId id) {
         notNull(id, "id");
         this.id = id;
     }

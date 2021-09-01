@@ -18,7 +18,7 @@ public class Booking extends AssertionConcern implements Entity<EntityId> {
 
     private Flight flightId;
 
-    Booking(EntityId id) {
+    public Booking(EntityId id) {
         notNull(id, "id");
         this.id = id;
     }
