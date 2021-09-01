@@ -9,4 +9,8 @@ public interface DataMapper<T extends Entity<ID>, ID, S extends Specification<T>
     T update(T entity);
     void delete(T entity);
     Class<T> getEntityClass();
+
+    default void register(DataMapperRegistry registry) {
+        registry.register(getEntityClass(), this);
+    }
 }

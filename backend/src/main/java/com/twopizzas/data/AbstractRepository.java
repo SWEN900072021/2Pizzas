@@ -3,6 +3,7 @@ package com.twopizzas.data;
 import java.util.Optional;
 
 public class AbstractRepository<T extends Entity<ID>, ID, S extends Specification<T>, U extends DataMapper<T, ID, S>>  implements Repository<T, ID> {
+
     protected final U dataMapper;
 
     public AbstractRepository(U dataMapper) {

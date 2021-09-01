@@ -72,6 +72,10 @@ public class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implem
     private Object handleUpdate(Object[] args) {
         T toSave = dataMapper.getEntityClass().cast(args[0]);
         notNull(toSave, "entity");
+        T inMapper = identityMapper.testAndGet(toSave);
+        if (inMapper != toSave) {
+            throw new DataConsistencyViolation(String.format("call to update entity %s %s with unknown object, entity already exists in identity mapper and objects are not the same", toSave.getClass().getName(), toSave.getId()));
+        }
 
         unitOfWork.registerDirty(toSave);
         return toSave;

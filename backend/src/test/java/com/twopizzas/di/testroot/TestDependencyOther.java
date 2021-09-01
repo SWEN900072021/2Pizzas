@@ -8,7 +8,7 @@ import com.twopizzas.di.Profile;
 @Component
 @Profile("test")
 @Primary
-public class TestDependencyOther {
+public class TestDependencyOther implements TestDependencyOtherInterface {
 
     @Autowired
     public TestDependencyOther() { }

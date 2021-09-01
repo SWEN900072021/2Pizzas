@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
+import java.util.List;
 
 public class ComponentLoaderTests {
 
@@ -91,11 +92,11 @@ public class ComponentLoaderTests {
         // THEN
         Assertions.assertNotNull(bean);
         Assertions.assertEquals(3, bean.getDependencies().size());
-        Assertions.assertEquals(TestDependency.class, bean.getDependencies().get(0).getClasz());
-        Assertions.assertEquals(TestDependencyOther.class, bean.getDependencies().get(1).getClasz());
+        Assertions.assertEquals(TestDependencyInterface.class, bean.getDependencies().get(0).getClasz());
+        Assertions.assertEquals(TestDependencyOtherInterface.class, bean.getDependencies().get(1).getClasz());
         Assertions.assertEquals(InterfaceComponent.class, bean.getDependencies().get(2).getClasz());
         Assertions.assertEquals(TestClientComponent.class.getDeclaredConstructor(
-                TestDependency.class, TestDependencyOther.class, InterfaceComponent.class),
+                        TestDependencyInterface.class, TestDependencyOtherInterface.class, InterfaceComponent.class),
                 bean.getConstructor());
     }
 
@@ -108,7 +109,7 @@ public class ComponentLoaderTests {
         // THEN
         Assertions.assertNotNull(bean);
         Assertions.assertEquals(3, bean.getDependencies().size());
-        Assertions.assertEquals(TestDependency.class, bean.getDependencies().get(0).getClasz());
+        Assertions.assertEquals(TestDependencyInterface.class, bean.getDependencies().get(0).getClasz());
         Assertions.assertTrue(bean.getDependencies().get(0) instanceof QualifiedBeanSpecification);
         Assertions.assertEquals("qualifier", ((QualifiedBeanSpecification) bean.getDependencies().get(0)).getQualifier());
     }
@@ -260,6 +261,18 @@ public class ComponentLoaderTests {
         ThreadLocalBeanProxy<ThreadLocalComponentSingleton> wrapped = (ThreadLocalBeanProxy<ThreadLocalComponentSingleton>) ((SingletonBeanProxy<ThreadLocalComponentSingleton>) bean).getWrapped();
         Assertions.assertNotNull(wrapped.getWrapped());
         Assertions.assertTrue(wrapped.getWrapped() instanceof BaseBean);
+    }
+
+    @Test
+    @DisplayName("GIVEN component interceptors in root WHEN discoverInterceptors invoked THEN returns list of interceptors")
+    void test20() {
+        // WHEN
+        List<ComponentConstructionInterceptor> interceptors = componentLoader.discoverInterceptors();
+
+        // THEN
+        Assertions.assertNotNull(interceptors);
+        Assertions.assertEquals(1, interceptors.size());
+        Assertions.assertTrue(interceptors.get(0) instanceof StubConstructionInterceptor);
     }
 
 }

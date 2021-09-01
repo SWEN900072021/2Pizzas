@@ -68,7 +68,7 @@ public class ApplicationContextTests {
     void test4() {
         // GIVEN
         Object component = new Object();
-        Mockito.when(componentManager.getComponent(Mockito.any())).thenReturn(component);
+        Mockito.when(componentManager.getComponent(Mockito.isA(ComponentSpecification.class))).thenReturn(component);
 
         // WHEN
         Class<?> claz = component.getClass();
@@ -90,7 +90,7 @@ public class ApplicationContextTests {
     void test5() {
         // GIVEN
         Object component = new Object();
-        Mockito.when(componentManager.getComponent(Mockito.any())).thenReturn(component);
+        Mockito.when(componentManager.getComponent(Mockito.isA(ComponentSpecification.class))).thenReturn(component);
 
         // WHEN
         Class<?> claz = component.getClass();

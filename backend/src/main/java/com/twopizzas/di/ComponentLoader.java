@@ -5,9 +5,7 @@ import org.reflections.scanners.*;
 import org.reflections.util.ConfigurationBuilder;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,6 +13,7 @@ public class ComponentLoader implements BeanLoader {
     private final static Class<? extends Annotation> constructorTargetAnnotation = Autowired.class;
     private final String root;
     private final Reflections reflections;
+    private List<ComponentConstructionInterceptor> constructionInterceptors;
 
     ComponentLoader(String root) {
         this.root = root;
@@ -30,8 +29,30 @@ public class ComponentLoader implements BeanLoader {
 
     @Override
     public Collection<Bean<?>> load() {
+        constructionInterceptors = discoverInterceptors();
         Collection<Class<?>> components = scanAllComponents();
         return components.stream().map(this::loadBean).collect(Collectors.toSet());
+    }
+
+    // package private for testing
+    List<ComponentConstructionInterceptor> discoverInterceptors() {
+        return reflections.getSubTypesOf(ComponentConstructionInterceptor.class).stream()
+                .filter(this::isConcreteClass)
+                .map(this::constructInterceptor)
+                .collect(Collectors.toList());
+    }
+
+    private ComponentConstructionInterceptor constructInterceptor(Class<? extends ComponentConstructionInterceptor> clasz) {
+        try {
+            Constructor<? extends ComponentConstructionInterceptor> constructor = clasz.getDeclaredConstructor();
+            return constructor.newInstance();
+        } catch (NoSuchMethodException e) {
+            throw new ApplicationContextException(String.format("failed to construct instance of %s %s, %s does not have a default constructor, component interceptors must have a default no argument constructor: %s",
+                    ComponentConstructionInterceptor.class.getName(), clasz.getName(), clasz.getName(), e.getMessage()), e);
+        } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
+            throw new ApplicationContextException(String.format("failed to construct instance of %s %s, invocation of default constructor failed: %s",
+                    ComponentConstructionInterceptor.class.getName(), clasz.getName(), e.getMessage()), e);
+        }
     }
 
     // package private for testing
@@ -41,6 +62,14 @@ public class ComponentLoader implements BeanLoader {
         boolean primary = isPrimary(clasz);
         Constructor<T> constructor = getAutowiredConstructor(clasz);
         List<ComponentSpecification<?>> dependencies = getDependencies(constructor);
+
+        dependencies.forEach(d -> {
+            if (!d.getClasz().isInterface()) {
+                throw new LoadBeanException(clasz, String.format(
+                        "dependency %s for component %s is not an interface, component dependencies must be interfaces", d.getClasz().getName(), clasz.getName()));
+            }
+        });
+
         Method postConstructor = getPostConstructor(clasz);
         boolean threadLocal = isThreadLocal(clasz);
 
@@ -51,7 +80,8 @@ public class ComponentLoader implements BeanLoader {
                 primary,
                 constructor,
                 dependencies,
-                postConstructor);
+                postConstructor,
+                constructionInterceptors);
 
         if (threadLocal) {
             baseBean = new ThreadLocalBeanProxy<>(baseBean);
@@ -73,15 +103,16 @@ public class ComponentLoader implements BeanLoader {
 
     private List<ComponentSpecification<?>>  getDependencies(Constructor<?> constructor) {
         List<ComponentSpecification<?>> dependencies = new ArrayList<>();
-        for (Class<?> parameterType : constructor.getParameterTypes()) {
+        for (Parameter parameterType : constructor.getParameters()) {
             dependencies.add(scanParameter(parameterType));
         }
         return dependencies;
     }
 
-    private <T> ComponentSpecification<T> scanParameter(Class<T> clasz) {
-        BaseBeanSpecification<T> specification = new BaseBeanSpecification<>(clasz);
-        String qualifier = getQualifier(clasz);
+
+    private ComponentSpecification<?> scanParameter(Parameter parameter) {
+        BaseBeanSpecification<?> specification = new BaseBeanSpecification<>(parameter.getType());
+        String qualifier = getQualifier(parameter);
         if (qualifier != null) {
             return new QualifiedBeanSpecification<>(qualifier, specification);
         }
@@ -151,6 +182,14 @@ public class ComponentLoader implements BeanLoader {
 
     private String getQualifier(Class<?> clasz) {
         Component annotation = clasz.getAnnotation(Component.class);
+        if (annotation != null && !annotation.value().trim().equals("")) {
+            return annotation.value();
+        }
+        return null;
+    }
+
+    private String getQualifier(Parameter parameter) {
+        Qualifier annotation = parameter.getAnnotation(Qualifier.class);
         if (annotation != null && !annotation.value().trim().equals("")) {
             return annotation.value();
         }

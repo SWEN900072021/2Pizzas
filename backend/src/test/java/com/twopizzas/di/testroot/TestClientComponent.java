@@ -5,22 +5,22 @@ import com.twopizzas.di.*;
 @Component
 public class TestClientComponent {
 
-    private final TestDependency testDependency;
-    private final TestDependencyOther testDependencyOther;
+    private final TestDependencyInterface testDependency;
+    private final TestDependencyOtherInterface testDependencyOther;
     private final InterfaceComponent interfaceComponent;
 
     @Autowired
-    public TestClientComponent(@Qualifier("qualifier") TestDependency testDependency, TestDependencyOther testDependencyOther, InterfaceComponent interfaceComponent) {
+    public TestClientComponent(@Qualifier("qualifier") TestDependencyInterface testDependency, TestDependencyOtherInterface testDependencyOther, InterfaceComponent interfaceComponent) {
         this.testDependency = testDependency;
         this.testDependencyOther = testDependencyOther;
         this.interfaceComponent = interfaceComponent;
     }
 
-    public TestDependency getTestDependency() {
+    public TestDependencyInterface getTestDependency() {
         return testDependency;
     }
 
-    public TestDependencyOther getTestDependencyOther() {
+    public TestDependencyOtherInterface getTestDependencyOther() {
         return testDependencyOther;
     }
 

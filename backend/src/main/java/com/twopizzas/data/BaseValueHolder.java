@@ -2,7 +2,7 @@ package com.twopizzas.data;
 
 public class BaseValueHolder<T> implements ValueHolder<T> {
 
-    private T value;
+    private final T value;
 
     public BaseValueHolder(T value) {
         this.value = value;

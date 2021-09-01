@@ -18,6 +18,7 @@ class LazyValueHolderProxyTests {
         LazyValueHolderProxy.ValueLoader<String> loader = Mockito.mock(StubLoader.class);
         StubHolder holder = Mockito.mock(StubHolder.class);
         Mockito.when(holder.get()).thenReturn(testValue);
+        Mockito.when(holder.isPresent()).thenReturn(true);
         Mockito.when(loader.load()).thenReturn(holder);
 
         LazyValueHolderProxy<String> proxy = new LazyValueHolderProxy<>(loader);
@@ -77,7 +78,36 @@ class LazyValueHolderProxyTests {
         Assertions.assertFalse(isPresent);
     }
 
-    static class StubHolder implements ValueHolder<String> {
+    @Test
+    @DisplayName("GIVEN proxy WHEN any other method invoked prior to get THEN loads wrapped")
+    void test4() {
+        // GIVEN
+        String testValue = "stub";
+        LazyValueHolderProxy.ValueLoader<String> loader = Mockito.mock(StubLoader.class);
+        StubHolder holder = Mockito.mock(StubHolder.class);
+        Object returnVal = new Object();
+        Mockito.when(holder.someOtherMethod()).thenReturn(returnVal);
+        Mockito.when(holder.get()).thenReturn(testValue);
+        Mockito.when(loader.load()).thenReturn(holder);
+
+        LazyValueHolderProxy<String> proxy = new LazyValueHolderProxy<>(loader);
+        ExtendedInterface<String> wrapped = (ExtendedInterface<String>) Proxy.newProxyInstance(
+                LazyValueHolderProxy.class.getClassLoader(), new Class[]{ExtendedInterface.class}, proxy);
+
+        // WHEN
+        Object result = wrapped.someOtherMethod();
+
+        // THEN
+        Mockito.verify(loader).load();
+        Mockito.verify(holder).someOtherMethod();
+        Assertions.assertSame(result, returnVal);
+    }
+
+    static interface ExtendedInterface<T> extends ValueHolder<T> {
+        Object someOtherMethod();
+    }
+
+    static class StubHolder implements ExtendedInterface<String> {
 
         private final String value;
 
@@ -94,6 +124,11 @@ class LazyValueHolderProxyTests {
         @Override
         public boolean isPresent() {
             return value != null;
+        }
+
+        @Override
+        public Object someOtherMethod() {
+            return null;
         }
     }
 

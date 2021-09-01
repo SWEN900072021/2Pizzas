@@ -17,6 +17,7 @@ class BaseBean<T> extends AssertionConcern implements Bean<T> {
     private final String qualifier;
     private final List<String> profiles;
     private final boolean primary;
+    private final List<ComponentConstructionInterceptor> interceptors;
 
     BaseBean(Class<T> clasz,
              String qualifier,
@@ -24,7 +25,8 @@ class BaseBean<T> extends AssertionConcern implements Bean<T> {
              boolean primary,
              Constructor<T> constructor,
              List<ComponentSpecification<?>> dependencies,
-             Method postConstruct)
+             Method postConstruct,
+             List<ComponentConstructionInterceptor> interceptors)
     {
         this.clasz = clasz;
         this.qualifier = qualifier;
@@ -33,6 +35,7 @@ class BaseBean<T> extends AssertionConcern implements Bean<T> {
         this.dependencies = dependencies;
         this.postConstruct = postConstruct;
         this.primary = primary;
+        this.interceptors = interceptors;
     }
 
     @Override
@@ -72,10 +75,10 @@ class BaseBean<T> extends AssertionConcern implements Bean<T> {
     public T construct(ComponentManager componentManager) {
         List<Object> dependencyInstances = dependencies.stream().map(componentManager::getBean)
                 .map(b -> b.construct(componentManager)).collect(Collectors.toList());
-        return build(dependencyInstances);
+        return build(dependencyInstances, componentManager);
     }
 
-    protected T build(List<Object> dependencyBeans) {
+    protected T build(List<Object> dependencyBeans, ComponentManager componentManager) {
         T instance;
         try {
             constructor.setAccessible(true);
@@ -102,6 +105,11 @@ class BaseBean<T> extends AssertionConcern implements Bean<T> {
                 );
             }
         }
+
+        for (ComponentConstructionInterceptor interceptor : interceptors) {
+            instance = interceptor.intercept(instance, componentManager);
+        }
+
         return instance;
     }
 }

@@ -1,6 +1,5 @@
 package com.twopizzas.di;
 
-public interface ComponentConstructionInterceptor<T> {
-    Class<T> interceptComponentsOfClass();
-    T intercept(T component);
+public interface ComponentConstructionInterceptor {
+    <T> T intercept(T component, ComponentManager componentManager);
 }

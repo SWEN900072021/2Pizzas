@@ -1,8 +1,11 @@
 package com.twopizzas.data;
 
+import com.twopizzas.di.Component;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class DataMapperRegistryImpl implements DataMapperRegistry {
 
     private final Map<Class<? extends Entity<?>>, DataMapper<? extends Entity<?>, ?, ?>> mappers = new HashMap<>();
@@ -16,7 +19,7 @@ public class DataMapperRegistryImpl implements DataMapperRegistry {
     }
 
     @Override
-    public <T extends Entity<ID>, ID, U extends DataMapper<T, ID, S>, S extends Specification<T>> void register(Class<T> clasz, U dataMapper) {
+    public <T extends Entity<?>> void register(Class<T> clasz, DataMapper<T, ?, ? extends Specification<T>> dataMapper) {
         if (mappers.containsKey(clasz)) {
             throw new MapperRegistrationException(clasz, String.format("mapper %s already registered for class %s", mappers.get(clasz).getEntityClass(), clasz.getName()));
         }

@@ -4,7 +4,7 @@ import com.twopizzas.di.*;
 
 @Component("qualifier")
 @Scope(ComponentScope.PROTOTYPE)
-public class TestDependency {
+public class TestDependency implements TestDependencyInterface {
 
     private boolean initialized;
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-class ComponentManager {
+public class ComponentManager {
 
     private final Collection<Bean<?>> store = new ArrayList<>();;
     private final BeanResolver beanResolver;
@@ -29,6 +29,10 @@ class ComponentManager {
 
     <T> T getComponent(ComponentSpecification<T> specification) throws ApplicationContextException {
         return getBean(specification).construct(this);
+    }
+
+    public <T> T getComponent(Class<T> clasz) throws ApplicationContextException {
+        return getBean(new BaseBeanSpecification<>(clasz)).construct(this);
     }
 
     <T> Bean<T> getBean(ComponentSpecification<T> specification) {

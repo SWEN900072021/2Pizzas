@@ -5,10 +5,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class BaseBeanTests {
 
@@ -39,6 +41,10 @@ public class BaseBeanTests {
         Mockito.doReturn(interfaceComponentBean).when(componentManager)
                 .getBean(Mockito.argThat(a -> a.getClasz().equals(InterfaceComponent.class)));
 
+        ComponentConstructionInterceptor interceptor = Mockito.mock(ComponentConstructionInterceptor.class);
+        Mockito.when(interceptor.intercept(Mockito.any(), Mockito.any())).thenAnswer(arg -> arg.getArgument(0));
+        List<ComponentConstructionInterceptor> interceptors = Collections.singletonList(interceptor);
+
         BaseBean<TestClientComponent> bean = new BaseBean<>(
                 TestClientComponent.class,
                 null,
@@ -46,7 +52,8 @@ public class BaseBeanTests {
                 false,
                 (Constructor<TestClientComponent>) TestClientComponent.class.getDeclaredConstructors()[0],
                 Arrays.asList(testDependencyComponentSpecification, testDependencyOtherComponentSpecification, interfaceComponentComponentSpecification),
-                null
+                null,
+                interceptors
 
         );
 
@@ -57,6 +64,7 @@ public class BaseBeanTests {
         Mockito.verify(dependencyBean).construct(Mockito.eq(componentManager));
         Mockito.verify(dependencyOtherBean).construct(Mockito.eq(componentManager));
         Mockito.verify(interfaceComponentBean).construct(Mockito.eq(componentManager));
+        Mockito.verify(interceptor).intercept(Mockito.refEq(instance), Mockito.eq(componentManager));
         Assertions.assertNotNull(instance);
         Assertions.assertEquals(testDependency, instance.getTestDependency());
         Assertions.assertEquals(testDependencyOther, instance.getTestDependencyOther());
@@ -69,6 +77,10 @@ public class BaseBeanTests {
         // GIVEN
         ComponentManager componentManager = Mockito.mock(ComponentManager.class);
 
+        ComponentConstructionInterceptor interceptor = Mockito.mock(ComponentConstructionInterceptor.class);
+        Mockito.when(interceptor.intercept(Mockito.any(), Mockito.any())).thenAnswer(arg -> arg.getArgument(0));
+        List<ComponentConstructionInterceptor> interceptors = Collections.singletonList(interceptor);
+
         BaseBean<TestDependency> bean = new BaseBean<>(
                 TestDependency.class,
                 null,
@@ -76,7 +88,8 @@ public class BaseBeanTests {
                 false,
                 (Constructor<TestDependency>) TestDependency.class.getDeclaredConstructors()[0],
                 Collections.emptyList(),
-                TestDependency.class.getDeclaredMethod("init")
+                TestDependency.class.getDeclaredMethod("init"),
+                interceptors
         );
 
         // WHEN
@@ -114,6 +127,10 @@ public class BaseBeanTests {
         Mockito.doReturn(interfaceComponentBean).when(componentManager)
                 .getBean(Mockito.argThat(a -> a.getClasz().equals(InterfaceComponent.class)));
 
+        ComponentConstructionInterceptor interceptor = Mockito.mock(ComponentConstructionInterceptor.class);
+        Mockito.when(interceptor.intercept(Mockito.any(), Mockito.any())).thenAnswer(arg -> arg.getArgument(0));
+        List<ComponentConstructionInterceptor> interceptors = Collections.singletonList(interceptor);
+
         BaseBean<TestClientComponent> bean = new BaseBean<>(
                 TestClientComponent.class,
                 null,
@@ -121,7 +138,8 @@ public class BaseBeanTests {
                 false,
                 (Constructor<TestClientComponent>) TestClientComponent.class.getDeclaredConstructors()[0],
                 Arrays.asList(testDependencyComponentSpecification, testDependencyOtherComponentSpecification, interfaceComponentComponentSpecification),
-                null
+                null,
+                interceptors
         );
 
         // WHEN
