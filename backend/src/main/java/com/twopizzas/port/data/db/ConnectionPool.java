@@ -1,34 +1,24 @@
 package com.twopizzas.port.data.db;
 
 import com.twopizzas.data.DataSource;
+import com.twopizzas.di.ThreadLocalComponent;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectionPool implements DataSource {
+@ThreadLocalComponent
+public class ConnectionPool implements DataSource, SqlConnectionPool {
     private final String user = "";
     private final String password = "";
     private final String host = "";
     private final String port = "";
     private final String database = "";
-    private final String url =
-            "postgres://" +
-                user + ":" + password +
-                "@" + host + ":" + port
-                + "/" + database;
+    private final String url = String.format("postgres://%s:%s@%s:%s/%s", user, password, host, port, database);
 
-    private static ConnectionPool instance = null;
     private static Connection currentTransaction = null;
 
-//    public static ConnectionPool getInstance() {
-//        if (instance == null) {
-//            instance = new ConnectionPool();
-//        }
-//        return instance;
-//    }
-
-    public static Connection getCurrentTransaction() {
+    public Connection getCurrentTransaction() {
         if (currentTransaction == null) {
             throw new ConnectionPoolTransactionException("no current transaction!!!");
         }

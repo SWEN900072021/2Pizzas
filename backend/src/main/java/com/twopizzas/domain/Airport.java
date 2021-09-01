@@ -3,17 +3,23 @@ package com.twopizzas.domain;
 import com.twopizzas.data.Entity;
 import com.twopizzas.util.AssertionConcern;
 
-public class Airport extends AssertionConcern implements Entity<EntityId> {
-    private final EntityId id;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
+public class Airport extends AssertionConcern implements Entity<EntityId> {
+
+    private final EntityId id;
     private String code;
     private String name;
     private String location;
-    private float utcOffset;
+    private ZoneOffset utcOffset;
 
-    public Airport(EntityId id) {
-        notNull(id, "id");
-        this.id = id;
+    public Airport(EntityId id, String code, String name, String location, ZoneOffset utcOffset) {
+        this.id = notNull(id, "id");
+        this.code = notNullAndNotBlank(code, "code");
+        this.name = notNullAndNotBlank(name, "name");
+        this.location = notNullAndNotBlank(location, "location");
+        this.utcOffset = notNull(utcOffset, "utcOffset");
     }
 
     @Override
@@ -27,5 +33,5 @@ public class Airport extends AssertionConcern implements Entity<EntityId> {
 
     public String getLocation() { return location; }
 
-    public float getUtcOffset() { return utcOffset; }
+    public ZoneOffset getUtcOffset() { return utcOffset; }
 }

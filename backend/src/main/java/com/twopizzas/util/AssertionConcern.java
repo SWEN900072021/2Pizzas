@@ -20,6 +20,10 @@ public abstract class AssertionConcern {
         return value;
     }
 
+    protected String notNullAndNotBlank(String value, String name) {
+        return notBlank(notNull(value, name), name);
+    }
+
     protected <U, T extends Collection<U>> T notEmpty(T value, String name) {
         if (value != null && value.isEmpty()) {
             throw new ValueViolation(String.format("%s must not be empty", name));

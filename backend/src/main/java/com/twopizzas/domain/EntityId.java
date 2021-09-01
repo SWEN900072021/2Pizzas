@@ -1,6 +1,5 @@
 package com.twopizzas.domain;
 
-import com.twopizzas.data.Entity;
 import com.twopizzas.util.AssertionConcern;
 
 import java.util.Objects;
