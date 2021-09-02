@@ -10,6 +10,7 @@ import com.twopizzas.port.data.db.SqlConnectionPool;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ class AirportMapperImpl extends AbstractSqlDataMapper<Airport, EntityId, Airport
                 entity.getCode(),
                 entity.getName(),
                 entity.getLocation(),
-                entity.getUtcOffset().getId(),
+                entity.getUtcOffset().normalized(),
                 entity.getId().toString()
         );
     }
@@ -100,7 +101,7 @@ class AirportMapperImpl extends AbstractSqlDataMapper<Airport, EntityId, Airport
                         resultSet.getObject(COLUMN_CODE, String.class),
                         resultSet.getObject(COLUMN_NAME, String.class),
                         resultSet.getObject(COLUMN_LOCATION, String.class),
-                        ZoneOffset.of(resultSet.getObject(COLUMN_ID, String.class))
+                        ZoneId.of(resultSet.getObject(COLUMN_UTC_OFFSET, String.class))
                 ));
             }
         } catch (SQLException e) {
