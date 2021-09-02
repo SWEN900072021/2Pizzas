@@ -16,7 +16,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractSqlDataMapper<T extends Entity<ID>, ID extends EntityId, S extends AbstractSqlSpecification<T>> implements DataMapper<T, ID, S> {
+public abstract class AbstractSqlDataMapper<T extends Entity<ID>, ID extends EntityId, S extends AbstractSqlSpecification<T>> implements SqlDataMapper<T, ID>, DataMapper<T, ID, S> {
 
     protected final SqlConnectionPool connectionPool;
 
@@ -24,9 +24,7 @@ public abstract class AbstractSqlDataMapper<T extends Entity<ID>, ID extends Ent
         this.connectionPool = connectionPool;
     }
 
-    public abstract List<T> mapResultSet(ResultSet resultSet);
-
-    public List<T> readAll(AbstractSqlSpecification<T> specification) {
+    public List<T> readAll(S specification) {
         return specification.execute();
     }
 

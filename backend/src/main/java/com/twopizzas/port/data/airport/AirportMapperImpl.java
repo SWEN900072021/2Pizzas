@@ -11,19 +11,18 @@ import com.twopizzas.port.data.db.SqlConnectionPool;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 class AirportMapperImpl extends AbstractSqlDataMapper<Airport, EntityId, AirportSpecification> implements AirportMapper {
 
-    private static final String TABLE_AIRPORT = "airport";
-    private static final String COLUMN_ID = "id";
-    private static final String COLUMN_CODE = "code";
-    private static final String COLUMN_NAME = "name";
-    private static final String COLUMN_LOCATION = "location";
-    private static final String COLUMN_UTC_OFFSET = "utcOffset";
+    static final String TABLE_AIRPORT = "airport";
+    static final String COLUMN_ID = "id";
+    static final String COLUMN_CODE = "code";
+    static final String COLUMN_NAME = "name";
+    static final String COLUMN_LOCATION = "location";
+    static final String COLUMN_UTC_OFFSET = "utcOffset";
 
     private static final String create =
             "INSERT INTO " + TABLE_AIRPORT + "(" + COLUMN_ID + " , " + COLUMN_CODE + ", " + COLUMN_NAME + ", " + COLUMN_LOCATION + ", " + COLUMN_UTC_OFFSET + ")" +
@@ -67,11 +66,6 @@ class AirportMapperImpl extends AbstractSqlDataMapper<Airport, EntityId, Airport
         }
         // maybe throw an error if there are more than one
         return airports.get(0);
-    }
-
-    @Override
-    public List<Airport> readAll(AirportSpecification specification) {
-        return null;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.twopizzas.port.data.airport;
 
+import com.twopizzas.data.Specification;
 import com.twopizzas.domain.Airport;
 import com.twopizzas.port.data.db.ConnectionPool;
 import org.junit.jupiter.api.*;
@@ -7,6 +8,8 @@ import org.junit.jupiter.api.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.ZoneId;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AirportMapperImplTests {
 
@@ -49,5 +52,32 @@ public class AirportMapperImplTests {
         Assertions.assertEquals(entity.getName(), persisted.getName());
         Assertions.assertEquals(entity.getLocation(), persisted.getLocation());
         Assertions.assertEquals(entity.getUtcOffset(), persisted.getUtcOffset());
+    }
+
+    @Test
+    @DisplayName("GIVEN two airports in database WHEN execute AllAirportsSpecification THEN airports returned")
+    void test2() {
+        // GIVEN
+        Airport entity = new Airport(
+                "COD",  "New Test Airport", "Berlin", ZoneId.of("Asia/Calcutta")
+        );
+
+        Airport entitySecond = new Airport(
+                "COD",  "New Test Airport", "Moon", ZoneId.of("Asia/Calcutta")
+        );
+
+        mapper.create(entity);
+        mapper.create(entitySecond);
+
+        // WHEN
+        AllAirportsSpecification specification = new AllAirportsSpecification(mapper);
+        specification.setLocation("Berlin");
+        List<Airport> all = mapper.readAll(specification);
+
+        // THEN
+        Assertions.assertNotNull(all);
+        Assertions.assertEquals(2, all.size());
+        Assertions.assertTrue(all.stream().map(Airport::getId).collect(Collectors.toList()).contains(entity.getId()));
+        Assertions.assertTrue(all.stream().map(Airport::getId).collect(Collectors.toList()).contains(entitySecond.getId()));
     }
 }
