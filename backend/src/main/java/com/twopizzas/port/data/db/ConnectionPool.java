@@ -2,6 +2,7 @@ package com.twopizzas.port.data.db;
 
 import com.twopizzas.data.DataSource;
 import com.twopizzas.di.ThreadLocalComponent;
+import org.postgresql.Driver;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,13 +11,25 @@ import java.sql.SQLException;
 @ThreadLocalComponent
 public class ConnectionPool implements DataSource, SqlConnectionPool {
 
+    private final String user;
+    private final String password;
     private final String url;
 
-    ConnectionPool(String user, String password, String host, String port, String database) {
-        url = String.format("postgres://%s:%s@%s:%s/%s", user, password, host, port, database);
+    static {
+        try {
+            DriverManager.registerDriver(new Driver());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public ConnectionPool(String url) {
+    ConnectionPool(String user, String password, String host, String port, String database) {
+        this(String.format("jdbc:postgresql://%s:%s/%s", host, port, database), user, password);
+    }
+
+    public ConnectionPool(String url, String user, String password) {
+        this.password = password;
+        this.user = user;
         this.url = url;
     }
 
@@ -35,7 +48,7 @@ public class ConnectionPool implements DataSource, SqlConnectionPool {
             throw new ConnectionPoolTransactionException("call to start new transaction but a transaction is already in progress");
         }
         try {
-            currentTransaction = DriverManager.getConnection(url);
+            currentTransaction = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
             throw new ConnectionPoolTransactionException(String.format("failed to open connection to database, error: %s", e.getMessage()));
         }
