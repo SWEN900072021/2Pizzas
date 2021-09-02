@@ -1,11 +1,9 @@
 package com.twopizzas.port.data.airport;
 
-import com.twopizzas.data.Specification;
 import com.twopizzas.domain.Airport;
-import com.twopizzas.port.data.db.ConnectionPool;
+import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import org.junit.jupiter.api.*;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.List;
@@ -14,7 +12,7 @@ import java.util.stream.Collectors;
 public class AirportMapperImplTests {
 
     private AirportMapperImpl mapper;
-    private ConnectionPool connectionPool = new ConnectionPool(
+    private ConnectionPoolImpl connectionPool = new ConnectionPoolImpl(
             "jdbc:postgresql://ec2-35-153-114-74.compute-1.amazonaws.com:5432/dac5q82fjaj3t6",
             "imvxeuqwkqsffn",
             "f4ed9811c5e77c79fc4ac9bae81de7b24ede0452ea454a656ba916c17a347f29"
@@ -70,8 +68,7 @@ public class AirportMapperImplTests {
         mapper.create(entitySecond);
 
         // WHEN
-        AllAirportsSpecification specification = new AllAirportsSpecification(mapper);
-        specification.setLocation("Berlin");
+        AllAirportsSpecification specification = new AllAirportsSpecification();
         List<Airport> all = mapper.readAll(specification);
 
         // THEN

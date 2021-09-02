@@ -6,7 +6,6 @@ import com.twopizzas.di.Component;
 import com.twopizzas.domain.Booking;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.db.ConnectionPool;
-import com.twopizzas.port.data.db.SqlConnectionPool;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -28,10 +27,10 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
         "DELETE FROM booking " +
         " WHERE id = ?;";
 
-    private SqlConnectionPool connectionPool;
+    private ConnectionPool connectionPool;
 
     @Autowired
-    BookingMapper(SqlConnectionPool connectionPool) {
+    BookingMapper(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
 

@@ -2,6 +2,7 @@ package com.twopizzas.port.data.booking;
 
 import com.twopizzas.domain.Booking;
 import com.twopizzas.domain.EntityId;
+import com.twopizzas.port.data.db.ConnectionPool;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class FlightBookingsSpecification implements BookingSpecification {
     }
 
     @Override
-    public List<Booking> execute() {
+    public List<Booking> execute(ConnectionPool context) {
         return null;
     }
 }

@@ -86,7 +86,7 @@ public class UnitOfWorkImpl implements UnitOfWork {
         }
     }
 
-    private <T extends Entity<ID>, ID> DataMapper<T, ID, Specification<T>> getMapper(T entity) {
+    private <T extends Entity<ID>, ID> DataMapper<T, ID, Specification<T, ?>> getMapper(T entity) {
         return dataMapperRegistry.getForClass(entity.getClass());
     }
 

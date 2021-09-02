@@ -19,7 +19,7 @@ public class DataMapperConstructionInterceptor implements ComponentConstructionI
 
         fetchComponents(componentManager);
 
-        DataMapper<? extends Entity<?>, ?, ? extends Specification<?>> mapper = (DataMapper<? extends Entity<?>, ?, ? extends Specification<?>>) component;
+        DataMapper<? extends Entity<?>, ?, ? extends Specification<?, ?>> mapper = (DataMapper<? extends Entity<?>, ?, ? extends Specification<?, ?>>) component;
         mapper.register(registry);
 
         DataProxy<? extends Entity<?>, ?> proxy = new DataProxy<>(mapper, identityMapper, unitOfWork);
