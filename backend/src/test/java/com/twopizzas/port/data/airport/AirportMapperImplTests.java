@@ -2,10 +2,7 @@ package com.twopizzas.port.data.airport;
 
 import com.twopizzas.domain.Airport;
 import com.twopizzas.port.data.db.ConnectionPool;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.time.ZoneId;
 
@@ -32,9 +29,19 @@ public class AirportMapperImplTests {
     void test() {
         // GIVEN
         Airport entity = new Airport(
-                "COD",  "New Test Airport", "Berlin", ZoneId.of()
+                "COD",  "New Test Airport", "Berlin", ZoneId.of("Asia/Calcutta")
         );
 
-        mapper.create();
+        // WHEN
+        mapper.create(entity);
+
+        // THEN
+        Airport persisted = mapper.read(entity.getId());
+        Assertions.assertNotNull(persisted);
+        Assertions.assertEquals(entity.getId(), persisted.getId());
+        Assertions.assertEquals(entity.getCode(), persisted.getCode());
+        Assertions.assertEquals(entity.getName(), persisted.getName());
+        Assertions.assertEquals(entity.getLocation(), persisted.getLocation());
+        Assertions.assertEquals(entity.getUtcOffset(), persisted.getUtcOffset());
     }
 }
