@@ -13,6 +13,14 @@ public class EntityId extends AssertionConcern {
         this.value = value;
     }
 
+    public static EntityId of(UUID value) {
+        return new EntityId(value);
+    }
+
+    public static EntityId of(String value) {
+        return new EntityId(UUID.fromString(value));
+    }
+
     public static EntityId nextId() {
         return new EntityId(UUID.randomUUID());
     }

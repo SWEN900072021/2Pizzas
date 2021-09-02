@@ -9,12 +9,16 @@ import java.sql.SQLException;
 
 @ThreadLocalComponent
 public class ConnectionPool implements DataSource, SqlConnectionPool {
-    private final String user = "";
-    private final String password = "";
-    private final String host = "";
-    private final String port = "";
-    private final String database = "";
-    private final String url = String.format("postgres://%s:%s@%s:%s/%s", user, password, host, port, database);
+
+    private final String url;
+
+    ConnectionPool(String user, String password, String host, String port, String database) {
+        url = String.format("postgres://%s:%s@%s:%s/%s", user, password, host, port, database);
+    }
+
+    public ConnectionPool(String url) {
+        this.url = url;
+    }
 
     private static Connection currentTransaction = null;
 
@@ -39,10 +43,29 @@ public class ConnectionPool implements DataSource, SqlConnectionPool {
 
     @Override
     public void commitTransaction() {
+        if (currentTransaction == null) {
+            throw new ConnectionPoolTransactionException("call to commit transaction but a transaction has not been started");
+        }
         try {
-            getCurrentTransaction().commit();
+            currentTransaction.commit();
+            currentTransaction.close();
+            currentTransaction = null;
         } catch (SQLException e) {
             throw new ConnectionPoolTransactionException(String.format("failed to commit changes to database, error: %s", e.getMessage()));
+        }
+    }
+
+    @Override
+    public void rollbackTransaction() {
+        if (currentTransaction == null) {
+            throw new ConnectionPoolTransactionException("call to rollback transaction but a transaction has not been started");
+        }
+        try {
+            currentTransaction.rollback();
+            currentTransaction.close();
+            currentTransaction = null;
+        } catch (SQLException e) {
+            throw new ConnectionPoolTransactionException(String.format("failed to rollback changes to database, error: %s", e.getMessage()));
         }
     }
 

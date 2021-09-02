@@ -5,6 +5,7 @@ import com.twopizzas.util.AssertionConcern;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,7 +75,11 @@ class BaseBean<T> extends AssertionConcern implements Bean<T> {
     @Override
     public T construct(ComponentManager componentManager) {
         List<Object> dependencyInstances = dependencies.stream().map(componentManager::getBean)
-                .map(b -> b.construct(componentManager)).collect(Collectors.toList());
+                .map(b -> {
+                    // lazy load deps to avoid cycles
+                    LazyComponentProxy<?> lazyComponentProxy = new LazyComponentProxy<>(componentManager, b);
+                    return Proxy.newProxyInstance(b.getClasz().getClassLoader(), b.getClasz().getInterfaces(), lazyComponentProxy);
+                }).collect(Collectors.toList());
         return build(dependencyInstances, componentManager);
     }
 

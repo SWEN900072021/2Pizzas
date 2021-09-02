@@ -38,6 +38,13 @@ public abstract class AssertionConcern {
         return value;
     }
 
+    protected String max(String value, long max, String name) {
+        if (value.length() > max) {
+            throw new ValueViolation(String.format("length of %s must not be greater than %s", name, max));
+        }
+        return value;
+    }
+
     protected int max(int value, long max, String name) {
         if (value > max) {
             throw new ValueViolation(String.format("%s must not be greater than %s", name, max));

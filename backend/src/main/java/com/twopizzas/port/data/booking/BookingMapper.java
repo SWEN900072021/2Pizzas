@@ -36,7 +36,7 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
     }
 
     @Override
-    public Booking create(Booking entity) {
+    public void create(Booking entity) {
         PreparedStatement createStatement = null;
 
         try {
@@ -46,9 +46,6 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
 
         } catch (SQLException e) {
         }
-
-        // change this
-        return entity;
     }
 
     @Override
@@ -62,7 +59,7 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
     }
 
     @Override
-    public Booking update(Booking entity) {
+    public void update(Booking entity) {
         PreparedStatement updateStatement = null;
 
         try {
@@ -73,8 +70,6 @@ public class BookingMapper implements DataMapper<Booking, EntityId, BookingSpeci
 
         }
 
-        // change this
-        return  entity;
     }
 
     @Override
