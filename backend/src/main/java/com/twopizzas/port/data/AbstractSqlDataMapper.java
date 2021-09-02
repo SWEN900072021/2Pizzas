@@ -3,6 +3,7 @@ package com.twopizzas.port.data;
 import com.twopizzas.data.DataMapper;
 import com.twopizzas.data.Entity;
 import com.twopizzas.data.Specification;
+import com.twopizzas.domain.Airport;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.db.SqlConnectionPool;
@@ -11,13 +12,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLType;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 
-public abstract class AbstractSqlDataMapper<T extends Entity<ID>, ID extends EntityId, S extends Specification<T>> implements DataMapper<T, ID, S> {
+public abstract class AbstractSqlDataMapper<T extends Entity<ID>, ID extends EntityId, S extends AbstractSqlSpecification<T>> implements DataMapper<T, ID, S> {
 
     protected final SqlConnectionPool connectionPool;
 
     protected AbstractSqlDataMapper(SqlConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
+    }
+
+    public abstract List<T> mapResultSet(ResultSet resultSet);
+
+    public List<T> readAll(AbstractSqlSpecification<T> specification) {
+        return specification.execute();
     }
 
     protected void doExecute(String statement, Object... objects) {
@@ -31,7 +41,7 @@ public abstract class AbstractSqlDataMapper<T extends Entity<ID>, ID extends Ent
         }
     }
 
-    protected ResultSet doQuery(String statement, Object... objects) {
+    public ResultSet doQuery(String statement, Object... objects) {
         try {
             return prepareStatement(statement, objects).executeQuery();
         } catch (SQLException e) {

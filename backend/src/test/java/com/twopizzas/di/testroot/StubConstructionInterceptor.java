@@ -6,6 +6,6 @@ import com.twopizzas.di.ComponentManager;
 public class StubConstructionInterceptor implements ComponentConstructionInterceptor {
     @Override
     public <T> T intercept(T component, ComponentManager componentManager) {
-        return null;
+        return component;
     }
 }

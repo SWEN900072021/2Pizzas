@@ -39,10 +39,29 @@ public class ConnectionPool implements DataSource, SqlConnectionPool {
 
     @Override
     public void commitTransaction() {
+        if (currentTransaction == null) {
+            throw new ConnectionPoolTransactionException("call to commit transaction but a transaction has not been started");
+        }
         try {
-            getCurrentTransaction().commit();
+            currentTransaction.commit();
+            currentTransaction.close();
+            currentTransaction = null;
         } catch (SQLException e) {
             throw new ConnectionPoolTransactionException(String.format("failed to commit changes to database, error: %s", e.getMessage()));
+        }
+    }
+
+    @Override
+    public void rollbackTransaction() {
+        if (currentTransaction == null) {
+            throw new ConnectionPoolTransactionException("call to rollback transaction but a transaction has not been started");
+        }
+        try {
+            currentTransaction.rollback();
+            currentTransaction.close();
+            currentTransaction = null;
+        } catch (SQLException e) {
+            throw new ConnectionPoolTransactionException(String.format("failed to rollback changes to database, error: %s", e.getMessage()));
         }
     }
 

@@ -45,12 +45,11 @@ public class DataProxyTests {
         Mockito.when(wrappedMapper.getEntityClass()).thenReturn(StubEntity.class);
 
         // WHEN
-        StubEntity created = dataMapper.create(entity);
+        dataMapper.create(entity);
 
         // THEN
-        Assertions.assertSame(entity, created);
-        Mockito.verify(identityMapper).testAndGet(Mockito.eq(entity));
-        Mockito.verify(unitOfWork).registerNew(Mockito.eq(entity));
+        Mockito.verify(identityMapper).testAndGet(Mockito.refEq(entity));
+        Mockito.verify(unitOfWork).registerNew(Mockito.refEq(entity));
         Mockito.verify(wrappedMapper, Mockito.never()).create(Mockito.any());
     }
 
@@ -63,12 +62,11 @@ public class DataProxyTests {
         Mockito.when(wrappedMapper.getEntityClass()).thenReturn(StubEntity.class);
 
         // WHEN
-        StubEntity updated = dataMapper.update(entity);
+        dataMapper.update(entity);
 
         // THEN
-        Assertions.assertSame(entity, updated);
-        Mockito.verify(identityMapper).testAndGet(Mockito.eq(entity));
-        Mockito.verify(unitOfWork).registerDirty(Mockito.eq(entity));
+        Mockito.verify(identityMapper).testAndGet(Mockito.refEq(entity));
+        Mockito.verify(unitOfWork).registerDirty(Mockito.refEq(entity));
         Mockito.verify(wrappedMapper, Mockito.never()).update(Mockito.any());
     }
 
@@ -78,13 +76,14 @@ public class DataProxyTests {
         // GIVEN
         StubEntity entity = new StubEntity("someId");
         Mockito.when(wrappedMapper.getEntityClass()).thenReturn(StubEntity.class);
+        Mockito.when(identityMapper.testAndGet(Mockito.any())).thenReturn(entity);
 
         // WHEN
         dataMapper.delete(entity);
 
         // THEN
-        Mockito.verify(unitOfWork).registerDeleted(Mockito.eq(entity));
-        Mockito.verify(identityMapper).markGone(Mockito.eq(entity));
+        Mockito.verify(unitOfWork).registerDeleted(Mockito.refEq(entity));
+        Mockito.verify(identityMapper).markGone(Mockito.refEq(entity));
         Mockito.verify(wrappedMapper, Mockito.never()).delete(Mockito.any());
     }
 
@@ -104,7 +103,7 @@ public class DataProxyTests {
         // THEN
         Mockito.verify(identityMapper).get(Mockito.eq(StubEntity.class), Mockito.eq(entity.getId()));
         Mockito.verify(wrappedMapper).read(Mockito.eq(entity.getId()));
-        Mockito.verify(identityMapper).testAndGet(Mockito.eq(entity));
+        Mockito.verify(identityMapper).testAndGet(Mockito.refEq(entity));
         Assertions.assertSame(entity, read);
     }
 

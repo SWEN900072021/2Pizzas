@@ -38,7 +38,7 @@ CREATE TABLE airport(
     code char(3),
     name varchar(255),
     location varchar(255),
-    utcOffset numeric
+    utcOffset varchar(255)
 );
 
 CREATE TABLE airplane(

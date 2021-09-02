@@ -9,7 +9,6 @@ public class ComponentManager {
     private final Collection<Bean<?>> store = new ArrayList<>();;
     private final BeanResolver beanResolver;
     private final BeanLoader beanLoader;
-    private boolean initialized;
 
     ComponentManager(BeanResolver beanResolver, BeanLoader beanLoader) {
         this.beanResolver = beanResolver;
@@ -22,9 +21,7 @@ public class ComponentManager {
     }
 
     void init() {
-        if (!initialized) {
-            store.addAll(beanLoader.load());
-        }
+        store.addAll(beanLoader.load());
     }
 
     <T> T getComponent(ComponentSpecification<T> specification) throws ApplicationContextException {
