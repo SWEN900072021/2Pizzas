@@ -14,15 +14,21 @@ public class AirplaneProfile extends AssertionConcern implements Entity<EntityId
     private int economyClassRows;
     private int economyClassColumns;
 
-    public AirplaneProfile(EntityId id) {
-        notNull(id, "id");
-        this.id = id;
+    public AirplaneProfile(EntityId id, String code, String type, int firstClassRows, int firstClassColumns,
+                           int businessClassRows, int businessClassColumns, int economyClassRows, int economyClassColumns) {
+        this.id = notNull(id, "id");
+        this.code = notNullAndNotBlank(code, "code");
+        this.type = notNullAndNotBlank(type, "type");
+        this.firstClassRows = notNull(firstClassRows, "firstClassRows");
+        this.firstClassColums = notNull(firstClassColumns, "firstClassColumns");
+        this.businessClassRows = notNull(businessClassRows, "businessClassRows");
+        this.businessClassColums = notNull(businessClassColumns, "businessClassColumns");
+        this.economyClassRows = notNull(economyClassRows, "economyClassRows");
+        this.economyClassColums = notNull(economyClassColumns, "economyClassColumns");
     }
 
     @Override
-    public EntityId getId() {
-        return id;
-    }
+    public EntityId getId() { return id; }
 
     public String getCode() { return code; }
 
