@@ -4,13 +4,15 @@ import com.twopizzas.data.AbstractRepository;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.Airport;
+import com.twopizzas.domain.AirportRepository;
 import com.twopizzas.domain.EntityId;
 
 @Component
-public class AirportRepository extends AbstractRepository<Airport, EntityId, AirportSpecification, AirportMapper> implements com.twopizzas.domain.AirportRepository {
+public class AirportRepositoryImpl extends AbstractRepository<Airport, EntityId, AirportSpecification, AirportMapper> implements AirportRepository {
 
     @Autowired
-    public AirportRepository(AirportMapper dataMapper) {
+    public AirportRepositoryImpl(AirportMapper dataMapper) {
         super(dataMapper);
     }
+
 }

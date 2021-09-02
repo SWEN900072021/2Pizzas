@@ -63,7 +63,7 @@ public abstract class AbstractSqlDataMapper<T extends Entity<ID>, ID extends Ent
 
     protected PreparedStatement prepareStatement(String template, Object[] args, SQLType[] types) throws SQLException {
         if (args.length != types.length) {
-            throw new IllegalArgumentException("mismatched args and stypes arrays, length of args and types must match");
+            throw new IllegalArgumentException("mismatched args and types arrays, length of args and types must match");
         }
         PreparedStatement preparedStatement = connectionPool.getCurrentTransaction().prepareStatement(template);
         for (int i = 0; i < args.length; i++) {

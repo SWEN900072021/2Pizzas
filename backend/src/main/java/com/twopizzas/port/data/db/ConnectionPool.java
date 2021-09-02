@@ -9,12 +9,16 @@ import java.sql.SQLException;
 
 @ThreadLocalComponent
 public class ConnectionPool implements DataSource, SqlConnectionPool {
-    private final String user = "";
-    private final String password = "";
-    private final String host = "";
-    private final String port = "";
-    private final String database = "";
-    private final String url = String.format("postgres://%s:%s@%s:%s/%s", user, password, host, port, database);
+
+    private final String url;
+
+    ConnectionPool(String user, String password, String host, String port, String database) {
+        url = String.format("postgres://%s:%s@%s:%s/%s", user, password, host, port, database);
+    }
+
+    public ConnectionPool(String url) {
+        this.url = url;
+    }
 
     private static Connection currentTransaction = null;
 

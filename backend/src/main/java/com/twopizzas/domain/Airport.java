@@ -23,6 +23,10 @@ public class Airport extends AssertionConcern implements Entity<EntityId> {
         this.utcOffset = notNull(utcOffset, "utcOffset");
     }
 
+    public Airport(String code, String name, String location, ZoneId utcOffset) {
+        this(EntityId.nextId(), code, name, location, utcOffset);
+    }
+
     @Override
     public EntityId getId() {
         return id;

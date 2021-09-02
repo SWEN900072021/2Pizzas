@@ -75,7 +75,7 @@ class AirportMapperImpl extends AbstractSqlDataMapper<Airport, EntityId, Airport
 
     @Override
     public void update(Airport entity) {
-        doExecute(create,
+        doExecute(update,
                 entity.getCode(),
                 entity.getName(),
                 entity.getLocation(),
@@ -86,7 +86,7 @@ class AirportMapperImpl extends AbstractSqlDataMapper<Airport, EntityId, Airport
 
     @Override
     public void delete(Airport entity) {
-        doExecute(create,
+        doExecute(delete,
                 entity.getId().toString()
         );
     }
