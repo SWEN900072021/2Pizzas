@@ -8,7 +8,7 @@ CREATE TABLE "user"(
 );
 
 CREATE TABLE customer(
-     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+     id UUID PRIMARY KEY,
      firstName varchar(255),
      surname varchar(255),
      email varchar(255),
@@ -18,7 +18,7 @@ CREATE TABLE customer(
 );
 
 CREATE TABLE airline(
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    id UUID PRIMARY KEY,
     code varchar(255),
     name varchar(255),
     CONSTRAINT airlineFK
@@ -27,7 +27,7 @@ CREATE TABLE airline(
 );
 
 CREATE TABLE administrator(
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    id UUID PRIMARY KEY,
     CONSTRAINT adminFK
         FOREIGN KEY(id)
             REFERENCES "user"(id) ON DELETE CASCADE
@@ -97,16 +97,16 @@ CREATE TABLE booking(
     totalCost numeric,
     reference varchar(255),
     customerId UUID,
-    flight UUID NOT NULL,
-    returnFlight UUID,
+    flightId UUID NOT NULL,
+    returnFlightId UUID,
     CONSTRAINT customerFK
         FOREIGN KEY(customerId)
             REFERENCES customer(id),
     CONSTRAINT flightFK
-        FOREIGN KEY(flight)
+        FOREIGN KEY(flightId)
             REFERENCES flight(id),
     CONSTRAINT returnFlightFK
-        FOREIGN KEY(returnFlight)
+        FOREIGN KEY(returnFlightId)
             REFERENCES flight(id)
 );
 
@@ -116,7 +116,7 @@ CREATE TABLE seat(
     "column" varchar(255),
     flightId UUID,
     seatType varchar(255),
-    status varchar(255),
+    status varchar(255) DEFAULT 'unoccupied',
     CONSTRAINT flightFK
         FOREIGN KEY(flightId)
             REFERENCES flight(id) ON DELETE CASCADE
