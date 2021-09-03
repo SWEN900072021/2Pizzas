@@ -4,64 +4,66 @@ import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.Airport;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.port.data.AbstractSqlDataMapper;
 import com.twopizzas.port.data.DataMappingException;
-import com.twopizzas.port.data.db.SqlConnectionPool;
+import com.twopizzas.port.data.SqlStatement;
+import com.twopizzas.port.data.db.ConnectionPool;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
-class AirportMapperImpl extends AbstractSqlDataMapper<Airport, EntityId, AirportSpecification> implements AirportMapper {
+class AirportMapperImpl implements AirportMapper {
 
-    private static final String TABLE_AIRPORT = "airport";
-    private static final String COLUMN_ID = "id";
-    private static final String COLUMN_CODE = "code";
-    private static final String COLUMN_NAME = "name";
-    private static final String COLUMN_LOCATION = "location";
-    private static final String COLUMN_UTC_OFFSET = "utcOffset";
+    static final String TABLE_AIRPORT = "airport";
+    static final String COLUMN_ID = "id";
+    static final String COLUMN_CODE = "code";
+    static final String COLUMN_NAME = "name";
+    static final String COLUMN_LOCATION = "location";
+    static final String COLUMN_UTC_OFFSET = "utcOffset";
 
-    private static final String create =
+    private static final String CREATE_TEMPLATE =
             "INSERT INTO " + TABLE_AIRPORT + "(" + COLUMN_ID + " , " + COLUMN_CODE + ", " + COLUMN_NAME + ", " + COLUMN_LOCATION + ", " + COLUMN_UTC_OFFSET + ")" +
             " VALUES (?, ?, ?, ?, ?);";
 
-    private static final String update =
+    private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_AIRPORT +
             " SET " + COLUMN_CODE + " = ?, " + COLUMN_NAME + " = ?, " + COLUMN_LOCATION + " = ?, " + COLUMN_UTC_OFFSET + " = ?" +
             " WHERE id = ?;";
 
-    private static final String delete =
+    private static final String DELETE_TEMPLATE =
             "DELETE FROM " + TABLE_AIRPORT +
             " WHERE id = ?;";
 
-    private static final String select =
+    private static final String SELECT_TEMPLATE =
             "SELECT * FROM " + TABLE_AIRPORT +
             " WHERE id = ?;";
 
+    private final AirportTableResultSetMapper mapper = new AirportTableResultSetMapper();
+    private final ConnectionPool connectionPool;
+
     @Autowired
-    AirportMapperImpl(SqlConnectionPool connectionPool) {
-        super(connectionPool);
+    AirportMapperImpl(ConnectionPool connectionPool) {
+        this.connectionPool = connectionPool;
     }
 
     @Override
     public void create(Airport entity) {
-        doExecute(create,
+        new SqlStatement(CREATE_TEMPLATE,
                 entity.getId().toString(),
                 entity.getCode(),
                 entity.getName(),
                 entity.getLocation(),
                 entity.getUtcOffset().getId()
-        );
+        ).doExecute(connectionPool.getCurrentTransaction());
     }
 
     @Override
     public Airport read(EntityId entityId) {
-        ResultSet results = doQuery(select, entityId.toString());
-        List<Airport> airports = mapResultSet(results);
+        List<Airport> airports = new SqlStatement(SELECT_TEMPLATE, entityId.toString())
+                .doQuery(connectionPool.getCurrentTransaction(), mapper);
         if (airports.isEmpty()) {
             return null;
         }
@@ -71,44 +73,24 @@ class AirportMapperImpl extends AbstractSqlDataMapper<Airport, EntityId, Airport
 
     @Override
     public List<Airport> readAll(AirportSpecification specification) {
-        return null;
+        return specification.execute(connectionPool);
     }
 
     @Override
     public void update(Airport entity) {
-        doExecute(update,
+        new SqlStatement(UPDATE_TEMPLATE,
                 entity.getCode(),
                 entity.getName(),
                 entity.getLocation(),
                 entity.getUtcOffset().normalized(),
                 entity.getId().toString()
-        );
+        ).doExecute(connectionPool.getCurrentTransaction());
     }
 
     @Override
     public void delete(Airport entity) {
-        doExecute(delete,
+        new SqlStatement(DELETE_TEMPLATE,
                 entity.getId().toString()
-        );
-    }
-
-    public List<Airport> mapResultSet(ResultSet resultSet) {
-        List<Airport> mapped = new ArrayList<>();
-        try {
-            while (resultSet.next()) {
-                mapped.add(new Airport(
-                        EntityId.of(resultSet.getObject(COLUMN_ID, String.class)),
-                        resultSet.getObject(COLUMN_CODE, String.class),
-                        resultSet.getObject(COLUMN_NAME, String.class),
-                        resultSet.getObject(COLUMN_LOCATION, String.class),
-                        ZoneId.of(resultSet.getObject(COLUMN_UTC_OFFSET, String.class))
-                ));
-            }
-        } catch (SQLException e) {
-            throw new DataMappingException(String.format(
-                    "failed to map results from read query to %s entity, error: %s", getEntityClass().getName(), e.getMessage()),
-                    e);
-        }
-        return mapped;
+        ).doExecute(connectionPool.getCurrentTransaction());
     }
 }

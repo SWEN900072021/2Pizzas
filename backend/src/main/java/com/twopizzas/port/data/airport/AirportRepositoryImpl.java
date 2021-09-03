@@ -7,6 +7,8 @@ import com.twopizzas.domain.Airport;
 import com.twopizzas.domain.AirportRepository;
 import com.twopizzas.domain.EntityId;
 
+import java.util.List;
+
 @Component
 public class AirportRepositoryImpl extends AbstractRepository<Airport, EntityId, AirportSpecification, AirportMapper> implements AirportRepository {
 
@@ -15,4 +17,8 @@ public class AirportRepositoryImpl extends AbstractRepository<Airport, EntityId,
         super(dataMapper);
     }
 
+    @Override
+    public List<Airport> findAllAirports() {
+        return dataMapper.readAll(new AllAirportsSpecification());
+    }
 }

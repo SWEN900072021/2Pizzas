@@ -2,5 +2,6 @@ package com.twopizzas.port.data.booking;
 
 import com.twopizzas.data.Specification;
 import com.twopizzas.domain.Booking;
+import com.twopizzas.port.data.db.ConnectionPool;
 
-public interface BookingSpecification extends Specification<Booking> { }
+public interface BookingSpecification extends Specification<Booking, ConnectionPool> { }
