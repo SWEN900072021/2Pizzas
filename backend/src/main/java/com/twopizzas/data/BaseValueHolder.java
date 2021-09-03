@@ -17,4 +17,8 @@ public class BaseValueHolder<T> implements ValueHolder<T> {
     public boolean isPresent() {
         return value != null;
     }
+
+    public static <T> BaseValueHolder<T> of(T value) {
+        return new BaseValueHolder<>(value);
+    }
 }

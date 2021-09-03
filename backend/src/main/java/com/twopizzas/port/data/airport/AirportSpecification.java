@@ -2,14 +2,7 @@ package com.twopizzas.port.data.airport;
 
 import com.twopizzas.data.Specification;
 import com.twopizzas.domain.Airport;
-import com.twopizzas.port.data.AbstractSqlDataMapper;
-import com.twopizzas.port.data.AbstractSqlSpecification;
+import com.twopizzas.port.data.db.ConnectionPool;
 
-public abstract class AirportSpecification extends AbstractSqlSpecification<Airport> implements Specification<Airport> {
-
-
-
-    protected AirportSpecification(AbstractSqlDataMapper<Airport, ?, ?> dataMapper) {
-        super(dataMapper);
-    }
+public interface AirportSpecification extends Specification<Airport, ConnectionPool> {
 }

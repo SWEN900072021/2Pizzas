@@ -1,4 +1,4 @@
 package com.twopizzas.data;
 
-interface StubSpecification extends Specification<StubEntity> {
+interface StubSpecification extends Specification<StubEntity, Object> {
 }

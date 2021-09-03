@@ -2,13 +2,13 @@ DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
 CREATE TABLE "user"(
-    id varchar(36) PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     username varchar(255),
     password varchar(255)
 );
 
 CREATE TABLE customer(
-     id varchar(36) PRIMARY KEY,
+     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
      firstName varchar(255),
      surname varchar(255),
      email varchar(255),
@@ -18,7 +18,7 @@ CREATE TABLE customer(
 );
 
 CREATE TABLE airline(
-    id varchar(36) PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     code varchar(255),
     name varchar(255),
     CONSTRAINT airlineFK
@@ -27,14 +27,14 @@ CREATE TABLE airline(
 );
 
 CREATE TABLE administrator(
-    id varchar(36) PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     CONSTRAINT adminFK
         FOREIGN KEY(id)
             REFERENCES "user"(id) ON DELETE CASCADE
 );
 
 CREATE TABLE airport(
-    id varchar(36) PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     code char(3),
     name varchar(255),
     location varchar(255),
@@ -42,7 +42,7 @@ CREATE TABLE airport(
 );
 
 CREATE TABLE airplane(
-    id varchar(36) PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     code varchar(255),
     type varchar(255),
     firstClassRows integer,
@@ -54,14 +54,14 @@ CREATE TABLE airplane(
 );
 
 CREATE TABLE flight(
-    id varchar(36) PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     code varchar(255),
     departureTime timestamp,
     arrivalTime timestamp,
-    origin varchar(36),
-    destination varchar(36),
-    airlineId varchar(36),
-    airplaneId varchar(36),
+    origin UUID,
+    destination UUID,
+    airlineId UUID,
+    airplaneId UUID,
     status varchar(255),
     CONSTRAINT airlineFK
         FOREIGN KEY(airlineId)
@@ -78,9 +78,9 @@ CREATE TABLE flight(
 );
 
 CREATE TABLE stopover(
-    flightId varchar(36),
+    flightId UUID,
     duration interval,
-    airportId varchar(36),
+    airportId UUID,
     CONSTRAINT flightFK
         FOREIGN KEY(flightId)
             REFERENCES flight(id) ON DELETE CASCADE,
@@ -92,13 +92,13 @@ CREATE TABLE stopover(
 
 
 CREATE TABLE booking(
-    id varchar(36) PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     date timestamp,
     totalCost numeric,
     reference varchar(255),
-    customerId varchar(36),
-    flight varchar(36) NOT NULL,
-    returnFlight varchar(36),
+    customerId UUID,
+    flight UUID NOT NULL,
+    returnFlight UUID,
     CONSTRAINT customerFK
         FOREIGN KEY(customerId)
             REFERENCES customer(id),
@@ -111,10 +111,10 @@ CREATE TABLE booking(
 );
 
 CREATE TABLE seat(
-    id varchar(36) PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     row varchar(255),
     "column" varchar(255),
-    flightId varchar(36),
+    flightId UUID,
     seatType varchar(255),
     status varchar(255),
     CONSTRAINT flightFK
@@ -123,8 +123,8 @@ CREATE TABLE seat(
 );
 
 CREATE TABLE passenger(
-    bookingId varchar(36),
-    seatId varchar(36),
+    bookingId UUID,
+    seatId UUID,
     givenName varchar(255),
     surname varchar(255),
     dob date,
