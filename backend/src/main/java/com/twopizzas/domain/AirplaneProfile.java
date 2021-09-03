@@ -14,7 +14,7 @@ public class AirplaneProfile extends AssertionConcern implements Entity<EntityId
     private int economyClassRows;
     private int economyClassColumns;
 
-    public AirplaneProfile(EntityId id, String code, String type, int firstClassRows, int firstClassColumns,
+    public Airplane(EntityId id, String code, String type, int firstClassRows, int firstClassColumns,
                            int businessClassRows, int businessClassColumns, int economyClassRows, int economyClassColumns) {
         this.id = notNull(id, "id");
         this.code = notNullAndNotBlank(code, "code");
