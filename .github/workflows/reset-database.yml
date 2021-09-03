@@ -20,8 +20,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-      - name: Install postgresql contributions plugin
-        run: sudo apt-get postgresql-contrib
       - name: Reset database schema and data
         env:
           DB_USER: ${{ secrets.DB_USER }}
