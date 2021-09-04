@@ -1,7 +1,10 @@
 package com.twopizzas.port.data.user;
 
+import com.twopizzas.data.DataMapper;
+import com.twopizzas.data.Specification;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
+import com.twopizzas.domain.Customer;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.User;
 import com.twopizzas.port.data.DataMappingException;
@@ -60,7 +63,7 @@ class UserMapperImpl implements UserMapper {
         if (entity.getUserType().equals("admin")) {
             adminMapper.create(entity);
         } else if (entity.getUserType().equals("customer")){
-            customerMapper.create(entity);
+            customerMapper.create((Customer) entity);
         } else if (entity.getUserType().equals("airline")){
             airlineMapper.create(entity);
         }

@@ -1,20 +1,17 @@
 package com.twopizzas.port.data.customer;
 
-import com.twopizzas.data.Entity;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.Customer;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.domain.User;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
-import com.twopizzas.port.data.user.UserSpecification;
+import com.twopizzas.port.data.user.AbstractUserMapper;
 
-import java.sql.ResultSet;
 import java.util.List;
 
 @Component
-class CustomerMapperImpl extends AbstractUserMapper<Customer, CustomerSpecification, ConnectionPool> implements CustomerMapper  {
+class CustomerMapperImpl extends AbstractUserMapper<Customer> implements CustomerMapper  {
     static final String TABLE_USER = "\"user\"";
     static final String TABLE_CUSTOMER = "customer";
     static final String COLUMN_ID = "id";
@@ -63,32 +60,19 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer, CustomerSpecificat
     }
 
     @Override
-    public Class<Customer> getEntityClass() {
+    public List<Customer> readAll(CustomerSpecification specification) {
         return null;
     }
 
     @Override
-    public List<User> readAll(UserSpecification specification) {
-        return null;
+    public void update(Customer entity) {
+        abstractUpdate(entity);
+
+        // then do all the updates to the customer table
     }
 
     @Override
-    public void update(User entity) {
+    public void delete(Customer entity) {
 
-    }
-
-    @Override
-    public void delete(User entity) {
-
-    }
-
-    @Override
-    public void create(User entity) {
-
-    }
-
-    @Override
-    public List<User> map(ResultSet resultSet) {
-        return null;
     }
 }
