@@ -17,17 +17,17 @@ import java.util.List;
 class CustomerMapperImpl implements CustomerMapper {
     static final String TABLE_CUSTOMER = "customer";
     static final String COLUMN_ID = "id";
-    static final String COLUMN_GivenName = "givenName";
+    static final String COLUMN_GIVENNAME = "givenName";
     static final String COLUMN_SURNAME = "surname";
     static final String COLUMN_EMAIL = "email";
 
     private static final String CREATE_TEMPLATE =
-            "INSERT INTO " + TABLE_CUSTOMER + "(" + COLUMN_ID + ", " + COLUMN_GivenName + ", " + COLUMN_SURNAME + ", " + COLUMN_EMAIL + ")" +
+            "INSERT INTO " + TABLE_CUSTOMER + "(" + COLUMN_ID + ", " + COLUMN_GIVENNAME + ", " + COLUMN_SURNAME + ", " + COLUMN_EMAIL + ")" +
                     " VALUES (?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_CUSTOMER +
-                    " SET " + COLUMN_GivenName + " = ?, " + COLUMN_SURNAME + " = ?, " + COLUMN_EMAIL + " = ? +
+                    " SET " + COLUMN_GIVENNAME + " = ?, " + COLUMN_SURNAME + " = ?, " + COLUMN_EMAIL + " = ?" +
                     " WHERE id = ?;";
 
     private static final String DELETE_TEMPLATE =
