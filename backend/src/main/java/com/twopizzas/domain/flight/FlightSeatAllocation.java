@@ -1,2 +1,5 @@
-package com.twopizzas.domain.flight;public class FlightSeatAllocation {
+package com.twopizzas.domain.flight;
+
+public class FlightSeatAllocation {
+
 }

@@ -10,7 +10,6 @@ public class Passenger extends AssertionConcern {
     private final String lastName;
     private final Date dateOfBirth;
     private final String passportNumber;
-    private final ValueHolder<Seat> seat;
 
     public Passenger(String firstName, String lastName, Date dateOfBirth, String passportNumber, ValueHolder<Seat> seat) {
         this.firstName = notBlank(notNull(firstName, "firstName"), "firstName");

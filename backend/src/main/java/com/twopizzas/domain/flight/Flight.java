@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 public class Flight extends AssertionConcern implements Entity<EntityId> {
 
     private final EntityId id;
-    private final ValueHolder<List<Booking>> bookings;
     private final AirplaneProfile airplaneProfile;
     private final Airline airline;
     private final ValueHolder<List<FlightSeat>> seats;
+    private final ValueHolder<List<FlightSeatAllocation>> seatAllocations;
     private final Airport origin;
     private final Airport destination;
     private OffsetDateTime departure;
@@ -49,7 +49,7 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
     }
 
     public SeatAllocation allocateSeats(BookingRequest request) {
-        List<String> bookedSeatNames = getSeats().stream()
+        List<String> bookedSeatNames = seatAllocations.get().stream()
                 .filter(FlightSeat::isBooked)
                 .map(FlightSeat::getName)
                 .collect(Collectors.toList());
