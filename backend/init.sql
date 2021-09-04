@@ -10,7 +10,7 @@ CREATE TABLE "user"(
 
 CREATE TABLE customer(
      id UUID PRIMARY KEY,
-     firstName varchar(255),
+     givenName varchar(255),
      surname varchar(255),
      email varchar(255),
      CONSTRAINT customerFK

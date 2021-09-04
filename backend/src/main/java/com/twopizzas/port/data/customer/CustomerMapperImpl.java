@@ -17,17 +17,17 @@ import java.util.List;
 class CustomerMapperImpl implements CustomerMapper {
     static final String TABLE_CUSTOMER = "customer";
     static final String COLUMN_ID = "id";
-    static final String COLUMN_FIRSTNAME = "firstname";
+    static final String COLUMN_GivenName = "givenName";
     static final String COLUMN_SURNAME = "surname";
     static final String COLUMN_EMAIL = "email";
 
     private static final String CREATE_TEMPLATE =
-            "INSERT INTO " + TABLE_CUSTOMER + "(" + COLUMN_ID + ", " + COLUMN_FIRSTNAME + ", " + COLUMN_SURNAME + ", " + COLUMN_EMAIL + ")" +
+            "INSERT INTO " + TABLE_CUSTOMER + "(" + COLUMN_ID + ", " + COLUMN_GivenName + ", " + COLUMN_SURNAME + ", " + COLUMN_EMAIL + ")" +
                     " VALUES (?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_CUSTOMER +
-                    " SET " + COLUMN_FIRSTNAME + " = ?, " + COLUMN_SURNAME + " = ?, " + COLUMN_EMAIL + " = ? +
+                    " SET " + COLUMN_GivenName + " = ?, " + COLUMN_SURNAME + " = ?, " + COLUMN_EMAIL + " = ? +
                     " WHERE id = ?;";
 
     private static final String DELETE_TEMPLATE =
@@ -50,7 +50,7 @@ class CustomerMapperImpl implements CustomerMapper {
     public void create(Customer entity) {
         new SqlStatement(CREATE_TEMPLATE,
                 entity.getId().toString(),
-                entity.getFirstName(),
+                entity.getGivenName(),
                 entity.getLastName(),
                 entity.getEmail()).doExecute(connectionPool.getCurrentTransaction());
     }
@@ -72,7 +72,7 @@ class CustomerMapperImpl implements CustomerMapper {
     @Override
     public void update(Customer entity) {
         new SqlStatement(UPDATE_TEMPLATE,
-                entity.getFirstName(),
+                entity.getGivenName(),
                 entity.getLastName(),
                 entity.getEmail(),
                 entity.getId().toString()
