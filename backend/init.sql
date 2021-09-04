@@ -1,3 +1,7 @@
+<<<<<<< Updated upstream
+=======
+y
+>>>>>>> Stashed changes
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
@@ -139,6 +143,7 @@ CREATE TABLE seatAllocation(
              REFERENCES passenger(id)
 );
 
+<<<<<<< Updated upstream
 CREATE TABLE passenger(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     givenName varchar(255),
@@ -147,3 +152,21 @@ CREATE TABLE passenger(
     nationality varchar(255),
     passportNumber varchar(255)
 );
+=======
+-- DO $FN$
+-- BEGIN
+--     FOR counter IN 1..100 LOOP
+--         EXECUTE $$ INSERT INTO airline(name, id) VALUES ('airline'||$1, $1) RETURNING * $$
+--             USING counter;
+--     END LOOP;
+-- END;
+-- $FN$;
+
+DO $FN$
+    BEGIN
+        EXECUTE $$ INSERT INTO passenger VALUES ('1', 'john', 'doe', '25', 'australian', 'p1123') RETURNING * $$;
+        EXECUTE $$ INSERT INTO booking VALUES ('1', '01/01/21', '08:00', '25', '120f3') RETURNING * $$;
+        EXECUTE $$ INSERT INTO passengerBooking VALUES ('1', '1') $$;
+    END;
+ $FN$;
+>>>>>>> Stashed changes

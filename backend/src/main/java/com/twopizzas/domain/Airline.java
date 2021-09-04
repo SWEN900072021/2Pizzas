@@ -6,12 +6,12 @@ public class Airline extends User {
 
     private String code;
 
-    public Airline(EntityId id, String username, String password) {
-        super(id, username, password);
+    public Airline(EntityId id, String username, String password, String userType) {
+        super(id, username, password, userType);
     }
 
-    public Airline(EntityId id, String username, String password, String name, String code) {
-        super(id, username, password);
+    public Airline(EntityId id, String username, String password, String userType, String name, String code) {
+        super(id, username, password, userType);
         this.name = name;
         this.code = code;
     }
@@ -20,15 +20,7 @@ public class Airline extends User {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getCode() {
         return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 }

@@ -17,10 +17,12 @@ public class CustomerTableResultSetMapper implements SqlResultSetMapper<Customer
             while (resultSet.next()) {
                 mapped.add(new Customer(
                         EntityId.of(resultSet.getObject(CustomerMapperImpl.COLUMN_ID, String.class)),
-                        resultSet.getObject(CustomerMapperImpl.COLUMN_CODE, String.class),
-                        resultSet.getObject(CustomerMapperImpl.COLUMN_NAME, String.class),
-                        resultSet.getObject(CustomerMapperImpl.COLUMN_LOCATION, String.class),
-                        ZoneId.of(resultSet.getObject(CustomerMapperImpl.COLUMN_UTC_OFFSET, String.class))
+                        resultSet.getObject(UserMapperImpl.COLUMN_USERNAME, String.class),
+                        resultSet.getObject(UserMapperImpl.COLUMN_PASSWORD, String.class),
+                        resultSet.getObject(UserMapperImpl.COLUMN_TYPE, String.class),
+                        resultSet.getObject(CustomerMapperImpl.COLUMN_GivenName, String.class),
+                        resultSet.getObject(CustomerMapperImpl.COLUMN_SURNAME, String.class),
+                        resultSet.getObject(CustomerMapperImpl.COLUMN_EMAIL, String.class)
                 ));
             }
         } catch (SQLException e) {

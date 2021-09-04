@@ -7,12 +7,14 @@ public abstract class User extends AssertionConcern implements Entity<EntityId> 
     private final EntityId id;
     private String username;
     private String password;
+    private String userType;
 
-    public User(EntityId id, String username, String password) {
+    public User(EntityId id, String username, String password, String userType) {
         notNull(id, "id");
         this.id = id;
         this.username = username;
         this.password = password;
+        this.userType = userType;
     }
 
     @Override
@@ -28,11 +30,7 @@ public abstract class User extends AssertionConcern implements Entity<EntityId> 
         return password;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public String getUserType() {
+        return userType;
     }
 }
