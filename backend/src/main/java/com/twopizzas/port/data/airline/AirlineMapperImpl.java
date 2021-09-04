@@ -5,10 +5,11 @@ import com.twopizzas.domain.Airline;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
+import com.twopizzas.port.data.user.AbstractUserMapper;
 
 import java.util.List;
 
-public class AirlineMapperImpl implements AirlineMapper {
+public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements AirlineMapper {
 
     static final String TABLE_AIRLINE = "airline";
     static final String COLUMN_ID = "id";
@@ -24,26 +25,26 @@ public class AirlineMapperImpl implements AirlineMapper {
                     " SET " + COLUMN_CODE + " = ?, " + COLUMN_NAME + " = ?" +
                     " WHERE id = ?;";
 
-    private static final String DELETE_TEMPLATE =
-            "DELETE FROM " + TABLE_AIRLINE +
-                    " WHERE id = ?;";
-
     private static final String SELECT_TEMPLATE =
-            "SELECT * FROM " + TABLE_AIRLINE +
-                    " WHERE id = ?;";
+            "SELECT * FROM " + TABLE_USER + " INNER JOIN " + TABLE_AIRLINE +
+                    " ON " + TABLE_USER + ".id =" + TABLE_AIRLINE + ".id" +
+                    " WHERE " + TABLE_USER + ".id = ?;";
 
     private final AirlineTableResultSetMapper mapper = new AirlineTableResultSetMapper();
     private final ConnectionPool connectionPool;
 
     @Autowired
-    AirlineMapperImpl(ConnectionPool connectionPool) { this.connectionPool = connectionPool; }
+    AirlineMapperImpl(ConnectionPool connectionPool) {
+        super(connectionPool);
+        this.connectionPool = connectionPool; }
 
     @Override
     public void create(Airline entity) {
+        abstractCreate(entity);
         new SqlStatement(CREATE_TEMPLATE,
                 entity.getId().toString(),
-                entity.getCode().toString(),
-                entity.getName().toString()
+                entity.getCode(),
+                entity.getName()
         ).doExecute(connectionPool.getCurrentTransaction());
     }
 
@@ -64,6 +65,7 @@ public class AirlineMapperImpl implements AirlineMapper {
 
     @Override
     public void update(Airline entity) {
+        abstractUpdate(entity);
         new SqlStatement(UPDATE_TEMPLATE,
             entity.getCode(),
             entity.getName(),
@@ -73,8 +75,11 @@ public class AirlineMapperImpl implements AirlineMapper {
 
     @Override
     public void delete(Airline entity) {
-        new SqlStatement(DELETE_TEMPLATE,
-                entity.getId().toString()
-        ).doExecute(connectionPool.getCurrentTransaction());
+        abstractDelete(entity);
+    }
+
+    @Override
+    public Class<Airline> getEntityClass() {
+        return Airline.class;
     }
 }

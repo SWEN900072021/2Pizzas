@@ -4,6 +4,7 @@ import com.twopizzas.domain.Airline;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlResultSetMapper;
+import com.twopizzas.port.data.user.AbstractUserMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,9 +19,9 @@ public class AirlineTableResultSetMapper implements SqlResultSetMapper<Airline> 
            while (resultSet.next()) {
                mapped.add(new Airline(
                        EntityId.of(resultSet.getObject(AirlineMapperImpl.COLUMN_ID, String.class)),
-                       resultSet.getObject(UserMapperImpl.COLUMN_USERNAME, String.class),
-                       resultSet.getObject(UserMapperImpl.COLUMN_PASSWORD, String.class),
-                       resultSet.getObject(UserMapperImpl.COLUMN_TYPE, String.class),
+                       resultSet.getObject(AbstractUserMapper.COLUMN_USERNAME, String.class),
+                       resultSet.getObject(AbstractUserMapper.COLUMN_PASSWORD, String.class),
+                       resultSet.getObject(AbstractUserMapper.COLUMN_TYPE, String.class),
                        resultSet.getObject(AirlineMapperImpl.COLUMN_CODE, String.class),
                        resultSet.getObject(AirlineMapperImpl.COLUMN_NAME, String.class)
                ));

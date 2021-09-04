@@ -6,8 +6,6 @@ import com.twopizzas.di.Component;
 import com.twopizzas.domain.Airline;
 import com.twopizzas.domain.AirlineRepository;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.port.data.airport.AirportMapper;
-import com.twopizzas.port.data.airport.AllAirportsSpecification;
 
 import java.util.List;
 
