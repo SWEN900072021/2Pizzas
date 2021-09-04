@@ -17,7 +17,7 @@ public class BookingRequest extends AssertionConcern {
         return allocations;
     }
 
-    public BookingRequestBuilder builder() {
+    public static BookingRequestBuilder builder() {
         return new BookingRequestBuilder();
     }
 

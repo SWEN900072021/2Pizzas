@@ -7,6 +7,7 @@ import com.twopizzas.domain.flight.FlightSeatAllocation;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.airport.AirportTableResultSetMapper;
 import com.twopizzas.port.data.db.ConnectionPool;
+import com.twopizzas.port.data.passenger.PassengerMapper;
 import com.twopizzas.port.data.seat.FlightSeatMapper;
 
 import java.sql.ResultSet;
@@ -38,11 +39,13 @@ public class FlightSeatAllocationMapperImpl implements FlightSeatAllocationMappe
             " WHERE " + COLUMN_ID + " = ?;";
 
     private final AirportTableResultSetMapper mapper = new AirportTableResultSetMapper();
+    private final PassengerMapper passengerMapper;
     private final FlightSeatMapper flightSeatMapper;
     private final ConnectionPool connectionPool;
 
     @Autowired
-    public FlightSeatAllocationMapperImpl(FlightSeatMapper flightSeatMapper, ConnectionPool connectionPool) {
+    public FlightSeatAllocationMapperImpl(PassengerMapper passengerMapper, FlightSeatMapper flightSeatMapper, ConnectionPool connectionPool) {
+        this.passengerMapper = passengerMapper;
         this.flightSeatMapper = flightSeatMapper;
         this.connectionPool = connectionPool;
     }

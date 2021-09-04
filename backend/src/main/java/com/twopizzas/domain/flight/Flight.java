@@ -86,11 +86,15 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
                     bookingConflicts.stream().map(FlightSeat::getName).collect(Collectors.toList())));
         }
 
+        Set<FlightSeatAllocation> newAllocations = availableSeats.stream()
+                .map(s -> new FlightSeatAllocation(s, passengerSeatNames.get(s.getName())))
+                .collect(Collectors.toSet());
+
+        allocatedSeats.get().addAll(newAllocations);
+
         return new SeatBooking(
                 this,
-                availableSeats.stream()
-                    .map(s -> new FlightSeatAllocation(s, passengerSeatNames.get(s.getName())))
-                    .collect(Collectors.toSet())
+                newAllocations
         );
     }
 

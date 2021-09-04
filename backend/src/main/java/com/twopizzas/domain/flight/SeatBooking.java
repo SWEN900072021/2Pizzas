@@ -10,4 +10,12 @@ public class SeatBooking {
         this.allocations = allocations;
         this.flight = flight;
     }
+
+    public Set<FlightSeatAllocation> getAllocations() {
+        return allocations;
+    }
+
+    public Flight getFlight() {
+        return flight;
+    }
 }

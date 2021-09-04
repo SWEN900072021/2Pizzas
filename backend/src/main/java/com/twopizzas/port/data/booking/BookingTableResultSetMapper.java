@@ -30,8 +30,8 @@ public class BookingTableResultSetMapper implements SqlResultSetMapper<Booking> 
                         passengers,
                         resultSet.getObject(BookingMapperImpl.COLUMN_DATE, LocalDateTime.class),
                         resultSet.getObject(BookingMapperImpl.COLUMN_TOTALCOST, Double.class),
-                        resultSet.getObject(BookingMapperImpl.COLUMN_REFERENCE, String.class)
-                ));
+                        resultSet.getObject(BookingMapperImpl.COLUMN_REFERENCE, String.class),
+                        flightBooking, returnFlightBooking));
             }
          } catch (SQLException e) {
             throw new DataMappingException(String.format(
