@@ -40,15 +40,15 @@ INSERT INTO airport(code, name, location, utcOffset) VALUES
 
 -- Airplane Table
     -- Qantas Planes
-INSERT INTO airplane(code, type, firstClassRows, firstClassColumns, businessClassRows, businessClassColumns, economyClassRows, economyClassColumns) VALUES
+INSERT INTO airplaneProfile(code, type, firstClassRows, firstClassColumns, businessClassRows, businessClassColumns, economyClassRows, economyClassColumns) VALUES
        ('planecode_1', 'boeing', 3, 6, 4, 8, 7, 40),
        ('planecode_2', 'airbus', 3, 6, 4, 10, 10, 40);
     -- Virgin Planes
-INSERT INTO airplane(code, type, firstClassRows, firstClassColumns, businessClassRows, businessClassColumns, economyClassRows, economyClassColumns) VALUES
+INSERT INTO airplaneProfile(code, type, firstClassRows, firstClassColumns, businessClassRows, businessClassColumns, economyClassRows, economyClassColumns) VALUES
        ('planecode_3', 'boeing', 3, 6, 4, 8, 7, 40),
        ('planecode_4', 'airbus', 3, 6, 4, 10, 10, 40);
     -- Emirates Planes
-INSERT INTO airplane(code, type, firstClassRows, firstClassColumns, businessClassRows, businessClassColumns, economyClassRows, economyClassColumns) VALUES
+INSERT INTO airplaneProfile(code, type, firstClassRows, firstClassColumns, businessClassRows, businessClassColumns, economyClassRows, economyClassColumns) VALUES
        ('planecode_5', 'boeing', 3, 6, 4, 8, 7, 40);
 
 -- Flight Table
@@ -59,21 +59,21 @@ INSERT INTO flight(code, departureTime, arrivalTime, origin, destination, airlin
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airline WHERE code = 'QFA' ),
-            ( SELECT id FROM airplane WHERE code = 'planecode_1' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_1' )
        ),
        (
             'QN112', '2021-01-01 15:00', '2021-01-01 18:00',
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airline WHERE code = 'QFA' ),
-            ( SELECT id FROM airplane WHERE code = 'planecode_1' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_1' )
        ),
        (
             'QN113', '2021-01-02 19:00', '2021-01-02 21:00',
             ( SELECT id FROM airport WHERE code = 'AVV'),
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airline WHERE code = 'QFA' ),
-            ( SELECT id FROM airplane WHERE code = 'planecode_2' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_2' )
        );
     -- Virgin Flights
 INSERT INTO flight(code, departureTime, arrivalTime, origin, destination, airlineId, airplaneId) VALUES
@@ -82,21 +82,21 @@ INSERT INTO flight(code, departureTime, arrivalTime, origin, destination, airlin
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airline WHERE code = 'VIR' ),
-            ( SELECT id FROM airplane WHERE code = 'planecode_3' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_3' )
        ),
        (
             'VA112', '2021-02-01 15:00', '2021-02-01 18:00',
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airline WHERE code = 'VIR' ),
-            ( SELECT id FROM airplane WHERE code = 'planecode_3' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_3' )
        ),
        (
             'VA113', '2021-02-02 19:00', '2021-02-02 21:00',
             ( SELECT id FROM airport WHERE code = 'AVV'),
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airline WHERE code = 'VIR' ),
-            ( SELECT id FROM airplane WHERE code = 'planecode_4' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_4' )
        );
     -- Emirates Flights
 INSERT INTO flight(code, departureTime, arrivalTime, origin, destination, airlineId, airplaneId) VALUES
@@ -105,21 +105,21 @@ INSERT INTO flight(code, departureTime, arrivalTime, origin, destination, airlin
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airline WHERE code = 'UAE' ),
-            ( SELECT id FROM airplane WHERE code = 'planecode_5' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_5' )
        ),
        (
             'EM112', '2021-03-01 15:00', '2021-03-01 18:00',
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airline WHERE code = 'UAE' ),
-            ( SELECT id FROM airplane WHERE code = 'planecode_5' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_5' )
        ),
        (
             'EM113', '2021-03-02 19:00', '2021-03-02 21:00',
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airline WHERE code = 'UAE' ),
-            ( SELECT id FROM airplane WHERE code = 'planecode_5' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_5' )
        );
 
 -- Stopover Table

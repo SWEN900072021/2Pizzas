@@ -1,30 +1,28 @@
 package com.twopizzas.domain;
 
 import com.twopizzas.data.Entity;
-import com.twopizzas.data.ValueHolder;
-import com.twopizzas.domain.flight.Flight;
-import com.twopizzas.domain.flight.SeatAllocation;
+import com.twopizzas.domain.flight.SeatBooking;
 import com.twopizzas.util.AssertionConcern;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
 
 public class Booking extends AssertionConcern implements Entity<EntityId> {
+
     private final EntityId id;
+    private final LocalDateTime date;
+    private final Double totalCost;
+    private final String reference;
 
-    private Date date;
-    private Double totalCost;
-    private String reference;
+    private SeatBooking flightBooking;
+    private SeatBooking returnFlightBooking;
 
-    private SeatAllocation flightAllocations;
-    private SeatAllocation returnFlightAllocations;
-    private ValueHolder<List<Passenger>> passengers;
+    public Booking(EntityId id, LocalDateTime date, Double totalCost, String reference) {
 
-    private Flight flightId;
+        this.id = notNull(id, "id");
+        this.date = notNull(date, "date");
+        this.totalCost = notNull(totalCost, "totalCost");
+        this.reference = notNullAndNotBlank(reference, "reference");
 
-    public Booking(EntityId id) {
-        notNull(id, "id");
-        this.id = id;
     }
 
     @Override
@@ -32,11 +30,7 @@ public class Booking extends AssertionConcern implements Entity<EntityId> {
         return id;
     }
 
-    public List<Passenger> getPassengers() {
-        return passengers.get();
-    }
-
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 

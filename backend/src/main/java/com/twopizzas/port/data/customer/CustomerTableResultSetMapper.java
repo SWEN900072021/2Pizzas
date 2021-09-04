@@ -15,12 +15,18 @@ public class CustomerTableResultSetMapper implements SqlResultSetMapper<Customer
         List<Customer> mapped = new ArrayList<>();
         try {
             while (resultSet.next()) {
+
+                // TODO: get username and password from user table using id
+                String username = null;
+                String password = null;
+
                 mapped.add(new Customer(
                         EntityId.of(resultSet.getObject(CustomerMapperImpl.COLUMN_ID, String.class)),
-                        resultSet.getObject(CustomerMapperImpl.COLUMN_CODE, String.class),
-                        resultSet.getObject(CustomerMapperImpl.COLUMN_NAME, String.class),
-                        resultSet.getObject(CustomerMapperImpl.COLUMN_LOCATION, String.class),
-                        ZoneId.of(resultSet.getObject(CustomerMapperImpl.COLUMN_UTC_OFFSET, String.class))
+                        username,
+                        password,
+                        resultSet.getObject(CustomerMapperImpl.COLUMN_GIVENNAME, String.class),
+                        resultSet.getObject(CustomerMapperImpl.COLUMN_SURNAME, String.class),
+                        resultSet.getObject(CustomerMapperImpl.COLUMN_EMAIL, String.class)
                 ));
             }
         } catch (SQLException e) {
