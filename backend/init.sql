@@ -42,7 +42,7 @@ CREATE TABLE airport(
     utcOffset varchar(255)
 );
 
-CREATE TABLE airplane(
+CREATE TABLE airplaneProfile(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     code varchar(255),
     type varchar(255),
@@ -57,13 +57,13 @@ CREATE TABLE airplane(
 CREATE TABLE flight(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     code varchar(255),
-    departureTime timestamp,
-    arrivalTime timestamp,
-    origin UUID,
-    destination UUID,
+    departure timestamp,
+    arrival timestamp,
+    origin UUID,            -- airport ID
+    destination UUID,       -- airport ID
     airlineId UUID,
     airplaneId UUID,
-    status varchar(255),
+    status varchar(255),    -- "scheduled", "ongoing", "deleted"
     CONSTRAINT airlineFK
         FOREIGN KEY(airlineId)
             REFERENCES airline(id),
@@ -75,7 +75,7 @@ CREATE TABLE flight(
             REFERENCES airport(id),
    CONSTRAINT airplaneFK
         FOREIGN KEY(airplaneId)
-            REFERENCES airplane(id)
+            REFERENCES airplaneProfile(id)
 );
 
 CREATE TABLE stopover(
@@ -117,7 +117,7 @@ CREATE TABLE seat(
     class varchar(255),
     CONSTRAINT flightFK
         FOREIGN KEY(flightId)
-            REFERENCES flight(id),
+            REFERENCES flight(id)
 );
 
 CREATE TABLE seatAllocation(
