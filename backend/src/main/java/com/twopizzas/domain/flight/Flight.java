@@ -54,7 +54,7 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
                 .map(FlightSeat::getName)
                 .collect(Collectors.toList());
 
-        request.
+        return null;
     }
 
     public List<Passenger> getPassengers() {

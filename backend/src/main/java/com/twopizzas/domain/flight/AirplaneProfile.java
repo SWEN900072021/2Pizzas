@@ -20,17 +20,17 @@ public class AirplaneProfile extends AssertionConcern implements Entity<EntityId
     private int economyClassRows;
     private int economyClassColumns;
 
-    public Airplane(EntityId id, String code, String type, int firstClassRows, int firstClassColumns,
+    public AirplaneProfile(EntityId id, String code, String type, int firstClassRows, int firstClassColumns,
                            int businessClassRows, int businessClassColumns, int economyClassRows, int economyClassColumns) {
         this.id = notNull(id, "id");
         this.code = notNullAndNotBlank(code, "code");
         this.type = notNullAndNotBlank(type, "type");
         this.firstClassRows = notNull(firstClassRows, "firstClassRows");
-        this.firstClassColums = notNull(firstClassColumns, "firstClassColumns");
+        this.firstClassColumns = notNull(firstClassColumns, "firstClassColumns");
         this.businessClassRows = notNull(businessClassRows, "businessClassRows");
-        this.businessClassColums = notNull(businessClassColumns, "businessClassColumns");
+        this.businessClassColumns = notNull(businessClassColumns, "businessClassColumns");
         this.economyClassRows = notNull(economyClassRows, "economyClassRows");
-        this.economyClassColums = notNull(economyClassColumns, "economyClassColumns");
+        this.economyClassColumns = notNull(economyClassColumns, "economyClassColumns");
     }
 
     public List<SeatProfile> getSeatProfiles() {
@@ -52,9 +52,39 @@ public class AirplaneProfile extends AssertionConcern implements Entity<EntityId
     }
 
     @Override
-    public EntityId getId() { return id; }
+    public EntityId getId() {
+        return id;
+    }
 
-    public String getCode() { return code; }
+    public String getCode() {
+        return code;
+    }
 
-    public String getType() { return type; }
+    public String getType() {
+        return type;
+    }
+
+    public int getFirstClassRows() {
+        return firstClassRows;
+    }
+
+    public int getFirstClassColumns() {
+        return firstClassColumns;
+    }
+
+    public int getBusinessClassRows() {
+        return businessClassRows;
+    }
+
+    public int getBusinessClassColumns() {
+        return businessClassColumns;
+    }
+
+    public int getEconomyClassRows() {
+        return economyClassRows;
+    }
+
+    public int getEconomyClassColumns() {
+        return economyClassColumns;
+    }
 }

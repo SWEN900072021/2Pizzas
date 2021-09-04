@@ -2,19 +2,15 @@ package com.twopizzas.port.data.airplane;
 
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
-import com.twopizzas.domain.AirplaneProfile;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.port.data.DataMappingException;
+import com.twopizzas.domain.flight.AirplaneProfile;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
-class AirplaneMapperImpl implements AirplaneMapper {
+class AirplaneProfileMapperImpl implements AirplaneProfileMapper {
     static final String TABLE_AIRPLANE = "airplane";
     static final String COLUMN_ID = "id";
     static final String COLUMN_CODE = "code";
@@ -37,7 +33,7 @@ class AirplaneMapperImpl implements AirplaneMapper {
                     " SET " + COLUMN_CODE + " = ?, " + COLUMN_TYPE + " = ?, "
                     + COLUMN_FIRSTCLASSROWS + " = ?, " + COLUMN_FIRSTCLASSCOLUMNS + " = ?, "
                     + COLUMN_BUSINESSCLASSROWS + " = ?, " + COLUMN_BUSINESSCLASSCOLUMNS + " = ?, "
-                    + COLUMN_ECONOMYCLASSROWS + " = ?, " + COLUMN_ECONOMYCLASSCOLUMNS + " = ?, "
+                    + COLUMN_ECONOMYCLASSROWS + " = ?, " + COLUMN_ECONOMYCLASSCOLUMNS + " = ?, " +
                     " WHERE id = ?;";
 
     private static final String DELETE_TEMPLATE =
@@ -52,12 +48,12 @@ class AirplaneMapperImpl implements AirplaneMapper {
     private ConnectionPool connectionPool;
 
     @Autowired
-    AirplaneMapperImpl(ConnectionPool connectionPool) {
+    AirplaneProfileMapperImpl(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
 
     @Override
-    public void create(Airplane entity) {
+    public void create(AirplaneProfile entity) {
         new SqlStatement(CREATE_TEMPLATE,
                 entity.getId().toString(),
                 entity.getCode(),
@@ -70,8 +66,8 @@ class AirplaneMapperImpl implements AirplaneMapper {
                 entity.getEconomyClassColumns()).doExecute(connectionPool.getCurrentTransaction());
     }
 
-    public Airplane read(EntityId entityId) {
-        List<Airplane> Airplanes = new SqlStatement(SELECT_TEMPLATE, entityId.toString())
+    public AirplaneProfile read(EntityId entityId) {
+        List<AirplaneProfile> Airplanes = new SqlStatement(SELECT_TEMPLATE, entityId.toString())
                 .doQuery(connectionPool.getCurrentTransaction(), mapper);
         if (Airplanes.isEmpty()) {
             return null;
@@ -80,12 +76,12 @@ class AirplaneMapperImpl implements AirplaneMapper {
     }
 
     @Override
-    public List<Airplane> readAll(AirplaneSpecification specification) {
+    public List<AirplaneProfile> readAll(AirplaneProfileSpecification  specification) {
         return specification.execute(connectionPool);
     }
 
     @Override
-    public void update(Airplane entity) {
+    public void update(AirplaneProfile entity) {
         new SqlStatement(UPDATE_TEMPLATE,
                 entity.getId().toString(),
                 entity.getCode(),
@@ -99,7 +95,7 @@ class AirplaneMapperImpl implements AirplaneMapper {
     }
 
     @Override
-    public void delete(Airplane entity) {
+    public void delete(AirplaneProfile entity) {
         new SqlStatement(DELETE_TEMPLATE,
                 entity.getId().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
