@@ -115,7 +115,6 @@ CREATE TABLE seat(
     name varchar(255),
     flightId varchar(36),
     seatClass varchar(255),
-    status varchar(255),
     CONSTRAINT flightFK
         FOREIGN KEY(flightId)
             REFERENCES flight(id),
@@ -128,8 +127,8 @@ CREATE TABLE seatAllocation(
      CONSTRAINT seatFK
          FOREIGN KEY(seatId)
              REFERENCES seat(id),
-    CONSTRAINT passengerFK
-        FOREIGN KEY(passengerId)
+     CONSTRAINT passengerFK
+         FOREIGN KEY(passengerId)
              REFERENCES passenger(id)
 );
 

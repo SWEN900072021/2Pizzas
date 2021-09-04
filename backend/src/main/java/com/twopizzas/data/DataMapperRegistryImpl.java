@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class DataMapperRegistryImpl implements DataMapperRegistry {
+class DataMapperRegistryImpl implements DataMapperRegistry {
 
     private final Map<Class<? extends Entity<?>>, DataMapper<? extends Entity<?>, ?, ?>> mappers = new HashMap<>();
 

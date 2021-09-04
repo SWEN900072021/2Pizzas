@@ -1,12 +1,8 @@
 package com.twopizzas.domain.flight;
 
 import com.twopizzas.data.Entity;
-import com.twopizzas.data.ValueHolder;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.domain.Passenger;
 import com.twopizzas.util.AssertionConcern;
-
-import java.util.Optional;
 
 public class FlightSeat extends AssertionConcern implements Entity<EntityId> {
 
@@ -30,5 +26,10 @@ public class FlightSeat extends AssertionConcern implements Entity<EntityId> {
 
     public SeatClass getSeatClass() {
         return seatClass;
+    }
+
+    @Override
+    public EntityId getId() {
+        return null;
     }
 }
