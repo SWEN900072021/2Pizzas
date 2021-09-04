@@ -9,6 +9,7 @@ import com.twopizzas.port.data.airport.AirportTableResultSetMapper;
 import com.twopizzas.port.data.db.ConnectionPool;
 import com.twopizzas.port.data.seat.FlightSeatMapper;
 
+import java.sql.ResultSet;
 import java.util.List;
 
 @Component
@@ -79,5 +80,10 @@ public class FlightSeatAllocationMapperImpl implements FlightSeatAllocationMappe
         new SqlStatement(DELETE_TEMPLATE,
                 entity.getId().toString())
                 .doExecute(connectionPool.getCurrentTransaction());
+    }
+
+    @Override
+    public List<FlightSeatAllocation> map(ResultSet resultSet) {
+        return null;
     }
 }

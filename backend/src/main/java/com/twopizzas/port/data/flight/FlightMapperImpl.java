@@ -15,26 +15,30 @@ public class FlightMapperImpl implements FlightMapper {
     static final String TABLE_FLIGHT = "flight";
     static final String COLUMN_ID = "id";
     static final String COLUMN_CODE = "code";
-    static final String COLUMN_NAME = "name";
-    static final String COLUMN_LOCATION = "location";
-    static final String COLUMN_UTC_OFFSET = "utcOffset";
+    static final String COLUMN_DEPARTURETIME = "departuretime";
+    static final String COLUMN_ARRIVALTIME= "arrivaltime";
+    static final String COLUMN_ORIGIN = "origin";
+    static final String COLUMN_DESTINATION = "destination";
+    static final String COLUMN_AIRLINEID = "airlineid";
+    static final String COLUMN_AIRPLANEID = "airplaneid";
+    static final String COLUMN_STATUS = "status";
 
-    private static final String create =
-            "INSERT INTO " + TABLE_FLIGHT + "(" + COLUMN_ID + " , " + COLUMN_CODE + ", " + COLUMN_NAME + ", " + COLUMN_LOCATION + ", " + COLUMN_UTC_OFFSET + ")" +
-                    " VALUES (?, ?, ?, ?, ?);";
-
-    private static final String update =
-            "UPDATE " + TABLE_FLIGHT +
-                    " SET " + COLUMN_CODE + " = ?, " + COLUMN_NAME + " = ?, " + COLUMN_LOCATION + " = ?, " + COLUMN_UTC_OFFSET + " = ?" +
-                    " WHERE id = ?;";
-
-    private static final String delete =
-            "DELETE FROM " + TABLE_FLIGHT +
-                    " WHERE id = ?;";
-
-    private static final String select =
-            "SELECT * FROM " + TABLE_FLIGHT +
-                    " WHERE id = ?;";
+//    private static final String create =
+//            "INSERT INTO " + TABLE_AIRPORT + "(" + COLUMN_ID + " , " + COLUMN_CODE + ", " + COLUMN_NAME + ", " + COLUMN_LOCATION + ", " + COLUMN_UTC_OFFSET + ")" +
+//                    " VALUES (?, ?, ?, ?, ?);";
+//
+//    private static final String update =
+//            "UPDATE " + TABLE_AIRPORT +
+//                    " SET " + COLUMN_CODE + " = ?, " + COLUMN_NAME + " = ?, " + COLUMN_LOCATION + " = ?, " + COLUMN_UTC_OFFSET + " = ?" +
+//                    " WHERE id = ?;";
+//
+//    private static final String delete =
+//            "DELETE FROM " + TABLE_AIRPORT +
+//                    " WHERE id = ?;";
+//
+//    private static final String select =
+//            "SELECT * FROM " + TABLE_AIRPORT +
+//                    " WHERE id = ?;";
 
     private final ConnectionPool connectionPool;
 
