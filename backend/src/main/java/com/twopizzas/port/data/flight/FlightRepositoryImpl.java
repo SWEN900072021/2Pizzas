@@ -4,9 +4,9 @@ import com.twopizzas.data.AbstractRepository;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.domain.Flight;
-import com.twopizzas.domain.FlightRepository;
-import com.twopizzas.domain.FlightSearch;
+import com.twopizzas.domain.flight.Flight;
+import com.twopizzas.domain.flight.FlightRepository;
+import com.twopizzas.domain.flight.FlightSearch;
 
 import java.util.List;
 

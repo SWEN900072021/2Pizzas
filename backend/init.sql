@@ -4,7 +4,8 @@ CREATE SCHEMA public;
 CREATE TABLE "user"(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     username varchar(255),
-    password varchar(255)
+    password varchar(255),
+    userType varchar(255)
 );
 
 CREATE TABLE customer(
@@ -16,6 +17,8 @@ CREATE TABLE customer(
         FOREIGN KEY(id)
             REFERENCES "user"(id) ON DELETE CASCADE
 );
+
+
 
 CREATE TABLE airline(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -90,7 +93,6 @@ CREATE TABLE stopover(
     UNIQUE(flightId, airportId)
 );
 
-
 CREATE TABLE booking(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     date timestamp,
@@ -112,28 +114,36 @@ CREATE TABLE booking(
 
 CREATE TABLE seat(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    row varchar(255),
-    "column" varchar(255),
-    flightId UUID,
-    seatType varchar(255),
-    status varchar(255),
-    CONSTRAINT flightFK
-        FOREIGN KEY(flightId)
-            REFERENCES flight(id) ON DELETE CASCADE
+    name varchar(255),
+    seatClass varchar(255),
+    status varchar(255)
+);
+
+CREATE TABLE seatAllocation(
+     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+     flightId UUID,
+     bookingId UUID,
+     passengerId UUID,
+     seatId UUID,
+     CONSTRAINT flightFK
+         FOREIGN KEY(flightId)
+             REFERENCES flight(id) ON DELETE CASCADE,
+     CONSTRAINT bookingFK
+            FOREIGN KEY(bookingId)
+             REFERENCES booking(id) ON DELETE CASCADE,
+     CONSTRAINT seatFK
+         FOREIGN KEY(seatId)
+             REFERENCES seat(id),
+    CONSTRAINT passengerFK
+        FOREIGN KEY(passengerId)
+             REFERENCES passenger(id)
 );
 
 CREATE TABLE passenger(
-    bookingId UUID,
-    seatId UUID,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     givenName varchar(255),
     surname varchar(255),
     dob date,
     nationality varchar(255),
-    passportNumber varchar(255),
-    CONSTRAINT bookingFK
-        FOREIGN KEY(bookingId)
-            REFERENCES booking(id) ON DELETE CASCADE,
-    CONSTRAINT seatFK
-        FOREIGN KEY(seatId)
-            REFERENCES seat(id)
+    passportNumber varchar(255)
 );

@@ -2,6 +2,8 @@ package com.twopizzas.domain;
 
 import com.twopizzas.data.Entity;
 import com.twopizzas.data.ValueHolder;
+import com.twopizzas.domain.flight.Flight;
+import com.twopizzas.domain.flight.SeatAllocation;
 import com.twopizzas.util.AssertionConcern;
 
 import java.util.Date;
@@ -14,6 +16,8 @@ public class Booking extends AssertionConcern implements Entity<EntityId> {
     private Double totalCost;
     private String reference;
 
+    private SeatAllocation flightAllocations;
+    private SeatAllocation returnFlightAllocations;
     private ValueHolder<List<Passenger>> passengers;
 
     private Flight flightId;

@@ -1,4 +1,7 @@
-package com.twopizzas.domain;
+package com.twopizzas.domain.flight;
+
+import com.twopizzas.domain.Airport;
+import com.twopizzas.domain.TimePeriod;
 
 public class StopOver {
     private final Airport location;

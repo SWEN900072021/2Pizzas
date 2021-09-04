@@ -1,5 +1,8 @@
-package com.twopizzas.domain;
+package com.twopizzas.domain.flight;
 
+import com.twopizzas.domain.Airline;
+import com.twopizzas.domain.Airport;
+import com.twopizzas.domain.TimePeriod;
 import com.twopizzas.util.AssertionConcern;
 
 public class FlightSearch extends AssertionConcern {

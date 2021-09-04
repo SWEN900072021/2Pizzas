@@ -1,5 +1,6 @@
 package com.twopizzas.domain;
 
+import com.twopizzas.domain.flight.Flight;
 import com.twopizzas.util.ValueViolation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
