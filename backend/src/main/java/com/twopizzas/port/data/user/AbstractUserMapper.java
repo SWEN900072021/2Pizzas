@@ -1,9 +1,13 @@
 package com.twopizzas.port.data.user;
 
 import com.twopizzas.di.Autowired;
+import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.User;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
+
+import java.sql.ResultSet;
+
 
 public abstract class AbstractUserMapper<T extends User> {
     public static final String TABLE_USER = "\"user\"";
@@ -23,6 +27,9 @@ public abstract class AbstractUserMapper<T extends User> {
 
     private static final String DELETE_TEMPLATE =
             "DELETE FROM " + TABLE_USER + " WHERE id = ?;";
+
+    private static final String SELECT =
+            "SELECT * FROM pizzaUser JOIN customer JOIN admin JOIN airline ON pizzaUser.id = customer.id OR pizzaUser.id = admin.id OR pizzaUser.id = airline.id WHERE id = ?;";
 
     private ConnectionPool connectionPool;
 
@@ -53,5 +60,9 @@ public abstract class AbstractUserMapper<T extends User> {
         new SqlStatement(DELETE_TEMPLATE,
                 entity.getId().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
+    }
+
+    protected ResultSet abstractRead(EntityId id) {
+        return new SqlStatement(SELECT, id.toString()).doQuery(connectionPool.getCurrentTransaction());
     }
 }

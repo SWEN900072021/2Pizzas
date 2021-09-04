@@ -2,15 +2,16 @@ package com.twopizzas.port.data.customer;
 
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
-import com.twopizzas.domain.Airport;
 import com.twopizzas.domain.Customer;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.domain.User;
+import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 import com.twopizzas.port.data.user.AbstractUserMapper;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -36,7 +37,6 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
                     " ON " + TABLE_USER + ".id =" + TABLE_CUSTOMER + ".id" +
             " WHERE " + TABLE_USER + ".id = ?;";
 
-    private final CustomerTableResultSetMapper mapper = new CustomerTableResultSetMapper();
     private ConnectionPool connectionPool;
 
     @Autowired
@@ -58,7 +58,7 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
     @Override
     public Customer read(EntityId entityId) {
         List<Customer> customers = new SqlStatement(SELECT_TEMPLATE, entityId.toString())
-                .doQuery(connectionPool.getCurrentTransaction(), mapper);
+                .doQuery(connectionPool.getCurrentTransaction(), this);
         if (customers.isEmpty()) {
             return null;
         }
@@ -84,5 +84,38 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
     @Override
     public void delete(Customer entity) {
         abstractDelete(entity);
+    }
+
+    public List<Customer> map(ResultSet resultSet) {
+        List<Customer> mapped = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                mapOne(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new DataMappingException(String.format(
+                    "failed to map results from result set to %s entity, error: %s", Customer.class.getName(), e.getMessage()),
+                    e);
+        }
+        return mapped;
+    }
+
+    @Override
+    public Customer mapOne(ResultSet resultSet) {
+        try {
+            return new Customer(
+                    EntityId.of(resultSet.getObject(CustomerMapperImpl.COLUMN_ID, String.class)),
+                    resultSet.getObject(AbstractUserMapper.COLUMN_USERNAME, String.class),
+                    resultSet.getObject(AbstractUserMapper.COLUMN_PASSWORD, String.class),
+                    resultSet.getObject(AbstractUserMapper.COLUMN_TYPE, String.class),
+                    resultSet.getObject(CustomerMapperImpl.COLUMN_GivenName, String.class),
+                    resultSet.getObject(CustomerMapperImpl.COLUMN_SURNAME, String.class),
+                    resultSet.getObject(CustomerMapperImpl.COLUMN_EMAIL, String.class)
+            );
+        } catch (SQLException e) {
+            throw new DataMappingException(String.format(
+                    "failed to map results from result set to %s entity, error: %s", Customer.class.getName(), e.getMessage()),
+                    e);
+        }
     }
 }

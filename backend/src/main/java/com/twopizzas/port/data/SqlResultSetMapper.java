@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface SqlResultSetMapper<T> {
     List<T> map(ResultSet resultSet);
+    T mapOne(ResultSet resultSet);
 }

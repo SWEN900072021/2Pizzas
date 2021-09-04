@@ -1,12 +1,8 @@
 package com.twopizzas.port.data.user;
 
-import com.twopizzas.data.DataMapper;
-import com.twopizzas.data.Specification;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.*;
-import com.twopizzas.port.data.DataMappingException;
-import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.airline.AirlineMapper;
 import com.twopizzas.port.data.customer.CustomerMapper;
 import com.twopizzas.port.data.db.ConnectionPool;
@@ -17,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-class UserMapperImpl implements UserMapper {
+class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
+
     private ConnectionPool connectionPool;
     private CustomerMapper customerMapper;
     private AirlineMapper airlineMapper;
@@ -39,18 +36,15 @@ class UserMapperImpl implements UserMapper {
             customerMapper.create((Customer) entity);
         } else if (entity.getUserType().equals("airline")){
             airlineMapper.create((Airline) entity);
+        } else {
+
         }
     }
 
     @Override
     public User read(EntityId entityId) {
-        List<Customer> customers = new SqlStatement(SELECT_TEMPLATE, entityId.toString())
-                .doQuery(connectionPool.getCurrentTransaction(), mapper);
-        if (customers.isEmpty()) {
-            return null;
-        }
-        // maybe throw an error if there are more than one
-        return customers.get(0);
+        ResultSet results = abstractRead(entityId);
+        return map(results).stream().findFirst().orElse(null);
     }
 
     @Override
@@ -84,9 +78,24 @@ class UserMapperImpl implements UserMapper {
         }
     }
 
-    @Override
-    public Class<User> getEntityClass() {
-        return User.class;
-    }
 
+    @Override
+    public List<User> map(ResultSet resultSet) {
+        List<User> users = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                String userType = resultSet.getObject(COLUMN_TYPE, String.class);
+                if (userType.equals("admin")) {
+                    //
+                } else if (userType.equals("customer")) {
+                    users.add(customerMapper.mapOne(resultSet));
+                } else if (userType.equals("airline")) {
+                    //
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
 }

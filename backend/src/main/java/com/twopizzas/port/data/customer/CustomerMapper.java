@@ -7,7 +7,7 @@ import com.twopizzas.port.data.SqlResultSetMapper;
 import com.twopizzas.port.data.db.ConnectionPool;
 import com.twopizzas.port.data.user.UserMapper;
 
-public interface CustomerMapper extends DataMapper<Customer, EntityId, CustomerSpecification> {
+public interface CustomerMapper extends DataMapper<Customer, EntityId, CustomerSpecification>, SqlResultSetMapper<Customer> {
 
     @Override
     default Class<Customer> getEntityClass() {
