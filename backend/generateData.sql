@@ -15,7 +15,7 @@ INSERT INTO "user"(username, password) VALUES
       ('admin_3', 'password_3');
 
 -- Customer Table
-INSERT INTO customer(id, firstName, surname, email) VALUES
+INSERT INTO customer(id, givenName, surname, email) VALUES
        ( ( SELECT id FROM "user" WHERE username = 'customer_1' ), 'John', 'Doe', 'johndoe@gmail.com'),
        ( ( SELECT id FROM "user" WHERE username = 'customer_2' ), 'Jane', 'Doe', 'janedoe@gmail.com'),
        ( ( SELECT id FROM "user" WHERE username = 'customer_3' ), 'James', 'Doe', 'jamesdoe@gmail.com');

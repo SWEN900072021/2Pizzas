@@ -1,7 +1,7 @@
 package com.twopizzas.domain;
 
 public class Customer extends User {
-    private String firstName;
+    private String givenName;
     private String lastName;
     private String email;
 
@@ -9,19 +9,19 @@ public class Customer extends User {
         super(id, username, password);
     }
 
-    public Customer(EntityId id, String username, String password, String firstName, String lastName, String email) {
+    public Customer(EntityId id, String username, String password, String givenName, String lastName, String email) {
         super(id, username, password);
-        this.firstName = firstName;
+        this.givenName = givenName;
         this.lastName = lastName;
         this.email = email;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getGivenName() {
+        return givenName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
     }
 
     public String getLastName() {
