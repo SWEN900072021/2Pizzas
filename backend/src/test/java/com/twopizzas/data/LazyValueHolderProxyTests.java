@@ -15,7 +15,7 @@ class LazyValueHolderProxyTests {
     void test() {
         // GIVEN
         String testValue = "stub";
-        LazyValueHolderProxy.ValueLoader<String> loader = Mockito.mock(StubLoader.class);
+        ValueLoader<String> loader = Mockito.mock(StubLoader.class);
         StubHolder holder = Mockito.mock(StubHolder.class);
         Mockito.when(holder.get()).thenReturn(testValue);
         Mockito.when(holder.isPresent()).thenReturn(true);
@@ -40,7 +40,7 @@ class LazyValueHolderProxyTests {
     void test2() {
         // GIVEN
         String testValue = "stub";
-        LazyValueHolderProxy.ValueLoader<String> loader = Mockito.mock(StubLoader.class);
+        ValueLoader<String> loader = Mockito.mock(StubLoader.class);
         StubHolder holder = Mockito.mock(StubHolder.class);
         Mockito.when(holder.get()).thenReturn(testValue);
         Mockito.when(loader.load()).thenReturn(holder);
@@ -62,7 +62,7 @@ class LazyValueHolderProxyTests {
     void test3() {
         // GIVEN
         String testValue = "stub";
-        LazyValueHolderProxy.ValueLoader<String> loader = Mockito.mock(StubLoader.class);
+        ValueLoader<String> loader = Mockito.mock(StubLoader.class);
         StubHolder holder = Mockito.mock(StubHolder.class);
         Mockito.when(holder.get()).thenReturn(testValue);
         Mockito.when(loader.load()).thenReturn(holder);
@@ -83,7 +83,7 @@ class LazyValueHolderProxyTests {
     void test4() {
         // GIVEN
         String testValue = "stub";
-        LazyValueHolderProxy.ValueLoader<String> loader = Mockito.mock(StubLoader.class);
+        ValueLoader<String> loader = Mockito.mock(StubLoader.class);
         StubHolder holder = Mockito.mock(StubHolder.class);
         Object returnVal = new Object();
         Mockito.when(holder.someOtherMethod()).thenReturn(returnVal);
@@ -132,7 +132,7 @@ class LazyValueHolderProxyTests {
         }
     }
 
-    static class StubLoader implements LazyValueHolderProxy.ValueLoader<String> {
+    static class StubLoader implements ValueLoader<String> {
         @Override
         public ValueHolder<String> load() {
             return new StubHolder("stub");

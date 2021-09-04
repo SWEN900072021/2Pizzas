@@ -1,28 +1,31 @@
 package com.twopizzas.domain;
 
-import com.twopizzas.data.ValueHolder;
+import com.twopizzas.data.Entity;
 import com.twopizzas.util.AssertionConcern;
 
 import java.util.Date;
 
-public class Passenger extends AssertionConcern {
+public class Passenger extends AssertionConcern implements Entity<EntityId> {
+    private final EntityId id;
     private final String givenName;
     private final String lastName;
     private final Date dateOfBirth;
     private final String passportNumber;
 
-    public Passenger(String givenName, String lastName, Date dateOfBirth, String passportNumber, ValueHolder<Seat> seat) {
-        this.givenName = notBlank(notNull(givenName, "givenName"), "givenName");
-        this.lastName = notBlank(notNull(lastName, "lastName"), "lastName");
+    public Passenger(EntityId id, String givenName, String lastName, Date dateOfBirth, String passportNumber) {
+        this.id = notNull(id, "id");
+        this.givenName = notNullAndNotBlank(givenName, "givenName");
+        this.lastName = notNullAndNotBlank(lastName, "lastName");
         this.dateOfBirth = notNull(dateOfBirth, "dateOfBirth");
-        this.passportNumber = notBlank(notNull(passportNumber, "passportNumber"), "passportNumber");
-        this.seat = notNull(seat, "seat");
+        this.passportNumber = notNullAndNotBlank(passportNumber, "passportNumber");
     }
 
-    public Passenger(String givenName, String lastName, Date dateOfBirth, String passportNumber, Seat seat) {
-        this(givenName, lastName, dateOfBirth, passportNumber, () -> seat);
-        notNull(seat, "seat");
+    public Passenger(String givenName, String lastName, Date dateOfBirth, String passportNumber) {
+        this(EntityId.nextId(), givenName, lastName, dateOfBirth, passportNumber);
     }
 
-
+    @Override
+    public EntityId getId() {
+        return id;
+    }
 }

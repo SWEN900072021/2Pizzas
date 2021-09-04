@@ -114,7 +114,7 @@ CREATE TABLE seat(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name varchar(255),
     flightId varchar(36),
-    seatClass varchar(255),
+    class varchar(255),
     CONSTRAINT flightFK
         FOREIGN KEY(flightId)
             REFERENCES flight(id),

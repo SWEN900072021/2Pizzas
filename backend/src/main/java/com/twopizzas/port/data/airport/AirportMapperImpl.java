@@ -31,15 +31,15 @@ class AirportMapperImpl implements AirportMapper {
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_AIRPORT +
             " SET " + COLUMN_CODE + " = ?, " + COLUMN_NAME + " = ?, " + COLUMN_LOCATION + " = ?, " + COLUMN_UTC_OFFSET + " = ?" +
-            " WHERE id = ?;";
+            " WHERE " + COLUMN_ID + " = ?;";
 
     private static final String DELETE_TEMPLATE =
             "DELETE FROM " + TABLE_AIRPORT +
-            " WHERE id = ?;";
+            " WHERE " + COLUMN_ID + " = ?;";
 
     private static final String SELECT_TEMPLATE =
             "SELECT * FROM " + TABLE_AIRPORT +
-            " WHERE id = ?;";
+            " WHERE " + COLUMN_ID + " = ?;";
 
     private final AirportTableResultSetMapper mapper = new AirportTableResultSetMapper();
     private final ConnectionPool connectionPool;

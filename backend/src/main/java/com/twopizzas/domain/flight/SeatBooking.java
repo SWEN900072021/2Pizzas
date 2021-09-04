@@ -1,12 +1,12 @@
 package com.twopizzas.domain.flight;
 
-import java.util.List;
+import java.util.Set;
 
 public class SeatBooking {
-    private final List<FlightSeatAllocation> allocations;
+    private final Set<FlightSeatAllocation> allocations;
     private final Flight flight;
 
-    public SeatBooking(List<FlightSeatAllocation> allocations, Flight flight) {
+    public SeatBooking(Flight flight, Set<FlightSeatAllocation> allocations) {
         this.allocations = allocations;
         this.flight = flight;
     }

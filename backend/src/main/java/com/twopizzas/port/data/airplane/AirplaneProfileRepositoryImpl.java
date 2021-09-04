@@ -10,10 +10,10 @@ import com.twopizzas.domain.flight.AirplaneProfileRepository;
 import java.util.List;
 
 @Component
-public class AirplaneRepositoryImpl extends AbstractRepository<AirplaneProfile, EntityId, AirplaneProfileSpecification, AirplaneProfileMapper> implements AirplaneProfileRepository {
+public class AirplaneProfileRepositoryImpl extends AbstractRepository<AirplaneProfile, EntityId, AirplaneProfileSpecification, AirplaneProfileMapper> implements AirplaneProfileRepository {
 
     @Autowired
-    public AirplaneRepositoryImpl(AirplaneProfileMapper dataMapper) {
+    public AirplaneProfileRepositoryImpl(AirplaneProfileMapper dataMapper) {
         super(dataMapper);
     }
 

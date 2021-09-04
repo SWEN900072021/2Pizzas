@@ -7,6 +7,7 @@ import com.twopizzas.domain.flight.AirplaneProfile;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 
+import java.sql.ResultSet;
 import java.util.List;
 
 @Component

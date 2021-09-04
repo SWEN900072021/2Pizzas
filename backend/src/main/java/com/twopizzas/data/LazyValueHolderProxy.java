@@ -3,6 +3,7 @@ package com.twopizzas.data;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 public class LazyValueHolderProxy<T> implements InvocationHandler {
     private ValueHolder<T> wrapped;
@@ -41,7 +42,8 @@ public class LazyValueHolderProxy<T> implements InvocationHandler {
         return method.invoke(wrapped, args);
     }
 
-    public interface ValueLoader<T> {
-        ValueHolder<T> load();
+    public static <T> ValueHolder<T> makeLazy(ValueLoader<T> loader) {
+        LazyValueHolderProxy<T> proxy = new LazyValueHolderProxy<>(loader);
+        return (ValueHolder<T>) Proxy.newProxyInstance(ValueHolder.class.getClassLoader(), new Class<?>[]{ValueLoader.class}, proxy);
     }
 }

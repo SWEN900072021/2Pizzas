@@ -1,6 +1,7 @@
 package com.twopizzas.port.data.flight;
 
 import com.twopizzas.di.Autowired;
+import com.twopizzas.di.Component;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.flight.Flight;
 import com.twopizzas.port.data.db.ConnectionPool;
@@ -8,10 +9,10 @@ import com.twopizzas.port.data.db.ConnectionPool;
 import java.sql.ResultSet;
 import java.util.List;
 
+@Component
 public class FlightMapperImpl implements FlightMapper {
 
     static final String TABLE_FLIGHT = "flight";
-    static final String TABLE_AIRPORT = "airport";
     static final String COLUMN_ID = "id";
     static final String COLUMN_CODE = "code";
     static final String COLUMN_NAME = "name";
@@ -19,20 +20,20 @@ public class FlightMapperImpl implements FlightMapper {
     static final String COLUMN_UTC_OFFSET = "utcOffset";
 
     private static final String create =
-            "INSERT INTO " + TABLE_AIRPORT + "(" + COLUMN_ID + " , " + COLUMN_CODE + ", " + COLUMN_NAME + ", " + COLUMN_LOCATION + ", " + COLUMN_UTC_OFFSET + ")" +
+            "INSERT INTO " + TABLE_FLIGHT + "(" + COLUMN_ID + " , " + COLUMN_CODE + ", " + COLUMN_NAME + ", " + COLUMN_LOCATION + ", " + COLUMN_UTC_OFFSET + ")" +
                     " VALUES (?, ?, ?, ?, ?);";
 
     private static final String update =
-            "UPDATE " + TABLE_AIRPORT +
+            "UPDATE " + TABLE_FLIGHT +
                     " SET " + COLUMN_CODE + " = ?, " + COLUMN_NAME + " = ?, " + COLUMN_LOCATION + " = ?, " + COLUMN_UTC_OFFSET + " = ?" +
                     " WHERE id = ?;";
 
     private static final String delete =
-            "DELETE FROM " + TABLE_AIRPORT +
+            "DELETE FROM " + TABLE_FLIGHT +
                     " WHERE id = ?;";
 
     private static final String select =
-            "SELECT * FROM " + TABLE_AIRPORT +
+            "SELECT * FROM " + TABLE_FLIGHT +
                     " WHERE id = ?;";
 
     private final ConnectionPool connectionPool;

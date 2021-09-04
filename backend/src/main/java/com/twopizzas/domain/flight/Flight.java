@@ -3,14 +3,12 @@ package com.twopizzas.domain.flight;
 import com.twopizzas.data.Entity;
 import com.twopizzas.data.ValueHolder;
 import com.twopizzas.domain.*;
-import com.twopizzas.error.BuisnessRuleException;
-import com.twopizzas.error.BusinessRuleException;
+import com.twopizzas.domain.error.BusinessRuleException;
+import com.twopizzas.domain.error.DataFormatException;
 import com.twopizzas.util.AssertionConcern;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Flight extends AssertionConcern implements Entity<EntityId> {
@@ -18,8 +16,8 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
     private final EntityId id;
     private final AirplaneProfile airplaneProfile;
     private final Airline airline;
-    private final ValueHolder<List<FlightSeat>> seats;
-    private final ValueHolder<List<FlightSeatAllocation>> bookedSeats;
+    private final ValueHolder<Set<FlightSeat>> seats;
+    private final ValueHolder<Set<FlightSeatAllocation>> allocatedSeats;
     private final Airport origin;
     private final Airport destination;
     private OffsetDateTime departure;
@@ -28,12 +26,18 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
     private final String code;
     private Status status;
 
-    public Flight(EntityId id, ValueHolder<List<FlightSeatAllocation>> bookedSeats, AirplaneProfile airplaneProfile, Airline airline, ValueHolder<List<FlightSeat>> seats, Airport origin, Airport destination, List<StopOver> stopOvers, String code) {
+    public Flight(EntityId id, ValueHolder<Set<FlightSeatAllocation>> allocatedSeats, AirplaneProfile airplaneProfile, Airline airline, ValueHolder<Set<FlightSeat>> seats, Airport origin, Airport destination, List<StopOver> stopOvers, String code) {
         this.id = notNull(id, "id");
-        this.bookedSeats = notNull(bookedSeats, "bookedSeats");
+        this.allocatedSeats = notNull(allocatedSeats, "bookedSeats");
         this.airplaneProfile = notNull(airplaneProfile, "airplaneProfile");
         this.airline = notNull(airline, "airline");
-        this.seats = notNull(seats, "seats");
+
+        if(seats == null) {
+            this.seats = () -> buildSeats(airplaneProfile);
+        } else {
+            this.seats = seats;
+        }
+
         this.origin = notNull(origin, "origin");
         this.destination = notNull(destination, "destination");
         this.stopOvers = notNull(stopOvers, "stopOvers");
@@ -41,84 +45,86 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
     }
 
     public Flight(AirplaneProfile airplaneProfile, Airline airline, Airport origin, Airport destination, List<StopOver> stopOvers, String code) {
-        this(EntityId.nextId(), ArrayList::new, airplaneProfile, airline, () -> buildSeats(airplaneProfile), origin, destination, stopOvers, code);
+        this(EntityId.nextId(), HashSet::new, airplaneProfile, airline, null, origin, destination, stopOvers, code);
     }
 
-    private static List<FlightSeat> buildSeats(AirplaneProfile profile) {
+    private Set<FlightSeat> buildSeats(AirplaneProfile profile) {
         return profile.getSeatProfiles().stream().map(
-                        sp -> new FlightSeat(sp.getName(), sp.getSeatClass())
-                ).collect(Collectors.toList());
+                        sp -> new FlightSeat(sp.getName(), sp.getSeatClass(), this)
+                ).collect(Collectors.toSet());
     }
 
     public SeatBooking allocateSeats(BookingRequest request) {
-        // assert that the flight has the correct seats
-        List<String> allSeatNames = seats.get().stream()
-                .map(FlightSeat::getName)
-                .collect(Collectors.toList());
-
-        List<String> invalidSeatNames = request.getAllocations().stream()
-                .map(BookingRequest.SeatAllocationRequest::getSeatName)
-                .filter(allSeatNames::contains)
-                .collect(Collectors.toList());
-
-        if (!invalidSeatNames.isEmpty()) {
-            throw new BusinessRuleException(String.format("seats %s are invalid for flight %s", id, invalidSeatNames));
+        // assert that the request is valid
+        Set<String> seatNames = request.getAllocations().stream().map(BookingRequest.SeatAllocationRequest::getSeatName).collect(Collectors.toSet());
+        if (seatNames.size() != request.getAllocations().size()) {
+            throw new DataFormatException("all seat names across requested allocations must be unique");
         }
 
-        List<String> bookedSeatNames = bookedSeats.get().stream()
-                .map(a -> a.getSeat().getName())
-                .collect(Collectors.toList());
+        if (request.getAllocations().stream()
+                .map(BookingRequest.SeatAllocationRequest::getPassenger)
+                .count() != request.getAllocations().size()) {
+            throw new DataFormatException("all passengers across requested allocations must be unique");
+        }
 
-        // assert that the seats are not booked
-        List<String> invalidSeatBookings = request.getAllocations().stream()
-                .map(BookingRequest.SeatAllocationRequest::getSeatName)
-                .filter(bookedSeatNames::contains)
-                .collect(Collectors.toList());
+        Map<String, Passenger> passengerSeatNames = request.getAllocations().stream()
+                .collect(Collectors.toMap(
+                        BookingRequest.SeatAllocationRequest::getSeatName,
+                        BookingRequest.SeatAllocationRequest::getPassenger
+                ));
 
-        if (!invalidSeatBookings.isEmpty()) {
-            throw new BusinessRuleException(String.format("seats %s are already booked for flight %s", id, invalidSeatBookings));
+        Set<FlightSeat> seatsToBook = getSeats(seatNames);
+        Set<FlightSeat> availableSeats = getAvailableSeats();
+
+        Set<FlightSeat> bookingConflicts = getSeats().stream()
+                .filter(s -> !availableSeats.contains(s))
+                .collect(Collectors.toSet());
+
+        if (!bookingConflicts.isEmpty()) {
+            throw new BusinessRuleException(String.format("seats %s are already booked for flight %s",
+                    id,
+                    bookingConflicts.stream().map(FlightSeat::getName).collect(Collectors.toList())));
         }
 
         return new SeatBooking(
-                this, seats.get().stream().filter()
-        )
+                this,
+                availableSeats.stream()
+                    .map(s -> new FlightSeatAllocation(s, passengerSeatNames.get(s.getName())))
+                    .collect(Collectors.toSet())
+        );
     }
 
-    public List<FlightSeat> getAvailableSeats(List<String> seatNames) {
-        // assert that the flight has the correct seats
-        List<FlightSeat> matchingSeats = seats.get().stream()
+    private Set<FlightSeat> getSeats(Set<String> seatNames) {
+        // assert that the seat names are correct for the fight
+        Set<FlightSeat> matchingSeats = seats.get().stream()
                 .filter(s -> seatNames.contains(s.getName()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         if (matchingSeats.size() != seatNames.size()) {
-            throw new BusinessRuleException(String.format("seats %s are invalid for flight %s", id, invalidSeatNames));
+            List<String> matchedNames = matchingSeats.stream().map(FlightSeat::getName).collect(Collectors.toList());
+            throw new BusinessRuleException(String.format("seats %s are invalid for flight %s",
+                    id,
+                    seatNames.stream().filter(n -> !matchedNames.contains(n)).collect(Collectors.toList())));
         }
 
-        List<String> bookedSeatNames = bookedSeats.get().stream()
-                .map(a -> a.getSeat().getName())
-                .collect(Collectors.toList());
-
-        // assert that the seats are not booked
-        List<String> invalidSeatBookings = seatNames.stream()
-                .filter(bookedSeatNames::contains)
-                .collect(Collectors.toList());
-
-        if (!invalidSeatBookings.isEmpty()) {
-            throw new BusinessRuleException(String.format("seats %s are already booked for flight %s", id, invalidSeatBookings));
-        }
-
-
+        return matchingSeats;
     }
 
-    public List<Passenger> getPassengers() {
-        return seats.get().stream()
-                .map(FlightSeat::getPassenger)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+    public Set<FlightSeat> getAvailableSeats() {
+        Set<FlightSeat> bookedSeats = allocatedSeats.get().stream()
+                .map(FlightSeatAllocation::getSeat)
+                .collect(Collectors.toSet());
+
+        return seats.get().stream().filter(s -> !bookedSeats.contains(s)).collect(Collectors.toSet());
     }
 
-    public List<FlightSeat> getSeats() {
+    public Set<Passenger> getPassengers() {
+        return allocatedSeats.get().stream()
+                .map(FlightSeatAllocation::getPassenger)
+                .collect(Collectors.toSet());
+    }
+
+    public Set<FlightSeat> getSeats() {
         return seats.get();
     }
 
