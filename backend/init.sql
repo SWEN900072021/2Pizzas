@@ -124,12 +124,17 @@ CREATE TABLE seatAllocation(
      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
      passengerId UUID,
      seatId UUID,
+     bookingId UUID,
      CONSTRAINT seatFK
          FOREIGN KEY(seatId)
              REFERENCES seat(id),
      CONSTRAINT passengerFK
          FOREIGN KEY(passengerId)
              REFERENCES passenger(id)
+             bookingId varchar(36),
+     CONSTRAINT bookingFK
+         FOREIGN KEY(bookingId)
+             REFERENCES booking(id)
 );
 
 CREATE TABLE passenger(
@@ -138,9 +143,5 @@ CREATE TABLE passenger(
     surname varchar(255),
     dob date,
     nationality varchar(255),
-    passportNumber varchar(255),
-    bookingId varchar(36),
-    CONSTRAINT bookingFK
-        FOREIGN KEY(bookingId)
-            REFERENCES booking(id)
+    passportNumber varchar(255)
 );
