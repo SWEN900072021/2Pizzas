@@ -33,6 +33,11 @@ public class AirplaneProfile extends AssertionConcern implements Entity<EntityId
         this.economyClassColumns = notNull(economyClassColumns, "economyClassColumns");
     }
 
+    public AirplaneProfile(String code, String type, int firstClassRows, int firstClassColumns,
+                           int businessClassRows, int businessClassColumns, int economyClassRows, int economyClassColumns) {
+        this(EntityId.nextId(), code, type, firstClassRows, firstClassColumns, businessClassRows, businessClassColumns, economyClassRows, economyClassColumns);
+    }
+
     public List<SeatProfile> getSeatProfiles() {
         List<SeatProfile> allSeats = new ArrayList<>();
         allSeats.addAll(getSeatProfilesForClass(firstClassRows, firstClassColumns, SeatClass.FIRST));

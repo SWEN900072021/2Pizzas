@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Component
 class AirplaneProfileMapperImpl implements AirplaneProfileMapper {
-    static final String TABLE_AIRPLANE = "airplane";
+    static final String TABLE_AIRPLANE = "airplaneProfile";
     static final String COLUMN_ID = "id";
     static final String COLUMN_CODE = "code";
     static final String COLUMN_TYPE = "type";
@@ -38,7 +38,7 @@ class AirplaneProfileMapperImpl implements AirplaneProfileMapper {
                     " SET " + COLUMN_CODE + " = ?, " + COLUMN_TYPE + " = ?, "
                     + COLUMN_FIRST_CLASS_ROWS + " = ?, " + COLUMN_FIRST_CLASS_COLUMNS + " = ?, "
                     + COLUMN_BUSINESS_CLASS_ROWS + " = ?, " + COLUMN_BUSINESS_CLASS_COLUMNS + " = ?, "
-                    + COLUMN_ECONOMY_CLASS_ROWS + " = ?, " + COLUMN_ECONOMY_CLASS_COLUMNS + " = ?, " +
+                    + COLUMN_ECONOMY_CLASS_ROWS + " = ?, " + COLUMN_ECONOMY_CLASS_COLUMNS + " = ?" +
                     " WHERE id = ?;";
 
     private static final String DELETE_TEMPLATE =
@@ -59,7 +59,7 @@ class AirplaneProfileMapperImpl implements AirplaneProfileMapper {
     @Override
     public void create(AirplaneProfile entity) {
         new SqlStatement(INSERT_TEMPLATE,
-                entity.getId(),
+                entity.getId().toString(),
                 entity.getCode(),
                 entity.getType(),
                 entity.getFirstClassRows(),
@@ -107,7 +107,7 @@ class AirplaneProfileMapperImpl implements AirplaneProfileMapper {
         try {
             while (resultSet.next()) {
                 mapped.add(new AirplaneProfile(
-                        EntityId.of(resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_ID, UUID.class)),
+                        EntityId.of(resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_ID, String.class)),
                         resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_CODE, String.class),
                         resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_TYPE, String.class),
                         resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_FIRST_CLASS_ROWS),
