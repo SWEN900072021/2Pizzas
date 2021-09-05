@@ -31,7 +31,7 @@ public class AirportMapperImplTests {
     }
 
     @Test
-    @DisplayName("GIVEN valid airport object WHEN created invoked THEN airport persisted in database")
+    @DisplayName("GIVEN valid airport object WHEN create invoked THEN airport persisted in database")
     void test() {
         // GIVEN
         Airport entity = new Airport(
@@ -52,8 +52,51 @@ public class AirportMapperImplTests {
     }
 
     @Test
-    @DisplayName("GIVEN two airports in database WHEN execute AllAirportsSpecification THEN airports returned")
+    @DisplayName("GIVEN airport in database WHEN delete invoked THEN airport removed from database")
     void test2() {
+        // GIVEN
+        Airport entity = new Airport(
+                "COD",  "New Test Airport", "Berlin", ZoneId.of("Asia/Calcutta")
+        );
+        mapper.create(entity);
+
+        // WHEN
+        mapper.delete(entity);
+
+        // THEN
+        Airport gone = mapper.read(entity.getId());
+        Assertions.assertNull(gone);
+    }
+
+    @Test
+    @DisplayName("GIVEN airport in database WHEN update invoked THEN airport updated in database")
+    void test3() {
+        // GIVEN
+        Airport entity = new Airport(
+                "COD",  "New Test Airport", "Berlin", ZoneId.of("Asia/Calcutta")
+        );
+        mapper.create(entity);
+
+        Airport update = new Airport(
+                entity.getId(), "CED", "Updated Test Airport", "France", ZoneId.of("Europe/Berlin")
+        );
+
+        // WHEN
+        mapper.update(update);
+
+        // THEN
+        Airport updated = mapper.read(entity.getId());
+        Assertions.assertNotNull(updated);
+        Assertions.assertEquals(update.getId(), updated.getId());
+        Assertions.assertEquals(update.getCode(), updated.getCode());
+        Assertions.assertEquals(update.getName(), updated.getName());
+        Assertions.assertEquals(update.getLocation(), updated.getLocation());
+        Assertions.assertEquals(update.getUtcOffset(), updated.getUtcOffset());
+    }
+
+    @Test
+    @DisplayName("GIVEN two airports in database WHEN execute AllAirportsSpecification THEN airports returned")
+    void test4() {
         // GIVEN
         Airport entity = new Airport(
                 "COD",  "New Test Airport", "Berlin", ZoneId.of("Asia/Calcutta")

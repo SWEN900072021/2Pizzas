@@ -81,7 +81,7 @@ class AirportMapperImpl implements AirportMapper {
                 entity.getCode(),
                 entity.getName(),
                 entity.getLocation(),
-                entity.getUtcOffset().normalized(),
+                entity.getUtcOffset().getId(),
                 entity.getId().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
     }
