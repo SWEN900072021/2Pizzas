@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 class AirplaneProfileMapperImpl implements AirplaneProfileMapper {
@@ -58,7 +59,7 @@ class AirplaneProfileMapperImpl implements AirplaneProfileMapper {
     @Override
     public void create(AirplaneProfile entity) {
         new SqlStatement(INSERT_TEMPLATE,
-                entity.getId().toString(),
+                entity.getId(),
                 entity.getCode(),
                 entity.getType(),
                 entity.getFirstClassRows(),
@@ -106,7 +107,7 @@ class AirplaneProfileMapperImpl implements AirplaneProfileMapper {
         try {
             while (resultSet.next()) {
                 mapped.add(new AirplaneProfile(
-                        EntityId.of(resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_ID, String.class)),
+                        EntityId.of(resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_ID, UUID.class)),
                         resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_CODE, String.class),
                         resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_TYPE, String.class),
                         resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_FIRST_CLASS_ROWS),
