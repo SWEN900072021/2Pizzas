@@ -24,7 +24,7 @@ class AirportMapperImpl implements AirportMapper {
     static final String COLUMN_LOCATION = "location";
     static final String COLUMN_UTC_OFFSET = "utcOffset";
 
-    private static final String CREATE_TEMPLATE =
+    private static final String INSERT_TEMPLATE =
             "INSERT INTO " + TABLE_AIRPORT + "(" + COLUMN_ID + " , " + COLUMN_CODE + ", " + COLUMN_NAME + ", " + COLUMN_LOCATION + ", " + COLUMN_UTC_OFFSET + ")" +
             " VALUES (?, ?, ?, ?, ?);";
 
@@ -51,7 +51,7 @@ class AirportMapperImpl implements AirportMapper {
 
     @Override
     public void create(Airport entity) {
-        new SqlStatement(CREATE_TEMPLATE,
+        new SqlStatement(INSERT_TEMPLATE,
                 entity.getId().toString(),
                 entity.getCode(),
                 entity.getName(),

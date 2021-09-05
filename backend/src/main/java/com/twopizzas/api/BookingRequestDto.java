@@ -1,5 +1,6 @@
-package com.twopizzas.domain;
+package com.twopizzas.api;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class BookingRequestDto {
@@ -41,16 +42,43 @@ public class BookingRequestDto {
     }
 
     public static class PassengerBooking {
-        private String name;
+        private String givenName;
+        private String lastName;
         private String passport;
+        private LocalDate dateOfBirth;
+        private String nationality;
         private List<SeatAllocationDto> seatAllocations;
 
-        public String getName() {
-            return name;
+        public String getGivenName() {
+            return givenName;
         }
 
-        public void setName(String name) {
-            this.name = name;
+        public void setGivenName(String givenName) {
+            this.givenName = givenName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        public LocalDate getDateOfBirth() {
+            return dateOfBirth;
+        }
+
+        public void setDateOfBirth(LocalDate dateOfBirth) {
+            this.dateOfBirth = dateOfBirth;
+        }
+
+        public String getNationality() {
+            return nationality;
+        }
+
+        public void setNationality(String nationality) {
+            this.nationality = nationality;
         }
 
         public String getPassport() {

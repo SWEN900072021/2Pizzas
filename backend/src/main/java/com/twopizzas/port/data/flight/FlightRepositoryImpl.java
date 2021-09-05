@@ -19,11 +19,6 @@ public class FlightRepositoryImpl extends AbstractRepository<Flight, EntityId, F
     }
 
     @Override
-    public List<Flight> customerFlights(EntityId customerId) {
-        return dataMapper.readAll(new CustomerFlightsSpecification(customerId));
-    }
-
-    @Override
     public List<Flight> searchFlights(FlightSearch search) {
         return null;
     }

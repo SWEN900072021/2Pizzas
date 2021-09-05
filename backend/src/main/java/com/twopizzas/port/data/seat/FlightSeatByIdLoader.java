@@ -23,6 +23,6 @@ public class FlightSeatByIdLoader extends AssertionConcern implements ValueLoade
 
     @Override
     public ValueHolder<FlightSeat> load() {
-        return new BaseValueHolder<>(mapper.read(seatId));
+        return BaseValueHolder.of(mapper.read(seatId));
     }
 }

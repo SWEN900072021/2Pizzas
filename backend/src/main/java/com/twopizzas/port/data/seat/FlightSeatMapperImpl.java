@@ -2,6 +2,7 @@ package com.twopizzas.port.data.seat;
 
 import com.twopizzas.data.LazyValueHolderProxy;
 import com.twopizzas.di.Autowired;
+import com.twopizzas.di.Component;
 import com.twopizzas.domain.Airport;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.flight.FlightSeat;
@@ -18,6 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 class FlightSeatMapperImpl implements FlightSeatMapper {
 
     static final String TABLE_SEAT = "seat";
@@ -26,7 +28,7 @@ class FlightSeatMapperImpl implements FlightSeatMapper {
     static final String COLUMN_FLIGHT_ID = "flightId";
     static final String COLUMN_CLASS = "class";
 
-    private static final String CREATE_TEMPLATE =
+    private static final String INSERT_TEMPLATE =
             "INSERT INTO " + TABLE_SEAT + "(" + COLUMN_ID + " , " + COLUMN_NAME + ", " + COLUMN_FLIGHT_ID + ", " + COLUMN_CLASS + ")" +
             " VALUES (?, ?, ?, ?);";
 
@@ -43,7 +45,6 @@ class FlightSeatMapperImpl implements FlightSeatMapper {
             "SELECT * FROM " + TABLE_SEAT +
             " WHERE " + COLUMN_ID + " = ?;";
 
-    private final AirportTableResultSetMapper mapper = new AirportTableResultSetMapper();
     private final FlightMapper flightMapper;
     private final ConnectionPool connectionPool;
 
@@ -55,7 +56,7 @@ class FlightSeatMapperImpl implements FlightSeatMapper {
 
     @Override
     public void create(FlightSeat entity) {
-        new SqlStatement(CREATE_TEMPLATE,
+        new SqlStatement(INSERT_TEMPLATE,
                 entity.getId().toString(),
                 entity.getName(),
                 entity.getFlight().getId().toString(),

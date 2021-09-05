@@ -22,6 +22,10 @@ public class Passenger extends AssertionConcern implements Entity<EntityId> {
         this.passportNumber = notNullAndNotBlank(passportNumber, "passportNumber");
     }
 
+    public Passenger(String givenName, String lastName, LocalDate dateOfBirth, String nationality, String passportNumber) {
+        this(EntityId.nextId(), givenName, lastName, dateOfBirth, nationality, passportNumber);
+    }
+
     @Override
     public EntityId getId() {
         return id;

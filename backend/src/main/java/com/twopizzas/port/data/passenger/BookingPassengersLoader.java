@@ -1,23 +1,19 @@
 package com.twopizzas.port.data.passenger;
 
 import com.twopizzas.data.BaseValueHolder;
-import com.twopizzas.data.LazyValueHolderProxy;
 import com.twopizzas.data.ValueHolder;
+import com.twopizzas.data.ValueLoader;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.Passenger;
-import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-public class BookingPassengersLoader implements LazyValueHolderProxy.ValueLoader<List<Passenger>> {
+public class BookingPassengersLoader implements ValueLoader<List<Passenger>> {
 
-    private static final String TEMPLATE = "SELECT * FROM passenger JOIN seat ON  WHERE bookingId = ?";
+    private static final String TEMPLATE = "SELECT * FROM passenger JOIN booking ON passenger.bookingId = booking.id;";
 
     private final EntityId bookingId;
     private final ConnectionPool connection;

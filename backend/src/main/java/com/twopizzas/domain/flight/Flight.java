@@ -6,6 +6,7 @@ import com.twopizzas.domain.*;
 import com.twopizzas.domain.error.BusinessRuleException;
 import com.twopizzas.domain.error.DataFormatException;
 import com.twopizzas.util.AssertionConcern;
+import com.twopizzas.util.ValueViolation;
 
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -16,21 +17,23 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
     private final EntityId id;
     private final AirplaneProfile airplaneProfile;
     private final Airline airline;
-    private final ValueHolder<Set<FlightSeat>> seats;
-    private final ValueHolder<Set<FlightSeatAllocation>> allocatedSeats;
+    private final ValueHolder<List<FlightSeat>> seats;
+    private final ValueHolder<List<FlightSeatAllocation>> allocatedSeats;
     private final Airport origin;
     private final Airport destination;
-    private OffsetDateTime departure;
-    private OffsetDateTime arrival;
+    private final OffsetDateTime departure;
+    private final OffsetDateTime arrival;
     private final List<StopOver> stopOvers;
     private final String code;
     private Status status;
 
-    public Flight(EntityId id, ValueHolder<Set<FlightSeatAllocation>> allocatedSeats, AirplaneProfile airplaneProfile, Airline airline, ValueHolder<Set<FlightSeat>> seats, Airport origin, Airport destination, List<StopOver> stopOvers, String code) {
+    public Flight(EntityId id, ValueHolder<List<FlightSeatAllocation>> allocatedSeats, AirplaneProfile airplaneProfile, Airline airline, ValueHolder<List<FlightSeat>> seats, Airport origin, Airport destination, OffsetDateTime departure, OffsetDateTime arrival, List<StopOver> stopOvers, String code, Status status) {
         this.id = notNull(id, "id");
         this.allocatedSeats = notNull(allocatedSeats, "bookedSeats");
         this.airplaneProfile = notNull(airplaneProfile, "airplaneProfile");
         this.airline = notNull(airline, "airline");
+        this.departure = notNull(departure, "departure");
+        this.arrival = notNull(arrival, "arrival");
 
         if(seats == null) {
             this.seats = () -> buildSeats(airplaneProfile);
@@ -40,18 +43,23 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
 
         this.origin = notNull(origin, "origin");
         this.destination = notNull(destination, "destination");
-        this.stopOvers = notNull(stopOvers, "stopOvers");
+
+        notNull(stopOvers, "stopOvers");
+        this.stopOvers = new ArrayList<>();
+        stopOvers.forEach(this::addStopOver);
+
         this.code = notNull(code, "code");
+        this.status = notNull(status, "status");
     }
 
-    public Flight(AirplaneProfile airplaneProfile, Airline airline, Airport origin, Airport destination, List<StopOver> stopOvers, String code) {
-        this(EntityId.nextId(), HashSet::new, airplaneProfile, airline, null, origin, destination, stopOvers, code);
+    public Flight(AirplaneProfile airplaneProfile, Airline airline, Airport origin, Airport destination, List<StopOver> stopOvers, String code, OffsetDateTime departure, OffsetDateTime arrival) {
+        this(EntityId.nextId(), ArrayList::new, airplaneProfile, airline, null, origin, destination, departure, arrival, stopOvers, code, Status.TO_SCHEDULE);
     }
 
-    private Set<FlightSeat> buildSeats(AirplaneProfile profile) {
+    private List<FlightSeat> buildSeats(AirplaneProfile profile) {
         return profile.getSeatProfiles().stream().map(
                         sp -> new FlightSeat(sp.getName(), sp.getSeatClass(), this)
-                ).collect(Collectors.toSet());
+                ).collect(Collectors.toList());
     }
 
     public SeatBooking allocateSeats(BookingRequest request) {
@@ -114,6 +122,10 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
         return matchingSeats;
     }
 
+    public Set<FlightSeat> getSeats() {
+        return new HashSet<>(seats.get());
+    }
+
     public Set<FlightSeat> getAvailableSeats() {
         Set<FlightSeat> bookedSeats = allocatedSeats.get().stream()
                 .map(FlightSeatAllocation::getSeat)
@@ -128,8 +140,71 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
                 .collect(Collectors.toSet());
     }
 
-    public Set<FlightSeat> getSeats() {
-        return seats.get();
+    public void addStopOver(Airport location, OffsetDateTime arrival, OffsetDateTime departure) {
+        addStopOver(new StopOver(location, arrival, departure, () -> this));
+    }
+
+    private void addStopOver(StopOver stopOver) {
+        validateStopOver(stopOver);
+        stopOvers.add(stopOver);
+    }
+
+    private void validateStopOver(StopOver stopOver) {
+        if (stopOver.getArrival().isBefore(departure)) {
+            throw new ValueViolation("stopover arrival must not be before flight departure");
+        }
+
+        if (stopOver.getDeparture().isAfter(arrival)) {
+            throw new ValueViolation("stopover departure must not be after flight arrival");
+        }
+
+        stopOvers.forEach(s -> {
+            if (stopOver.getArrival().isAfter(s.getArrival()) && stopOver.getArrival().isBefore(s.getDeparture()) ||
+                    stopOver.getDeparture().isAfter(s.getArrival()) && stopOver.getDeparture().isBefore(s.getDeparture()))
+            {
+                throw new ValueViolation("conflicting stopovers");
+            }
+        });
+    }
+
+    public AirplaneProfile getAirplaneProfile() {
+        return airplaneProfile;
+    }
+
+    public Airline getAirline() {
+        return airline;
+    }
+
+    public Airport getOrigin() {
+        return origin;
+    }
+
+    public Airport getDestination() {
+        return destination;
+    }
+
+    public OffsetDateTime getDeparture() {
+        return departure;
+    }
+
+    public OffsetDateTime getArrival() {
+        return arrival;
+    }
+
+    public List<StopOver> getStopOvers() {
+        return stopOvers;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override

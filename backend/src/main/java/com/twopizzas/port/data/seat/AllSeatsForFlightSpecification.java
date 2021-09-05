@@ -7,7 +7,7 @@ import com.twopizzas.port.data.db.ConnectionPool;
 
 import java.util.List;
 
-class AllSeatsForFlight implements FlightSeatSpecification {
+public class AllSeatsForFlightSpecification implements FlightSeatSpecification {
 
     private static final String TEMPLATE =
             "SELECT * FROM " + FlightSeatMapperImpl.TABLE_SEAT +
@@ -16,7 +16,7 @@ class AllSeatsForFlight implements FlightSeatSpecification {
     private final FlightSeatMapper mapper;
     private final EntityId flightId;
 
-    public AllSeatsForFlight(FlightSeatMapper mapper, EntityId flightId) {
+    public AllSeatsForFlightSpecification(FlightSeatMapper mapper, EntityId flightId) {
         this.mapper = mapper;
         this.flightId = flightId;
     }

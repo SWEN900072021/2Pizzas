@@ -62,27 +62,27 @@ public class FlightSearch extends AssertionConcern {
             return new FlightSearch(departing, returning, from, to, airline, passengers);
         }
 
-        public void setDeparting(TimePeriod departing) {
+        public void departing(TimePeriod departing) {
             this.departing = departing;
         }
 
-        public void setReturning(TimePeriod returning) {
+        public void returning(TimePeriod returning) {
             this.returning = returning;
         }
 
-        public void setFrom(Airport from) {
+        public void from(Airport from) {
             this.from = from;
         }
 
-        public void setTo(Airport to) {
+        public void to(Airport to) {
             this.to = to;
         }
 
-        public void setAirline(Airline airline) {
+        public void airline(Airline airline) {
             this.airline = airline;
         }
 
-        public void setPassengers(int passengers) {
+        public void passengers(int passengers) {
             this.passengers = passengers;
         }
     }

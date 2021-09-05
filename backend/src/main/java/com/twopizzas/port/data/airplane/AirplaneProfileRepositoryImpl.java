@@ -19,6 +19,6 @@ public class AirplaneProfileRepositoryImpl extends AbstractRepository<AirplanePr
 
     @Override
     public List<AirplaneProfile> findAllAirplanes() {
-        return dataMapper.readAll(new AllAirplaneProfilesSpecification());
+        return dataMapper.readAll(new AllAirplaneProfilesSpecification(mapper));
     }
 }

@@ -1,26 +1,27 @@
 package com.twopizzas.domain.flight;
 
+import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.data.Entity;
+import com.twopizzas.data.ValueHolder;
 import com.twopizzas.domain.Booking;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.Passenger;
 import com.twopizzas.domain.error.BusinessRuleException;
 import com.twopizzas.util.AssertionConcern;
 
-public class FlightSeatAllocation extends AssertionConcern implements Entity<EntityId> {
-    private final EntityId id;
+public class FlightSeatAllocation extends AssertionConcern {
     private final FlightSeat seat;
     private final Passenger passenger;
-    private Booking booking;
+    private ValueHolder<Booking> booking;
 
-    public FlightSeatAllocation(EntityId id, FlightSeat seat, Passenger passenger) {
-        this.id = id;
-        this.seat = seat;
-        this.passenger = passenger;
+    public FlightSeatAllocation(FlightSeat seat, Passenger passenger, ValueHolder<Booking> booking) {
+        this.seat = notNull(seat, "seat");
+        this.passenger = notNull(passenger, "passenger");
+        this.booking = booking;
     }
 
     public FlightSeatAllocation(FlightSeat seat, Passenger passenger) {
-        this(EntityId.nextId(), seat, passenger);
+        this(seat, passenger, () -> null);
     }
 
     public FlightSeat getSeat() {
@@ -32,14 +33,13 @@ public class FlightSeatAllocation extends AssertionConcern implements Entity<Ent
     }
 
     public void setBooking(Booking booking) {
-        if (this.booking != null) {
+        if (this.booking.get() != null) {
             throw new BusinessRuleException("");
         }
-        this.booking = booking;
+        this.booking = new BaseValueHolder<>(booking);
     }
 
-    @Override
-    public EntityId getId() {
-        return id;
+    public Booking getBooking() {
+        return booking.get();
     }
 }

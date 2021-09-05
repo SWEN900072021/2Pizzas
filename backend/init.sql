@@ -80,7 +80,8 @@ CREATE TABLE flight(
 
 CREATE TABLE stopover(
     flightId UUID,
-    duration interval,
+    arrival timestamp,
+    departure timestamp,
     airportId UUID,
     CONSTRAINT flightFK
         FOREIGN KEY(flightId)
@@ -121,7 +122,6 @@ CREATE TABLE seat(
 );
 
 CREATE TABLE seatAllocation(
-     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
      passengerId UUID,
      seatId UUID,
      bookingId UUID,

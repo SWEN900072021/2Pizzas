@@ -5,7 +5,4 @@ import com.twopizzas.domain.Passenger;
 import com.twopizzas.port.data.db.ConnectionPool;
 
 public interface PassengerSpecification extends Specification<Passenger, ConnectionPool> {
-
-
-
 }

@@ -11,14 +11,14 @@ import java.util.List;
 
 public class AirplaneProfile extends AssertionConcern implements Entity<EntityId> {
     private final EntityId id;
-    private String code;
-    private String type;
-    private int firstClassRows;
-    private int firstClassColumns;
-    private int businessClassRows;
-    private int businessClassColumns;
-    private int economyClassRows;
-    private int economyClassColumns;
+    private final String code;
+    private final String type;
+    private final int firstClassRows;
+    private final int firstClassColumns;
+    private final int businessClassRows;
+    private final int businessClassColumns;
+    private final int economyClassRows;
+    private final int economyClassColumns;
 
     public AirplaneProfile(EntityId id, String code, String type, int firstClassRows, int firstClassColumns,
                            int businessClassRows, int businessClassColumns, int economyClassRows, int economyClassColumns) {
