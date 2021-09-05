@@ -25,13 +25,13 @@ public class BookingTableResultSetMapper implements SqlResultSetMapper<Booking> 
             ValueHolder<List<Passenger>> passengers = null;
 
             while (resultSet.next()) {
-                mapped.add(new Booking(
-                        EntityId.of(resultSet.getObject(BookingMapperImpl.COLUMN_ID, String.class)),
-                        passengers,
-                        resultSet.getObject(BookingMapperImpl.COLUMN_DATE, LocalDateTime.class),
-                        resultSet.getObject(BookingMapperImpl.COLUMN_TOTALCOST, Double.class),
-                        resultSet.getObject(BookingMapperImpl.COLUMN_REFERENCE, String.class),
-                        flightBooking, returnFlightBooking));
+//                mapped.add(new Booking(
+//                        EntityId.of(resultSet.getObject(BookingMapperImpl.COLUMN_ID, String.class)),
+//                        passengers,
+//                        resultSet.getObject(BookingMapperImpl.COLUMN_DATE, LocalDateTime.class),
+//                        resultSet.getObject(BookingMapperImpl.COLUMN_TOTALCOST, Double.class),
+//                        resultSet.getObject(BookingMapperImpl.COLUMN_REFERENCE, String.class),
+//                        flightBooking, returnFlightBooking));
             }
          } catch (SQLException e) {
             throw new DataMappingException(String.format(
