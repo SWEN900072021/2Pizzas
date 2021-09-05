@@ -1,5 +1,7 @@
 package com.twopizzas.api;
 
+import com.twopizzas.di.Autowired;
+import com.twopizzas.di.Component;
 import com.twopizzas.domain.*;
 import com.twopizzas.domain.error.DataFormatException;
 import com.twopizzas.domain.error.NotFoundException;
@@ -7,6 +9,7 @@ import com.twopizzas.domain.flight.*;
 import com.twopizzas.port.data.customer.CustomerMapper;
 import com.twopizzas.port.data.passenger.PassengerMapper;
 
+@Component
 public class NewBookingController {
 
     private final FlightRepository flightRepository;
@@ -14,6 +17,7 @@ public class NewBookingController {
     private final BookingRepository bookingRepository;
     private final PassengerMapper passengerRepository;
 
+    @Autowired
     public NewBookingController(FlightRepository repository, CustomerMapper customerMapper, BookingRepository bookingRepository, PassengerMapper passengerRepository) {
         this.flightRepository = repository;
         this.customerMapper = customerMapper;
