@@ -3,10 +3,14 @@ package com.twopizzas.port.data.administrator;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.Administrator;
+import com.twopizzas.domain.flight.AirplaneProfile;
+import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdministratorMapperImpl implements AdministratorMapper {
@@ -68,8 +72,25 @@ public class AdministratorMapperImpl implements AdministratorMapper {
         ).doExecute(connectionPool.getCurrentTransaction());
     }
 
+    // placeholder
     @Override
     public List<Administrator> map(ResultSet resultSet) {
         return null;
     }
+
+//    @Override
+//    public List<Administrator> map(ResultSet resultSet) {
+//        List<Administrator> mapped = new ArrayList<>();
+//        try {
+//            while (resultSet.next()) {
+//                mapped.add(new Administrator(
+//                        EntityId.of(resultSet.getObject(AdministratorMapperImpl.COLUMN_ID, String.class))
+//                ));
+//            }
+//        } catch (SQLException e) {
+//            throw new DataMappingException((String.format(
+//                    "failed to map results from result set to Administrator entity, error: %s", e.getMessage()),
+//                    e);
+//        }
+//    }
 }
