@@ -5,7 +5,7 @@ import com.twopizzas.domain.Airport;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.SqlResultSetMapper;
 
-public interface AirportMapper extends DataMapper<Airport, EntityId, AirportSpecification> {
+public interface AirportMapper extends DataMapper<Airport, EntityId, AirportSpecification>, SqlResultSetMapper<Airport> {
     @Override
     default Class<Airport> getEntityClass() {
         return Airport.class;

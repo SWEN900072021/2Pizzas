@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class EntityId extends AssertionConcern {
-    private UUID value;
+    private final UUID value;
 
     private EntityId(UUID value) {
         notNull(value, "value");
@@ -28,6 +28,10 @@ public class EntityId extends AssertionConcern {
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    public UUID getValue() {
+        return value;
     }
 
     @Override

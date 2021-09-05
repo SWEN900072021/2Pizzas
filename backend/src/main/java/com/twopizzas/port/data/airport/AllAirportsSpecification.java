@@ -11,7 +11,11 @@ public class AllAirportsSpecification implements AirportSpecification {
     private static final String TEMPLATE =
             "SELECT * FROM airport;";
 
-    private final AirportTableResultSetMapper mapper = new AirportTableResultSetMapper();
+    private final AirportMapper mapper;
+
+    public AllAirportsSpecification(AirportMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public List<Airport> execute(ConnectionPool context) {

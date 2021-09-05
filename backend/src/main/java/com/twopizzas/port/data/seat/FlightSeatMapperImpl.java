@@ -9,7 +9,6 @@ import com.twopizzas.domain.flight.FlightSeat;
 import com.twopizzas.domain.flight.SeatClass;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;
-import com.twopizzas.port.data.airport.AirportTableResultSetMapper;
 import com.twopizzas.port.data.db.ConnectionPool;
 import com.twopizzas.port.data.flight.FlightByIdLoader;
 import com.twopizzas.port.data.flight.FlightMapper;

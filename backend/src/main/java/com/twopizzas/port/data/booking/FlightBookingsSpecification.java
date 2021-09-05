@@ -1,14 +1,10 @@
 package com.twopizzas.port.data.booking;
 
-import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.domain.Booking;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.SqlStatement;
-import com.twopizzas.port.data.airport.AirportTableResultSetMapper;
-import com.twopizzas.port.data.booking.BookingSpecification;
 import com.twopizzas.port.data.db.ConnectionPool;
 
-import java.sql.ResultSet;
 import java.util.List;
 
 public class FlightBookingsSpecification implements BookingSpecification {
