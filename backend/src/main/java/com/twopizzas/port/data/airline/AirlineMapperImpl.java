@@ -3,6 +3,7 @@ package com.twopizzas.port.data.airline;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.Airline;
+import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 
 import java.sql.ResultSet;
@@ -16,12 +17,12 @@ public class AirlineMapperImpl implements AirlineMapper {
 
 
     private static final String CREATE_TEMPLATE =
-            "INSERT INTO " + TABLE_ADMINISTRATOR + "(" + COLUMN_ID + ", " + COLUMN_NAME + ", " + COLUMN_CODE + ")" +
+            "INSERT INTO " + TABLE_AIRLINE + "(" + COLUMN_ID + ", " + COLUMN_NAME + ", " + COLUMN_CODE + ")" +
                     " VALUES (?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
-            "UPDATE " + TABLE_ADMINISTRATOR +
-                    " SET " + COLUMN_NAME + " = ?, " + COLUMN_CODE + " = ?, "
+            "UPDATE " + TABLE_AIRLINE +
+                    " SET " + COLUMN_NAME + " = ?, " + COLUMN_CODE + " = ?, " +
                     " WHERE id = ?;";
 
     private static final String DELETE_TEMPLATE =
@@ -50,7 +51,7 @@ public class AirlineMapperImpl implements AirlineMapper {
 
     public Airline read(EntityId entityId) {
         List<Airline> Airlines = new SqlStatement(SELECT_TEMPLATE, entityId.toString())
-                .doQuery(connectionPool.getCurrentTransaction(), mapper);
+                .doQuery(connectionPool.getCurrentTransaction(), this);
         if (Airlines.isEmpty()) {
             return null;
         }
@@ -74,5 +75,10 @@ public class AirlineMapperImpl implements AirlineMapper {
     public void delete(Airline entity) {
         new SqlStatement(DELETE_TEMPLATE,
                 entity.getId().toString()).doExecute(connectionPool.getCurrentTransaction());
+    }
+
+    @Override
+    public List<Airline> map(ResultSet resultSet) {
+        return null;
     }
 }
