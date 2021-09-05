@@ -17,8 +17,4 @@ public class AdministratorRepositoryImpl extends AbstractRepository<Administrato
         super(dataMapper);
     }
 
-    @Override
-    public List<Administrator> findAllAdministrators() {
-        return dataMapper.readAll(new AllCustomersSpecification());
-    }
 }

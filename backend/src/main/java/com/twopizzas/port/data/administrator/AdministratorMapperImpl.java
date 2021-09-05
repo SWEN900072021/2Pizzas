@@ -3,6 +3,7 @@ package com.twopizzas.port.data.administrator;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.Administrator;
+import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 
 import java.sql.ResultSet;
@@ -17,7 +18,7 @@ public class AdministratorMapperImpl implements AdministratorMapper {
                     " VALUES (?);";
 
     private static final String UPDATE_TEMPLATE =
-            "UPDATE " + TABLE_AIRPORT +
+            "UPDATE " + TABLE_ADMINISTRATOR +
                     " SET " +
                     " WHERE id = ?;";
 
@@ -32,7 +33,7 @@ public class AdministratorMapperImpl implements AdministratorMapper {
     private ConnectionPool connectionPool;
 
     @Autowired
-    AirplaneProfileMapperImpl(ConnectionPool connectionPool) {
+    AdministratorMapperImpl(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
 
@@ -44,20 +45,31 @@ public class AdministratorMapperImpl implements AdministratorMapper {
 
     public Administrator read(EntityId entityId) {
         List<Administrator> Administrators = new SqlStatement(SELECT_TEMPLATE, entityId.toString())
-                .doQuery(connectionPool.getCurrentTransaction(), mapper);
+                .doQuery(connectionPool.getCurrentTransaction(), this);
         if (Administrators.isEmpty()) {
             return null;
         }
-        return Airplanes.get(0);
+        return Administrators.get(0);
     }
 
     @Override
-    public void update(Administrator entity) { return null; }
+    public List<Administrator> readAll(AdministratorSpecification specification) {
+        return null;
+    }
+
+    @Override
+    public void update(Administrator entity) {
+    }
 
     @Override
     public void delete(Administrator entity) {
         new SqlStatement(DELETE_TEMPLATE,
                 entity.getId().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
+    }
+
+    @Override
+    public List<Administrator> map(ResultSet resultSet) {
+        return null;
     }
 }

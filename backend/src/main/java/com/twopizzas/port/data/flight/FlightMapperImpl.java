@@ -137,7 +137,7 @@ public class FlightMapperImpl implements FlightMapper {
                         airportMapper.read(EntityId.of(resultSet.getObject(COLUMN_DESTINATION, String.class))),
                         resultSet.getObject(COLUMN_DEPARTURE, OffsetDateTime.class),
                         resultSet.getObject(COLUMN_ARRIVAL, OffsetDateTime.class),
-                        new FlightStopOversLoader(connectionPool, airportMapper, flightMapper, flightId).load().get(),
+                        new FlightStopOversLoader(connectionPool, airportMapper, this, flightId).load().get(),
                         resultSet.getObject(COLUMN_CODE, String.class),
                         Flight.Status.valueOf(resultSet.getObject(COLUMN_STATUS, String.class))
                 ));
