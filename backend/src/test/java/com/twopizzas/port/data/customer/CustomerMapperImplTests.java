@@ -1,14 +1,14 @@
-package com.twopizzas.port.data.airline;
+package com.twopizzas.port.data.customer;
 
-import com.twopizzas.domain.Airline;
+import com.twopizzas.domain.Customer;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
 
-public class AirlineMapperImplTests {
-    private AirlineMapperImpl mapper;
+public class CustomerMapperImplTests {
+    private CustomerMapperImpl mapper;
     private ConnectionPoolImpl connectionPool = new ConnectionPoolImpl(
             "jdbc:postgresql://ec2-35-153-114-74.compute-1.amazonaws.com:5432/dac5q82fjaj3t6",
             "imvxeuqwkqsffn",
@@ -17,7 +17,7 @@ public class AirlineMapperImplTests {
 
     @BeforeEach
     void setup() throws SQLException {
-        mapper = new AirlineMapperImpl(connectionPool);
+        mapper = new CustomerMapperImpl(connectionPool);
         connectionPool.startNewTransaction();
         connectionPool.getCurrentTransaction().setAutoCommit(false);
     }
@@ -28,55 +28,70 @@ public class AirlineMapperImplTests {
     }
 
     @Test
-    @DisplayName("GIVEN valid airline object WHEN created invoked THEN airline persisted in database")
+    @DisplayName("GIVEN valid customer object WHEN created invoked THEN customer persisted in database")
     void testCreate() {
         // GIVEN
-        Airline entity = new Airline(EntityId.nextId(), "airline", "password", "qantas", "QN");
+        Customer entity = new Customer(EntityId.nextId(),
+                "username", "password", "John", "Smith", "johnsmith@gmail.com");
 
         // WHEN
         mapper.create(entity);
 
         // THEN
-        Airline persisted = mapper.read(entity.getId());
+        Customer persisted = mapper.read(entity.getId());
         Assertions.assertNotNull(persisted);
         Assertions.assertEquals(entity.getId(), persisted.getId());
     }
 
     @Test
-    @DisplayName("GIVEN existing airline object in db WHEN update invoked THEN airline object updated in db")
+    @DisplayName("GIVEN existing customer object in db WHEN update invoked THEN customer object updated in db")
     void testValidUpdate() {
         // GIVEN
         EntityId id = EntityId.nextId();
-        Airline oldEntity = new Airline(id, "airline", "password", "qantas", "QN");
+        Customer oldEntity = new Customer(id,
+                "username", "password", "John", "Smith", "johnsmith@gmail.com");
         mapper.create(oldEntity);
 
-        Airline updatedEntity = new Airline(id, "airline", "newPassword", "qantas", "QN");
+        // WHEN
+        Customer updatedEntity = new Customer(id,
+                "username", "newPassword", "John", "Smith", "johnsmith@gmail.com");
         mapper.update(updatedEntity);
 
-        Airline persisted = mapper.read(id);
+        // THEN
+        Customer persisted = mapper.read(id);
         Assertions.assertEquals(persisted, updatedEntity);
     }
 
     @Test
-    @DisplayName("GIVEN airline object not in db WHEN update invoked THEN object not persisted in db")
+    @DisplayName("GIVEN customer object not in db WHEN update invoked THEN customer not persisted in db")
     void testInvalidUpdate()  {
+        // GIVEN
         EntityId id = EntityId.nextId();
-        Airline entity = new Airline(id, "airline", "password", "qantas", "QN");
+        Customer entity = new Customer(EntityId.nextId(),
+                "username", "password", "John", "Smith", "johnsmith@gmail.com");
+
+        // WHEN
         mapper.update(entity);
 
-        Airline persisted = mapper.read(id);
+        // THEN
+        Customer persisted = mapper.read(id);
         Assertions.assertNull(persisted);
     }
 
     @Test
     @DisplayName("GIVEN airline object in db WHEN delete invoked THEN object removed from db")
     void testValidDelete() {
+        // GIVEN
         EntityId id = EntityId.nextId();
-        Airline entity = new Airline(id, "airline", "password", "qantas", "QN");
+        Customer entity = new Customer(EntityId.nextId(),
+                "username", "password", "John", "Smith", "johnsmith@gmail.com");
         mapper.create(entity);
 
+        // WHEN
         mapper.delete(entity);
-        Airline persisted = mapper.read(id);
+
+        // THEN
+        Customer persisted = mapper.read(id);
         Assertions.assertNull(persisted);
     }
 

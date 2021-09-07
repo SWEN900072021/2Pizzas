@@ -1,13 +1,11 @@
 package com.twopizzas.domain;
 
+import java.util.Objects;
+
 public class Customer extends User {
     private String givenName;
     private String lastName;
     private String email;
-
-    public Customer(EntityId id, String username, String password) {
-        super(id, username, password);
-    }
 
     public Customer(EntityId id, String username, String password, String givenName, String lastName, String email) {
         super(id, username, password);
@@ -20,23 +18,25 @@ public class Customer extends User {
         return givenName;
     }
 
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Customer customer = (Customer) o;
+        return Objects.equals(givenName, customer.givenName) && Objects.equals(lastName, customer.lastName) && Objects.equals(email, customer.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), givenName, lastName, email);
     }
 }
