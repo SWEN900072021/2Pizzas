@@ -22,8 +22,8 @@ public class AirlineMapperImpl implements AirlineMapper {
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_AIRLINE +
-                    " SET " + COLUMN_NAME + " = ?, " + COLUMN_CODE + " = ?, " +
-                    " WHERE id = ?;";
+                    " SET " + COLUMN_NAME + " = ?, " + COLUMN_CODE + " = ? " +
+                    "WHERE id = ?;";
 
     private static final String DELETE_TEMPLATE =
             "DELETE FROM " + TABLE_AIRLINE +
@@ -52,7 +52,7 @@ public class AirlineMapperImpl implements AirlineMapper {
     public Airline read(EntityId entityId) {
         List<Airline> Airlines = new SqlStatement(SELECT_TEMPLATE, entityId.toString())
                 .doQuery(connectionPool.getCurrentTransaction(), this);
-        if (Airlines.isEmpty()) {
+        if (Airlines == null) {
             return null;
         }
         return Airlines.get(0);

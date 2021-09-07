@@ -1,14 +1,12 @@
 package com.twopizzas.domain;
 
+import java.util.Objects;
+
 public class Airline extends User {
 
     private String name;
 
     private String code;
-
-    public Airline(EntityId id, String username, String password) {
-        super(id, username, password);
-    }
 
     public Airline(EntityId id, String username, String password, String name, String code) {
         super(id, username, password);
@@ -20,15 +18,21 @@ public class Airline extends User {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getCode() {
         return code;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Airline airline = (Airline) o;
+        return Objects.equals(name, airline.name) && Objects.equals(code, airline.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, code);
     }
 }
