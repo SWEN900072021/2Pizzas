@@ -59,7 +59,13 @@ public class CustomerMapperImplTests {
 
         // THEN
         Customer persisted = mapper.read(id);
-        Assertions.assertEquals(persisted, updatedEntity);
+        Assertions.assertNotNull(persisted);
+        Assertions.assertEquals(persisted.getId(), updatedEntity.getId());
+        Assertions.assertEquals(persisted.getUsername(), updatedEntity.getUsername());
+        Assertions.assertEquals(persisted.getPassword(), updatedEntity.getPassword());
+        Assertions.assertEquals(persisted.getGivenName(), updatedEntity.getGivenName());
+        Assertions.assertEquals(persisted.getLastName(), updatedEntity.getLastName());
+        Assertions.assertEquals(persisted.getEmail(), updatedEntity.getEmail());
     }
 
     @Test
@@ -79,7 +85,7 @@ public class CustomerMapperImplTests {
     }
 
     @Test
-    @DisplayName("GIVEN airline object in db WHEN delete invoked THEN object removed from db")
+    @DisplayName("GIVEN customer object in db WHEN delete invoked THEN object removed from db")
     void testValidDelete() {
         // GIVEN
         EntityId id = EntityId.nextId();

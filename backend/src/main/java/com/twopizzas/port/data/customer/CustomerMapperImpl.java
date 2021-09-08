@@ -57,13 +57,9 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
 
     @Override
     public Customer read(EntityId entityId) {
-        List<Customer> customers = new SqlStatement(SELECT_TEMPLATE, entityId.toString())
-                .doQuery(connectionPool.getCurrentTransaction(), this);
-        if (customers.isEmpty()) {
-            return null;
-        }
-        // maybe throw an error if there are more than one
-        return customers.get(0);
+        return map(new SqlStatement(SELECT_TEMPLATE,
+                entityId.toString()
+        ).doQuery(connectionPool.getCurrentTransaction())).stream().findFirst().orElse(null);
     }
 
     @Override
@@ -90,7 +86,10 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
         List<Customer> mapped = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                mapOne(resultSet);
+                Customer one = mapOne(resultSet);
+                if (one != null) {
+                    mapped.add(one);
+                }
             }
         } catch (SQLException e) {
             throw new DataMappingException(String.format(
