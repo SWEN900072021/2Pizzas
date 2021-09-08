@@ -9,12 +9,14 @@ public abstract class User extends AssertionConcern implements Entity<EntityId> 
     private final EntityId id;
     private String username;
     private String password;
+    private String userType;
 
-    public User(EntityId id, String username, String password) {
+    public User(EntityId id, String username, String password, String userType) {
         notNull(id, "id");
         this.id = id;
         this.username = username;
         this.password = password;
+        this.userType = userType;
     }
 
     @Override
@@ -30,16 +32,7 @@ public abstract class User extends AssertionConcern implements Entity<EntityId> 
         return password;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, password);
+    public String getUserType() {
+        return userType;
     }
 }

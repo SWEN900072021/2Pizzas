@@ -19,6 +19,6 @@ public class AirlineRepositoryImpl extends AbstractRepository<Airline, EntityId,
 
     @Override
     public List<Airline> findAllAirlines() {
-        return null;
+        return dataMapper.readAll(new AllAirlinesSpecification());
     }
 }

@@ -157,5 +157,3 @@ CREATE TABLE seatAllocation
         FOREIGN KEY (passengerId)
             REFERENCES passenger (id)
 );
-
-

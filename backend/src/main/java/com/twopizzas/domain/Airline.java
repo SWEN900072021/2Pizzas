@@ -8,8 +8,12 @@ public class Airline extends User {
 
     private String code;
 
-    public Airline(EntityId id, String username, String password, String name, String code) {
-        super(id, username, password);
+    public Airline(EntityId id, String username, String password, String userType) {
+        super(id, username, password, userType);
+    }
+
+    public Airline(EntityId id, String username, String password, String userType, String name, String code) {
+        super(id, username, password, userType);
         this.name = name;
         this.code = code;
     }
@@ -20,19 +24,5 @@ public class Airline extends User {
 
     public String getCode() {
         return code;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Airline airline = (Airline) o;
-        return Objects.equals(name, airline.name) && Objects.equals(code, airline.code);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), name, code);
     }
 }
