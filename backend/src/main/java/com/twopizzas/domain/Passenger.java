@@ -4,6 +4,7 @@ import com.twopizzas.data.Entity;
 import com.twopizzas.util.AssertionConcern;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Passenger extends AssertionConcern implements Entity<EntityId> {
     private final EntityId id;
@@ -54,5 +55,18 @@ public class Passenger extends AssertionConcern implements Entity<EntityId> {
 
     public String getPassportNumber() {
         return passportNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Passenger passenger = (Passenger) o;
+        return id.equals(passenger.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -19,7 +19,6 @@ public class FlightSeatAllocationResultsMapperImpl implements FlightSeatAllocati
     static final String TABLE_ALLOCATION = "seatAllocation";
     static final String COLUMN_PASSENGER_ID = "passengerId";
     static final String COLUMN_SEAT_ID = "seatId";
-    static final String COLUMN_BOOKING_ID = "bookingId";
 
     private final PassengerMapper passengerMapper;
     private final FlightSeatMapper flightSeatMapper;
@@ -35,10 +34,10 @@ public class FlightSeatAllocationResultsMapperImpl implements FlightSeatAllocati
         List<FlightSeatAllocation> seatAllocations = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                seatAllocations.add(new FlightSeatAllocation(
-                        flightSeatMapper.read(EntityId.of(resultSet.getObject(COLUMN_SEAT_ID, String.class))),
-                        passengerMapper.read(EntityId.of(resultSet.getObject(COLUMN_PASSENGER_ID, String.class)))
-                ));
+                FlightSeatAllocation one = mapOne(resultSet);
+                if (one != null) {
+                    seatAllocations.add(one);
+                }
             }
         } catch (SQLException e) {
             throw new DataMappingException(String.format(
@@ -50,6 +49,15 @@ public class FlightSeatAllocationResultsMapperImpl implements FlightSeatAllocati
 
     @Override
     public FlightSeatAllocation mapOne(ResultSet resultSet) {
-        return null;
+        try {
+            return new FlightSeatAllocation(
+                    flightSeatMapper.read(EntityId.of(resultSet.getObject(COLUMN_SEAT_ID, String.class))),
+                    passengerMapper.read(EntityId.of(resultSet.getObject(COLUMN_PASSENGER_ID, String.class)))
+            );
+        } catch (SQLException e) {
+            throw new DataMappingException(String.format(
+                    "failed to map results from result set to %s entity, error: %s", FlightSeatAllocation.class.getName(), e.getMessage()),
+                    e);
+        }
     }
 }

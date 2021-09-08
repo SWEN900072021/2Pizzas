@@ -12,16 +12,18 @@ import java.util.List;
 
 public class FlightSeatAllocationsForFlightBookingLoader implements ValueLoader<List<FlightSeatAllocation>> {
     private static final String TEMPLATE =
-            "SELECT * FROM seatAllocation" +
-            " JOIN seat JOIN booking ON seatAllocation.seatId = seat.id AND seatAllocation.bookingId = booking.id" +
-            " WHERE seat.flightId = ? AND allocation.bookingId = ?" ;
+            "SELECT *" +
+            " FROM seatAllocation" +
+            " JOIN seat ON seatAllocation.seatId = seat.id" +
+            " JOIN passenger ON seatAllocation.passengerId = passenger.id" +
+            " WHERE seat.flightId = ? AND passenger.bookingId = ?;" ;
 
     private final ConnectionPool connectionPool;
-    private final FlightSeatAllocationResultsMapperImpl mapper;
+    private final FlightSeatAllocationResultsMapper mapper;
     private final EntityId flightId;
     private final EntityId bookingId;
 
-    public FlightSeatAllocationsForFlightBookingLoader(ConnectionPool connectionPool, FlightSeatAllocationResultsMapperImpl mapper, EntityId flightId, EntityId bookingId) {
+    public FlightSeatAllocationsForFlightBookingLoader(ConnectionPool connectionPool, FlightSeatAllocationResultsMapper mapper, EntityId flightId, EntityId bookingId) {
         this.connectionPool = connectionPool;
         this.mapper = mapper;
         this.flightId = flightId;
@@ -32,8 +34,8 @@ public class FlightSeatAllocationsForFlightBookingLoader implements ValueLoader<
     public ValueHolder<List<FlightSeatAllocation>> load() {
         return BaseValueHolder.of(mapper.map(
                 new SqlStatement(TEMPLATE,
-                        bookingId.toString(),
-                        flightId.toString())
+                        flightId.toString(),
+                        bookingId.toString())
                         .doQuery(connectionPool.getCurrentTransaction())
         ));
     }
