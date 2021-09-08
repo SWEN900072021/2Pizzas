@@ -30,9 +30,9 @@ public class AdministratorMapperImplTests {
 
     @Test
     @DisplayName("GIVEN valid administrator object WHEN created invoked THEN administrator persisted in database")
-    void test() {
+    void testCreate() {
         // GIVEN
-        Administrator entity = new Administrator("John", "Smith");
+        Administrator entity = new Administrator("JohnSmith", "testPW");
 
         // WHEN
         mapper.create(entity);
@@ -41,5 +41,21 @@ public class AdministratorMapperImplTests {
         Administrator persisted = mapper.read(entity.getId());
         Assertions.assertNotNull(persisted);
         Assertions.assertEquals(entity.getId(), persisted.getId());
+    }
+
+    @Test
+    @DisplayName("GIVEN existing valid administrator object in db WHEN delete invoked THEN administrator object removed" +
+            "from db") void testValidDelete() {
+        // GIVEN
+        EntityId id = EntityId.nextId();
+        Administrator entity = new Administrator("JohnSmith", "testPW");
+        mapper.create(entity);
+
+        // WHEN
+        mapper.delete(entity);
+
+        // THEN
+        Administrator persisted = mapper.read(id);
+        Assertions.assertNull(persisted);
     }
 }

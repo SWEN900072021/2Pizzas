@@ -33,7 +33,6 @@ public class AirlineMapperImpl implements AirlineMapper {
             "SELECT * FROM " + TABLE_AIRLINE +
                     " WHERE id = ?;";
 
-    private final AirlineTableResultSetMapper mapper = new AirlineTableResultSetMapper();
     private ConnectionPool connectionPool;
 
     @Autowired
