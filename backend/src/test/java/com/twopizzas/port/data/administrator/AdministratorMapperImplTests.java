@@ -32,7 +32,7 @@ public class AdministratorMapperImplTests {
     @DisplayName("GIVEN valid administrator object WHEN created invoked THEN administrator persisted in database")
     void testCreate() {
         // GIVEN
-        Administrator entity = new Administrator("JohnSmith", "testPW");
+        Administrator entity = new Administrator("JohnSmith", "SecurePassword");
 
         // WHEN
         mapper.create(entity);

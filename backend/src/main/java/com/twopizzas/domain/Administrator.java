@@ -9,6 +9,6 @@ public class Administrator extends User {
     }
 
     public Administrator(String username, String password) {
-        this(EntityId.nextId(), username, password);
+        super(EntityId.nextId(), username, password, TYPE);
     }
 }

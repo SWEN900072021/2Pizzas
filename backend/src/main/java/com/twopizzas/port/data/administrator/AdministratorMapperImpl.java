@@ -1,19 +1,22 @@
 package com.twopizzas.port.data.administrator;
 
 import com.twopizzas.di.Autowired;
+import com.twopizzas.di.Component;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.Administrator;
-import com.twopizzas.domain.flight.AirplaneProfile;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
+import com.twopizzas.port.data.user.AbstractUserMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdministratorMapperImpl implements AdministratorMapper {
+@Component
+class AdministratorMapperImpl extends AbstractUserMapper<Administrator> implements AdministratorMapper {
+    static final String TABLE_USER = "\"user\"";
     static final String TABLE_ADMINISTRATOR = "administrator";
     static final String COLUMN_ID = "id";
 
@@ -31,22 +34,26 @@ public class AdministratorMapperImpl implements AdministratorMapper {
                     " WHERE id = ?;";
 
     private static final String SELECT_TEMPLATE =
-            "SELECT * FROM " + TABLE_ADMINISTRATOR +
-                    " WHERE id = ?;";
+            "SELECT * FROM " + TABLE_USER + " INNER JOIN " + TABLE_ADMINISTRATOR +
+                    " ON " + TABLE_USER + ".id =" + TABLE_ADMINISTRATOR + ".id" +
+                    " WHERE " + TABLE_USER + ".id = ?;";
 
     private ConnectionPool connectionPool;
 
     @Autowired
     AdministratorMapperImpl(ConnectionPool connectionPool) {
+        super(connectionPool);
         this.connectionPool = connectionPool;
     }
 
     @Override
     public void create(Administrator entity) {
+        abstractCreate(entity);
         new SqlStatement(CREATE_TEMPLATE,
                 entity.getId().toString()).doExecute(connectionPool.getCurrentTransaction());
     }
 
+    @Override
     public Administrator read(EntityId entityId) {
         List<Administrator> Administrators = new SqlStatement(SELECT_TEMPLATE, entityId.toString())
                 .doQuery(connectionPool.getCurrentTransaction(), this);
@@ -72,30 +79,36 @@ public class AdministratorMapperImpl implements AdministratorMapper {
         ).doExecute(connectionPool.getCurrentTransaction());
     }
 
-    // placeholder
     @Override
     public List<Administrator> map(ResultSet resultSet) {
-        return null;
+        List<Administrator> mapped = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                Administrator one = mapOne(resultSet);
+                if (one != null) {
+                    mapped.add(one);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataMappingException(String.format(
+                    "failed to map results from result set to %s entity, error: %s", Administrator.class.getName(), e.getMessage()),
+                    e);
+        }
+        return mapped;
     }
 
     @Override
     public Administrator mapOne(ResultSet resultSet) {
-        return null;
+        try {
+            return new Administrator(
+                    EntityId.of(resultSet.getObject(AdministratorMapperImpl.COLUMN_ID, String.class)),
+                    resultSet.getObject(AbstractUserMapper.COLUMN_USERNAME, String.class),
+                    resultSet.getObject(AbstractUserMapper.COLUMN_PASSWORD, String.class)
+            );
+        } catch (SQLException e) {
+            throw new DataMappingException(String.format(
+                    "failed to map results from result set to %s entity, error: %s", Administrator.class.getName(), e.getMessage()),
+                    e);
+        }
     }
-
-//    @Override
-//    public List<Administrator> map(ResultSet resultSet) {
-//        List<Administrator> mapped = new ArrayList<>();
-//        try {
-//            while (resultSet.next()) {
-//                mapped.add(new Administrator(
-//                        EntityId.of(resultSet.getObject(AdministratorMapperImpl.COLUMN_ID, String.class))
-//                ));
-//            }
-//        } catch (SQLException e) {
-//            throw new DataMappingException((String.format(
-//                    "failed to map results from result set to Administrator entity, error: %s", e.getMessage()),
-//                    e);
-//        }
-//    }
 }

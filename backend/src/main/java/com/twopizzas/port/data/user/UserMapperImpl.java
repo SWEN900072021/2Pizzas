@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+public
 class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
 
     private ConnectionPool connectionPool;
