@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-public class BookingMapperImpl implements BookingMapper{
+public class BookingMapperImpl implements BookingMapper {
 
     static final String TABLE_BOOKING = "booking";
     static final String COLUMN_ID = "id";

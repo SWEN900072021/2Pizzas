@@ -4,18 +4,19 @@ import java.util.Objects;
 
 public class Airline extends User {
 
-    private String name;
+    private static final String TYPE = "airline";
+    private final String name;
 
-    private String code;
+    private final String code;
 
-    public Airline(EntityId id, String username, String password, String userType) {
-        super(id, username, password, userType);
-    }
-
-    public Airline(EntityId id, String username, String password, String userType, String name, String code) {
-        super(id, username, password, userType);
+    public Airline(EntityId id, String username, String password, String name, String code) {
+        super(id, username, password, TYPE);
         this.name = name;
         this.code = code;
+    }
+
+    public Airline(String username, String password, String name, String code) {
+        this(EntityId.nextId(), username, password, name, code);
     }
 
     public String getName() {

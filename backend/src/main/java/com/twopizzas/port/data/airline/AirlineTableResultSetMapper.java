@@ -21,7 +21,6 @@ public class AirlineTableResultSetMapper implements SqlResultSetMapper<Airline> 
                        EntityId.of(resultSet.getObject(AirlineMapperImpl.COLUMN_ID, String.class)),
                        resultSet.getObject(AbstractUserMapper.COLUMN_USERNAME, String.class),
                        resultSet.getObject(AbstractUserMapper.COLUMN_PASSWORD, String.class),
-                       resultSet.getObject(AbstractUserMapper.COLUMN_TYPE, String.class),
                        resultSet.getObject(AirlineMapperImpl.COLUMN_CODE, String.class),
                        resultSet.getObject(AirlineMapperImpl.COLUMN_NAME, String.class)
                ));
@@ -32,5 +31,10 @@ public class AirlineTableResultSetMapper implements SqlResultSetMapper<Airline> 
                    e);
        }
        return mapped;
+    }
+
+    @Override
+    public Airline mapOne(ResultSet resultSet) {
+        return null;
     }
 }

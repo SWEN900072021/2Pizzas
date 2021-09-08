@@ -40,4 +40,9 @@ public class PassengerTableResultSetMapper implements SqlResultSetMapper<Passeng
         return mapped;
 
     }
+
+    @Override
+    public Passenger mapOne(ResultSet resultSet) {
+        return null;
+    }
 }

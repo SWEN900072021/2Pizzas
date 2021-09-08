@@ -5,8 +5,4 @@ import com.twopizzas.domain.Airline;
 import com.twopizzas.port.data.db.ConnectionPool;
 
 public interface AirlineSpecification extends Specification<Airline, ConnectionPool> {
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> mappers

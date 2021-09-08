@@ -7,6 +7,7 @@ import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 import com.twopizzas.port.data.user.AbstractUserMapper;
 
+import java.sql.ResultSet;
 import java.util.List;
 
 public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements AirlineMapper {
@@ -81,5 +82,15 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
     @Override
     public Class<Airline> getEntityClass() {
         return Airline.class;
+    }
+
+    @Override
+    public List<Airline> map(ResultSet resultSet) {
+        return null;
+    }
+
+    @Override
+    public Airline mapOne(ResultSet resultSet) {
+        return null;
     }
 }

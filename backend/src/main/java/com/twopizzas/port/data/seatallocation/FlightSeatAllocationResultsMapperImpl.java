@@ -1,14 +1,10 @@
 package com.twopizzas.port.data.seatallocation;
 
-import com.twopizzas.data.LazyValueHolderProxy;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.flight.FlightSeatAllocation;
 import com.twopizzas.port.data.DataMappingException;
-import com.twopizzas.port.data.SqlResultSetMapper;
-import com.twopizzas.port.data.booking.BookingByIdLoader;
-import com.twopizzas.port.data.booking.BookingMapper;
 import com.twopizzas.port.data.passenger.PassengerMapper;
 import com.twopizzas.port.data.seat.FlightSeatMapper;
 
@@ -50,5 +46,10 @@ public class FlightSeatAllocationResultsMapperImpl implements FlightSeatAllocati
                     e);
         }
         return seatAllocations;
+    }
+
+    @Override
+    public FlightSeatAllocation mapOne(ResultSet resultSet) {
+        return null;
     }
 }

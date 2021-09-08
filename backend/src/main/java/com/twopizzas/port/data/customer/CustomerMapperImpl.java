@@ -29,16 +29,7 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_CUSTOMER +
-<<<<<<< HEAD
                     " SET " + COLUMN_GIVENNAME + " = ?, " + COLUMN_SURNAME + " = ?, " + COLUMN_EMAIL + " = ?" +
-                    " WHERE id = ?;";
-
-
-    private static final String DELETE_TEMPLATE =
-            "DELETE FROM " + TABLE_CUSTOMER +
-=======
-                    " SET " + COLUMN_GivenName + " = ?, " + COLUMN_SURNAME + " = ?, " + COLUMN_EMAIL + " = ?" +
->>>>>>> mappers
                     " WHERE id = ?;";
 
     private static final String SELECT_TEMPLATE =
@@ -116,8 +107,7 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
                     EntityId.of(resultSet.getObject(CustomerMapperImpl.COLUMN_ID, String.class)),
                     resultSet.getObject(AbstractUserMapper.COLUMN_USERNAME, String.class),
                     resultSet.getObject(AbstractUserMapper.COLUMN_PASSWORD, String.class),
-                    resultSet.getObject(AbstractUserMapper.COLUMN_TYPE, String.class),
-                    resultSet.getObject(CustomerMapperImpl.COLUMN_GivenName, String.class),
+                    resultSet.getObject(CustomerMapperImpl.COLUMN_GIVENNAME, String.class),
                     resultSet.getObject(CustomerMapperImpl.COLUMN_SURNAME, String.class),
                     resultSet.getObject(CustomerMapperImpl.COLUMN_EMAIL, String.class)
             );

@@ -98,14 +98,10 @@ class FlightSeatMapperImpl implements FlightSeatMapper {
         List<FlightSeat> mapped = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                mapped.add(new FlightSeat(
-                        EntityId.of(resultSet.getObject(COLUMN_ID, String.class)),
-                        resultSet.getObject(COLUMN_NAME, String.class),
-                        SeatClass.valueOf(resultSet.getObject(COLUMN_CLASS, String.class)),
-                        LazyValueHolderProxy.makeLazy(
-                                new FlightByIdLoader(flightMapper, resultSet.getObject(COLUMN_FLIGHT_ID, String.class))
-                        )
-                ));
+                FlightSeat one = mapOne(resultSet);
+                if (one != null) {
+                    mapped.add(one);
+                }
             }
         } catch (SQLException e) {
             throw new DataMappingException(String.format(
@@ -113,5 +109,23 @@ class FlightSeatMapperImpl implements FlightSeatMapper {
                     e);
         }
         return mapped;
+    }
+
+    @Override
+    public FlightSeat mapOne(ResultSet resultSet) {
+        try {
+            return new FlightSeat(
+                    EntityId.of(resultSet.getObject(COLUMN_ID, String.class)),
+                    resultSet.getObject(COLUMN_NAME, String.class),
+                    SeatClass.valueOf(resultSet.getObject(COLUMN_CLASS, String.class)),
+                    LazyValueHolderProxy.makeLazy(
+                            new FlightByIdLoader(flightMapper, resultSet.getObject(COLUMN_FLIGHT_ID, String.class))
+                    )
+            );
+        } catch (SQLException e) {
+            throw new DataMappingException(String.format(
+                    "failed to map results from result set to %s entity, error: %s", Airport.class.getName(), e.getMessage()),
+                    e);
+        }
     }
 }

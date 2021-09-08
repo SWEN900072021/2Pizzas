@@ -105,7 +105,6 @@ CREATE TABLE booking
     id             varchar(36) PRIMARY KEY,
     date           timestamp,
     totalCost      numeric,
-    reference      varchar(255),
     customerId     varchar(36),
     flightId       varchar(36) NOT NULL,
     returnFlightId varchar(36),

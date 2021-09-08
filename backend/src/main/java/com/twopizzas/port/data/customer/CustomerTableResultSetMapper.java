@@ -20,14 +20,14 @@ public class CustomerTableResultSetMapper implements SqlResultSetMapper<Customer
                 String username = null;
                 String password = null;
 
-                mapped.add(new Customer(
-                        EntityId.of(resultSet.getObject(CustomerMapperImpl.COLUMN_ID, String.class)),
-                        username,
-                        password,
-                        resultSet.getObject(CustomerMapperImpl.COLUMN_GIVENNAME, String.class),
-                        resultSet.getObject(CustomerMapperImpl.COLUMN_SURNAME, String.class),
-                        resultSet.getObject(CustomerMapperImpl.COLUMN_EMAIL, String.class)
-                ));
+//                mapped.add(new Customer(
+//                        EntityId.of(resultSet.getObject(CustomerMapperImpl.COLUMN_ID, String.class)),
+//                        username,
+//                        password,
+//                        resultSet.getObject(CustomerMapperImpl.COLUMN_GIVENNAME, String.class),
+//                        resultSet.getObject(CustomerMapperImpl.COLUMN_SURNAME, String.class),
+//                        resultSet.getObject(CustomerMapperImpl.COLUMN_EMAIL, String.class)
+//                ));
             }
         } catch (SQLException e) {
             throw new DataMappingException(String.format(
@@ -35,5 +35,10 @@ public class CustomerTableResultSetMapper implements SqlResultSetMapper<Customer
                     e);
         }
         return mapped;
+    }
+
+    @Override
+    public Customer mapOne(ResultSet resultSet) {
+        return null;
     }
 }

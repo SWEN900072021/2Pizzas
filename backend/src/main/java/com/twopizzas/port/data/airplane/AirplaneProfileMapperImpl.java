@@ -106,17 +106,10 @@ class AirplaneProfileMapperImpl implements AirplaneProfileMapper {
         List<AirplaneProfile> mapped = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                mapped.add(new AirplaneProfile(
-                        EntityId.of(resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_ID, String.class)),
-                        resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_CODE, String.class),
-                        resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_TYPE, String.class),
-                        resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_FIRST_CLASS_ROWS),
-                        resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_FIRST_CLASS_COLUMNS),
-                        resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_BUSINESS_CLASS_ROWS),
-                        resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_BUSINESS_CLASS_COLUMNS),
-                        resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_ECONOMY_CLASS_ROWS),
-                        resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_ECONOMY_CLASS_COLUMNS)
-                ));
+                AirplaneProfile one = mapOne(resultSet);
+                if (one != null) {
+                    mapped.add(one);
+                }
             }
         } catch (SQLException e) {
             throw new DataMappingException(String.format(
@@ -124,5 +117,26 @@ class AirplaneProfileMapperImpl implements AirplaneProfileMapper {
                     e);
         }
         return mapped;
+    }
+
+    @Override
+    public AirplaneProfile mapOne(ResultSet resultSet) {
+        try {
+            return new AirplaneProfile(
+                    EntityId.of(resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_ID, String.class)),
+                    resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_CODE, String.class),
+                    resultSet.getObject(AirplaneProfileMapperImpl.COLUMN_TYPE, String.class),
+                    resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_FIRST_CLASS_ROWS),
+                    resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_FIRST_CLASS_COLUMNS),
+                    resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_BUSINESS_CLASS_ROWS),
+                    resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_BUSINESS_CLASS_COLUMNS),
+                    resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_ECONOMY_CLASS_ROWS),
+                    resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_ECONOMY_CLASS_COLUMNS)
+            );
+        } catch (SQLException e) {
+            throw new DataMappingException(String.format(
+                    "failed to map results from result set to %s entity, error: %s", AirplaneProfile.class.getName(), e.getMessage()),
+                    e);
+        }
     }
 }

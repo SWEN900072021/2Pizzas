@@ -41,4 +41,9 @@ public class BookingTableResultSetMapper implements SqlResultSetMapper<Booking> 
 
         return mapped;
     }
+
+    @Override
+    public Booking mapOne(ResultSet resultSet) {
+        return null;
+    }
 }

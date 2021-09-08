@@ -78,6 +78,11 @@ public class AdministratorMapperImpl implements AdministratorMapper {
         return null;
     }
 
+    @Override
+    public Administrator mapOne(ResultSet resultSet) {
+        return null;
+    }
+
 //    @Override
 //    public List<Administrator> map(ResultSet resultSet) {
 //        List<Administrator> mapped = new ArrayList<>();

@@ -35,17 +35,11 @@ public class Booking extends AssertionConcern implements Entity<EntityId> {
     }
 
     public void addFlight(SeatBooking seatBooking) {
-        updateAllocations(seatBooking);
         flightBooking = seatBooking;
     }
 
     public void addReturnFlight(SeatBooking seatBooking) {
-        updateAllocations(seatBooking);
         returnFlightBooking = seatBooking;
-    }
-
-    private void updateAllocations(SeatBooking booking) {
-        booking.getAllocations().forEach(b -> b.setBooking(this));
     }
 
     @Override

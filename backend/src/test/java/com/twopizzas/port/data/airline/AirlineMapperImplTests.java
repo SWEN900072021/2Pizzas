@@ -31,7 +31,7 @@ public class AirlineMapperImplTests {
     @DisplayName("GIVEN valid airline object WHEN created invoked THEN airline persisted in database")
     void testCreate() {
         // GIVEN
-        Airline entity = new Airline(EntityId.nextId(), "airline", "password", "qantas", "QN");
+        Airline entity = new Airline(EntityId.nextId(), "username", "password", "qantas", "QN");
 
         // WHEN
         mapper.create(entity);

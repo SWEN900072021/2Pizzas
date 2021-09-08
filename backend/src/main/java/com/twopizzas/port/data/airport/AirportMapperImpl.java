@@ -97,13 +97,10 @@ class AirportMapperImpl implements AirportMapper {
         List<Airport> mapped = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                mapped.add(new Airport(
-                        EntityId.of(resultSet.getObject(AirportMapperImpl.COLUMN_ID, String.class)),
-                        resultSet.getObject(AirportMapperImpl.COLUMN_CODE, String.class),
-                        resultSet.getObject(AirportMapperImpl.COLUMN_NAME, String.class),
-                        resultSet.getObject(AirportMapperImpl.COLUMN_LOCATION, String.class),
-                        ZoneId.of(resultSet.getObject(AirportMapperImpl.COLUMN_UTC_OFFSET, String.class))
-                ));
+                Airport one = mapOne(resultSet);
+                if (one != null) {
+                    mapped.add(one);
+                }
             }
         } catch (SQLException e) {
             throw new DataMappingException(String.format(
@@ -111,5 +108,22 @@ class AirportMapperImpl implements AirportMapper {
                     e);
         }
         return mapped;
+    }
+
+    @Override
+    public Airport mapOne(ResultSet resultSet) {
+        try {
+            return new Airport(
+                    EntityId.of(resultSet.getObject(AirportMapperImpl.COLUMN_ID, String.class)),
+                    resultSet.getObject(AirportMapperImpl.COLUMN_CODE, String.class),
+                    resultSet.getObject(AirportMapperImpl.COLUMN_NAME, String.class),
+                    resultSet.getObject(AirportMapperImpl.COLUMN_LOCATION, String.class),
+                    ZoneId.of(resultSet.getObject(AirportMapperImpl.COLUMN_UTC_OFFSET, String.class))
+            );
+        } catch (SQLException e) {
+            throw new DataMappingException(String.format(
+                    "failed to map results from result set to %s entity, error: %s", Airport.class.getName(), e.getMessage()),
+                    e);
+        }
     }
 }

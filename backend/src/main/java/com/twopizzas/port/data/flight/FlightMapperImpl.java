@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class FlightMapperImpl implements FlightMapper {
+class FlightMapperImpl implements FlightMapper {
 
     static final String TABLE_FLIGHT = "flight";
     static final String COLUMN_ID = "id";
@@ -126,27 +126,42 @@ public class FlightMapperImpl implements FlightMapper {
         List<Flight> mapped = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                EntityId flightId = EntityId.of(resultSet.getObject(COLUMN_ID, String.class));
-                mapped.add(new Flight(
-                        flightId,
-                        LazyValueHolderProxy.makeLazy(new FlightSeatAllocationsForFlightLoader(connectionPool, flightSeatAllocationMapper, flightId)),
-                        airplaneProfileMapper.read(EntityId.of(resultSet.getObject(COLUMN_AIRPLANE_ID, String.class))),
-                        airlineMapper.read(EntityId.of(resultSet.getObject(COLUMN_AIRLINE_ID, String.class))),
-                        BaseValueHolder.of(flightSeatMapper.readAll(new AllSeatsForFlightSpecification(flightSeatMapper, flightId))),
-                        airportMapper.read(EntityId.of(resultSet.getObject(COLUMN_ORIGIN, String.class))),
-                        airportMapper.read(EntityId.of(resultSet.getObject(COLUMN_DESTINATION, String.class))),
-                        resultSet.getObject(COLUMN_DEPARTURE, OffsetDateTime.class),
-                        resultSet.getObject(COLUMN_ARRIVAL, OffsetDateTime.class),
-                        new FlightStopOversLoader(connectionPool, airportMapper, this, flightId).load().get(),
-                        resultSet.getObject(COLUMN_CODE, String.class),
-                        Flight.Status.valueOf(resultSet.getObject(COLUMN_STATUS, String.class))
-                ));
+                Flight one = mapOne(resultSet);
+                if (one != null) {
+                    mapped.add(one);
+                }
             }
         } catch (SQLException e) {
             throw new DataMappingException(String.format(
-                    "failed to map results from result set to %s entity, error: %s", Airport.class.getName(), e.getMessage()),
+                    "failed to map results from result set to %s entity, error: %s", getEntityClass().getName(), e.getMessage()),
                     e);
         }
         return mapped;
+    }
+
+    @Override
+    public Flight mapOne(ResultSet resultSet) {
+        try {
+            EntityId flightId = EntityId.of(resultSet.getObject(COLUMN_ID, String.class));
+            return new Flight(
+                    flightId,
+                    LazyValueHolderProxy.makeLazy(new FlightSeatAllocationsForFlightLoader(connectionPool, flightSeatAllocationMapper, flightId)),
+                    airplaneProfileMapper.read(EntityId.of(resultSet.getObject(COLUMN_AIRPLANE_ID, String.class))),
+                    airlineMapper.read(EntityId.of(resultSet.getObject(COLUMN_AIRLINE_ID, String.class))),
+                    BaseValueHolder.of(flightSeatMapper.readAll(new AllSeatsForFlightSpecification(flightSeatMapper, flightId))),
+                    airportMapper.read(EntityId.of(resultSet.getObject(COLUMN_ORIGIN, String.class))),
+                    airportMapper.read(EntityId.of(resultSet.getObject(COLUMN_DESTINATION, String.class))),
+                    resultSet.getObject(COLUMN_DEPARTURE, OffsetDateTime.class),
+                    resultSet.getObject(COLUMN_ARRIVAL, OffsetDateTime.class),
+                    new FlightStopOversLoader(connectionPool, airportMapper, this, flightId).load().get(),
+                    resultSet.getObject(COLUMN_CODE, String.class),
+                    Flight.Status.valueOf(resultSet.getObject(COLUMN_STATUS, String.class))
+            );
+        } catch (SQLException e) {
+            throw new DataMappingException(String.format(
+                    "failed to map results from result set to %s entity, error: %s", getEntityClass().getName(), e.getMessage()),
+                    e);
+        }
+
     }
 }

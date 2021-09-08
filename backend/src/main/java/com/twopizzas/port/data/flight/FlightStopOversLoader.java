@@ -70,4 +70,9 @@ class FlightStopOversLoader implements ValueLoader<List<StopOver>>, SqlResultSet
         }
         return mapped;
     }
+
+    @Override
+    public StopOver mapOne(ResultSet resultSet) {
+        return null;
+    }
 }

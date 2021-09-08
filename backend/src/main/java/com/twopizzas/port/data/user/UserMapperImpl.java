@@ -3,6 +3,7 @@ package com.twopizzas.port.data.user;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.*;
+import com.twopizzas.port.data.administrator.AdministratorMapper;
 import com.twopizzas.port.data.airline.AirlineMapper;
 import com.twopizzas.port.data.customer.CustomerMapper;
 import com.twopizzas.port.data.db.ConnectionPool;
@@ -18,10 +19,11 @@ class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
     private ConnectionPool connectionPool;
     private CustomerMapper customerMapper;
     private AirlineMapper airlineMapper;
-    private AdminMapper adminMapper;
+    private AdministratorMapper adminMapper;
 
     @Autowired
-    UserMapperImpl(ConnectionPool connectionPool, CustomerMapper customerMapper, AirlineMapper airlineMapper, AdminMapper adminMapper) {
+    UserMapperImpl(ConnectionPool connectionPool, CustomerMapper customerMapper, AirlineMapper airlineMapper, AdministratorMapper adminMapper) {
+        super(connectionPool);
         this.connectionPool = connectionPool;
         this.customerMapper = customerMapper;
         this.airlineMapper = airlineMapper;
@@ -97,5 +99,10 @@ class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
             e.printStackTrace();
         }
         return users;
+    }
+
+    @Override
+    public User mapOne(ResultSet resultSet) {
+        return null;
     }
 }
