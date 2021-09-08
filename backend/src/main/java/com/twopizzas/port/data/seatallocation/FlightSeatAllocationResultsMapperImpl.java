@@ -27,13 +27,11 @@ public class FlightSeatAllocationResultsMapperImpl implements FlightSeatAllocati
 
     private final PassengerMapper passengerMapper;
     private final FlightSeatMapper flightSeatMapper;
-    private final BookingMapper bookingMapper;
 
     @Autowired
-    public FlightSeatAllocationResultsMapperImpl(PassengerMapper passengerMapper, FlightSeatMapper flightSeatMapper, BookingMapper bookingMapper) {
+    public FlightSeatAllocationResultsMapperImpl(PassengerMapper passengerMapper, FlightSeatMapper flightSeatMapper) {
         this.passengerMapper = passengerMapper;
         this.flightSeatMapper = flightSeatMapper;
-        this.bookingMapper = bookingMapper;
     }
 
     @Override
@@ -43,8 +41,7 @@ public class FlightSeatAllocationResultsMapperImpl implements FlightSeatAllocati
             while (resultSet.next()) {
                 seatAllocations.add(new FlightSeatAllocation(
                         flightSeatMapper.read(EntityId.of(resultSet.getObject(COLUMN_SEAT_ID, String.class))),
-                        passengerMapper.read(EntityId.of(resultSet.getObject(COLUMN_PASSENGER_ID, String.class))),
-                        LazyValueHolderProxy.makeLazy(new BookingByIdLoader(bookingMapper, EntityId.of(resultSet.getObject(COLUMN_BOOKING_ID, String.class))))
+                        passengerMapper.read(EntityId.of(resultSet.getObject(COLUMN_PASSENGER_ID, String.class)))
                 ));
             }
         } catch (SQLException e) {

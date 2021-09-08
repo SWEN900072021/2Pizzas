@@ -44,6 +44,6 @@ public class LazyValueHolderProxy<T> implements InvocationHandler {
 
     public static <T> ValueHolder<T> makeLazy(ValueLoader<T> loader) {
         LazyValueHolderProxy<T> proxy = new LazyValueHolderProxy<>(loader);
-        return (ValueHolder<T>) Proxy.newProxyInstance(ValueHolder.class.getClassLoader(), new Class<?>[]{ValueLoader.class}, proxy);
+        return (ValueHolder<T>) Proxy.newProxyInstance(ValueHolder.class.getClassLoader(), new Class<?>[]{ValueHolder.class}, proxy);
     }
 }

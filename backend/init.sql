@@ -128,7 +128,8 @@ CREATE TABLE seat
     class    varchar(255),
     CONSTRAINT flightFK
         FOREIGN KEY (flightId)
-            REFERENCES flight (id)
+            REFERENCES flight (id),
+    UNIQUE (name, flightId)
 );
 
 CREATE TABLE passenger
@@ -138,23 +139,23 @@ CREATE TABLE passenger
     surname        varchar(255),
     dob            date,
     nationality    varchar(255),
-    passportNumber varchar(255)
+    passportNumber varchar(255),
+    bookingId      varchar(36),
+    CONSTRAINT bookingFK
+        FOREIGN KEY (bookingId)
+            REFERENCES booking (id)
 );
 
 CREATE TABLE seatAllocation
 (
     passengerId varchar(36),
     seatId      varchar(36),
-    bookingId   varchar(36),
     CONSTRAINT seatFK
         FOREIGN KEY (seatId)
             REFERENCES seat (id),
     CONSTRAINT passengerFK
         FOREIGN KEY (passengerId)
-            REFERENCES passenger (id),
-    CONSTRAINT bookingFK
-        FOREIGN KEY (bookingId)
-            REFERENCES booking (id)
+            REFERENCES passenger (id)
 );
 
 

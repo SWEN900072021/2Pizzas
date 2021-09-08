@@ -39,7 +39,7 @@ public class FlightSeat extends AssertionConcern implements Entity<EntityId> {
 
     @Override
     public EntityId getId() {
-        return null;
+        return id;
     }
 
     @Override
