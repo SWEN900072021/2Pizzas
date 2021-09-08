@@ -27,7 +27,7 @@ class CustomerMapperImpl implements CustomerMapper {
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_CUSTOMER +
-                    " SET " + COLUMN_GIVENNAME + " = ?, " + COLUMN_SURNAME + " = ?, " + COLUMN_EMAIL + " = ? + " +
+                    " SET " + COLUMN_GIVENNAME + " = ?, " + COLUMN_SURNAME + " = ?, " + COLUMN_EMAIL + " = ?" +
                     " WHERE id = ?;";
 
 
