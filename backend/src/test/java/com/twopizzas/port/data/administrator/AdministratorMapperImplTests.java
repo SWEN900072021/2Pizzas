@@ -44,6 +44,26 @@ public class AdministratorMapperImplTests {
     }
 
     @Test
+    @DisplayName("GIVEN existing valid administrator object in db WHEN update invoked THEN administrator object updated")
+    void testValidUpdate() {
+        // GIVEN
+        EntityId id = EntityId.nextId();
+        Administrator oldEntity = new Administrator(id, "username", "password");
+        mapper.create(oldEntity);
+
+        // WHEN
+        Administrator newEntity = new Administrator(id, "newUsername", "password");
+        mapper.update(newEntity);
+
+        // THEN
+        Administrator persisted = mapper.read(id);
+        Assertions.assertNotNull(persisted);
+        Assertions.assertEquals(newEntity.getId(), persisted.getId());
+        Assertions.assertEquals(newEntity.getUsername(), persisted.getUsername());
+        Assertions.assertEquals(newEntity.getPassword(), persisted.getPassword());
+    }
+
+    @Test
     @DisplayName("GIVEN existing valid administrator object in db WHEN delete invoked THEN administrator object removed" +
             "from db") void testValidDelete() {
         // GIVEN

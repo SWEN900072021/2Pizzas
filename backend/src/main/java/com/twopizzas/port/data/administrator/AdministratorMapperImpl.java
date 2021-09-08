@@ -24,15 +24,6 @@ class AdministratorMapperImpl extends AbstractUserMapper<Administrator> implemen
             "INSERT INTO " + TABLE_ADMINISTRATOR + "(" + COLUMN_ID + ")" +
                     " VALUES (?);";
 
-    private static final String UPDATE_TEMPLATE =
-            "UPDATE " + TABLE_ADMINISTRATOR +
-                    " SET " +
-                    " WHERE id = ?;";
-
-    private static final String DELETE_TEMPLATE =
-            "DELETE FROM " + TABLE_ADMINISTRATOR +
-                    " WHERE id = ?;";
-
     private static final String SELECT_TEMPLATE =
             "SELECT * FROM " + TABLE_USER + " INNER JOIN " + TABLE_ADMINISTRATOR +
                     " ON " + TABLE_USER + ".id =" + TABLE_ADMINISTRATOR + ".id" +
@@ -70,13 +61,12 @@ class AdministratorMapperImpl extends AbstractUserMapper<Administrator> implemen
 
     @Override
     public void update(Administrator entity) {
+        abstractUpdate(entity);
     }
 
     @Override
     public void delete(Administrator entity) {
-        new SqlStatement(DELETE_TEMPLATE,
-                entity.getId().toString()
-        ).doExecute(connectionPool.getCurrentTransaction());
+        abstractDelete(entity);
     }
 
     @Override
