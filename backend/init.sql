@@ -154,5 +154,6 @@ CREATE TABLE seatAllocation
             REFERENCES seat (id),
     CONSTRAINT passengerFK
         FOREIGN KEY (passengerId)
-            REFERENCES passenger (id)
+            REFERENCES passenger (id),
+    UNIQUE (seatId)
 );

@@ -4,6 +4,7 @@ import com.twopizzas.data.Entity;
 import com.twopizzas.util.AssertionConcern;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Passenger extends AssertionConcern implements Entity<EntityId> {
     private final EntityId id;

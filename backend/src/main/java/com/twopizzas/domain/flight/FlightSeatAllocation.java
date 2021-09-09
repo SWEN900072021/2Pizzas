@@ -20,4 +20,5 @@ public class FlightSeatAllocation extends AssertionConcern {
         return passenger;
     }
 
+
 }

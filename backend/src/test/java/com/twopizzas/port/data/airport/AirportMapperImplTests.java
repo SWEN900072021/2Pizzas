@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class AirportMapperImplTests {
 
     private AirportMapperImpl mapper;
-    private ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
+    private final ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
 
     @BeforeEach
     void setup() throws SQLException {
