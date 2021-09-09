@@ -68,7 +68,7 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
 
     @Override
     public List<Customer> readAll(CustomerSpecification specification) {
-        return null;
+        return specification.execute(connectionPool);
     }
 
     @Override
@@ -87,16 +87,23 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
     }
 
     public List<Customer> map(ResultSet resultSet) {
+
         List<Customer> mapped = new ArrayList<>();
+        Customer one;
+
         try {
             while (resultSet.next()) {
-                mapOne(resultSet);
+                one = mapOne(resultSet);
+                if (one != null) {
+                    mapped.add(one);
+                }
             }
         } catch (SQLException e) {
             throw new DataMappingException(String.format(
                     "failed to map results from result set to %s entity, error: %s", Customer.class.getName(), e.getMessage()),
                     e);
         }
+
         return mapped;
     }
 

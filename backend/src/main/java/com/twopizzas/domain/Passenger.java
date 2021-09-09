@@ -8,22 +8,24 @@ import java.time.LocalDate;
 public class Passenger extends AssertionConcern implements Entity<EntityId> {
     private final EntityId id;
     private final String givenName;
-    private final String lastName;
+    private final String surname;
     private final LocalDate dateOfBirth;
     private final String nationality;
     private final String passportNumber;
+    private Booking booking;
 
-    public Passenger(EntityId id, String givenName, String lastName, LocalDate dateOfBirth, String nationality, String passportNumber) {
+    public Passenger(EntityId id, String givenName, String surname, LocalDate dateOfBirth, String nationality, String passportNumber, Booking booking) {
         this.id = notNull(id, "id");
         this.givenName = notNullAndNotBlank(givenName, "givenName");
-        this.lastName = notNullAndNotBlank(lastName, "lastName");
+        this.surname = notNullAndNotBlank(surname, "surname");
         this.dateOfBirth = notNull(dateOfBirth, "dateOfBirth");
         this.nationality = notNullAndNotBlank(nationality, "nationality");
         this.passportNumber = notNullAndNotBlank(passportNumber, "passportNumber");
+        this.booking = notNull(booking, "booking");
     }
 
-    public Passenger(String givenName, String lastName, LocalDate dateOfBirth, String nationality, String passportNumber) {
-        this(EntityId.nextId(), givenName, lastName, dateOfBirth, nationality, passportNumber);
+    public Passenger(String givenName, String surname, LocalDate dateOfBirth, String nationality, String passportNumber, Booking booking) {
+        this(EntityId.nextId(), givenName, surname, dateOfBirth, nationality, passportNumber, booking);
     }
 
     @Override
@@ -40,8 +42,8 @@ public class Passenger extends AssertionConcern implements Entity<EntityId> {
         return givenName;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getSurname() {
+        return surname;
     }
 
     public LocalDate getDateOfBirth() {
@@ -55,4 +57,6 @@ public class Passenger extends AssertionConcern implements Entity<EntityId> {
     public String getPassportNumber() {
         return passportNumber;
     }
+
+    public Booking getBooking() { return booking; }
 }
