@@ -16,7 +16,7 @@ public class FlightBookingLoader implements ValueLoader<List<Booking>> {
     @Override
     public ValueHolder<List<Booking>> load() {
         // go to database
-        FlightBookingsSpecification spec = new FlightBookingsSpecification(flightId);
+        FlightBookingsSpecification spec = new FlightBookingsSpecification(flightId, mapper);
         List<Booking> bookings = mapper.readAll(spec);
         return new BaseValueHolder<>(bookings);
     }

@@ -29,7 +29,7 @@ public class AdministratorMapperImplTests {
     }
 
     @Test
-    @DisplayName("GIVEN valid administrator object WHEN created invoked THEN administrator persisted in database")
+    @DisplayName("GIVEN valid administrator object WHEN create invoked THEN administrator persisted in database")
     void testCreate() {
         // GIVEN
         Administrator entity = new Administrator("JohnSmith", "testPW");

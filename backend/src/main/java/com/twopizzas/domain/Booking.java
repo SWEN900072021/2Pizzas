@@ -4,35 +4,30 @@ import com.twopizzas.data.Entity;
 import com.twopizzas.domain.flight.SeatBooking;
 import com.twopizzas.util.AssertionConcern;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 public class Booking extends AssertionConcern implements Entity<EntityId> {
 
     private final EntityId id;
     private final OffsetDateTime date;
-    private Double totalCost;
-    private final String reference;
+    private BigDecimal totalCost;
     private final Customer customer;
 
-    private SeatBooking flightBooking;
-    private SeatBooking returnFlightBooking;
+    private SeatBooking flightBooking = null;
+    private SeatBooking returnFlightBooking = null;
 
-    public Booking(EntityId id, OffsetDateTime date, Double totalCost, String reference, Customer customer) {
+    public Booking(EntityId id, OffsetDateTime date, BigDecimal totalCost, Customer customer) {
         this.id = notNull(id, "id");
         this.date = notNull(date, "date");
         this.totalCost = notNull(totalCost, "totalCost");
-        this.reference = notNullAndNotBlank(reference, "reference");
         this.customer = notNull(customer, "customer");
     }
 
     public Booking(Customer customer) {
-        this(EntityId.nextId(), OffsetDateTime.now(), null, nextReference(), customer);
+        this(EntityId.nextId(), OffsetDateTime.now(), null, customer);
     }
 
-    public static String nextReference() {
-        return "something";
-    }
 
     public void addFlight(SeatBooking seatBooking) {
         flightBooking = seatBooking;
@@ -51,11 +46,17 @@ public class Booking extends AssertionConcern implements Entity<EntityId> {
         return date;
     }
 
-    public Double getTotalCost() {
+    public BigDecimal getTotalCost() {
         return totalCost;
     }
 
-    public String getBookingReference() {
-        return reference;
+    public Customer getCustomer() { return customer; }
+
+    public SeatBooking getFlightReservation() {
+        return flightBooking;
+    }
+
+    public SeatBooking getReturnFlightReservation() {
+        return returnFlightBooking;
     }
 }

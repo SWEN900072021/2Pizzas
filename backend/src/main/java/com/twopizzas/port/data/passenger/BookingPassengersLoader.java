@@ -17,12 +17,13 @@ public class BookingPassengersLoader implements ValueLoader<List<Passenger>> {
 
     private final EntityId bookingId;
     private final ConnectionPool connection;
+    private final PassengerMapper mapper;
 
-    private final PassengerTableResultSetMapper mapper = new PassengerTableResultSetMapper();
 
-    public BookingPassengersLoader(EntityId bookingId, ConnectionPool connection) {
+    public BookingPassengersLoader(EntityId bookingId, ConnectionPool connection, PassengerMapper mapper) {
         this.bookingId = bookingId;
         this.connection = connection;
+        this.mapper = mapper;
     }
 
     @Override

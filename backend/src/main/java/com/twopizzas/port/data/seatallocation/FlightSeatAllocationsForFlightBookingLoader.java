@@ -12,11 +12,10 @@ import java.util.List;
 
 public class FlightSeatAllocationsForFlightBookingLoader implements ValueLoader<List<FlightSeatAllocation>> {
     private static final String TEMPLATE =
-            "SELECT *" +
-            " FROM seatAllocation" +
-            " JOIN seat ON seatAllocation.seatId = seat.id" +
+            "SELECT * "+
+            " FROM seat JOIN seatAllocation ON seat.id = seatAllocation.seatId" +
             " JOIN passenger ON seatAllocation.passengerId = passenger.id" +
-            " WHERE seat.flightId = ? AND passenger.bookingId = ?;" ;
+            " WHERE seat.flightId = ? AND passenger.bookingId = ?" ;
 
     private final ConnectionPool connectionPool;
     private final FlightSeatAllocationMapper mapper;

@@ -16,6 +16,6 @@ class BookingRepositoryImpl extends AbstractRepository<Booking, EntityId, Bookin
     }
 
     public List<Booking> findAllFlightBookings(EntityId flightId) {
-        return dataMapper.readAll(new FlightBookingsSpecification(flightId));
+        return dataMapper.readAll(new FlightBookingsSpecification(flightId, dataMapper));
     }
 }

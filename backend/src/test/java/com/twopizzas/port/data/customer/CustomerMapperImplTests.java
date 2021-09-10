@@ -28,7 +28,7 @@ public class CustomerMapperImplTests {
     }
 
     @Test
-    @DisplayName("GIVEN valid customer object WHEN created invoked THEN customer persisted in database")
+    @DisplayName("GIVEN valid customer object WHEN create invoked THEN customer persisted in database")
     void testCreate() {
         // GIVEN
         Customer entity = new Customer(EntityId.nextId(),
