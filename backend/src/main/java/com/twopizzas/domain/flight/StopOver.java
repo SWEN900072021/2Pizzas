@@ -12,21 +12,15 @@ public class StopOver extends AssertionConcern {
     private final Airport location;
     private final OffsetDateTime arrival;
     private final OffsetDateTime departure;
-    private final ValueHolder<Flight> flight;
 
-    public StopOver(Airport location, OffsetDateTime arrival, OffsetDateTime departure, ValueHolder<Flight> flight) {
+    public StopOver(Airport location, OffsetDateTime arrival, OffsetDateTime departure) {
         this.location = notNull(location, "location");
         this.arrival = notNull(arrival, "arrival");
         this.departure = notNull(departure, "departure");
-        this.flight = notNull(flight, "flight");
 
         if (departure.isBefore(arrival)) {
             throw new ValueViolation("departure time must be after arrival time");
         }
-    }
-
-    public Flight getFlight() {
-        return flight.get();
     }
 
     public Airport getLocation() {

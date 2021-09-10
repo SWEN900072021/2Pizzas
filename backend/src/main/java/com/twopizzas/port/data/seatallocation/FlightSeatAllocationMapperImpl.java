@@ -14,9 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class FlightSeatAllocationResultsMapperImpl implements FlightSeatAllocationResultsMapper {
+public class FlightSeatAllocationMapperImpl implements FlightSeatAllocationMapper {
 
-    static final String TABLE_ALLOCATION = "seatAllocation";
     static final String COLUMN_PASSENGER_ID = "passengerId";
     static final String COLUMN_SEAT_ID = "seatId";
 
@@ -24,7 +23,7 @@ public class FlightSeatAllocationResultsMapperImpl implements FlightSeatAllocati
     private final FlightSeatMapper flightSeatMapper;
 
     @Autowired
-    public FlightSeatAllocationResultsMapperImpl(PassengerMapper passengerMapper, FlightSeatMapper flightSeatMapper) {
+    public FlightSeatAllocationMapperImpl(PassengerMapper passengerMapper, FlightSeatMapper flightSeatMapper) {
         this.passengerMapper = passengerMapper;
         this.flightSeatMapper = flightSeatMapper;
     }

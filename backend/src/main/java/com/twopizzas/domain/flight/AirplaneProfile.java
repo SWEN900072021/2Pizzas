@@ -8,6 +8,8 @@ import com.twopizzas.util.AssertionConcern;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class AirplaneProfile extends AssertionConcern implements Entity<EntityId> {
     private final EntityId id;
@@ -56,6 +58,10 @@ public class AirplaneProfile extends AssertionConcern implements Entity<EntityId
         return seatProfiles;
     }
 
+    public List<FlightSeat> getFlightSeats(Flight flight) {
+        return getSeatProfiles().stream().map(s -> new FlightSeat(s.getName(), s.getSeatClass(), flight)).collect(Collectors.toList());
+    }
+
     @Override
     public EntityId getId() {
         return id;
@@ -91,5 +97,18 @@ public class AirplaneProfile extends AssertionConcern implements Entity<EntityId
 
     public int getEconomyClassColumns() {
         return economyClassColumns;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AirplaneProfile that = (AirplaneProfile) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

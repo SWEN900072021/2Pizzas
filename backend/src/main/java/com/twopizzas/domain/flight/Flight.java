@@ -1,5 +1,6 @@
 package com.twopizzas.domain.flight;
 
+import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.data.Entity;
 import com.twopizzas.data.ValueHolder;
 import com.twopizzas.domain.*;
@@ -36,7 +37,8 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
         this.arrival = notNull(arrival, "arrival");
 
         if(seats == null) {
-            this.seats = () -> buildSeats(airplaneProfile);
+            List<FlightSeat> built = airplaneProfile.getFlightSeats(this);
+            this.seats = BaseValueHolder.of(built);
         } else {
             this.seats = seats;
         }
@@ -54,12 +56,6 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
 
     public Flight(AirplaneProfile airplaneProfile, Airline airline, Airport origin, Airport destination, List<StopOver> stopOvers, String code, OffsetDateTime departure, OffsetDateTime arrival) {
         this(EntityId.nextId(), ArrayList::new, airplaneProfile, airline, null, origin, destination, departure, arrival, stopOvers, code, Status.TO_SCHEDULE);
-    }
-
-    private List<FlightSeat> buildSeats(AirplaneProfile profile) {
-        return profile.getSeatProfiles().stream().map(
-                        sp -> new FlightSeat(sp.getName(), sp.getSeatClass(), this)
-                ).collect(Collectors.toList());
     }
 
     public SeatBooking allocateSeats(BookingRequest request) {
@@ -81,7 +77,6 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
                         BookingRequest.SeatAllocationRequest::getPassenger
                 ));
 
-        Set<FlightSeat> seatsToBook = getSeats(seatNames);
         Set<FlightSeat> availableSeats = getAvailableSeats();
 
         Set<FlightSeat> bookingConflicts = getSeats().stream()
@@ -141,12 +136,16 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
     }
 
     public void addStopOver(Airport location, OffsetDateTime arrival, OffsetDateTime departure) {
-        addStopOver(new StopOver(location, arrival, departure, () -> this));
+        addStopOver(new StopOver(location, arrival, departure));
     }
 
     private void addStopOver(StopOver stopOver) {
         validateStopOver(stopOver);
         stopOvers.add(stopOver);
+    }
+
+    public List<FlightSeatAllocation> getAllocatedSeats() {
+        return Collections.unmodifiableList(allocatedSeats.get());
     }
 
     private void validateStopOver(StopOver stopOver) {

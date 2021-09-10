@@ -4,6 +4,7 @@ import com.twopizzas.data.Entity;
 import com.twopizzas.util.AssertionConcern;
 
 import java.time.ZoneId;
+import java.util.Objects;
 
 public class Airport extends AssertionConcern implements Entity<EntityId> {
 
@@ -39,4 +40,17 @@ public class Airport extends AssertionConcern implements Entity<EntityId> {
     public String getLocation() { return location; }
 
     public ZoneId getUtcOffset() { return utcOffset; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Airport airport = (Airport) o;
+        return Objects.equals(id, airport.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

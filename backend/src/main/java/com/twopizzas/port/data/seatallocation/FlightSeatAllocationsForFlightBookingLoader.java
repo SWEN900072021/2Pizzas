@@ -19,11 +19,11 @@ public class FlightSeatAllocationsForFlightBookingLoader implements ValueLoader<
             " WHERE seat.flightId = ? AND passenger.bookingId = ?;" ;
 
     private final ConnectionPool connectionPool;
-    private final FlightSeatAllocationResultsMapper mapper;
+    private final FlightSeatAllocationMapper mapper;
     private final EntityId flightId;
     private final EntityId bookingId;
 
-    public FlightSeatAllocationsForFlightBookingLoader(ConnectionPool connectionPool, FlightSeatAllocationResultsMapper mapper, EntityId flightId, EntityId bookingId) {
+    public FlightSeatAllocationsForFlightBookingLoader(ConnectionPool connectionPool, FlightSeatAllocationMapper mapper, EntityId flightId, EntityId bookingId) {
         this.connectionPool = connectionPool;
         this.mapper = mapper;
         this.flightId = flightId;

@@ -1,4 +1,4 @@
-package com.twopizzas.port.data.allocation;
+package com.twopizzas.port.data.seatallocation;
 
 import com.twopizzas.data.ValueHolder;
 import com.twopizzas.domain.EntityId;
@@ -10,10 +10,6 @@ import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import com.twopizzas.port.data.passenger.PassengerMapper;
 import com.twopizzas.port.data.seat.FlightSeatMapper;
-import com.twopizzas.port.data.seatallocation.FlightSeatAllocationResultsMapper;
-import com.twopizzas.port.data.seatallocation.FlightSeatAllocationResultsMapperImpl;
-import com.twopizzas.port.data.seatallocation.FlightSeatAllocationsForFlightBookingLoader;
-import com.twopizzas.port.data.seatallocation.FlightSeatAllocationsForFlightLoader;
 import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -25,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FlightSeatAllocationDataTests {
-    private FlightSeatAllocationResultsMapper mapper;
+    private FlightSeatAllocationMapper mapper;
 
     @Mock
     private FlightSeatMapper seatMapper;
@@ -39,7 +35,7 @@ public class FlightSeatAllocationDataTests {
     void setup() throws SQLException {
         MockitoAnnotations.initMocks(this);
 
-        mapper = new FlightSeatAllocationResultsMapperImpl(passengerMapper, seatMapper);
+        mapper = new FlightSeatAllocationMapperImpl(passengerMapper, seatMapper);
         connectionPool.startNewTransaction();
         connectionPool.getCurrentTransaction().setAutoCommit(false);
     }
@@ -212,12 +208,12 @@ public class FlightSeatAllocationDataTests {
         Arrays.stream(passengerIds).forEach(p -> insertTestPassenger(p, bookingId));
     }
 
-    private void insertTestAllocation(FlightSeatAllocation allocation) {
-        new SqlStatement("INSERT INTO seatAllocation (seatId, passengerId) VALUES (?, ?);", allocation.getSeat().getId().toString(), allocation.getPassenger().getId().toString()).doExecute(connectionPool.getCurrentTransaction());
-    }
-
     private void insertTestFlight(EntityId flightId) {
         new SqlStatement("INSERT INTO flight (id) VALUES (?);", flightId.toString()).doExecute(connectionPool.getCurrentTransaction());
+    }
+
+    private void insertTestAllocation(FlightSeatAllocation allocation) {
+        new SqlStatement("INSERT INTO seatAllocation (passengerId, seatId) VALUES (?, ?);", allocation.getPassenger().getId().toString(), allocation.getSeat().getId().toString()).doExecute(connectionPool.getCurrentTransaction());
     }
 
     private void insertTestSeat(EntityId seatId, EntityId flightId) {
