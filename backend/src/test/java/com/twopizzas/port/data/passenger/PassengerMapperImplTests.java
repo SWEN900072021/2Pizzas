@@ -24,9 +24,6 @@ public class PassengerMapperImplTests {
     @Mock
     private BookingMapper bookingMapper;
 
-    @Mock
-    private FlightMapper flightMapper;
-
     private final ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
 
     @BeforeEach
@@ -57,7 +54,8 @@ public class PassengerMapperImplTests {
 
         insertTestBooking(booking.getId().toString(), flight.getId().toString());
 
-        Passenger entity = new Passenger("John", "Smith", LocalDate.now(), "Indonesian", "P123", booking);
+        Passenger entity = new Passenger("John", "Smith", LocalDate.now(), "Indonesian", "P123");
+        entity.setBooking(booking);
 
         Mockito.when(bookingMapper.read(Mockito.eq(bookingId))).thenReturn(booking);
 
@@ -97,7 +95,8 @@ public class PassengerMapperImplTests {
         insertTestBooking(booking.getId().toString(), flight.getId().toString());
         Mockito.doReturn(booking).when(bookingMapper).read(Mockito.eq(bookingId));
 
-        Passenger entity = new Passenger("John", "Smith", LocalDate.now(), "Indonesian", "P123", booking);
+        Passenger entity = new Passenger("John", "Smith", LocalDate.now(), "Indonesian", "P123");
+        entity.setBooking(booking);
 
         mapper.create(entity);
 
@@ -152,7 +151,8 @@ public class PassengerMapperImplTests {
 
         insertTestBooking(booking.getId().toString(), flight.getId().toString());
 
-        Passenger entity = new Passenger("John", "Smith", LocalDate.now(), "Indonesian", "P123", booking);
+        Passenger entity = new Passenger("John", "Smith", LocalDate.now(), "Indonesian", "P123");
+        entity.setBooking(booking);
 
         mapper.create(entity);
 

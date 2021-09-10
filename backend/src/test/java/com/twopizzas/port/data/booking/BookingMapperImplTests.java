@@ -12,7 +12,7 @@ import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.customer.CustomerMapper;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import com.twopizzas.port.data.flight.FlightMapper;
-import com.twopizzas.port.data.seatallocation.FlightSeatAllocationResultsMapper;
+import com.twopizzas.port.data.seatallocation.FlightSeatAllocationMapper;
 import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -34,7 +34,7 @@ public class BookingMapperImplTests {
     private FlightMapper flightMapper;
 
     @Mock
-    private FlightSeatAllocationResultsMapper flightSeatAllocationResultsMapper;
+    private FlightSeatAllocationMapper flightSeatAllocationMapper;
 
     private ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
 
@@ -42,7 +42,7 @@ public class BookingMapperImplTests {
     void setup() throws SQLException {
         MockitoAnnotations.initMocks(this);
 
-        mapper = new BookingMapperImpl(connectionPool, customerMapper, flightMapper, flightSeatAllocationResultsMapper);
+        mapper = new BookingMapperImpl(connectionPool, customerMapper, flightMapper, flightSeatAllocationMapper);
         connectionPool.startNewTransaction();
         connectionPool.getCurrentTransaction().setAutoCommit(false);
     }
@@ -96,7 +96,7 @@ public class BookingMapperImplTests {
         SeatBooking flightBooking = new SeatBooking(flight, allocationSet);
         SeatBooking returnFlightBooking = new SeatBooking(flight, allocationSet);
 
-        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now(), new BigDecimal("100.0"), customer);
+        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), new BigDecimal("100.0"), customer);
         entity.addFlight(flightBooking);
         entity.addReturnFlight(returnFlightBooking);
 
@@ -120,6 +120,59 @@ public class BookingMapperImplTests {
 
         Mockito.verify(customerMapper).read(Mockito.eq(customerId));
 
+    }
+    @Test
+    @DisplayName("GIVEN valid booking without return flight, customer, flight, and flight seat object in database WHEN create invoked THEN booking persisted in database")
+    void test() {
+
+        // GIVEN
+        EntityId customerId = EntityId.nextId();
+        Customer customer = Mockito.mock(Customer.class);
+        Mockito.when(customer.getId()).thenReturn(customerId);
+
+        insertTestUser(customer.getId().toString());
+        insertTestCustomer(customer.getId().toString());
+
+        EntityId flightId = EntityId.nextId();
+        Flight flight = Mockito.mock(Flight.class);
+        Mockito.when(flight.getId()).thenReturn(flightId);
+
+        insertTestFlight(flight.getId().toString());
+
+        EntityId flightSeatId = EntityId.nextId();
+        FlightSeat flightSeat = Mockito.mock(FlightSeat.class);
+        Mockito.when(flightSeat.getId()).thenReturn(flightSeatId);
+
+        insertTestFlightSeat(flightSeat.getId().toString(), flight.getId().toString());
+
+        FlightSeatAllocation flightSeatAllocation = Mockito.mock(FlightSeatAllocation.class);
+
+        Set<FlightSeatAllocation> allocationSet = Mockito.mock(Set.class);
+        allocationSet.add(flightSeatAllocation);
+
+        SeatBooking flightBooking = new SeatBooking(flight, allocationSet);
+
+        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), new BigDecimal("100.0"), customer);
+        entity.addFlight(flightBooking);
+
+        Mockito.when(customerMapper.read(Mockito.eq(customerId))).thenReturn(customer);
+        Mockito.when(flightMapper.read(Mockito.eq(flightId))).thenReturn(flight);
+
+        // WHEN
+        mapper.create(entity);
+
+        // THEN
+        Booking persisted = mapper.read(entity.getId());
+        Assertions.assertNotNull(persisted);
+
+        Assertions.assertEquals(entity.getId(), persisted.getId());
+        Assertions.assertEquals(entity.getDate().toInstant(), persisted.getDate().toInstant());
+        Assertions.assertEquals(entity.getTotalCost(), persisted.getTotalCost());
+        Assertions.assertEquals(entity.getCustomer(), persisted.getCustomer());
+        Assertions.assertEquals(entity.getFlightReservation().getFlight(), persisted.getFlightReservation().getFlight());
+        Assertions.assertNull(persisted.getReturnFlightReservation());
+
+        Mockito.verify(customerMapper).read(Mockito.eq(customerId));
     }
 
     @Test
@@ -168,7 +221,7 @@ public class BookingMapperImplTests {
         SeatBooking flightBooking = new SeatBooking(flight, allocationSet);
         SeatBooking returnFlightBooking = new SeatBooking(flight, allocationSet);
 
-        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now(), new BigDecimal("100.0"), customer);
+        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), new BigDecimal("100.0"), customer);
         entity.addFlight(flightBooking);
         entity.addReturnFlight(returnFlightBooking);
 
@@ -292,7 +345,7 @@ public class BookingMapperImplTests {
         SeatBooking flightBooking = new SeatBooking(flight, allocationSet);
         SeatBooking returnFlightBooking = new SeatBooking(flight, allocationSet);
 
-        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now(), new BigDecimal("100.0"), customer);
+        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), new BigDecimal("100.0"), customer);
         entity.addFlight(flightBooking);
         entity.addReturnFlight(returnFlightBooking);
 

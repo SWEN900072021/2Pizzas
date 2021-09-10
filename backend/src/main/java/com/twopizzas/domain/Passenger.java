@@ -25,8 +25,8 @@ public class Passenger extends AssertionConcern implements Entity<EntityId> {
         this.booking = notNull(booking, "booking");
     }
 
-    public Passenger(String givenName, String surname, LocalDate dateOfBirth, String nationality, String passportNumber, Booking booking) {
-        this(EntityId.nextId(), givenName, surname, dateOfBirth, nationality, passportNumber, booking);
+    public Passenger(String givenName, String surname, LocalDate dateOfBirth, String nationality, String passportNumber) {
+        this(EntityId.nextId(), givenName, surname, dateOfBirth, nationality, passportNumber, null);
     }
 
     @Override
@@ -34,9 +34,8 @@ public class Passenger extends AssertionConcern implements Entity<EntityId> {
         return id;
     }
 
-    @Override
-    public boolean isNew() {
-        return Entity.super.isNew();
+    public void setBooking(Booking booking) {
+        this.booking = booking;
     }
 
     public String getGivenName() {
