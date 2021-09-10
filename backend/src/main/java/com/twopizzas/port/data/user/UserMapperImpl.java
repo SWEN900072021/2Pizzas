@@ -3,9 +3,13 @@ package com.twopizzas.port.data.user;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.*;
+import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.administrator.AdministratorMapper;
+import com.twopizzas.port.data.administrator.AdministratorMapperImpl;
 import com.twopizzas.port.data.airline.AirlineMapper;
+import com.twopizzas.port.data.airline.AirlineMapperImpl;
 import com.twopizzas.port.data.customer.CustomerMapper;
+import com.twopizzas.port.data.customer.CustomerMapperImpl;
 import com.twopizzas.port.data.db.ConnectionPool;
 
 import java.sql.ResultSet;
@@ -21,6 +25,9 @@ class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
     private CustomerMapper customerMapper;
     private AirlineMapper airlineMapper;
     private AdministratorMapper adminMapper;
+    private CustomerMapperImpl customerMapperImpl;
+    private AirlineMapperImpl airlineMapperImpl;
+    private AdministratorMapperImpl adminMapperImpl;
 
     @Autowired
     UserMapperImpl(ConnectionPool connectionPool, CustomerMapper customerMapper, AirlineMapper airlineMapper, AdministratorMapper adminMapper) {
@@ -84,26 +91,33 @@ class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
 
     @Override
     public List<User> map(ResultSet resultSet) {
-        List<User> users = new ArrayList<>();
+        List<User> mapped = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                String userType = resultSet.getObject(COLUMN_TYPE, String.class);
-                if (userType.equals("admin")) {
-                    //
-                } else if (userType.equals("customer")) {
-                    users.add(customerMapper.mapOne(resultSet));
-                } else if (userType.equals("airline")) {
-                    //
+                User one = mapOne(resultSet);
+                if (one != null) {
+                    mapped.add(one);
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DataMappingException(String.format(
+                    "failed to map results from result set to %s entity, error: %s", User.class.getName(), e.getMessage()),
+                    e);
         }
-        return users;
+        return mapped;
     }
 
     @Override
-    public User mapOne(ResultSet resultSet) {
+    public User mapOne(ResultSet resultSet) throws SQLException {
+        String userType = resultSet.getObject(COLUMN_TYPE, String.class);
+        switch (userType) {
+            case "admin":
+                return adminMapperImpl.mapOne(resultSet);
+            case "customer":
+                return customerMapperImpl.mapOne(resultSet);
+            case "airline":
+                return airlineMapperImpl.mapOne(resultSet);
+        }
         return null;
     }
 }

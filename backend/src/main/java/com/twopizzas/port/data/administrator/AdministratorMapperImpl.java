@@ -32,7 +32,7 @@ public class AdministratorMapperImpl extends AbstractUserMapper<Administrator> i
     private ConnectionPool connectionPool;
 
     @Autowired
-    AdministratorMapperImpl(ConnectionPool connectionPool) {
+    public AdministratorMapperImpl(ConnectionPool connectionPool) {
         super(connectionPool);
         this.connectionPool = connectionPool;
     }
