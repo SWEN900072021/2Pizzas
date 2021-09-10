@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-class CustomerMapperImpl extends AbstractUserMapper<Customer> implements CustomerMapper  {
+public class CustomerMapperImpl extends AbstractUserMapper<Customer> implements CustomerMapper  {
     static final String TABLE_USER = "\"user\"";
     static final String TABLE_CUSTOMER = "customer";
     static final String COLUMN_ID = "id";
@@ -40,7 +40,7 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
     private ConnectionPool connectionPool;
 
     @Autowired
-    CustomerMapperImpl(ConnectionPool connectionPool) {
+    public CustomerMapperImpl(ConnectionPool connectionPool) {
         super(connectionPool);
         this.connectionPool = connectionPool;
     }

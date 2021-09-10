@@ -38,7 +38,7 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
     private final ConnectionPool connectionPool;
 
     @Autowired
-    AirlineMapperImpl(ConnectionPool connectionPool) {
+    public AirlineMapperImpl(ConnectionPool connectionPool) {
         super(connectionPool);
         this.connectionPool = connectionPool; }
 

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-class AdministratorMapperImpl extends AbstractUserMapper<Administrator> implements AdministratorMapper {
+public class AdministratorMapperImpl extends AbstractUserMapper<Administrator> implements AdministratorMapper {
     static final String TABLE_USER = "\"user\"";
     static final String TABLE_ADMINISTRATOR = "administrator";
     static final String COLUMN_ID = "id";
