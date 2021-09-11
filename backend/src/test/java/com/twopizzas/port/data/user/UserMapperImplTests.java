@@ -37,7 +37,7 @@ public class UserMapperImplTests {
 
     @Test
     @DisplayName("GIVEN valid user object WHEN created invoked THEN user persisted in database")
-    void testCreate() {
+    void testCreate() throws SQLException {
         // GIVEN
         User customerEntity = new Customer(EntityId.nextId(),
                 "username", "password", "John", "Smith", "johnsmith@gmail.com");

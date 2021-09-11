@@ -30,9 +30,10 @@ public abstract class AbstractUserMapper<T extends User> {
 
     private static final String SELECT =
             "SELECT *" +
-                    " FROM \"user\" JOIN customer ON \"user\".id = customer.id" +
-                    " JOIN administrator ON \"user\".id = administrator.id" +
-                    " JOIN airline ON \"user\".id = airline.id" +
+                    " FROM \"user\"" +
+                    " LEFT JOIN customer ON \"user\".id = customer.id" +
+                    " LEFT JOIN administrator ON \"user\".id = administrator.id" +
+                    " LEFT JOIN airline ON \"user\".id = airline.id" +
                     " WHERE \"user\".id = ?;";
 
     private ConnectionPool connectionPool;
