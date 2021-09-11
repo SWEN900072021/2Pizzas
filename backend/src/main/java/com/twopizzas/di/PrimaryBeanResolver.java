@@ -16,7 +16,7 @@ public class PrimaryBeanResolver implements BeanResolver {
     }
 
     @Override
-    public <T> Collection<Bean<T>> resolve(ComponentSpecification<T> specification, Collection<Bean<?>> beans) {
+    public <T> Collection<Bean<T>> resolve(TypedComponentSpecification<T> specification, Collection<Bean<?>> beans) {
         Collection<Bean<T>> resolved = wrapped.resolve(specification, beans);
         Collection<Bean<T>> primary = resolved.stream().filter(Bean::isPrimary).collect(Collectors.toSet());
         if (primary.isEmpty()) {

@@ -61,7 +61,7 @@ public class ComponentLoader implements BeanLoader {
         List<String> profiles = getProfiles(clasz);
         boolean primary = isPrimary(clasz);
         Constructor<T> constructor = getAutowiredConstructor(clasz);
-        List<ComponentSpecification<?>> dependencies = getDependencies(constructor);
+        List<TypedComponentSpecification<?>> dependencies = getDependencies(constructor);
 
         dependencies.forEach(d -> {
             if (!d.getClasz().isInterface()) {
@@ -101,8 +101,8 @@ public class ComponentLoader implements BeanLoader {
                 .collect(Collectors.toList());
     }
 
-    private List<ComponentSpecification<?>>  getDependencies(Constructor<?> constructor) {
-        List<ComponentSpecification<?>> dependencies = new ArrayList<>();
+    private List<TypedComponentSpecification<?>>  getDependencies(Constructor<?> constructor) {
+        List<TypedComponentSpecification<?>> dependencies = new ArrayList<>();
         for (Parameter parameterType : constructor.getParameters()) {
             dependencies.add(scanParameter(parameterType));
         }
@@ -110,7 +110,7 @@ public class ComponentLoader implements BeanLoader {
     }
 
 
-    private ComponentSpecification<?> scanParameter(Parameter parameter) {
+    private TypedComponentSpecification<?> scanParameter(Parameter parameter) {
         BaseBeanSpecification<?> specification = new BaseBeanSpecification<>(parameter.getType());
         String qualifier = getQualifier(parameter);
         if (qualifier != null) {

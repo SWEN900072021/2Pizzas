@@ -21,7 +21,7 @@ class ProfileBeanResolver extends AssertionConcern implements BeanResolver {
     }
 
     @Override
-    public <T> Collection<Bean<T>> resolve(ComponentSpecification<T> specification, Collection<Bean<?>> beans) {
+    public <T> Collection<Bean<T>> resolve(TypedComponentSpecification<T> specification, Collection<Bean<?>> beans) {
         Collection<Bean<T>> resolved = wrapped.resolve(specification, beans);
         Collection<Bean<T>> profileBeans = resolved.stream().filter(b -> b.getProfiles().contains(profile)).collect(Collectors.toSet());
         if (!profileBeans.isEmpty()) {

@@ -2,6 +2,7 @@ package com.twopizzas.di;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ComponentManager {
@@ -24,15 +25,19 @@ public class ComponentManager {
         store.addAll(beanLoader.load());
     }
 
-    <T> T getComponent(ComponentSpecification<T> specification) throws ApplicationContextException {
+    <T> T getComponent(TypedComponentSpecification<T> specification) throws ApplicationContextException {
         return getBean(specification).construct(this);
+    }
+
+    Collection<?> getComponents(ComponentSpecification specification) throws ApplicationContextException {
+        return specification.filter(store);
     }
 
     public <T> T getComponent(Class<T> clasz) throws ApplicationContextException {
         return getBean(new BaseBeanSpecification<>(clasz)).construct(this);
     }
 
-    <T> Bean<T> getBean(ComponentSpecification<T> specification) {
+    <T> Bean<T> getBean(TypedComponentSpecification<T> specification) {
         Collection<Bean<T>> beans = beanResolver.resolve(specification, store);
 
         if (beans.size() > 1) {
@@ -46,6 +51,6 @@ public class ComponentManager {
             return beans.iterator().next();
         }
 
-        throw new ComponentNotFound(specification.getClass());
+        throw new ComponentNotFound(specification.getClasz());
     }
 }

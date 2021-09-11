@@ -1,6 +1,5 @@
 package com.twopizzas.di;
 
-import com.twopizzas.Application;
 import com.twopizzas.MyHelloComponentImpl;
 import com.twopizzas.MyHelloComponentImplButBetter;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +12,5 @@ public class MyHelloComponentTests {
     void test() {
         new MyHelloComponentImpl().getMessage();
         new MyHelloComponentImplButBetter().getMessage();
-        new Application.ServletDefinition(null, null);
     }
 }

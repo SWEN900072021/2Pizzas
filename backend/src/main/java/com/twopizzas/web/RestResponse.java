@@ -1,6 +1,5 @@
 package com.twopizzas.web;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter

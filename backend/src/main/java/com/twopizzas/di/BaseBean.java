@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 class BaseBean<T> extends AssertionConcern implements Bean<T> {
 
     private final Constructor<T> constructor;
-    private final List<ComponentSpecification<?>> dependencies;
+    private final List<TypedComponentSpecification<?>> dependencies;
     private final Method postConstruct;
     private final Class<T> clasz;
     private final String qualifier;
@@ -25,7 +25,7 @@ class BaseBean<T> extends AssertionConcern implements Bean<T> {
              List<String> profiles,
              boolean primary,
              Constructor<T> constructor,
-             List<ComponentSpecification<?>> dependencies,
+             List<TypedComponentSpecification<?>> dependencies,
              Method postConstruct,
              List<ComponentConstructionInterceptor> interceptors)
     {
@@ -70,7 +70,7 @@ class BaseBean<T> extends AssertionConcern implements Bean<T> {
     }
 
     @Override
-    public List<ComponentSpecification<?>> getDependencies() { return dependencies; }
+    public List<TypedComponentSpecification<?>> getDependencies() { return dependencies; }
 
     @Override
     public T construct(ComponentManager componentManager) {
