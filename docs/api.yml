@@ -14,10 +14,49 @@ paths:
           required: false
           schema:
             $ref: "#/components/schemas/Id"
-
       responses:
         '200':
           description: OK
+          content:
+            application/json:   
+              schema: 
+                type: array
+                items: 
+                  $ref: "#/components/schemas/Flight"
+  /flight/{id}:
+    get:
+      operationId: getFlightById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: 
+            $ref: "#/components/schemas/Id"
+      responses:
+        '200':
+          description: OK
+    patch:
+  /flight:  
+    post:
+  /booking: 
+    post: 
+  /booking/{id}:  
+    get:
+    patch:  
+  /airport:   
+    post:
+    get:
+  /airplane-profile:
+    get:  
+  /user:
+    get:
+    post:
+  /user/{id}: 
+    get: 
+  /signup:  
+    post:
+  /login:
+    post:
 
 components:
   schemas:
