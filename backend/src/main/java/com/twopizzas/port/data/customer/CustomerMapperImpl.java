@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-class CustomerMapperImpl extends AbstractUserMapper<Customer> implements CustomerMapper  {
+public class CustomerMapperImpl extends AbstractUserMapper<Customer> implements CustomerMapper  {
     static final String TABLE_USER = "\"user\"";
     static final String TABLE_CUSTOMER = "customer";
     static final String COLUMN_ID = "id";
@@ -40,7 +40,7 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
     private ConnectionPool connectionPool;
 
     @Autowired
-    CustomerMapperImpl(ConnectionPool connectionPool) {
+    public CustomerMapperImpl(ConnectionPool connectionPool) {
         super(connectionPool);
         this.connectionPool = connectionPool;
     }
@@ -57,13 +57,9 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
 
     @Override
     public Customer read(EntityId entityId) {
-        List<Customer> customers = new SqlStatement(SELECT_TEMPLATE, entityId.toString())
-                .doQuery(connectionPool.getCurrentTransaction(), this);
-        if (customers.isEmpty()) {
-            return null;
-        }
-        // maybe throw an error if there are more than one
-        return customers.get(0);
+        return map(new SqlStatement(SELECT_TEMPLATE,
+                entityId.toString()
+        ).doQuery(connectionPool.getCurrentTransaction())).stream().findFirst().orElse(null);
     }
 
     @Override
@@ -93,7 +89,7 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
 
         try {
             while (resultSet.next()) {
-                one = mapOne(resultSet);
+                Customer one = mapOne(resultSet);
                 if (one != null) {
                     mapped.add(one);
                 }
