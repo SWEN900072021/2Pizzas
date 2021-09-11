@@ -1,4 +1,5 @@
 openapi: '3.0.2'
+
 info:
   title: 2Pizzas API
   version: '1.0'
@@ -40,11 +41,11 @@ paths:
         '200':
           description: OK
           content:
-            application/json:   
-              schema: 
+            application/json:
+              schema:
                 type: array
-                items: 
-                  $ref: "#/components/schemas/Flight"
+                items:
+                  $ref: '#/components/schemas/Flight'
   /flight/{id}:
     get:
       operationId: getFlightById
@@ -52,8 +53,8 @@ paths:
         - in: path
           name: id
           required: true
-          schema: 
-            $ref: "#/components/schemas/Id"
+          schema:
+            $ref: '#/components/schemas/Id'
       responses:
         '200':
           description: OK
@@ -143,16 +144,82 @@ paths:
     post:
     get:
   /airplane-profile:
-    get:  
+    get:
   /user:
     get:
+      operationId: getAllUsers
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorisedError'
     post:
-  /user/{id}: 
-    get: 
-  /signup:  
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserSchema'
+      responses:
+        '201':
+          description: User created
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorisedError'
+
+  /user/{id}:
+    get:
+      operationId: getUserById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorisedError'
+  /signup:
     post:
+      operationId: signup
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpSchema'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
   /login:
     post:
+      operationId: login
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogInSchema'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
 
 components:
   schemas:
@@ -202,6 +269,9 @@ components:
       required: 
       - flightId
       - passengers
+    UserType:
+      type: string
+      enum: ['administrator', 'airline']
     Flight:
       type: object
       properties:
@@ -246,4 +316,72 @@ components:
             - arrival
         
         
+    CreateUserSchema:
+      type: object
+      required:
+        - username
+        - password
+        - userType
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        userType:
+          $ref: '#/components/schemas/UserType'
+        code:
+          type: string
+        name:
+          type: string
+    SignUpSchema:
+      type: object
+      required:
+        - username
+        - password
+        - email
+        - givenName
+        - surname
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+          format: email
+        givenName:
+          type: string
+        surname:
+          type: string
+    LogInSchema:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    JWT:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/Id'
+            username:
+              type: string
+  responses:
+    UnauthorisedError:
+      description: Access token is missing or invalid
+    BadRequestError:
+      description: Bad request
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
+security:
+  - bearerAuth: []
