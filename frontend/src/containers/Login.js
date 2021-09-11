@@ -3,8 +3,8 @@ import Button from '../components/Button'
 import TextField from '../components/TextField'
 
 const Login = () => (
-  <div className='flex flex-wrap justify-center content-center h-screen'>
-    <div className='flex flex-wrap flex-col justify-center content-center mx-auto px-5 py-5 space-y-4 rounded-xl bg-purple-50'>
+  <main className='h-screen flex flex-wrap justify-center content-center'>
+    <section className='flex flex-wrap flex-col justify-center content-center mx-auto px-5 py-5 space-y-4 rounded-xl bg-purple-50'>
       <TextField placeholder='Username' />
       <TextField placeholder='Password' password />
       <Button
@@ -21,8 +21,8 @@ const Login = () => (
       >
         Don&apos;t have an account?
       </button>
-    </div>
-  </div>
+    </section>
+  </main>
 )
 
 export default Login

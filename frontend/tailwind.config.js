@@ -6,7 +6,8 @@ module.exports = {
   },
   variants: {
     extend: {
-      borderColor: ['responsive', 'hover', 'focus', 'focus-within']
+      borderColor: ['responsive', 'hover', 'focus', 'focus-within'],
+      backgroundColor: ['group-hover']
     }
   },
   plugins: []

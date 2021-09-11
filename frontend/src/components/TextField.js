@@ -5,7 +5,8 @@ const TextField = ({ label, placeholder, password }) => (
   <div>
     <input
       type={password ? 'password' : 'text'}
-      name={label || placeholder}
+      id={label}
+      name={label}
       placeholder={placeholder}
       className='px-4 py-3 rounded-lg border border-bg-grey focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent'
     />

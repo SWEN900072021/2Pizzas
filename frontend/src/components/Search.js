@@ -1,25 +1,33 @@
-import React, { useEffect, useState } from 'react'
-import { element, string } from 'prop-types'
-import { SearchIcon } from '@heroicons/react/outline'
+import React from 'react'
+import { bool, element, func, string } from 'prop-types'
+import { HiSearch } from 'react-icons/hi'
 import Spinner from './Spinner'
 
-const Search = ({ Icon, placeholder }) => {
-  const [value, setValue] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  const handleChange = (e) => {
-    setValue(e.target.value)
+const Search = ({
+  Icon,
+  placeholder,
+  value,
+  loading,
+  handleChange,
+  handleKeyUp
+}) => {
+  const onChange = (e) => {
+    handleChange(e)
   }
 
-  useEffect(() => {
-    setLoading(false)
-  }, [])
+  const onKeyUp = (e) => {
+    handleKeyUp(e)
+  }
 
   return (
-    <form>
-      <div className='relative text-left text-gray-300 focus-within:text-skin-muted transition-colors'>
-        <div className='absolute inset-y-0 left-7 flex justify-center items-center pl-2 pointer-events-none'>
-          <button type='button' id='searchButton' className='focus:outline-none'>
+    <form className='w-full'>
+      <div className='w-full relative text-left text-gray-300 focus-within:text-skin-muted transition-colors'>
+        <div className='absolute inset-y-0 left-2.5 flex justify-center items-center pl-1 md:pl-2 pointer-events-none'>
+          <button
+            type='button'
+            id='searchButton'
+            className='focus:outline-none'
+          >
             {Icon || <Icon className='h-5 w-5' />}
           </button>
         </div>
@@ -29,13 +37,17 @@ const Search = ({ Icon, placeholder }) => {
           type='text'
           disabled={loading}
           value={value}
-          onChange={handleChange}
+          onChange={onChange}
+          onKeyUp={onKeyUp}
           autoComplete='off'
           placeholder={placeholder}
-          className={`border border-bg-grey rounded-lg py-5 pl-20
+          className={`w-full
+            border border-bg-grey rounded-lg 
+            py-2 pl-9 pl:2
+            md:py-4 md:pl-12 md:pr-4
+            font-light tracking-wide text-gray-800 
             placeholder-gray-500 focus:placeholder-gray-400
-            font-light tracking-wide text-gray-800 bg-gray-100
-            focus:outline-none focus:ring-2 focus:ring-purple-400 focus:bg-gray-50`}
+            focus:outline-none focus:ring-2 focus:ring-purple-400`}
         />
         <div className='absolute inset-y-0 right-0 pr-7 flex items-center'>
           {loading && <Spinner size={6} />}
@@ -46,12 +58,18 @@ const Search = ({ Icon, placeholder }) => {
 }
 
 Search.defaultProps = {
-  Icon: <SearchIcon className='h-5 w-5' />
+  Icon: <HiSearch className='h-5 w-5' />,
+  handleChange: () => {},
+  handleKeyUp: () => {}
 }
 
 Search.propTypes = {
   Icon: element,
-  placeholder: string.isRequired
+  placeholder: string.isRequired,
+  value: string.isRequired,
+  loading: bool.isRequired,
+  handleChange: func,
+  handleKeyUp: func
 }
 
 export default Search

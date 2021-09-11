@@ -10,7 +10,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <main className='App'>
+      <main>
         <Switch>
           <Route exact path='/' render={() => <Login />} />
           <Route exact path='/home' render={() => <Home />} />

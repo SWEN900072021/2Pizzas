@@ -4,21 +4,26 @@
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.2.0",
-    "@heroicons/react": "^1.0.4",
+    "@headlessui/react": "^1.4.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "autoprefixer": "^9",
+    "immer": "^9.0.6",
     "postcss": "^7",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-icons": "^4.2.0",
     "react-query": "^3.23.2",
+    "react-responsive": "^9.0.0-beta.4",
     "react-router": "^5.2.1",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "web-vitals": "^1.0.1"
+    "uuid": "^8.3.2",
+    "web-vitals": "^1.0.1",
+    "zustand": "^3.5.10"
   },
   "scripts": {
     "start": "craco start",
