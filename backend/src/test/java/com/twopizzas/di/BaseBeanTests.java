@@ -5,9 +5,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -22,20 +23,23 @@ public class BaseBeanTests {
 
         BaseBean<TestDependency> dependencyBean = Mockito.mock(BaseBean.class);
         TestDependency testDependency = new TestDependency();
+        Mockito.when(dependencyBean.getClasz()).thenReturn(TestDependency.class);
         Mockito.when(dependencyBean.construct(Mockito.any())).thenReturn(testDependency);
-        ComponentSpecification<TestDependency> testDependencyComponentSpecification = new BaseBeanSpecification<>(TestDependency.class);
+        ComponentSpecification<TestDependencyInterface> testDependencyComponentSpecification = new BaseBeanSpecification<>(TestDependencyInterface.class);
         Mockito.doReturn(dependencyBean).when(componentManager)
-                .getBean(Mockito.argThat(a -> a.getClasz().equals(TestDependency.class)));
+                .getBean(Mockito.argThat(a -> a.getClasz().equals(TestDependencyInterface.class)));
 
         BaseBean<TestDependencyOther> dependencyOtherBean = Mockito.mock(BaseBean.class);
         TestDependencyOther testDependencyOther = new TestDependencyOther();
+        Mockito.when(dependencyOtherBean.getClasz()).thenReturn(TestDependencyOther.class);
         Mockito.when(dependencyOtherBean.construct(Mockito.any())).thenReturn(testDependencyOther);
-        ComponentSpecification<TestDependencyOther> testDependencyOtherComponentSpecification = new BaseBeanSpecification<>(TestDependencyOther.class);
+        ComponentSpecification<TestDependencyOtherInterface> testDependencyOtherComponentSpecification = new BaseBeanSpecification<>(TestDependencyOtherInterface.class);
         Mockito.doReturn(dependencyOtherBean).when(componentManager)
-                .getBean(Mockito.argThat(a -> a.getClasz().equals(TestDependencyOther.class)));
+                .getBean(Mockito.argThat(a -> a.getClasz().equals(TestDependencyOtherInterface.class)));
 
         BaseBean<InterfaceComponent> interfaceComponentBean = Mockito.mock(BaseBean.class);
         InterfaceComponent interfaceComponent = new InterfaceComponentImpl();
+        Mockito.when(interfaceComponentBean.getClasz()).thenReturn(InterfaceComponent.class);
         Mockito.when(interfaceComponentBean.construct(Mockito.any())).thenReturn(interfaceComponent);
         ComponentSpecification<InterfaceComponent> interfaceComponentComponentSpecification = new BaseBeanSpecification<>(InterfaceComponent.class);
         Mockito.doReturn(interfaceComponentBean).when(componentManager)
@@ -54,11 +58,13 @@ public class BaseBeanTests {
                 Arrays.asList(testDependencyComponentSpecification, testDependencyOtherComponentSpecification, interfaceComponentComponentSpecification),
                 null,
                 interceptors
-
         );
 
         // WHEN
         TestClientComponent instance = bean.construct(componentManager);
+        instance.getTestDependency().test();
+        instance.getTestDependencyOther().test();
+        instance.getInterfaceComponent().test();
 
         // THEN
         Mockito.verify(dependencyBean).construct(Mockito.eq(componentManager));
@@ -66,9 +72,9 @@ public class BaseBeanTests {
         Mockito.verify(interfaceComponentBean).construct(Mockito.eq(componentManager));
         Mockito.verify(interceptor).intercept(Mockito.refEq(instance), Mockito.eq(componentManager));
         Assertions.assertNotNull(instance);
-        Assertions.assertEquals(testDependency, instance.getTestDependency());
-        Assertions.assertEquals(testDependencyOther, instance.getTestDependencyOther());
-        Assertions.assertEquals(interfaceComponent, instance.getInterfaceComponent());
+        isProxyForSameObject(testDependency, instance.getTestDependency());
+        isProxyForSameObject(testDependencyOther, instance.getTestDependencyOther());
+        isProxyForSameObject(interfaceComponent, instance.getInterfaceComponent());
     }
 
     @Test
@@ -108,20 +114,23 @@ public class BaseBeanTests {
 
         BaseBean<TestDependency> dependencyBean = Mockito.mock(BaseBean.class);
         TestDependency testDependency = new TestDependency();
+        Mockito.when(dependencyBean.getClasz()).thenReturn(TestDependency.class);
         Mockito.when(dependencyBean.construct(Mockito.any())).thenReturn(testDependency);
-        ComponentSpecification<TestDependency> testDependencyComponentSpecification = new BaseBeanSpecification<>(TestDependency.class);
+        ComponentSpecification<TestDependencyInterface> testDependencyComponentSpecification = new BaseBeanSpecification<>(TestDependencyInterface.class);
         Mockito.doReturn(dependencyBean).when(componentManager)
-                .getBean(Mockito.argThat(a -> a.getClasz().equals(TestDependency.class)));
+                .getBean(Mockito.argThat(a -> a.getClasz().equals(TestDependencyInterface.class)));
 
         BaseBean<TestDependencyOther> dependencyOtherBean = Mockito.mock(BaseBean.class);
         TestDependencyOther testDependencyOther = new TestDependencyOther();
+        Mockito.when(dependencyOtherBean.getClasz()).thenReturn(TestDependencyOther.class);
         Mockito.when(dependencyOtherBean.construct(Mockito.any())).thenReturn(testDependencyOther);
-        ComponentSpecification<TestDependencyOther> testDependencyOtherComponentSpecification = new BaseBeanSpecification<>(TestDependencyOther.class);
+        ComponentSpecification<TestDependencyOtherInterface> testDependencyOtherComponentSpecification = new BaseBeanSpecification<>(TestDependencyOtherInterface.class);
         Mockito.doReturn(dependencyOtherBean).when(componentManager)
-                .getBean(Mockito.argThat(a -> a.getClasz().equals(TestDependencyOther.class)));
+                .getBean(Mockito.argThat(a -> a.getClasz().equals(TestDependencyOtherInterface.class)));
 
         BaseBean<InterfaceComponent> interfaceComponentBean = Mockito.mock(BaseBean.class);
         InterfaceComponent interfaceComponent = new InterfaceComponentImpl();
+        Mockito.when(interfaceComponentBean.getClasz()).thenReturn(InterfaceComponent.class);
         Mockito.when(interfaceComponentBean.construct(Mockito.any())).thenReturn(interfaceComponent);
         ComponentSpecification<InterfaceComponent> interfaceComponentComponentSpecification = new BaseBeanSpecification<>(InterfaceComponent.class);
         Mockito.doReturn(interfaceComponentBean).when(componentManager)
@@ -144,12 +153,28 @@ public class BaseBeanTests {
 
         // WHEN
         TestClientComponent first = bean.construct(componentManager);
+        first.getInterfaceComponent().test();
+        first.getTestDependency().test();
+        first.getTestDependencyOther().test();
         TestClientComponent second = bean.construct(componentManager);
+        second.getInterfaceComponent().test();
+        second.getTestDependency().test();
+        second.getTestDependencyOther().test();
 
         // THEN
         Mockito.verify(dependencyBean, Mockito.times(2)).construct(Mockito.eq(componentManager));
         Mockito.verify(dependencyOtherBean, Mockito.times(2)).construct(Mockito.eq(componentManager));
         Mockito.verify(interfaceComponentBean, Mockito.times(2)).construct(Mockito.eq(componentManager));
         Assertions.assertNotSame(first, second);
+    }
+
+    private void isProxyForSameObject(Object other, Object proxy) {
+        Assertions.assertTrue(Proxy.isProxyClass(proxy.getClass()));
+        InvocationHandler ih = Proxy.getInvocationHandler(proxy);
+        Assertions.assertTrue(ih instanceof LazyComponentProxy);
+        LazyComponentProxy<?> lp = (LazyComponentProxy<?>) ih;
+
+        Assertions.assertNotNull(lp.getWrapped());
+        Assertions.assertEquals(other, lp.getWrapped());
     }
 }

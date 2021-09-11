@@ -272,7 +272,7 @@ public class BookingMapperImplTests {
         SeatBooking flightBookingUpdated = new SeatBooking(flightUpdated, allocationSetUpdated);
         SeatBooking returnFlightBookingUpdated = new SeatBooking(flightUpdated, allocationSetUpdated);
 
-        Booking update = new Booking(entity.getId(), OffsetDateTime.now(), new BigDecimal("930.00"), customerUpdated);
+        Booking update = new Booking(entity.getId(), OffsetDateTime.now().withNano(0), new BigDecimal("930.00"), customerUpdated);
         update.addFlight(flightBookingUpdated);
         update.addReturnFlight(returnFlightBookingUpdated);
 

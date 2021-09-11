@@ -74,11 +74,14 @@ class BaseBean<T> extends AssertionConcern implements Bean<T> {
 
     @Override
     public T construct(ComponentManager componentManager) {
-        List<Object> dependencyInstances = dependencies.stream().map(componentManager::getBean)
-                .map(b -> {
+        List<Object> dependencyInstances = dependencies.stream()
+                .map(componentSpecification -> {
                     // lazy load deps to avoid cycles
-                    LazyComponentProxy<?> lazyComponentProxy = new LazyComponentProxy<>(componentManager, b);
-                    return Proxy.newProxyInstance(b.getClasz().getClassLoader(), b.getClasz().getInterfaces(), lazyComponentProxy);
+                    Bean<?> bean = componentManager.getBean(componentSpecification);
+                    LazyComponentProxy<?> lazyComponentProxy = new LazyComponentProxy<>(componentManager, bean);
+                    Object proxy = Proxy.newProxyInstance(bean.getClasz().getClassLoader(),
+                            new Class[]{componentSpecification.getClasz()}, lazyComponentProxy);
+                    return componentSpecification.getClasz().cast(proxy);
                 }).collect(Collectors.toList());
         return build(dependencyInstances, componentManager);
     }
@@ -88,7 +91,7 @@ class BaseBean<T> extends AssertionConcern implements Bean<T> {
         try {
             constructor.setAccessible(true);
             instance = constructor.newInstance(dependencyBeans.toArray());
-        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException | IllegalArgumentException e) {
             throw new ComponentInstantiationException(String.format(
                     "failed to construct component %s, error: %s",
                     clasz.getName(),

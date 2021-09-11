@@ -22,7 +22,7 @@ public class Passenger extends AssertionConcern implements Entity<EntityId> {
         this.dateOfBirth = notNull(dateOfBirth, "dateOfBirth");
         this.nationality = notNullAndNotBlank(nationality, "nationality");
         this.passportNumber = notNullAndNotBlank(passportNumber, "passportNumber");
-        this.booking = notNull(booking, "booking");
+        this.booking = booking;
     }
 
     public Passenger(String givenName, String surname, LocalDate dateOfBirth, String nationality, String passportNumber) {

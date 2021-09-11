@@ -5,4 +5,5 @@ import com.twopizzas.di.Component;
 @Component
 public interface InterfaceComponent {
     String getString();
+    default void test() {}
 }
