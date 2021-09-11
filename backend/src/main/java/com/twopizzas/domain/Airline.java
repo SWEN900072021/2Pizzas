@@ -1,10 +1,8 @@
 package com.twopizzas.domain;
 
-import java.util.Objects;
-
 public class Airline extends User {
 
-    private static final String TYPE = "airline";
+    public static final String TYPE = "airline";
     private final String name;
 
     private final String code;

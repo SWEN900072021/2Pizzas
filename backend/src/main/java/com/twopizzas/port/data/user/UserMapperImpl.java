@@ -5,11 +5,8 @@ import com.twopizzas.di.Component;
 import com.twopizzas.domain.*;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.administrator.AdministratorMapper;
-import com.twopizzas.port.data.administrator.AdministratorMapperImpl;
 import com.twopizzas.port.data.airline.AirlineMapper;
-import com.twopizzas.port.data.airline.AirlineMapperImpl;
 import com.twopizzas.port.data.customer.CustomerMapper;
-import com.twopizzas.port.data.customer.CustomerMapperImpl;
 import com.twopizzas.port.data.db.ConnectionPool;
 
 import java.sql.ResultSet;
@@ -18,16 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public
-class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
+public class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
 
-    private ConnectionPool connectionPool;
-    private CustomerMapper customerMapper;
-    private AirlineMapper airlineMapper;
-    private AdministratorMapper adminMapper;
-    private CustomerMapperImpl customerMapperImpl;
-    private AirlineMapperImpl airlineMapperImpl;
-    private AdministratorMapperImpl adminMapperImpl;
+    private final ConnectionPool connectionPool;
+    private final CustomerMapper customerMapper;
+    private final AirlineMapper airlineMapper;
+    private final AdministratorMapper adminMapper;
 
     @Autowired
     UserMapperImpl(ConnectionPool connectionPool, CustomerMapper customerMapper, AirlineMapper airlineMapper, AdministratorMapper adminMapper) {
@@ -40,14 +33,18 @@ class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
 
     @Override
     public void create(User entity) {
-        if (entity.getUserType().equals("admin")) {
-            adminMapper.create((Administrator) entity);
-        } else if (entity.getUserType().equals("customer")){
-            customerMapper.create((Customer) entity);
-        } else if (entity.getUserType().equals("airline")){
-            airlineMapper.create((Airline) entity);
-        } else {
-            throw new DataMappingException(String.format("no mapper found for User type %s", entity.getUserType()));
+        switch (entity.getUserType()) {
+            case Administrator.TYPE:
+                adminMapper.create((Administrator) entity);
+                break;
+            case Customer.TYPE:
+                customerMapper.create((Customer) entity);
+                break;
+            case Airline.TYPE:
+                airlineMapper.create((Airline) entity);
+                break;
+            default:
+                throw new DataMappingException(String.format("no mapper found for User type %s", entity.getUserType()));
         }
     }
 
@@ -64,36 +61,37 @@ class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
 
     @Override
     public void update(User entity) {
-        if (entity.getUserType().equals("admin")) {
-            adminMapper.update((Administrator) entity);
-        }
-        else if (entity.getUserType().equals("airline")) {
-            airlineMapper.update((Airline) entity);
-        }
-        else if (entity.getUserType().equals("customer")) {
-            customerMapper.update((Customer) entity);
-        }
-        else {
-            throw new DataMappingException(String.format("no mapper found for User type %s", entity.getUserType()));
+        switch (entity.getUserType()) {
+            case Administrator.TYPE:
+                adminMapper.update((Administrator) entity);
+                break;
+            case Airline.TYPE:
+                airlineMapper.update((Airline) entity);
+                break;
+            case Customer.TYPE:
+                customerMapper.update((Customer) entity);
+                break;
+            default:
+                throw new DataMappingException(String.format("no mapper found for User type %s", entity.getUserType()));
         }
     }
 
     @Override
     public void delete(User entity) {
-        if (entity.getUserType().equals("admin")) {
-            adminMapper.delete((Administrator) entity);
-        }
-        else if (entity.getUserType().equals("airline")) {
-            airlineMapper.delete((Airline) entity);
-        }
-        else if (entity.getUserType().equals("customer")) {
-            customerMapper.delete((Customer) entity);
-        }
-        else {
-            throw new DataMappingException(String.format("no mapper found for User type %s", entity.getUserType()));
+        switch (entity.getUserType()) {
+            case Administrator.TYPE:
+                adminMapper.delete((Administrator) entity);
+                break;
+            case Airline.TYPE:
+                airlineMapper.delete((Airline) entity);
+                break;
+            case Customer.TYPE:
+                customerMapper.delete((Customer) entity);
+                break;
+            default:
+                throw new DataMappingException(String.format("no mapper found for User type %s", entity.getUserType()));
         }
     }
-
 
     @Override
     public List<User> map(ResultSet resultSet) {
@@ -117,12 +115,12 @@ class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
     public User mapOne(ResultSet resultSet) throws SQLException {
         String userType = resultSet.getObject(COLUMN_TYPE, String.class);
         switch (userType) {
-            case "admin":
-                return adminMapperImpl.mapOne(resultSet);
-            case "customer":
-                return customerMapperImpl.mapOne(resultSet);
-            case "airline":
-                return airlineMapperImpl.mapOne(resultSet);
+            case Administrator.TYPE:
+                return adminMapper.mapOne(resultSet);
+            case Customer.TYPE:
+                return customerMapper.mapOne(resultSet);
+            case Airline.TYPE:
+                return airlineMapper.mapOne(resultSet);
             default:
                 throw new DataMappingException(String.format("no mapper found for User type %s", userType));
         }
