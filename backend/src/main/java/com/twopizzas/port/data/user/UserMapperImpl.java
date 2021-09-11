@@ -47,7 +47,7 @@ class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
         } else if (entity.getUserType().equals("airline")){
             airlineMapper.create((Airline) entity);
         } else {
-
+            throw new DataMappingException(String.format("no mapper found for User type %s", entity.getUserType()));
         }
     }
 
@@ -67,11 +67,14 @@ class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
         if (entity.getUserType().equals("admin")) {
             adminMapper.update((Administrator) entity);
         }
-        if (entity.getUserType().equals("airline")) {
+        else if (entity.getUserType().equals("airline")) {
             airlineMapper.update((Airline) entity);
         }
-        if (entity.getUserType().equals("customer")) {
+        else if (entity.getUserType().equals("customer")) {
             customerMapper.update((Customer) entity);
+        }
+        else {
+            throw new DataMappingException(String.format("no mapper found for User type %s", entity.getUserType()));
         }
     }
 
@@ -80,11 +83,14 @@ class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
         if (entity.getUserType().equals("admin")) {
             adminMapper.delete((Administrator) entity);
         }
-        if (entity.getUserType().equals("airline")) {
+        else if (entity.getUserType().equals("airline")) {
             airlineMapper.delete((Airline) entity);
         }
-        if (entity.getUserType().equals("customer")) {
+        else if (entity.getUserType().equals("customer")) {
             customerMapper.delete((Customer) entity);
+        }
+        else {
+            throw new DataMappingException(String.format("no mapper found for User type %s", entity.getUserType()));
         }
     }
 
@@ -117,7 +123,8 @@ class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
                 return customerMapperImpl.mapOne(resultSet);
             case "airline":
                 return airlineMapperImpl.mapOne(resultSet);
+            default:
+                throw new DataMappingException(String.format("no mapper found for User type %s", userType));
         }
-        return null;
     }
 }

@@ -22,10 +22,10 @@ public class UserMapperImplTests {
 
     @BeforeEach
     void setup() throws SQLException {
-        mapper = new UserMapperImpl(connectionPool, customerMapper, airlineMapper, administratorMapper);
         administratorMapper = new AdministratorMapperImpl(connectionPool);
         airlineMapper = new AirlineMapperImpl(connectionPool);
         customerMapper = new CustomerMapperImpl(connectionPool);
+        mapper = new UserMapperImpl(connectionPool, customerMapper, airlineMapper, administratorMapper);
         connectionPool.startNewTransaction();
         connectionPool.getCurrentTransaction().setAutoCommit(false);
     }
