@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BaseRequestDelegate implements HttpRequestDelegate {
@@ -42,6 +44,11 @@ public class BaseRequestDelegate implements HttpRequestDelegate {
     @Override
     public PathResolver getPathResolver() {
         return pathResolver;
+    }
+
+    @Override
+    public Set<HttpMethod> getMethods() {
+        return Collections.singleton(method);
     }
 
     private List<Object> getArgsFromRequest(HttpServletRequest request, PathResolver.PathResult pathResult) {

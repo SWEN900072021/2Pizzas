@@ -39,8 +39,8 @@ class CompositeHttpRequestDelegate implements HttpRequestDelegate {
 
     private boolean resolversAreEquivalent(PathResolver resolver, PathResolver other) {
         PathResolver.PathResult result = resolver.test(other.getPath());
-
-    }
+        return false;
+     }
 
     @Override
     public boolean handle(HttpServletRequest request, HttpServletResponse response) throws Exception {

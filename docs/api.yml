@@ -1,0 +1,28 @@
+openapi: '3.0.2'
+info:
+  title: 2Pizzas API
+  version: '1.0'
+servers:
+  - url: https://api.server.test/v1
+paths:
+  /flight/search:
+    get:
+      operationId: searchFlights
+      parameters:
+        - in: query
+          name: destinationId
+          required: false
+          schema:
+            $ref: "#/components/schemas/Id"
+
+      responses:
+        '200':
+          description: OK
+
+components:
+  schemas:
+    Id:
+      type: string
+      format: uuid
+    Flight:
+      type: object

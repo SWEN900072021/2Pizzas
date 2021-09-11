@@ -85,8 +85,6 @@ public class CustomerMapperImpl extends AbstractUserMapper<Customer> implements 
     public List<Customer> map(ResultSet resultSet) {
 
         List<Customer> mapped = new ArrayList<>();
-        Customer one;
-
         try {
             while (resultSet.next()) {
                 Customer one = mapOne(resultSet);
