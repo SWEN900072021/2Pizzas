@@ -32,7 +32,7 @@ public class AdministratorMapperImplTests {
     @DisplayName("GIVEN valid administrator object WHEN create invoked THEN administrator persisted in database")
     void testCreate() {
         // GIVEN
-        Administrator entity = new Administrator("JohnSmith", "testPW");
+        Administrator entity = new Administrator("JohnSmith", "SecurePassword");
 
         // WHEN
         mapper.create(entity);
@@ -41,6 +41,26 @@ public class AdministratorMapperImplTests {
         Administrator persisted = mapper.read(entity.getId());
         Assertions.assertNotNull(persisted);
         Assertions.assertEquals(entity.getId(), persisted.getId());
+    }
+
+    @Test
+    @DisplayName("GIVEN existing valid administrator object in db WHEN update invoked THEN administrator object updated")
+    void testValidUpdate() {
+        // GIVEN
+        EntityId id = EntityId.nextId();
+        Administrator oldEntity = new Administrator(id, "username", "password");
+        mapper.create(oldEntity);
+
+        // WHEN
+        Administrator newEntity = new Administrator(id, "newUsername", "password");
+        mapper.update(newEntity);
+
+        // THEN
+        Administrator persisted = mapper.read(id);
+        Assertions.assertNotNull(persisted);
+        Assertions.assertEquals(newEntity.getId(), persisted.getId());
+        Assertions.assertEquals(newEntity.getUsername(), persisted.getUsername());
+        Assertions.assertEquals(newEntity.getPassword(), persisted.getPassword());
     }
 
     @Test

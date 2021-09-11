@@ -29,7 +29,12 @@ public abstract class AbstractUserMapper<T extends User> {
             "DELETE FROM " + TABLE_USER + " WHERE id = ?;";
 
     private static final String SELECT =
-            "SELECT * FROM pizzaUser JOIN customer JOIN admin JOIN airline ON pizzaUser.id = customer.id OR pizzaUser.id = admin.id OR pizzaUser.id = airline.id WHERE id = ?;";
+            "SELECT *" +
+                    " FROM \"user\"" +
+                    " LEFT JOIN customer ON \"user\".id = customer.id" +
+                    " LEFT JOIN administrator ON \"user\".id = administrator.id" +
+                    " LEFT JOIN airline ON \"user\".id = airline.id" +
+                    " WHERE \"user\".id = ?;";
 
     private ConnectionPool connectionPool;
 

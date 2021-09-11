@@ -19,6 +19,6 @@ public class CustomerRepositoryImpl extends AbstractRepository<Customer, EntityI
 
     @Override
     public List<Customer> findAllCustomers() {
-        return null;
+        return dataMapper.readAll(new AllCustomersSpecification(dataMapper));
     }
 }

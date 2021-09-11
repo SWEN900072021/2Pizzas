@@ -3,27 +3,31 @@ package com.twopizzas.port.data.airline;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.domain.Airline;
 import com.twopizzas.domain.EntityId;
+import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 import com.twopizzas.port.data.user.AbstractUserMapper;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements AirlineMapper {
 
     static final String TABLE_AIRLINE = "airline";
     static final String COLUMN_ID = "id";
-    static final String COLUMN_CODE = "code";
     static final String COLUMN_NAME = "name";
+    static final String COLUMN_CODE = "code";
+
 
     private static final String CREATE_TEMPLATE =
-            "INSERT INTO " + TABLE_AIRLINE + "(" + COLUMN_ID + " , " + COLUMN_CODE + ", " + COLUMN_NAME + ")" +
+            "INSERT INTO " + TABLE_AIRLINE + "(" + COLUMN_ID + " , " + COLUMN_NAME + ", " + COLUMN_CODE + ")" +
                     " VALUES (?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_AIRLINE +
-                    " SET " + COLUMN_CODE + " = ?, " + COLUMN_NAME + " = ?" +
+                    " SET " + COLUMN_NAME + " = ?, " + COLUMN_CODE + " = ?" +
                     " WHERE id = ?;";
 
     private static final String SELECT_TEMPLATE =
@@ -31,11 +35,10 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
                     " ON " + TABLE_USER + ".id =" + TABLE_AIRLINE + ".id" +
                     " WHERE " + TABLE_USER + ".id = ?;";
 
-    private final AirlineTableResultSetMapper mapper = new AirlineTableResultSetMapper();
     private final ConnectionPool connectionPool;
 
     @Autowired
-    AirlineMapperImpl(ConnectionPool connectionPool) {
+    public AirlineMapperImpl(ConnectionPool connectionPool) {
         super(connectionPool);
         this.connectionPool = connectionPool; }
 
@@ -51,12 +54,9 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
 
     @Override
     public Airline read(EntityId entityId) {
-        List<Airline> airlines = new SqlStatement(SELECT_TEMPLATE, entityId.toString())
-                .doQuery(connectionPool.getCurrentTransaction(), mapper);
-        if (airlines.isEmpty()) {
-            return null;
-        }
-        return airlines.get(0);
+        return map(new SqlStatement(SELECT_TEMPLATE,
+                entityId.toString()
+        ).doQuery(connectionPool.getCurrentTransaction())).stream().findFirst().orElse(null);
     }
 
     @Override
@@ -86,11 +86,36 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
 
     @Override
     public List<Airline> map(ResultSet resultSet) {
-        return null;
+        List<Airline> mapped = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                Airline one = mapOne(resultSet);
+                if (one != null) {
+                    mapped.add(one);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataMappingException(String.format(
+                    "failed to map results from result set to %s entity, error: %s", Airline.class.getName(), e.getMessage()),
+                    e);
+        }
+        return mapped;
     }
 
     @Override
     public Airline mapOne(ResultSet resultSet) {
-        return null;
+        try {
+            return new Airline(
+                    EntityId.of(resultSet.getObject(AirlineMapperImpl.COLUMN_ID, String.class)),
+                    resultSet.getObject(AbstractUserMapper.COLUMN_USERNAME, String.class),
+                    resultSet.getObject(AbstractUserMapper.COLUMN_PASSWORD, String.class),
+                    resultSet.getObject(AirlineMapperImpl.COLUMN_CODE, String.class),
+                    resultSet.getObject(AirlineMapperImpl.COLUMN_NAME, String.class)
+            );
+        } catch (SQLException e) {
+            throw new DataMappingException(String.format(
+                    "failed to map results from result set to %s entity, error: %s", getEntityClass().getName(), e.getMessage()),
+                    e);
+        }
     }
 }
