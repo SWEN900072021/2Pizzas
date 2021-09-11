@@ -7,14 +7,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.lang.reflect.Proxy;
 
 public class ApplicationContextIntegrationTests {
-
-
 
     @BeforeEach
     void setup() {
@@ -23,7 +19,8 @@ public class ApplicationContextIntegrationTests {
     @Test
     @DisplayName("GIVEN valid project structure WHEN init THEN application context spun up")
     void test() {
-        ApplicationContext applicationContext = ApplicationContext.getInstance()
+        ApplicationContextImpl.reset();
+        ApplicationContext applicationContext = ApplicationContextImpl.getInstance()
                 .root("com.twopizzas.di.testroot")
                 .init();
 

@@ -2,11 +2,11 @@ package com.twopizzas.di;
 
 import java.util.Collection;
 
-public class NoOpBeanSpecification<T> implements ComponentSpecification<T> {
+public class NoOpBeanSpecification<T> implements TypedComponentSpecification<T> {
 
-    private final ComponentSpecification<T> wrapped;
+    private final TypedComponentSpecification<T> wrapped;
 
-    public NoOpBeanSpecification(ComponentSpecification<T> wrapped) {
+    public NoOpBeanSpecification(TypedComponentSpecification<T> wrapped) {
         this.wrapped = wrapped;
     }
 

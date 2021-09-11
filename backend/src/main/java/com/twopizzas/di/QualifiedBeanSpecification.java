@@ -5,12 +5,12 @@ import com.twopizzas.util.AssertionConcern;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-class QualifiedBeanSpecification<T> extends AssertionConcern implements ComponentSpecification<T> {
+class QualifiedBeanSpecification<T> extends AssertionConcern implements TypedComponentSpecification<T> {
 
-    private final ComponentSpecification<T> wrapped;
+    private final TypedComponentSpecification<T> wrapped;
     private final String qualifier;
 
-    public QualifiedBeanSpecification(String qualifier, ComponentSpecification<T> wrapped) {
+    public QualifiedBeanSpecification(String qualifier, TypedComponentSpecification<T> wrapped) {
         this.wrapped = wrapped;
         this.qualifier = qualifier;
     }
