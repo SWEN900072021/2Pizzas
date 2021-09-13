@@ -1,5 +1,6 @@
-package com.twopizzas.util;
+package com.twopizzas.configuration;
 
+import com.twopizzas.util.EnvironmentUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,17 +14,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class PropertiesUtilTests {
+public class ConfigurationContextImplTests {
 
     @Mock
     private EnvironmentUtil environment;
 
-    private PropertiesUtil propertiesUtil;
+    private ConfigurationContextImpl configurationManager;
 
     @BeforeEach
     void setup() {
         MockitoAnnotations.initMocks(this);
-        propertiesUtil = new PropertiesUtil(environment);
+        configurationManager = new ConfigurationContextImpl(environment, "profile");
     }
 
     @Test
@@ -33,7 +34,7 @@ public class PropertiesUtilTests {
         String value = "http://localhost:8080";
 
         // WHEN
-        String resolved = propertiesUtil.resolveWithEnv(value);
+        String resolved = configurationManager.resolveWithEnv(value);
 
         // THEN
         Assertions.assertEquals(value, resolved);
@@ -48,7 +49,7 @@ public class PropertiesUtilTests {
         Mockito.when(environment.getEnv(Mockito.any())).thenReturn(Optional.of("localhost"));
 
         // WHEN
-        String resolved = propertiesUtil.resolveWithEnv(value);
+        String resolved = configurationManager.resolveWithEnv(value);
 
         // THEN
         Assertions.assertEquals("localhost", resolved);
@@ -63,7 +64,7 @@ public class PropertiesUtilTests {
         Mockito.when(environment.getEnv(Mockito.any())).thenReturn(Optional.of("localhost"));
 
         // WHEN
-        String resolved = propertiesUtil.resolveWithEnv(value);
+        String resolved = configurationManager.resolveWithEnv(value);
 
         // THEN
         Assertions.assertEquals("http://localhost:8080", resolved);
@@ -79,9 +80,43 @@ public class PropertiesUtilTests {
         Mockito.doReturn(Optional.of("8080")).when(environment).getEnv(Mockito.eq("PORT"));
 
         // WHEN
-        String resolved = propertiesUtil.resolveWithEnv(value);
+        String resolved = configurationManager.resolveWithEnv(value);
 
         // THEN
         Assertions.assertEquals("http://localhost:8080", resolved);
     }
+
+    @Test
+    @DisplayName("GIVEN profile is null WHEN init invoked THEN configuration read from application.properties")
+    void test5() {
+        // GIVEN
+        configurationManager = new ConfigurationContextImpl(environment, null);
+
+        // WHEN;
+        configurationManager.init();
+
+        // THEN
+        Assertions.assertEquals("jdbc:postgresql://locahost:5432/postgres", configurationManager.getConfigurationProperty("datasource.url"));
+        Assertions.assertEquals("postgres", configurationManager.getConfigurationProperty("datasource.username"));
+        Assertions.assertEquals("password", configurationManager.getConfigurationProperty("datasource.password"));
+    }
+
+    @Test
+    @DisplayName("GIVEN profile is test WHEN init invoked THEN configuration read from application-test.properties")
+    void test6() {
+        // GIVEN
+        configurationManager = new ConfigurationContextImpl(environment, "test");
+        Mockito.doReturn(Optional.of("testUrlValue")).when(environment).getEnv(Mockito.eq("DATABASE_URL"));
+        Mockito.doReturn(Optional.of("testUsernameValue")).when(environment).getEnv(Mockito.eq("DATABASE_USERNAME"));
+        Mockito.doReturn(Optional.of("testPasswordValue")).when(environment).getEnv(Mockito.eq("DATABASE_PASSWORD"));
+
+        // WHEN;
+        configurationManager.init();
+
+        // THEN
+        Assertions.assertEquals("testUrlValue", configurationManager.getConfigurationProperty("datasource.url"));
+        Assertions.assertEquals("testUsernameValue", configurationManager.getConfigurationProperty("datasource.username"));
+        Assertions.assertEquals("testPasswordValue", configurationManager.getConfigurationProperty("datasource.password"));
+    }
+
 }

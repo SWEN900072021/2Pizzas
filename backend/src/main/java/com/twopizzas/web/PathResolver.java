@@ -24,6 +24,7 @@ public class PathResolver {
     }
 
     public PathResult test(String path) {
+
         String[] segments = path.split("/");
         Map<String, String> variables = new HashMap<>();
         if (segments.length == tokens.size()) {
@@ -50,7 +51,7 @@ public class PathResolver {
         private Map<String, String> variables;
 
         Optional<String> getPathVariable(String name) {
-            if (variables == null) {
+            if (variables == null || !variables.containsKey(name)) {
                 return Optional.empty();
             }
             return Optional.of(variables.get(name));

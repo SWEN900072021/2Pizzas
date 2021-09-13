@@ -7,7 +7,7 @@ public enum HttpStatus {
     OK(200, "OK"),
     NOT_FOUND(404, "Not Found"),
     UNAUTHORIZED(401, "Unauthorized"),
-    METHOD_NOT_SUPPORTED(400, "Method Not Supported"),
+    METHOD_NOT_SUPPORTED(405, "Method Not Supported"),
     BAD_REQUEST(400, "Bad Request"),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error");
 

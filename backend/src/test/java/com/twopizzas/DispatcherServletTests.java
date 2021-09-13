@@ -1,5 +1,7 @@
 package com.twopizzas;
 
+import com.twopizzas.web.DispatcherServlet;
+import com.twopizzas.web.HttpRequestDispatcher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +19,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @ExtendWith(MockitoExtension.class)
-public class HelloServletTests {
+public class DispatcherServletTests {
 
     private static final String MESSAGE = "some message";
 
@@ -28,16 +30,15 @@ public class HelloServletTests {
     private HttpServletResponse response;
 
     @Mock
-    private MyHelloComponent myHelloComponent;
+    private HttpRequestDispatcher requestDispatcher;
 
-    private HelloServlet servlet;
+    private DispatcherServlet servlet;
 
     @BeforeEach
     void init() {
         MockitoAnnotations.initMocks(this);
-        servlet = new HelloServlet(myHelloComponent);
-        Mockito.when(myHelloComponent.getMessage()).thenReturn(MESSAGE);
-        servlet.init();
+        servlet = new DispatcherServlet(requestDispatcher);
+        //servlet.init();
     }
 
     @Test
@@ -50,7 +51,7 @@ public class HelloServletTests {
         Mockito.when(response.getWriter()).thenReturn(pw);
 
         // WHEN
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         // THEN
         String expectedResponseHtml =

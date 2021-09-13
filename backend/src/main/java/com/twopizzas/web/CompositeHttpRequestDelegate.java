@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 class CompositeHttpRequestDelegate implements HttpRequestDelegate {
 
     private PathResolver pathResolver;
-    private List<HttpRequestDelegate> delegates;
+    private final List<HttpRequestDelegate> delegates = new ArrayList<>();
 
     boolean handles(PathResolver resolver) {
         if (pathResolver == null) {
@@ -39,20 +40,26 @@ class CompositeHttpRequestDelegate implements HttpRequestDelegate {
 
     private boolean resolversAreEquivalent(PathResolver resolver, PathResolver other) {
         PathResolver.PathResult result = resolver.test(other.getPath());
-        return false;
+        if (!result.isMatch()) {
+            result = other.test(resolver.getPath());
+        }
+        return result.isMatch();
      }
 
     @Override
-    public boolean handle(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if (pathResolver.test(request.getRequestURI()).isMatch()) {
+    public RestResponse<?> handle(HttpRequest request) throws Exception {
+        if (pathResolver.test(request.getPath()).isMatch()) {
             for (HttpRequestDelegate delegate : delegates) {
-                if (delegate.handle(request, response)) {
-                    return true;
+                if (delegate.getMethods().contains(request.getMethod())) {
+                    RestResponse<?> response = delegate.handle(request);
+                    if (response != null) {
+                        return response;
+                    }
                 }
             }
             throw new HttpException(HttpStatus.METHOD_NOT_SUPPORTED);
         }
-        return false;
+        return null;
     }
 
     @Override

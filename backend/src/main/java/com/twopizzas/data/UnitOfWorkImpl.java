@@ -59,25 +59,28 @@ public class UnitOfWorkImpl implements UnitOfWork {
 
     @Override
     public void commit() {
-        if (newEntities.isEmpty() && dirtyEntities.isEmpty() && removedEntities.isEmpty()) {
-            // nothing to do!
-            return;
-        }
-
-        // open a new db transaction
-        dataSource.startNewTransaction();
         // apply each action
         newEntities.forEach(this::doCreate);
         dirtyEntities.forEach(this::doUpdate);
         removedEntities.forEach(this::doDelete);
         // commit
         dataSource.commitTransaction();
+    }
 
-        // reset for next commit
+    @Override
+    public void start() {
         newEntities = new ArrayList<>();
         cleanEntities = new ArrayList<>();
         dirtyEntities = new ArrayList<>();
         removedEntities = new ArrayList<>();
+
+        // open a new db transaction
+        dataSource.startNewTransaction();
+    }
+
+    @Override
+    public void rollback() {
+        dataSource.rollbackTransaction();
     }
 
     private void assertTrueOrThrow(boolean shouldBeTrue, String message) {

@@ -23,13 +23,13 @@ public class ApplicationContextImpl extends AssertionConcern implements Applicat
     }
 
     public ApplicationContextImpl root(String root) {
-        notBlank(notNull(root, "root"), "root");
+        notNullAndNotBlank(root, "root");
         this.root = root;
         return this;
     }
 
     public ApplicationContextImpl profile(String profile) {
-        notBlank(notNull(profile, "profile"), "profile");
+        notNullAndNotBlank(profile, "profile");
         this.profile = profile;
         return this;
     }
@@ -51,10 +51,12 @@ public class ApplicationContextImpl extends AssertionConcern implements Applicat
         }
 
         if (componentManager == null) {
+
             componentManager = new ComponentManager(
                     getBeanResolver(),
                     new ComponentLoader(root)
             );
+            componentManager.setApplicationContext(new ApplicationContextComponent(profile, componentManager));
         }
         componentManager.init();
         return this;
@@ -75,10 +77,15 @@ public class ApplicationContextImpl extends AssertionConcern implements Applicat
     @Override
     public <T> T getComponent(Class<T> componentClass, String qualifier) throws ApplicationContextException {
         notNull(componentClass, "componentClass");
-        notBlank(notNull(qualifier, "qualifier"), "qualifier");
+        notNullAndNotBlank(qualifier, "qualifier");
         return componentManager.getComponent(
                 new QualifiedBeanSpecification<>(qualifier, new BaseBeanSpecification<>(componentClass))
         );
+    }
+
+    @Override
+    public String getProfile() {
+        return profile;
     }
 
     private BeanResolver getBeanResolver() {

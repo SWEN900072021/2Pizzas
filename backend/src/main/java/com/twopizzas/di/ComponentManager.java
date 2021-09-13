@@ -10,6 +10,7 @@ public class ComponentManager {
     private final Collection<Bean<?>> store = new ArrayList<>();;
     private final BeanResolver beanResolver;
     private final BeanLoader beanLoader;
+    private ApplicationContext context;
 
     ComponentManager(BeanResolver beanResolver, BeanLoader beanLoader) {
         this.beanResolver = beanResolver;
@@ -21,8 +22,17 @@ public class ComponentManager {
         return beanResolver;
     }
 
+    void setApplicationContext(ApplicationContext context) {
+        this.context = context;
+    }
+
     void init() {
+        if (context == null) {
+            throw new ApplicationContextException("init called on componentManager with null application context");
+        }
         store.addAll(beanLoader.load());
+        store.add(new ApplicationContextBean(context));
+        store.add(new ConfigurationContextBean(context.getProfile()));
     }
 
     <T> T getComponent(TypedComponentSpecification<T> specification) throws ApplicationContextException {
@@ -30,7 +40,7 @@ public class ComponentManager {
     }
 
     Collection<?> getComponents(ComponentSpecification specification) throws ApplicationContextException {
-        return specification.filter(store);
+        return specification.filter(store).stream().map(b -> b.construct(this)).collect(Collectors.toList());
     }
 
     public <T> T getComponent(Class<T> clasz) throws ApplicationContextException {

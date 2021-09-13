@@ -25,7 +25,7 @@ public class Application implements ServletContextListener {
         ApplicationContextImpl.getInstance().init();
 
         ServletContext servletContext = sce.getServletContext();
-        DispatcherServlet dispatcherServlet = new DispatcherServlet(applicationContext);
+        DispatcherServlet dispatcherServlet = applicationContext.getComponent(DispatcherServlet.class);
         servletContext.addServlet(DispatcherServlet.class.getName(), dispatcherServlet)
                        .addMapping("/");
 
