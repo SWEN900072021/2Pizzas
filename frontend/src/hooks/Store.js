@@ -15,12 +15,27 @@ const immer = (config) => (set, get, api) =>
 
 const useStore = create(
   immer((set) => ({
+    // immer((set, get) => ({
     originAirport: {},
     destinationAirport: {},
-    setOriginAirport: (airport) =>
-      set({ originAirport: { ...airport } }),
-    setDestinationAirport: (airport) =>
+    setOriginAirport: (airport) => {
+      set({ originAirport: { ...airport } })
+      // console.log('updated origin to:', get().originAirport)
+    },
+    setDestinationAirport: (airport) => {
       set({ destinationAirport: { ...airport } })
+      // console.log('updated destination to:', get().destinationAirport)
+    },
+    originAirportSearchValue: '',
+    destinationAirportSearchValue: '',
+    setOriginAirportSearchValue: (value) => {
+      set({ originAirportSearchValue: value })
+      // console.log('update origin search value to:', value)
+    },
+    setDestinationAirportSearchValue: (value) => {
+      set({ destinationAirportSearchValue: value })
+      // console.log('update destination search value to:', value)
+    }
   }))
 )
 
