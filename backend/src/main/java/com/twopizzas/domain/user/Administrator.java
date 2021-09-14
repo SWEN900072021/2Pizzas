@@ -1,7 +1,9 @@
 package com.twopizzas.domain.user;
 
 import com.twopizzas.domain.EntityId;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class Administrator extends User {
 
     public static final String TYPE = "administrator";

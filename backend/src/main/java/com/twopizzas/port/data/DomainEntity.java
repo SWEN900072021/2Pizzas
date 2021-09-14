@@ -5,7 +5,7 @@ import com.twopizzas.domain.EntityId;
 import com.twopizzas.util.AssertionConcern;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public abstract class DomainEntity extends AssertionConcern implements Entity<EntityId> {
     private boolean isNew;
 

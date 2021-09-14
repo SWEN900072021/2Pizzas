@@ -85,7 +85,6 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
                 .setId(maybeUser.get().getId().toString())
                 .signWith(getKey())
                 .compact());
-
     }
 
     private SecretKey getKey() {

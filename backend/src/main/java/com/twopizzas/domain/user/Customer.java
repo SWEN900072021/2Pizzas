@@ -1,9 +1,11 @@
 package com.twopizzas.domain.user;
 
 import com.twopizzas.domain.EntityId;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class Customer extends User {
 
     public static final String TYPE = "customer";

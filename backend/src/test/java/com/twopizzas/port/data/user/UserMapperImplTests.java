@@ -5,6 +5,7 @@ import com.twopizzas.domain.user.Administrator;
 import com.twopizzas.domain.user.Airline;
 import com.twopizzas.domain.user.Customer;
 import com.twopizzas.domain.user.User;
+import com.twopizzas.port.data.DataTestConfig;
 import com.twopizzas.port.data.airline.AirlineMapperImpl;
 import com.twopizzas.port.data.administrator.AdministratorMapperImpl;
 import com.twopizzas.port.data.customer.CustomerMapperImpl;
@@ -18,11 +19,7 @@ public class UserMapperImplTests {
     private AdministratorMapperImpl administratorMapper;
     private AirlineMapperImpl airlineMapper;
     private CustomerMapperImpl customerMapper;
-    private ConnectionPoolImpl connectionPool = new ConnectionPoolImpl(
-            "jdbc:postgresql://ec2-35-153-114-74.compute-1.amazonaws.com:5432/dac5q82fjaj3t6",
-            "imvxeuqwkqsffn",
-            "f4ed9811c5e77c79fc4ac9bae81de7b24ede0452ea454a656ba916c17a347f29"
-    );
+    private ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
 
     @BeforeEach
     void setup() throws SQLException {
@@ -41,7 +38,7 @@ public class UserMapperImplTests {
 
     @Test
     @DisplayName("GIVEN valid user object WHEN created invoked THEN user persisted in database")
-    void testCreate() throws SQLException {
+    void testCreate() {
         // GIVEN
         User customerEntity = new Customer(EntityId.nextId(),
                 "username", "password", "John", "Smith", "johnsmith@gmail.com");
@@ -64,6 +61,12 @@ public class UserMapperImplTests {
         Assertions.assertEquals(customerEntity.getId(), customerPersisted.getId());
         Assertions.assertEquals(airlineEntity.getId(), airlinePersisted.getId());
         Assertions.assertEquals(adminEntity.getId(), adminPersisted.getId());
+        Assertions.assertEquals(customerPersisted.getUsername(), customerEntity.getUsername());
+        Assertions.assertEquals(airlinePersisted.getUsername(), airlineEntity.getUsername());
+        Assertions.assertEquals(adminPersisted.getUsername(), adminEntity.getUsername());
+        Assertions.assertNotNull(customerPersisted.getPassword());
+        Assertions.assertNotNull(airlinePersisted.getPassword());
+        Assertions.assertNotNull(adminPersisted.getPassword());
     }
 
     @Test
@@ -105,9 +108,9 @@ public class UserMapperImplTests {
         Assertions.assertEquals(customerPersisted.getUsername(), updatedCustomerEntity.getUsername());
         Assertions.assertEquals(airlinePersisted.getUsername(), updatedAirlineEntity.getUsername());
         Assertions.assertEquals(adminPersisted.getUsername(), updatedAdminEntity.getUsername());
-        Assertions.assertEquals(customerPersisted.getPassword(), updatedCustomerEntity.getPassword());
-        Assertions.assertEquals(airlinePersisted.getPassword(), updatedAirlineEntity.getPassword());
-        Assertions.assertEquals(adminPersisted.getPassword(), updatedAdminEntity.getPassword());
+        Assertions.assertNotNull(updatedCustomerEntity.getPassword());
+        Assertions.assertNotNull(updatedAirlineEntity.getPassword());
+        Assertions.assertNotNull(updatedAdminEntity.getPassword());
     }
 
     @Test
@@ -138,5 +141,58 @@ public class UserMapperImplTests {
         Assertions.assertNull(customerPersisted);
         Assertions.assertNull(airlinePersisted);
         Assertions.assertNull(adminPersisted);
+    }
+
+    @Test
+    @DisplayName("GIVEN user object in db WHEN update invoked THEN customer object updated in db")
+    void testValidUpdateNoPasswordChange() {
+        // GIVEN
+        EntityId id = EntityId.nextId();
+
+        User customerEntity = new Customer(id,
+                "username", "password", "John", "Smith", "johnsmith@gmail.com");
+        mapper.create(customerEntity);
+
+        User readCustomer = mapper.read(id);
+
+        // WHEN
+        User updatedCustomerEntity = new Customer(id,
+                "username", readCustomer.getPassword(), "John", "Smith", "johnsmith@gmail.com");
+
+        mapper.update(updatedCustomerEntity);
+
+
+        // THEN
+        User customerPersisted = mapper.read(id);
+        Assertions.assertNotNull(customerPersisted);
+        Assertions.assertEquals(updatedCustomerEntity.getUsername(), customerPersisted.getUsername());
+        Assertions.assertEquals(updatedCustomerEntity.getUserType(), customerPersisted.getUserType());
+        Assertions.assertEquals(readCustomer.getPassword(), customerPersisted.getPassword());
+    }
+
+    @Test
+    @DisplayName("GIVEN user object in db WHEN update invoked THEN customer object updated in db")
+    void testValidUpdateWithPasswordChange() {
+        // GIVEN
+        EntityId id = EntityId.nextId();
+
+        User customerEntity = new Customer(id,
+                "username", "password", "John", "Smith", "johnsmith@gmail.com");
+        mapper.create(customerEntity);
+
+        User readCustomer = mapper.read(id);
+
+        // WHEN
+        User updatedCustomerEntity = new Customer(id,
+                "username", "newPassword", "John", "Smith", "johnsmith@gmail.com");
+
+        mapper.update(updatedCustomerEntity);
+
+        // THEN
+        User customerPersisted = mapper.read(id);
+        Assertions.assertNotNull(customerPersisted);
+        Assertions.assertEquals(updatedCustomerEntity.getUsername(), customerPersisted.getUsername());
+        Assertions.assertEquals(updatedCustomerEntity.getUserType(), customerPersisted.getUserType());
+        Assertions.assertNotEquals(readCustomer.getPassword(), customerPersisted.getPassword());
     }
 }

@@ -20,7 +20,6 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
     static final String COLUMN_NAME = "name";
     static final String COLUMN_CODE = "code";
 
-
     private static final String CREATE_TEMPLATE =
             "INSERT INTO " + TABLE_AIRLINE + "(" + COLUMN_ID + " , " + COLUMN_NAME + ", " + COLUMN_CODE + ")" +
                     " VALUES (?, ?, ?);";
