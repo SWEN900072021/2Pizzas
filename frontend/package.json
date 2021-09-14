@@ -29,7 +29,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test --watchAll=false --coverage",
+    "test": "craco test --watchAll=false",
     "eject": "craco eject",
     "lint": "eslint \"./src\"",
     "lint-fix": "eslint --fix \"./src\""
