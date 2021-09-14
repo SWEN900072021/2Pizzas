@@ -1,6 +1,7 @@
 package com.twopizzas.auth;
 
 import com.twopizzas.configuration.Value;
+import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.user.User;
@@ -38,6 +39,11 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         this.secret = secret;
         this.timeToLive = timeToLive;
         this.issuer = issuer;
+    }
+
+    @Autowired
+    JwtAuthenticationProvider(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override

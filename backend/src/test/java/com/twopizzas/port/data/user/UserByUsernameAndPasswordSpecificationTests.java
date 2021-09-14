@@ -11,10 +11,7 @@ import com.twopizzas.port.data.airline.AirlineMapperImpl;
 import com.twopizzas.port.data.customer.CustomerMapper;
 import com.twopizzas.port.data.customer.CustomerMapperImpl;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -22,16 +19,22 @@ import java.util.List;
 public class UserByUsernameAndPasswordSpecificationTests {
 
     private UserMapper mapper;
+    private ConnectionPoolImpl connectionPool;
 
     @BeforeEach
     void setup() throws SQLException {
-        ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
+        connectionPool = new DataTestConfig().getConnectionPool();
         AdministratorMapper administratorMapper = new AdministratorMapperImpl(connectionPool);
         AirlineMapper airlineMapper = new AirlineMapperImpl(connectionPool);
         CustomerMapper customerMapper = new CustomerMapperImpl(connectionPool);
         mapper = new UserMapperImpl(connectionPool, customerMapper, airlineMapper, administratorMapper);
         connectionPool.startNewTransaction();
         connectionPool.getCurrentTransaction().setAutoCommit(false);
+    }
+
+    @AfterEach
+    void tearDown() {
+        connectionPool.rollbackTransaction();
     }
 
     @Test
@@ -51,5 +54,23 @@ public class UserByUsernameAndPasswordSpecificationTests {
         Assertions.assertNotNull(users);
         Assertions.assertEquals(1, users.size());
         Assertions.assertEquals(customerEntity, users.get(0));
+    }
+
+    @Test
+    @DisplayName("GIVEN user in database with username and password WHEN find with incorrect password THEN return empty")
+    void test2() {
+        // GIVEN
+        User customerEntity = new Customer(EntityId.nextId(),
+                "username", "password", "John", "Smith", "johnsmith@gmail.com");
+
+        mapper.create(customerEntity);
+
+        // WHEN
+        UserSpecification specification = new UserByUsernameAndPasswordSpecification(mapper, customerEntity.getUsername(), "wrong");
+        List<User> users = mapper.readAll(specification);
+
+        // THEN
+        Assertions.assertNotNull(users);
+        Assertions.assertTrue(users.isEmpty());
     }
 }
