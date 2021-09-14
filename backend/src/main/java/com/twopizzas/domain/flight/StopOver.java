@@ -1,13 +1,13 @@
 package com.twopizzas.domain.flight;
 
-import com.twopizzas.data.ValueHolder;
 import com.twopizzas.domain.Airport;
-import com.twopizzas.domain.TimePeriod;
 import com.twopizzas.util.AssertionConcern;
 import com.twopizzas.util.ValueViolation;
+import lombok.Getter;
 
 import java.time.OffsetDateTime;
 
+@Getter
 public class StopOver extends AssertionConcern {
     private final Airport location;
     private final OffsetDateTime arrival;
@@ -21,17 +21,5 @@ public class StopOver extends AssertionConcern {
         if (departure.isBefore(arrival)) {
             throw new ValueViolation("departure time must be after arrival time");
         }
-    }
-
-    public Airport getLocation() {
-        return location;
-    }
-
-    public OffsetDateTime getDeparture() {
-        return departure;
-    }
-
-    public OffsetDateTime getArrival() {
-        return arrival;
     }
 }

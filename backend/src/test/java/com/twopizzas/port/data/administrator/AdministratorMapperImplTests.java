@@ -1,8 +1,7 @@
 package com.twopizzas.port.data.administrator;
 
-import com.twopizzas.domain.Administrator;
+import com.twopizzas.domain.user.Administrator;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.port.data.administrator.AdministratorMapperImpl;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import org.junit.jupiter.api.*;
 

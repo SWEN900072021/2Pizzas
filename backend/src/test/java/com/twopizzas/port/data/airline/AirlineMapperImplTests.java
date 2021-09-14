@@ -1,6 +1,6 @@
 package com.twopizzas.port.data.airline;
 
-import com.twopizzas.domain.Airline;
+import com.twopizzas.domain.user.Airline;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import org.junit.jupiter.api.*;

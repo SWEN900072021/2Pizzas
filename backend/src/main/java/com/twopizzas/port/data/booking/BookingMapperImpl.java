@@ -1,7 +1,7 @@
 package com.twopizzas.port.data.booking;
 
 import com.twopizzas.di.Autowired;
-import com.twopizzas.domain.Booking;
+import com.twopizzas.domain.booking.Booking;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.flight.SeatBooking;
 import com.twopizzas.port.data.DataMappingException;

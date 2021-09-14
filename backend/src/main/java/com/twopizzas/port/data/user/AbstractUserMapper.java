@@ -2,7 +2,7 @@ package com.twopizzas.port.data.user;
 
 import com.twopizzas.di.Autowired;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.domain.User;
+import com.twopizzas.domain.user.User;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 

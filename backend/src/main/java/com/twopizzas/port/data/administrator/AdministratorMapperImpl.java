@@ -3,7 +3,7 @@ package com.twopizzas.port.data.administrator;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.domain.Administrator;
+import com.twopizzas.domain.user.Administrator;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;

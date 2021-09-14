@@ -1,6 +1,7 @@
-package com.twopizzas.domain;
+package com.twopizzas.domain.user;
 
 import com.twopizzas.data.Repository;
+import com.twopizzas.domain.EntityId;
 
 import java.util.List;
 

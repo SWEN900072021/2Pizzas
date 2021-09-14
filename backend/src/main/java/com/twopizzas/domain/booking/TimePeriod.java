@@ -1,4 +1,4 @@
-package com.twopizzas.domain;
+package com.twopizzas.domain.booking;
 
 import com.twopizzas.util.ValueViolation;
 

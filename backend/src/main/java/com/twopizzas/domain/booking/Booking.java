@@ -1,24 +1,26 @@
-package com.twopizzas.domain;
+package com.twopizzas.domain.booking;
 
-import com.twopizzas.data.Entity;
+import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.flight.SeatBooking;
-import com.twopizzas.util.AssertionConcern;
+import com.twopizzas.domain.user.Customer;
+import com.twopizzas.port.data.DomainEntity;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-public class Booking extends AssertionConcern implements Entity<EntityId> {
+@Getter
+public class Booking extends DomainEntity {
 
-    private final EntityId id;
     private final OffsetDateTime date;
     private BigDecimal totalCost;
     private final Customer customer;
 
-    private SeatBooking flightBooking = null;
-    private SeatBooking returnFlightBooking = null;
+    private SeatBooking flightBooking;
+    private SeatBooking returnFlightBooking;
 
     public Booking(EntityId id, OffsetDateTime date, BigDecimal totalCost, Customer customer) {
-        this.id = notNull(id, "id");
+        super(id);
         this.date = notNull(date, "date");
         this.totalCost = notNull(totalCost, "totalCost");
         this.customer = notNull(customer, "customer");
@@ -36,21 +38,6 @@ public class Booking extends AssertionConcern implements Entity<EntityId> {
     public void addReturnFlight(SeatBooking seatBooking) {
         returnFlightBooking = seatBooking;
     }
-
-    @Override
-    public EntityId getId() {
-        return id;
-    }
-
-    public OffsetDateTime getDate() {
-        return date;
-    }
-
-    public BigDecimal getTotalCost() {
-        return totalCost;
-    }
-
-    public Customer getCustomer() { return customer; }
 
     public SeatBooking getFlightReservation() {
         return flightBooking;

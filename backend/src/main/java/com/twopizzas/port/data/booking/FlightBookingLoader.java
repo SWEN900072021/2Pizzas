@@ -3,7 +3,7 @@ package com.twopizzas.port.data.booking;
 import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.data.ValueHolder;
 import com.twopizzas.data.ValueLoader;
-import com.twopizzas.domain.Booking;
+import com.twopizzas.domain.booking.Booking;
 import com.twopizzas.domain.EntityId;
 
 import java.util.List;

@@ -2,10 +2,14 @@ package com.twopizzas.api;
 
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
-import com.twopizzas.domain.*;
+import com.twopizzas.domain.booking.Booking;
+import com.twopizzas.domain.booking.BookingRepository;
+import com.twopizzas.domain.EntityId;
+import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.domain.error.DataFormatException;
 import com.twopizzas.domain.error.NotFoundException;
 import com.twopizzas.domain.flight.*;
+import com.twopizzas.domain.user.Customer;
 import com.twopizzas.port.data.customer.CustomerMapper;
 import com.twopizzas.port.data.passenger.PassengerMapper;
 

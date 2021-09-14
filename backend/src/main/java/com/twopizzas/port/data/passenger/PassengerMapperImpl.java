@@ -1,8 +1,10 @@
 package com.twopizzas.port.data.passenger;
 
+import com.twopizzas.data.BaseValueHolder;
+import com.twopizzas.data.LazyValueHolderProxy;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.domain.Passenger;
+import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.booking.BookingMapper;
@@ -115,7 +117,7 @@ public class PassengerMapperImpl implements PassengerMapper {
             }
         } catch (SQLException e) {
             throw new DataMappingException(String.format(
-                    "failed to map results from result set to %s entity, error: %s", Passenger.class.getName(), e.getMessage()),
+                    "failed to map results from result set to %s entity, error: %s", getEntityClass().getName(), e.getMessage()),
                     e);
         }
 
@@ -125,6 +127,7 @@ public class PassengerMapperImpl implements PassengerMapper {
     @Override
     public Passenger mapOne(ResultSet resultSet) {
         try {
+            EntityId bookingId = EntityId.of(resultSet.getObject(COLUMN_BOOKING_ID, String.class));
             return new Passenger(
                     EntityId.of(resultSet.getObject(COLUMN_ID, String.class)),
                     resultSet.getObject(COLUMN_GIVENNAME, String.class),
@@ -132,10 +135,12 @@ public class PassengerMapperImpl implements PassengerMapper {
                     resultSet.getObject(COLUMN_DOB, LocalDate.class),
                     resultSet.getObject(COLUMN_NATIONALITY, String.class),
                     resultSet.getObject(COLUMN_PASSPORTNUMBER, String.class),
-                    bookingMapper.read(EntityId.of(resultSet.getObject(COLUMN_BOOKING_ID, String.class)))
+                    LazyValueHolderProxy.makeLazy(() -> BaseValueHolder.of(bookingMapper.read(bookingId)))
             );
         } catch (SQLException e) {
-            return null;
+            throw new DataMappingException(String.format(
+                    "failed to map results from result set to %s entity, error: %s", getEntityClass().getName(), e.getMessage()),
+                    e);
         }
     }
 }

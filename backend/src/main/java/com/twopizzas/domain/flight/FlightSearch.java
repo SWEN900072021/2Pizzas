@@ -1,10 +1,13 @@
 package com.twopizzas.domain.flight;
 
-import com.twopizzas.domain.Airline;
+import com.twopizzas.domain.user.Airline;
 import com.twopizzas.domain.Airport;
-import com.twopizzas.domain.TimePeriod;
+import com.twopizzas.domain.booking.TimePeriod;
 import com.twopizzas.util.AssertionConcern;
+import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class FlightSearch extends AssertionConcern {
     private final TimePeriod departing;
     private final TimePeriod returning;
@@ -13,10 +16,7 @@ public class FlightSearch extends AssertionConcern {
     private final Airline airline;
     private final int passengers;
 
-    public FlightSearchBuilder builder() {
-        return new FlightSearchBuilder();
-    }
-
+    @Builder
     private FlightSearch(TimePeriod departing, TimePeriod returning, Airport from, Airport to, Airline airline, int passengers) {
         this.departing = departing;
         this.returning = returning;
@@ -24,66 +24,5 @@ public class FlightSearch extends AssertionConcern {
         this.to = to;
         this.airline = airline;
         this.passengers = passengers;
-    }
-
-    public TimePeriod getDeparting() {
-        return departing;
-    }
-
-    public TimePeriod getReturning() {
-        return returning;
-    }
-
-    public Airport getFrom() {
-        return from;
-    }
-
-    public Airport getTo() {
-        return to;
-    }
-
-    public Airline getAirline() {
-        return airline;
-    }
-
-    public int getPassengers() {
-        return passengers;
-    }
-
-    public static class FlightSearchBuilder {
-        private TimePeriod departing;
-        private TimePeriod returning;
-        private Airport from;
-        private Airport to;
-        private Airline airline;
-        private int passengers;
-
-        public FlightSearch build() {
-            return new FlightSearch(departing, returning, from, to, airline, passengers);
-        }
-
-        public void departing(TimePeriod departing) {
-            this.departing = departing;
-        }
-
-        public void returning(TimePeriod returning) {
-            this.returning = returning;
-        }
-
-        public void from(Airport from) {
-            this.from = from;
-        }
-
-        public void to(Airport to) {
-            this.to = to;
-        }
-
-        public void airline(Airline airline) {
-            this.airline = airline;
-        }
-
-        public void passengers(int passengers) {
-            this.passengers = passengers;
-        }
     }
 }

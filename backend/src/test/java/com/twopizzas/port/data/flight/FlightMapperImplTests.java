@@ -1,10 +1,10 @@
 package com.twopizzas.port.data.flight;
 
 import com.twopizzas.data.BaseValueHolder;
-import com.twopizzas.domain.Airline;
+import com.twopizzas.domain.user.Airline;
 import com.twopizzas.domain.Airport;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.domain.Passenger;
+import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.domain.flight.*;
 import com.twopizzas.port.data.DataTestConfig;
 import com.twopizzas.port.data.SqlStatement;
