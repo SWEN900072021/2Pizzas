@@ -46,7 +46,7 @@ const Search = ({
         autoComplete='off'
         placeholder={placeholder}
         readOnly={readOnly}
-        className={`${className} flex-grow
+        className={`${className} w-full
             bg-white
             py-2 pl-9 pr:2
             md:py-3 md:pl-12 md:pr-3

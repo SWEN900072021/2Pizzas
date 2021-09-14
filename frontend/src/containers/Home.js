@@ -13,7 +13,9 @@ import OriginSearch from './OriginSearch'
 import DestinationSearch from './DestinationSearch'
 import Button from '../components/Button'
 import Search from '../components/Search'
+import NavBar from '../components/NavBar'
 import useStore from '../hooks/Store'
+import landscapePicture from '../assets/home-landscape.png'
 
 const { RangePicker } = DatePicker
 
@@ -50,6 +52,7 @@ const Home = () => {
     moment(),
     moment().add(1, 'days')
   ])
+
   const [isReturn, setReturn] = useState(true)
   const [visible, setVisible] = useState(false)
 
@@ -137,151 +140,175 @@ const Home = () => {
   )
 
   return (
-    <main className='h-screen my-8 flex flex-col justify-start items-center'>
-      {/* Main Flight Search Form */}
-      <section
-        className='
+    <main className='h-screen'>
+      <NavBar />
+      <section className='h-full flex flex-col justify-start items-center'>
+        <img
+          src={landscapePicture}
+          alt='Landscape with hot air balloons'
+          className='
+            relative 
+            h-5/6 md:h-3/4 w-full
+            object-cover object-left
+            filter contrast-75'
+        />
+        <div
+          className='
+          absolute
+          transform translate-y-36 sm:translate-y-32
+          self-center md:self-start mx-6'
+        >
+          <h2 className='text-white text-center sm:text-left text-3xl sm:text-5xl font-bold select-none'>
+            Search hundreds of flights
+          </h2>
+        </div>
+        {/* Main Flight Search Form */}
+        <section
+          className='
+            absolute 
+            transform translate-y-52
             flex flex-wrap flex-col justify-center items-center gap-3 
             max-w-max bg-yellow-50 p-5'
-      >
-        {/* Origin/Destination Airport Search and Date Pickers */}
-        <section
-          className={`grid w-full justify-center items-center gap-2 ${
-            !isTablet ? ' grid-rows-3' : 'grid-cols-3'
-          }`}
         >
-          {/* Airport Pickers */}
-          <OriginSearch airports={airports} />
-          <DestinationSearch airports={airports} />
+          {/* Section 1: Origin/Destination Airport Search and Date Pickers */}
+          <section
+            className={`grid w-full items-center justify-stretch gap-2 ${
+              !isTablet ? ' grid-rows-3' : 'grid-cols-3'
+            }`}
+          >
+            {/* Airport Pickers */}
+            <OriginSearch airports={airports} />
+            <DestinationSearch airports={airports} />
 
-          {/* Date Pickers, visible only for Mobile Devices or One-Way Flights */}
-          <span
-            className={`${
-              isReturn && (!isMobile || !isReturn) && 'hidden'
-            }
+            {/* Date Pickers, visible only for Mobile Devices or One-Way Flights */}
+            <span
+              className={`${
+                isReturn && (!isMobile || !isReturn) && 'hidden'
+              }
                   grid grid-cols-2
                   border border-bg-grey
                   font-light tracking-wide text-gray-800 
                   placeholder-gray-500 focus:placeholder-gray-400
                   focus:outline-none focus:ring-2 focus:ring-yellow-400 
                   bg-white rounded-lg py-1 md:py-2`}
-          >
-            <DatePicker
-              disabledDate={disabledDepartureDates}
-              allowClear={false}
-              value={dates && dates[0] ? dates[0] : moment()}
-              bordered={false}
-              suffixIcon={<FiArrowRight />}
-              placeholder='Departure date'
-              onChange={(date) => {
-                setDates((oldDates) =>
-                  date > oldDates[1].startOf('day')
-                    ? [date, date.add(1, 'days')]
-                    : [date, oldDates[1]]
-                )
-              }}
-            />
-            <DatePicker
-              disabledDate={disabledReturnDates}
-              allowClear={false}
-              value={dates && dates[1] ? dates[1] : moment()}
-              bordered={false}
-              separator={<FiArrowRight />}
-              placeholder='Return date'
-              disabled={!isReturn}
-              className='-ml-4'
-              onChange={(date) => {
-                setDates((oldDates) => [oldDates[0], date])
-              }}
-            />
-          </span>
+            >
+              <DatePicker
+                disabledDate={disabledDepartureDates}
+                allowClear={false}
+                value={dates && dates[0] ? dates[0] : moment()}
+                bordered={false}
+                suffixIcon={<FiArrowRight />}
+                placeholder='Departure date'
+                onChange={(date) => {
+                  setDates((oldDates) =>
+                    date > oldDates[1].startOf('day')
+                      ? [date, date.add(1, 'days')]
+                      : [date, oldDates[1]]
+                  )
+                }}
+              />
+              <DatePicker
+                disabledDate={disabledReturnDates}
+                allowClear={false}
+                value={dates && dates[1] ? dates[1] : moment()}
+                bordered={false}
+                separator={<FiArrowRight />}
+                placeholder='Return date'
+                disabled={!isReturn}
+                className='-ml-4'
+                onChange={(date) => {
+                  setDates((oldDates) => [oldDates[0], date])
+                }}
+              />
+            </span>
 
-          {/* Date Range Picker, visible only for Return Flights or Non-Mobile Devices */}
-          <span
-            className={`${(!isReturn || isMobile) && 'hidden'}
+            {/* Date Range Picker, visible only for Return Flights or Non-Mobile Devices */}
+            <span
+              className={`${(!isReturn || isMobile) && 'hidden'}
                 border border-bg-grey
                 font-light tracking-wide text-gray-800 
                 placeholder-gray-500 focus:placeholder-gray-400
                 focus:outline-none focus:ring-2 focus:ring-yellow-400 
                 bg-white rounded-lg py-1 md:py-2`}
-          >
-            <RangePicker
-              value={dates}
-              inputReadOnly
-              separator={<FiArrowRight className='text-gray-400' />}
-              bordered={false}
-              disabled={[false, !isReturn]}
-              placeholder={['Departure date', 'Return date']}
-              onChange={(newDates) => {
-                setDates(newDates)
-              }}
-            />
-          </span>
-        </section>
-
-        {/* Flight Type (Return/One-Way) Buttons, Cabin Class and Passenger Select, and Submit Button */}
-        <section className='grid grid-rows-2 w-full gap-4 md:flex md:flex-row md:flex-wrap md:items-center md:justify-between '>
-          <section className='flex flex-row justify-center items-center gap-2 md:gap-5'>
-            {/* Return and One-Way Buttons */}
-            <span className='inline'>
-              <button
-                type='button'
-                onClick={() => {
-                  setReturn(true)
+            >
+              <RangePicker
+                value={dates}
+                inputReadOnly
+                separator={<FiArrowRight className='text-gray-400' />}
+                bordered={false}
+                disabled={[false, !isReturn]}
+                placeholder={['Departure date', 'Return date']}
+                onChange={(newDates) => {
+                  setDates(newDates)
                 }}
-                className={`${
-                  isReturn
-                    ? 'w-20 bg-yellow-600 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400'
-                    : 'w-20 bg-white text-xs font-semibold p-2 border-2'
-                } 
-                    focus:outline-none focus:ring-2 focus:ring-yellow-400
-                `}
-              >
-                Return
-              </button>
-              <button
-                type='button'
-                onClick={() => {
-                  setReturn(false)
-                }}
-                className={`${
-                  !isReturn
-                    ? 'w-20 bg-yellow-600 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400'
-                    : 'w-20 bg-white text-xs font-semibold p-2 border-2'
-                }
-                    focus:outline-none focus:ring-2 focus:ring-yellow-400`}
-              >
-                One-way
-              </button>
-            </span>
-
-            {/* Cabin Class and Passenger Popover */}
-            <span>
-              <Popover
-                placement='bottom'
-                content={cabinClassPassengersPopover}
-                trigger='click'
-                visible={visible}
-                onVisibleChange={handleVisibleChange}
-              >
-                <div>
-                  <Search
-                    readOnly
-                    className='cursor-default'
-                    StartIcon={<IoIosPerson />}
-                    EndIcon={<FiChevronDown />}
-                    value={`${
-                      cabinClass.charAt(0).toUpperCase() +
-                      cabinClass.slice(1)
-                    }, ${passengerCount} passenger(s)`}
-                  />
-                </div>
-              </Popover>
+              />
             </span>
           </section>
 
-          {/* Find Flight Button */}
-          <Button label='Find Flights' submit onClick={() => {}} />
+          {/* Section 2: Flight Type (Return/One-Way) Buttons, Cabin Class and Passenger Select, and Submit Button */}
+          <section className='grid grid-rows-2 w-full gap-4 md:flex md:flex-row md:flex-wrap md:items-center md:justify-between '>
+            <section className='flex flex-row justify-center items-center gap-2 md:gap-5'>
+              {/* Return and One-Way Buttons */}
+              <span className='inline'>
+                <button
+                  type='button'
+                  onClick={() => {
+                    setReturn(true)
+                  }}
+                  className={`${
+                    isReturn
+                      ? 'w-20 bg-yellow-600 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400'
+                      : 'w-20 bg-white text-xs font-semibold p-2 border-2'
+                  } 
+                    focus:outline-none focus:ring-2 focus:ring-yellow-400
+                `}
+                >
+                  Return
+                </button>
+                <button
+                  type='button'
+                  onClick={() => {
+                    setReturn(false)
+                  }}
+                  className={`${
+                    !isReturn
+                      ? 'w-20 bg-yellow-600 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400'
+                      : 'w-20 bg-white text-xs font-semibold p-2 border-2'
+                  }
+                    focus:outline-none focus:ring-2 focus:ring-yellow-400`}
+                >
+                  One-way
+                </button>
+              </span>
+
+              {/* Cabin Class and Passenger Popover */}
+              <span>
+                <Popover
+                  placement='bottom'
+                  content={cabinClassPassengersPopover}
+                  trigger='click'
+                  visible={visible}
+                  onVisibleChange={handleVisibleChange}
+                >
+                  <div>
+                    <Search
+                      readOnly
+                      className='cursor-default'
+                      StartIcon={<IoIosPerson />}
+                      EndIcon={<FiChevronDown />}
+                      value={`${
+                        cabinClass.charAt(0).toUpperCase() +
+                        cabinClass.slice(1)
+                      }, ${passengerCount} passenger(s)`}
+                    />
+                  </div>
+                </Popover>
+              </span>
+            </section>
+
+            {/* Find Flight Button */}
+            <Button label='Find Flights' submit onClick={() => {}} />
+          </section>
         </section>
       </section>
     </main>

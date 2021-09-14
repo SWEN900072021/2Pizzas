@@ -42,67 +42,68 @@ const OriginSearch = ({ airports }) => {
 
   return (
     <section>
+      {/* MOBILE */}
       <section className='flex flex-grow sm:hidden sm:flex-none'>
-        <button
-          className='flex flex-grow'
-          type='button'
-          onClick={() => {
-            setOpen(true)
-          }}
+        {/* Input Field */}
+        <Search
+          placeholder='Origin airport'
+          StartIcon={<FaPlaneDeparture />}
+          value={originAirportSearchValue}
+          handleKeyUp={handleKeyUp}
+          handleClick={() => setOpen(true)}
+        />
+        {/* Airport Search and Select */}
+        <div
+          className={`${
+            !open
+              ? 'hidden'
+              : 'fixed z-50 top-0 left-0 overflow-hidden bg-white w-screen p-5 space-y-5'
+          } `}
         >
+          <header className='flex justify-between'>
+            <span className='font-bold'>From</span>
+            <button
+              type='button'
+              className='underline text-yellow-700'
+              onClick={() => {
+                setOpen(false)
+              }}
+            >
+              Cancel
+            </button>
+          </header>
           <Search
             placeholder='Origin airport'
             StartIcon={<FaPlaneDeparture />}
             value={originAirportSearchValue}
+            handleChange={(e) => {
+              setOriginAirportSearchValue(e.target.value)
+            }}
             handleKeyUp={handleKeyUp}
           />
-        </button>
-        {open && (
-          <section className='top-0 left-0 absolute bg-white z-40 h-screen w-screen p-5 space-y-5'>
-            <header className='flex justify-between'>
-              <span className='font-bold'>From</span>
+          <div className='h-5/6 divide-y divide-gray-100 overflow-y-auto'>
+            {airports.map((airport) => (
               <button
+                key={uuid()}
                 type='button'
-                className='underline text-yellow-700'
                 onClick={() => {
-                  setOpen(false)
+                  updateOriginAirport(airport)
                 }}
+                className='group w-full flex flex-col align-top z-11 py-2 px-3 space-y-1 cursor-pointer hover:bg-gray-50 focus:bg-gray-50 focus:outline-none'
               >
-                Cancel
+                <span className='self-start text-sm font-semibold cursor-pointer group-hover:text-yellow-600 group-focus:text-yellow-600'>
+                  {airport.name} ({airport.code})
+                </span>
+                <span className='self-start text-xs cursor-pointer'>
+                  {airport.location}
+                </span>
               </button>
-            </header>
-            <Search
-              placeholder='Origin airport'
-              StartIcon={<FaPlaneDeparture />}
-              value={originAirportSearchValue}
-              handleChange={(e) => {
-                setOriginAirportSearchValue(e.target.value)
-              }}
-              handleKeyUp={handleKeyUp}
-            />
-            <div className='h-5/6 divide-y divide-gray-100 overflow-y-auto'>
-              {airports.map((airport) => (
-                <button
-                  key={uuid()}
-                  type='button'
-                  onClick={() => {
-                    updateOriginAirport(airport)
-                  }}
-                  className='group w-full flex flex-col align-top z-11 py-2 px-3 space-y-1 cursor-pointer hover:bg-gray-50 focus:bg-gray-50 focus:outline-none'
-                >
-                  <span className='self-start text-sm font-semibold cursor-pointer group-hover:text-yellow-600 group-focus:text-yellow-600'>
-                    {airport.name} ({airport.code})
-                  </span>
-                  <span className='self-start text-xs cursor-pointer'>
-                    {airport.location}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </section>
-        )}
+            ))}
+          </div>
+        </div>
       </section>
-      <div className='relative hidden sm:flex sm:flex-grow'>
+      {/* TABLET AND LARGER DISPLAYS */}
+      <section className='relative hidden sm:flex sm:flex-grow'>
         <AutoComplete
           style={{ width: '100%' }}
           onFocus={selectAllOnFocus}
@@ -155,7 +156,7 @@ const OriginSearch = ({ airports }) => {
             <FaPlaneDeparture className='h-4 w-4' />
           </span>
         </div>
-      </div>
+      </section>
     </section>
   )
 }

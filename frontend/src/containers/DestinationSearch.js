@@ -45,20 +45,13 @@ const DestinationSearch = ({ airports }) => {
   return (
     <section>
       <section className='flex flex-grow sm:hidden sm:flex-none'>
-        <button
-          className='flex flex-grow'
-          type='button'
-          onClick={() => {
-            setOpen(true)
-          }}
-        >
-          <Search
-            placeholder='Destination airport'
-            StartIcon={<FaPlaneArrival />}
-            value={destinationAirportSearchValue}
-            handleKeyUp={handleKeyUp}
-          />
-        </button>
+        <Search
+          placeholder='Destination airport'
+          StartIcon={<FaPlaneArrival />}
+          value={destinationAirportSearchValue}
+          handleKeyUp={handleKeyUp}
+          handleClick={() => setOpen(true)}
+        />
         {open && (
           <section className='top-0 left-0 absolute bg-white z-40 h-screen w-screen p-5 space-y-5'>
             <header className='flex justify-between'>
