@@ -53,14 +53,18 @@ INSERT INTO airplaneProfile(id, code, type, firstClassRows, firstClassColumns, b
 
 -- Flight Table
     -- Qantas Flights
-INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId) VALUES
+INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, firstClassCost, businessClassCost, economyClassCost
+) VALUES
        (
            gen_random_uuid(),
            'QN111', '2021-01-01 08:00', '2021-01-01 13:00',
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airline WHERE code = 'QFA' ),
-            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_1' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_1' ),
+            100.0,
+            80.0,
+            50.0
        ),
        (
            gen_random_uuid(),
@@ -68,7 +72,10 @@ INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId,
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airline WHERE code = 'QFA' ),
-            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_1' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_1' ),
+           100.0,
+           80.0,
+           50.0
        ),
        (
            gen_random_uuid(),
@@ -76,17 +83,23 @@ INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId,
             ( SELECT id FROM airport WHERE code = 'AVV'),
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airline WHERE code = 'QFA' ),
-            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_2' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_2' ),
+           100.0,
+           80.0,
+           50.0
        );
     -- Virgin Flights
-INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId) VALUES
+INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, firstClassCost, businessClassCost, economyClassCost) VALUES
        (
            gen_random_uuid(),
            'VA111', '2021-02-01 08:00', '2021-02-01 13:00',
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airline WHERE code = 'VIR' ),
-            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_3' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_3' ),
+           101.0,
+           81.0,
+           51.0
        ),
        (
            gen_random_uuid(),
@@ -94,7 +107,10 @@ INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId,
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airline WHERE code = 'VIR' ),
-            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_3' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_3' ),
+           101.0,
+           81.0,
+           51.0
        ),
        (
            gen_random_uuid(),
@@ -102,17 +118,23 @@ INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId,
             ( SELECT id FROM airport WHERE code = 'AVV'),
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airline WHERE code = 'VIR' ),
-            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_4' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_4' ),
+           101.0,
+           81.0,
+           51.0
        );
     -- Emirates Flights
-INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId) VALUES
+INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, firstClassCost, businessClassCost, economyClassCost) VALUES
        (
            gen_random_uuid(),
            'EM111', '2021-03-01 08:00', '2021-03-01 13:00',
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airline WHERE code = 'UAE' ),
-            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_5' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_5' ),
+           102.0,
+           82.0,
+           52.0
        ),
        (
            gen_random_uuid(),
@@ -120,7 +142,10 @@ INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId,
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airline WHERE code = 'UAE' ),
-            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_5' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_5' ),
+           102.0,
+           82.0,
+           52.0
        ),
        (
            gen_random_uuid(),
@@ -128,7 +153,10 @@ INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId,
             ( SELECT id FROM airport WHERE code = 'MEL' ),
             ( SELECT id FROM airport WHERE code = 'SYD' ),
             ( SELECT id FROM airline WHERE code = 'UAE' ),
-            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_5' )
+            ( SELECT id FROM airplaneProfile WHERE code = 'planecode_5' ),
+           102.0,
+           82.0,
+           52.0
        );
 
 -- Stopover Table
