@@ -1,5 +1,6 @@
 package com.twopizzas.auth;
 
+import com.twopizzas.configuration.Configuration;
 import com.twopizzas.configuration.Value;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
@@ -20,6 +21,7 @@ import java.util.GregorianCalendar;
 import java.util.Optional;
 
 @Component
+@Configuration
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     @Value("authentication.secret")

@@ -71,9 +71,9 @@ public class ApplicationContextTests {
         Mockito.when(componentManager.getComponent(Mockito.isA(TypedComponentSpecification.class))).thenReturn(component);
 
         // WHEN
-        Class<?> claz = component.getClass();
+        Class<?> clasz = component.getClass();
         String qualifier = "qualifier";
-        Object retrieved = applicationContext.getComponent(claz, qualifier);
+        Object retrieved = applicationContext.getComponent(clasz, qualifier);
 
         // THEN
         ArgumentCaptor<TypedComponentSpecification<?>> captor = ArgumentCaptor.forClass(TypedComponentSpecification.class);
@@ -111,7 +111,7 @@ public class ApplicationContextTests {
         // GIVEN
         ApplicationContextImpl.reset();
         ApplicationContextImpl.getInstance()
-                .profile("profile")
+                .profile("test")
                 .root("someRoot");
 
 
@@ -122,6 +122,6 @@ public class ApplicationContextTests {
         Assertions.assertNotNull(ApplicationContextImpl.getInstance().getComponentManager());
         Assertions.assertTrue(ApplicationContextImpl.getInstance().getComponentManager().getBeanResolver() instanceof PrimaryBeanResolver);
         Assertions.assertTrue(((PrimaryBeanResolver) ApplicationContextImpl.getInstance().getComponentManager().getBeanResolver()).getWrapped() instanceof ProfileBeanResolver);
-        Assertions.assertEquals("profile", (((ProfileBeanResolver) ((PrimaryBeanResolver) ApplicationContextImpl.getInstance().getComponentManager().getBeanResolver()).getWrapped()).getProfile()));
+        Assertions.assertEquals("test", (((ProfileBeanResolver) ((PrimaryBeanResolver) ApplicationContextImpl.getInstance().getComponentManager().getBeanResolver()).getWrapped()).getProfile()));
     }
 }

@@ -34,18 +34,18 @@ class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implements In
             case "delete":
                 return handleDelete(args);
             default:
-                return method.invoke(dataMapper, args);
+                return invoke(method, args);
         }
     }
 
-    private Object handleRead(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+    private Object handleRead(Method method, Object[] args) throws Throwable {
         // check if it's in the map first
         Optional<T> maybeInMap = identityMapper.get(dataMapper.getEntityClass(), (ID) args[0]);
         if (maybeInMap.isPresent()) {
             return maybeInMap.get();
         }
 
-        T maybeFound = dataMapper.getEntityClass().cast(method.invoke(dataMapper, args));
+        T maybeFound = dataMapper.getEntityClass().cast(invoke(method, args));
         if (maybeFound != null) {
             Entity<ID> found = identityMapper.testAndGet(maybeFound);
             unitOfWork.registerClean(found);
@@ -54,8 +54,8 @@ class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implements In
         return null;
     }
 
-    private Object handleReadAll(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
-        Collection<T> all = (Collection<T>) method.invoke(dataMapper, args);
+    private Object handleReadAll(Method method, Object[] args) throws Throwable {
+        Collection<T> all = (Collection<T>) invoke(method, args);
 
         // switch out search results for what is in the map
         return all.stream().map(identityMapper::testAndGet).collect(Collectors.toList());
@@ -90,5 +90,13 @@ class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implements In
         identityMapper.markGone(inMapper);
         unitOfWork.registerDeleted(inMapper);
         return null;
+    }
+
+    private Object invoke(Method method, Object[] args) throws Throwable {
+        try {
+            return method.invoke(dataMapper, args);
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
+        }
     }
 }

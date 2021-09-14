@@ -26,7 +26,7 @@ public class JwtAuthenticationProviderTests {
     void setup() {
         MockitoAnnotations.initMocks(this);
         authenticationProvider = new JwtAuthenticationProvider(
-                Keys.secretKeyFor(SignatureAlgorithm.HS256).toString(),
+                "3YA5ID3IhT6IqGSco2H8la+fMqzfkclN",
                 "3600",
                 "http://some.place.com",
                 userRepository

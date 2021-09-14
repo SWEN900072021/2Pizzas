@@ -27,7 +27,7 @@ public class BaseRequestDelegate implements HttpRequestDelegate {
     }
 
     @Override
-    public RestResponse<?> handle(HttpRequest request) throws Exception {
+    public RestResponse<?> handle(HttpRequest request) throws Throwable {
         PathResolver.PathResult result = pathResolver.test(request.getPath());
         if (result.isMatch() && request.getMethod().equals(method)) {
             List<Object> args = getArgsFromRequest(request, result);
@@ -75,18 +75,22 @@ public class BaseRequestDelegate implements HttpRequestDelegate {
         ).collect(Collectors.toList());
     }
 
-    private RestResponse<?> invokeHandler(List<Object> args) throws Exception {
-        boolean error = false;
+    private RestResponse<?> invokeHandler(List<Object> args) throws Throwable {
+        try {
+            Object response = handler.invoke(targetController, args.toArray());
 
-        Object response = handler.invoke(targetController, args.toArray());
-        if (response == null) {
-            throw new RequestProcessingException(String.format("http handler [%s] with target [%s] returned null, handlers must return a valid response", handler.getName(), targetController.getClass()));
+            if (response == null) {
+                throw new RequestProcessingException(String.format("http handler [%s] with target [%s] returned null, handlers must return a valid response", handler.getName(), targetController.getClass()));
+            }
+
+            if (!(response instanceof RestResponse)) {
+                throw new RequestProcessingException(String.format("http handler [%s] with target [%s] returned invalid response, handlers return type must be [%s]", handler.getName(), targetController.getClass(), RestResponse.class.getName()));
+            }
+
+            return (RestResponse<?>) response;
+
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
         }
-
-        if (!(response instanceof RestResponse)) {
-            throw new RequestProcessingException(String.format("http handler [%s] with target [%s] returned invalid response, handlers return type must be [%s]", handler.getName(), targetController.getClass(), RestResponse.class.getName()));
-        }
-
-        return (RestResponse<?>) response;
     }
 }

@@ -118,7 +118,7 @@ public class AirplaneProfileMapperImplTests {
 
         // THEN
         Assertions.assertNotNull(all);
-        Assertions.assertEquals(2, all.size());
+        Assertions.assertTrue(all.size() >= 2);
         Assertions.assertTrue(all.stream().map(AirplaneProfile::getId).collect(Collectors.toList()).contains(entity.getId()));
         Assertions.assertTrue(all.stream().map(AirplaneProfile::getId).collect(Collectors.toList()).contains(entitySecond.getId()));
     }

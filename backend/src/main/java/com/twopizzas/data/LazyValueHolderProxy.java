@@ -24,26 +24,34 @@ public class LazyValueHolderProxy<T> implements InvocationHandler {
                 if (wrapped == null) {
                     wrapped = valueLoader.load();
                 }
-                return method.invoke(wrapped, args);
+                return invoke(method, args);
         }
     }
 
-    public Object handleGet(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+    public Object handleGet(Object proxy, Method method, Object[] args) throws Throwable {
         if (wrapped == null) {
             wrapped = valueLoader.load();
         }
-        return method.invoke(wrapped, args);
+        return invoke(method, args);
     }
 
-    public Object handleIsPresent(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+    public Object handleIsPresent(Object proxy, Method method, Object[] args) throws Throwable {
         if (wrapped == null) {
             return false;
         }
-        return method.invoke(wrapped, args);
+        return invoke(method, args);
     }
 
     public static <T> ValueHolder<T> makeLazy(ValueLoader<T> loader) {
         LazyValueHolderProxy<T> proxy = new LazyValueHolderProxy<>(loader);
         return (ValueHolder<T>) Proxy.newProxyInstance(ValueHolder.class.getClassLoader(), new Class<?>[]{ValueHolder.class}, proxy);
+    }
+
+    private Object invoke(Method method, Object[] args) throws Throwable {
+        try {
+            return method.invoke(wrapped, args);
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
+        }
     }
 }

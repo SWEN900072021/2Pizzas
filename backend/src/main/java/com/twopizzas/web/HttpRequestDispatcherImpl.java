@@ -64,7 +64,7 @@ public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
             unitOfWork.commit();
             return response;
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             unitOfWork.rollback();
             return buildErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

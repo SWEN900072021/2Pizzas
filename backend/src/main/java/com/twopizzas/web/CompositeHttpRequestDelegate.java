@@ -47,7 +47,7 @@ class CompositeHttpRequestDelegate implements HttpRequestDelegate {
      }
 
     @Override
-    public RestResponse<?> handle(HttpRequest request) throws Exception {
+    public RestResponse<?> handle(HttpRequest request) throws Throwable {
         if (pathResolver.test(request.getPath()).isMatch()) {
             for (HttpRequestDelegate delegate : delegates) {
                 if (delegate.getMethods().contains(request.getMethod())) {

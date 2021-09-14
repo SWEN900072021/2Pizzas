@@ -59,7 +59,7 @@ public class AdministratorMapperImplTests {
         Assertions.assertNotNull(persisted);
         Assertions.assertEquals(newEntity.getId(), persisted.getId());
         Assertions.assertEquals(newEntity.getUsername(), persisted.getUsername());
-        Assertions.assertEquals(newEntity.getPassword(), persisted.getPassword());
+        Assertions.assertNotNull(persisted.getPassword());
     }
 
     @Test

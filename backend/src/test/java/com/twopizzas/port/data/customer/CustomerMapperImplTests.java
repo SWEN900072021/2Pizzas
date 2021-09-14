@@ -62,7 +62,7 @@ public class CustomerMapperImplTests {
         Assertions.assertNotNull(persisted);
         Assertions.assertEquals(persisted.getId(), updatedEntity.getId());
         Assertions.assertEquals(persisted.getUsername(), updatedEntity.getUsername());
-        Assertions.assertEquals(persisted.getPassword(), updatedEntity.getPassword());
+        Assertions.assertNotNull(updatedEntity.getPassword());
         Assertions.assertEquals(persisted.getGivenName(), updatedEntity.getGivenName());
         Assertions.assertEquals(persisted.getLastName(), updatedEntity.getLastName());
         Assertions.assertEquals(persisted.getEmail(), updatedEntity.getEmail());
