@@ -14,8 +14,7 @@ const immer = (config) => (set, get, api) =>
   )
 
 const useStore = create(
-  immer((set) => ({
-    // immer((set, get) => ({
+  immer((set, get) => ({
     originAirport: {},
     destinationAirport: {},
     setOriginAirport: (airport) => {
@@ -35,6 +34,23 @@ const useStore = create(
     setDestinationAirportSearchValue: (value) => {
       set({ destinationAirportSearchValue: value })
       // console.log('update destination search value to:', value)
+    },
+    cabinClass: 'economy',
+    setCabinClass: (cabinClass) => {
+      set({ cabinClass })
+    },
+    passengerCount: 1,
+    addPassenger: () => {
+      set((state) => ({
+        passengerCount: state.passengerCount + 1
+      }))
+    },
+    removePassenger: () => {
+      if (get().passengerCount > 1) {
+        set((state) => ({
+          passengerCount: state.passengerCount - 1
+        }))
+      }
     }
   }))
 )

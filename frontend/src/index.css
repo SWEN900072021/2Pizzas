@@ -1,3 +1,10 @@
+.select-all {
+  -webkit-user-select: all;
+  -moz-user-select: all;
+  -ms-user-select: all;
+  user-select: all;
+}
+
 @import '~antd/dist/antd.css';
 @tailwind base;
 @tailwind components;
