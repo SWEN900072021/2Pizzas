@@ -26,7 +26,7 @@ public class UserController {
 
     @RequestMapping(path = "/signup", method = HttpMethod.POST)
     RestResponse<SignupResponseDTO> createUser(@RequestBody SignupRequestDTO body) {
-        User user = new Customer(body.getUsername(), body.getPassword(),body.getGivenName(), body.getSurname(), body.getEmail());
+        User user = new Customer(body.getUsername(), body.getPassword(), body.getGivenName(), body.getSurname(), body.getEmail());
         userRepository.save(user);
         String token = authenticationProvider.login(user.getUsername(), user.getPassword()).orElseThrow(() -> new RuntimeException("Couldn't get token"));
         return RestResponse.ok(new SignupResponseDTO().setToken(token));

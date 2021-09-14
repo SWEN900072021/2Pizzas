@@ -39,6 +39,7 @@ class WebApplicationContextImpl implements WebApplicationContext {
         controllers.forEach(c -> Arrays.stream(c.getClass().getDeclaredMethods()).forEach(m -> {
             RequestMapping requestMapping = m.getDeclaredAnnotation(RequestMapping.class);
             if (requestMapping != null) {
+                m.setAccessible(true);
                 HttpRequestDelegate newDelegate = new BaseRequestDelegate(
                         PathResolver.of(requestMapping.path()),
                         requestMapping.method(),
