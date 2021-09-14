@@ -10,9 +10,10 @@ const Login = () => (
     <NavBar />
     <section className='h-screen flex flex-wrap justify-center content-center'>
       <img
+        draggable={false}
         src={thailandPicture}
         alt='Landscape with stone structures in Thailand'
-        className='fixed'
+        className='fixed h-screen w-screen object-cover object-center'
       />
       <section className='z-10 flex flex-wrap flex-col justify-center content-center mx-auto p-5 space-y-4 rounded-xl bg-yellow-50'>
         <TextField placeholder='Username' />

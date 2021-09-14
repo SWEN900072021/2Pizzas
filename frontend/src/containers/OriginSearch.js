@@ -19,7 +19,7 @@ const OriginSearch = ({ airports }) => {
 
   const updateOriginAirport = (airport) => {
     if (airport !== null) {
-      setOriginAirportSearchValue(airport.name)
+      setOriginAirportSearchValue(`(${airport.code}) ${airport.name}`)
       setOriginAirport(airport)
       setOpen(false)
     } else {

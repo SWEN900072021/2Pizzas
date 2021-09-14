@@ -144,6 +144,7 @@ const Home = () => {
       <NavBar />
       <section className='h-full flex flex-col justify-start items-center'>
         <img
+          draggable={false}
           src={landscapePicture}
           alt='Landscape with hot air balloons'
           className='
