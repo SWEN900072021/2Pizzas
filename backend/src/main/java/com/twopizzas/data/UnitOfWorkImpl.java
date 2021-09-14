@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @ThreadLocalComponent
-public class UnitOfWorkImpl implements UnitOfWork {
+class UnitOfWorkImpl implements UnitOfWork {
 
     private final DataSource dataSource;
     private final DataMapperRegistry dataMapperRegistry;
@@ -90,7 +90,7 @@ public class UnitOfWorkImpl implements UnitOfWork {
     }
 
     private <T extends Entity<ID>, ID> DataMapper<T, ID, Specification<T, ?>> getMapper(T entity) {
-        return dataMapperRegistry.getForClass(entity.getClass());
+        return (DataMapper<T, ID, Specification<T, ?>>) dataMapperRegistry.getForClass(entity.getClass());
     }
 
     private <T extends Entity<ID>, ID> void doUpdate(T entity) {

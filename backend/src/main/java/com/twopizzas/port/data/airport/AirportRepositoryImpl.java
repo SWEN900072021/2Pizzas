@@ -10,7 +10,7 @@ import com.twopizzas.domain.EntityId;
 import java.util.List;
 
 @Component
-public class AirportRepositoryImpl extends AbstractRepository<Airport, AirportSpecification, AirportMapper> implements AirportRepository {
+class AirportRepositoryImpl extends AbstractRepository<Airport, AirportSpecification, AirportMapper> implements AirportRepository {
 
     @Autowired
     public AirportRepositoryImpl(AirportMapper dataMapper) {

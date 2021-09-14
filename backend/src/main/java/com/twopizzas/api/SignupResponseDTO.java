@@ -6,5 +6,4 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class SignupResponseDTO {
-    private String token;
 }

@@ -19,6 +19,7 @@ class WebApplicationContextImpl implements WebApplicationContext {
     private final ApplicationContext applicationContext;
     private final ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
             .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     private List<HttpRequestDelegate> delegates;
 

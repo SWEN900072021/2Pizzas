@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implements InvocationHandler {
+class DataProxy<T extends Entity<ID>, ID> extends AssertionConcern implements InvocationHandler {
     private final IdentityMapper identityMapper;
     private final DataMapper<T, ID, ?> dataMapper;
     private final UnitOfWork unitOfWork;

@@ -8,7 +8,7 @@ import com.twopizzas.domain.user.AdministratorRepository;
 import com.twopizzas.domain.EntityId;
 
 @Component
-public class AdministratorRepositoryImpl extends AbstractRepository<Administrator, AdministratorSpecification, AdministratorMapper> implements AdministratorRepository {
+class AdministratorRepositoryImpl extends AbstractRepository<Administrator, AdministratorSpecification, AdministratorMapper> implements AdministratorRepository {
 
     @Autowired
     public AdministratorRepositoryImpl(AdministratorMapper dataMapper) {

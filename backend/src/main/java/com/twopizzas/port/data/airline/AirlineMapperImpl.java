@@ -1,6 +1,7 @@
 package com.twopizzas.port.data.airline;
 
 import com.twopizzas.di.Autowired;
+import com.twopizzas.di.Component;
 import com.twopizzas.domain.user.Airline;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.DataMappingException;
@@ -13,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements AirlineMapper {
 
     static final String TABLE_AIRLINE = "airline";

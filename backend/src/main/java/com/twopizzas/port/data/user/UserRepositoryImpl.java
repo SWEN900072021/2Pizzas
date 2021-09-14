@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class UserRepositoryImpl extends AbstractRepository<User, UserSpecification, UserMapper> implements UserRepository {
+class UserRepositoryImpl extends AbstractRepository<User, UserSpecification, UserMapper> implements UserRepository {
 
     @Autowired
     public UserRepositoryImpl(UserMapper dataMapper) {

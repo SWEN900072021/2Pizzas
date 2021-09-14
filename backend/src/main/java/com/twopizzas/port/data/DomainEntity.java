@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public abstract class DomainEntity extends AssertionConcern implements Entity<EntityId> {
-    private boolean isNew;
+    private boolean isNew = true;
 
     @EqualsAndHashCode.Include
     protected final EntityId id;

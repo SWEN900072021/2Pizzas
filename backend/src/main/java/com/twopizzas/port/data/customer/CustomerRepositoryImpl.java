@@ -10,7 +10,7 @@ import com.twopizzas.domain.EntityId;
 import java.util.List;
 
 @Component
-public class CustomerRepositoryImpl extends AbstractRepository<Customer, CustomerSpecification, CustomerMapper> implements CustomerRepository {
+class CustomerRepositoryImpl extends AbstractRepository<Customer, CustomerSpecification, CustomerMapper> implements CustomerRepository {
 
     @Autowired
     public CustomerRepositoryImpl(CustomerMapper dataMapper) {

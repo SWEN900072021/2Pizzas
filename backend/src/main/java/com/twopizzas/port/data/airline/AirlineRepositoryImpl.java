@@ -10,7 +10,7 @@ import com.twopizzas.domain.EntityId;
 import java.util.List;
 
 @Component
-public class AirlineRepositoryImpl extends AbstractRepository<Airline, AirlineSpecification, AirlineMapper> implements AirlineRepository {
+class AirlineRepositoryImpl extends AbstractRepository<Airline, AirlineSpecification, AirlineMapper> implements AirlineRepository {
 
     @Autowired
     public AirlineRepositoryImpl(AirlineMapper dataMapper) {

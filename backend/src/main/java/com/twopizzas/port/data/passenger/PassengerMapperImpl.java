@@ -3,6 +3,7 @@ package com.twopizzas.port.data.passenger;
 import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.data.LazyValueHolderProxy;
 import com.twopizzas.di.Autowired;
+import com.twopizzas.di.Component;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.port.data.DataMappingException;
@@ -16,7 +17,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PassengerMapperImpl implements PassengerMapper {
+@Component
+class PassengerMapperImpl implements PassengerMapper {
 
     static final String TABLE_PASSENGER = "passenger";
     static final String COLUMN_ID = "id";

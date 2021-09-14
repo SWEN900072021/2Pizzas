@@ -33,6 +33,7 @@ public class ComponentManager {
         store.addAll(beanLoader.load());
         store.add(new ApplicationContextBean(context));
         store.add(new ConfigurationContextBean(context.getProfile()));
+        store.forEach(b -> b.construct(this));
     }
 
     <T> T getComponent(TypedComponentSpecification<T> specification) throws ApplicationContextException {

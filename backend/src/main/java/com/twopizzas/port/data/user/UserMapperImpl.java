@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
+class UserMapperImpl extends AbstractUserMapper<User> implements UserMapper {
 
     private final ConnectionPool connectionPool;
     private final CustomerMapper customerMapper;

@@ -11,7 +11,7 @@ import com.twopizzas.domain.flight.FlightSearch;
 import java.util.List;
 
 @Component
-public class FlightRepositoryImpl extends AbstractRepository<Flight, FlightSpecification, FlightMapper> implements FlightRepository {
+class FlightRepositoryImpl extends AbstractRepository<Flight, FlightSpecification, FlightMapper> implements FlightRepository {
 
     @Autowired
     public FlightRepositoryImpl(FlightMapper dataMapper) {

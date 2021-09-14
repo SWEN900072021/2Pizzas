@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class BookingMapperImpl implements BookingMapper {
+class BookingMapperImpl implements BookingMapper {
 
     static final String TABLE_BOOKING = "booking";
     static final String COLUMN_ID = "id";
