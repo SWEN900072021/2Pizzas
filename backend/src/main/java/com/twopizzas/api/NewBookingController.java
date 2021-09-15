@@ -12,11 +12,10 @@ import com.twopizzas.domain.error.DataFormatException;
 import com.twopizzas.domain.error.NotFoundException;
 import com.twopizzas.domain.flight.*;
 import com.twopizzas.domain.user.Customer;
+import com.twopizzas.domain.user.User;
 import com.twopizzas.port.data.customer.CustomerMapper;
 import com.twopizzas.port.data.passenger.PassengerMapper;
-import com.twopizzas.web.HttpMethod;
-import com.twopizzas.web.RequestMapping;
-import com.twopizzas.web.RestResponse;
+import com.twopizzas.web.*;
 
 @Controller
 public class NewBookingController {
@@ -37,7 +36,8 @@ public class NewBookingController {
     }
 
     @RequestMapping(path = "/booking", method = HttpMethod.POST)
-    RestResponse<BookingResponseDto> createBooking(BookingRequestDto requestDto) {
+    @Authenticated({Customer.TYPE})
+    RestResponse<BookingResponseDto> createBooking(@RequestBody BookingRequestDto requestDto, User authenticatedUser) {
         Flight flight = flightRepository.find(EntityId.of(requestDto.getFlightId())).orElseThrow(() -> new NotFoundException("flight", requestDto.getFlightId()));
         Flight returnFlight = flightRepository.find(EntityId.of(requestDto.getReturnId())).orElseThrow(() -> new NotFoundException("returnFlight", requestDto.getReturnId()));
 

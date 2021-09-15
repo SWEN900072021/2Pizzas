@@ -15,16 +15,13 @@ public class Customer extends User {
 
     public Customer(EntityId id, String username, String password, String givenName, String lastName, String email) {
         super(id, username, password);
-        this.givenName = givenName;
-        this.lastName = lastName;
-        this.email = email;
+        this.givenName = notBlank(givenName, "givenName");
+        this.lastName = notBlank(lastName, "lastName");
+        this.email = notBlank(email, "email");
     }
 
     public Customer(String username, String password, String givenName, String lastName, String email) {
-        super(EntityId.nextId(), username, password);
-        this.givenName = givenName;
-        this.lastName = lastName;
-        this.email = email;
+        this(EntityId.nextId(), username, password, givenName, lastName, email);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.twopizzas.api;
+package com.twopizzas.api.auth;
 
 import com.twopizzas.auth.AuthenticationProvider;
 import com.twopizzas.di.Autowired;
@@ -6,8 +6,6 @@ import com.twopizzas.di.Controller;
 import com.twopizzas.domain.user.Customer;
 import com.twopizzas.domain.user.UserRepository;
 import com.twopizzas.web.*;
-
-import java.util.Optional;
 
 @Controller
 public class AuthenticationController {

@@ -1,6 +1,5 @@
 package com.twopizzas.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

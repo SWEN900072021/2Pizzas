@@ -3,13 +3,11 @@ package com.twopizzas.web;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twopizzas.auth.AuthenticationProvider;
+import com.twopizzas.domain.user.User;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BaseRequestDelegate implements HttpRequestDelegate {
@@ -34,9 +32,27 @@ public class BaseRequestDelegate implements HttpRequestDelegate {
     public RestResponse<?> handle(HttpRequest request) throws Throwable {
         PathResolver.PathResult result = pathResolver.test(request.getPath());
         if (result.isMatch() && request.getMethod().equals(method)) {
-            List<Object> args = getArgsFromRequest(request, result);
+
+            Optional<User> authenticatedUser = Optional.empty();
+            Authenticated authenticatedAnnotation = handler.getDeclaredAnnotation(Authenticated.class);
+            if (handler.getDeclaredAnnotation(Authenticated.class) != null) {
+                boolean authorized = false;
+                authenticatedUser = doAuthentication(request);
+                if (authenticatedUser.isPresent() && authenticatedAnnotation.value().length > 0) {
+                    if (Arrays.asList(authenticatedAnnotation.value()).contains(authenticatedUser.get().getUserType())) {
+                        authorized = true;
+                    }
+                }
+
+                if (!authorized) {
+                    throw new HttpException(HttpStatus.UNAUTHORIZED);
+                }
+            }
+
+            List<Object> args = getArgsFromRequest(request, result, authenticatedUser.orElse(null));
             return invokeHandler(args);
         }
+
         throw new RequestProcessingException(String.format(
                 "handle invoked on delegate for request with path [%s] and method [%s] " +
                         "but delegate is only configured to handle requests with path [%s] and methods [%s]",
@@ -54,7 +70,7 @@ public class BaseRequestDelegate implements HttpRequestDelegate {
         return Collections.singleton(method);
     }
 
-    private List<Object> getArgsFromRequest(HttpRequest request, PathResolver.PathResult pathResult) {
+    private List<Object> getArgsFromRequest(HttpRequest request, PathResolver.PathResult pathResult, User user) {
         return Arrays.stream(handler.getParameters()).map(
                 p -> {
                     PathVariable pathVariableAnnotation = p.getAnnotation(PathVariable.class);
@@ -74,9 +90,29 @@ public class BaseRequestDelegate implements HttpRequestDelegate {
                             throw new RequestProcessingException(String.format("failed to read request body [%s] to class [%s]: %s", request.getBody(), p.getType(), e.getMessage()), e);
                         }
                     }
+
+                    if (p.getType().equals(User.class)) {
+                        return user;
+                    }
+
                     return null;
                 }
         ).collect(Collectors.toList());
+    }
+
+    private Optional<User> doAuthentication(HttpRequest request) throws HttpException {
+        if (request.getHeaders().containsKey("authorization")) {
+            String auth = request.getHeaders().get("authorization");
+            String[] bearerAndToken = auth.split(" ");
+            if (bearerAndToken.length != 2) {
+                throw new HttpException(HttpStatus.BAD_REQUEST, "invalid authorization token");
+            }
+            if (!bearerAndToken[0].equals("Bearer")) {
+                throw new HttpException(HttpStatus.BAD_REQUEST, "authorization must be of type Bearer");
+            }
+            return authenticationProvider.authenticate(bearerAndToken[1]);
+        }
+        return Optional.empty();
     }
 
     private RestResponse<?> invokeHandler(List<Object> args) throws Throwable {
