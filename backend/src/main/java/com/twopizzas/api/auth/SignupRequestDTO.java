@@ -1,4 +1,4 @@
-package com.twopizzas.api;
+package com.twopizzas.api.auth;
 
 import lombok.Data;
 

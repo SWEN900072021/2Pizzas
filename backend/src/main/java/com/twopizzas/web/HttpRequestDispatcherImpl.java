@@ -66,6 +66,10 @@ public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
 
         } catch (Throwable e) {
             unitOfWork.rollback();
+
+            if (e instanceof HttpException) {
+                return buildErrorResponse(request, ((HttpException) e).getStatus(), ((HttpException) e).getReason());
+            }
             return buildErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
