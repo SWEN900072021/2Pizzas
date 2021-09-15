@@ -28,6 +28,17 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    fetch('https://backend-2-pizzas.herokuapp.com/pepperoni-planes-1.0-SNAPSHOT/login', {
+  method: 'POST',
+  headers: {'Content-type': 'application/json'},
+  body: JSON.stringify({
+    username: 'bob',
+    password: 'password'
+  })
+})
+.then(response => response.json()) 
+.then(json => console.log(json))
+.catch(err => console.log(err));
   }
 
   return (
