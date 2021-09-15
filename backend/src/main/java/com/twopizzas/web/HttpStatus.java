@@ -9,7 +9,8 @@ public enum HttpStatus {
     UNAUTHORIZED(401, "Unauthorized"),
     METHOD_NOT_SUPPORTED(405, "Method Not Supported"),
     BAD_REQUEST(400, "Bad Request"),
-    INTERNAL_SERVER_ERROR(500, "Internal Server Error");
+    INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
+    NO_CONTENT(204, "No Content");
 
     private final int statusCode;
     private final String status;
