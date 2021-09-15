@@ -8,6 +8,8 @@ import com.twopizzas.di.Component;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
@@ -28,6 +30,16 @@ public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
         List<HttpRequestDelegate> delegates = context.getDelegatesForPath(request.getPath());
         if (delegates.isEmpty()) {
             return buildErrorResponse(request, HttpStatus.NOT_FOUND, null);
+        }
+
+        // handle CORS
+        if (request.getMethod().equals(HttpMethod.OPTIONS)) {
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Access-Control-Allow-Origin", "*");
+            headers.put("Access-Control-Allow-Methods", delegates.stream().flatMap(d -> d.getMethods().stream()).map(HttpMethod::name).distinct().collect(Collectors.joining(", ")));
+            return new HttpResponse(
+                    HttpStatus.NO_CONTENT, null, headers
+            );
         }
 
         for (HttpRequestDelegate delegate : delegates) {
