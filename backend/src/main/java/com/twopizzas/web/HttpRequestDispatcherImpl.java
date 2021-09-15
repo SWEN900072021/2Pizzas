@@ -37,7 +37,7 @@ public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
             Map<String, String> headers = new HashMap<>();
             headers.put("Access-Control-Allow-Origin", request.getHeaders().getOrDefault("origin", "*"));
             headers.put("Access-Control-Allow-Methods", delegates.stream().flatMap(d -> d.getMethods().stream()).map(HttpMethod::name).distinct().collect(Collectors.joining(", ")));
-            headers.put("Access-Control-Allow-Headers", request.getHeaders().getOrDefault("access-control-request-headers", "*")));
+            headers.put("Access-Control-Allow-Headers", request.getHeaders().getOrDefault("access-control-request-headers", "*"));
             return new HttpResponse(
                     HttpStatus.NO_CONTENT, null, headers
             );
