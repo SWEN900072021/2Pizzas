@@ -10,7 +10,8 @@ public enum HttpStatus {
     METHOD_NOT_SUPPORTED(405, "Method Not Supported"),
     BAD_REQUEST(400, "Bad Request"),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
-    NO_CONTENT(204, "No Content");
+    NO_CONTENT(204, "No Content"),
+    FORBIDDEN(403, "Forbidden");
 
     private final int statusCode;
     private final String status;

@@ -28,7 +28,10 @@ public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
     @Override
     public HttpResponse dispatch(HttpRequest request) {
         HttpResponse response = doDispatch(request);
+
+        // handle CORS
         response.getHeaders().put("Access-Control-Allow-Origin", request.getHeaders().getOrDefault("origin", "*"));
+
         return response;
     }
 
@@ -38,7 +41,7 @@ public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
             return buildErrorResponse(request, HttpStatus.NOT_FOUND, null);
         }
 
-        // handle CORS
+        // handle preflight
         if (request.getMethod().equals(HttpMethod.OPTIONS)) {
             Map<String, String> headers = new HashMap<>();
 

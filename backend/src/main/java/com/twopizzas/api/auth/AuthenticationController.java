@@ -32,7 +32,7 @@ public class AuthenticationController {
     @RequestMapping(path = "/login", method = HttpMethod.POST)
     RestResponse<LoginResponseDTO> login(@RequestBody LoginRequestDTO body) throws HttpException {
         String token = authenticationProvider.login(body.getUsername(), body.getPassword()).orElseThrow(
-                () -> new HttpException(HttpStatus.NOT_FOUND, "no user with username and password")
+                () -> new HttpException(HttpStatus.UNAUTHORIZED)
         );
 
         return RestResponse.ok(new LoginResponseDTO().setToken(token));
