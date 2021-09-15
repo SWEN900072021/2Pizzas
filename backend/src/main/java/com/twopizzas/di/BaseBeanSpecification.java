@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-class BaseBeanSpecification<T> extends AssertionConcern implements ComponentSpecification<T> {
+class BaseBeanSpecification<T> extends AssertionConcern implements TypedComponentSpecification<T> {
     private final Class<T> clasz;
 
     BaseBeanSpecification(Class<T> clasz) {

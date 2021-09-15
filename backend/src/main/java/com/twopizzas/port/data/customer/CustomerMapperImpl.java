@@ -2,7 +2,7 @@ package com.twopizzas.port.data.customer;
 
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
-import com.twopizzas.domain.Customer;
+import com.twopizzas.domain.user.Customer;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-class CustomerMapperImpl extends AbstractUserMapper<Customer> implements CustomerMapper  {
+public class CustomerMapperImpl extends AbstractUserMapper<Customer> implements CustomerMapper  {
     static final String TABLE_USER = "\"user\"";
     static final String TABLE_CUSTOMER = "customer";
     static final String COLUMN_ID = "id";
@@ -40,7 +40,7 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
     private ConnectionPool connectionPool;
 
     @Autowired
-    CustomerMapperImpl(ConnectionPool connectionPool) {
+    public CustomerMapperImpl(ConnectionPool connectionPool) {
         super(connectionPool);
         this.connectionPool = connectionPool;
     }
@@ -57,13 +57,9 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
 
     @Override
     public Customer read(EntityId entityId) {
-        List<Customer> customers = new SqlStatement(SELECT_TEMPLATE, entityId.toString())
-                .doQuery(connectionPool.getCurrentTransaction(), this);
-        if (customers.isEmpty()) {
-            return null;
-        }
-        // maybe throw an error if there are more than one
-        return customers.get(0);
+        return map(new SqlStatement(SELECT_TEMPLATE,
+                entityId.toString()
+        ).doQuery(connectionPool.getCurrentTransaction())).stream().findFirst().orElse(null);
     }
 
     @Override
@@ -89,11 +85,9 @@ class CustomerMapperImpl extends AbstractUserMapper<Customer> implements Custome
     public List<Customer> map(ResultSet resultSet) {
 
         List<Customer> mapped = new ArrayList<>();
-        Customer one;
-
         try {
             while (resultSet.next()) {
-                one = mapOne(resultSet);
+                Customer one = mapOne(resultSet);
                 if (one != null) {
                     mapped.add(one);
                 }

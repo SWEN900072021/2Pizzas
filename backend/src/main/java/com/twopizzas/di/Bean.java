@@ -18,5 +18,5 @@ interface Bean<T> extends ComponentConstructor<T> {
 
     boolean isPrimary();
 
-    List<ComponentSpecification<?>> getDependencies();
+    List<TypedComponentSpecification<?>> getDependencies();
 }

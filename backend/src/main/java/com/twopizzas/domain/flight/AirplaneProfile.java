@@ -1,16 +1,15 @@
 package com.twopizzas.domain.flight;
 
-import com.twopizzas.data.Entity;
-import com.twopizzas.domain.Airline;
-import com.twopizzas.domain.Airport;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.util.AssertionConcern;
+import com.twopizzas.port.data.DomainEntity;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class AirplaneProfile extends AssertionConcern implements Entity<EntityId> {
-    private final EntityId id;
+@Getter
+public class AirplaneProfile extends DomainEntity {
     private final String code;
     private final String type;
     private final int firstClassRows;
@@ -22,7 +21,7 @@ public class AirplaneProfile extends AssertionConcern implements Entity<EntityId
 
     public AirplaneProfile(EntityId id, String code, String type, int firstClassRows, int firstClassColumns,
                            int businessClassRows, int businessClassColumns, int economyClassRows, int economyClassColumns) {
-        this.id = notNull(id, "id");
+        super(id);
         this.code = notNullAndNotBlank(code, "code");
         this.type = notNullAndNotBlank(type, "type");
         this.firstClassRows = notNull(firstClassRows, "firstClassRows");
@@ -56,40 +55,7 @@ public class AirplaneProfile extends AssertionConcern implements Entity<EntityId
         return seatProfiles;
     }
 
-    @Override
-    public EntityId getId() {
-        return id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public int getFirstClassRows() {
-        return firstClassRows;
-    }
-
-    public int getFirstClassColumns() {
-        return firstClassColumns;
-    }
-
-    public int getBusinessClassRows() {
-        return businessClassRows;
-    }
-
-    public int getBusinessClassColumns() {
-        return businessClassColumns;
-    }
-
-    public int getEconomyClassRows() {
-        return economyClassRows;
-    }
-
-    public int getEconomyClassColumns() {
-        return economyClassColumns;
+    public List<FlightSeat> getFlightSeats(Flight flight) {
+        return getSeatProfiles().stream().map(s -> new FlightSeat(s.getName(), s.getSeatClass(), flight)).collect(Collectors.toList());
     }
 }

@@ -1,16 +1,16 @@
 package com.twopizzas.port.data.customer;
 
-import com.twopizzas.data.AbstractRepository;
+import com.twopizzas.port.data.AbstractRepository;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
-import com.twopizzas.domain.Customer;
-import com.twopizzas.domain.CustomerRepository;
+import com.twopizzas.domain.user.Customer;
+import com.twopizzas.domain.user.CustomerRepository;
 import com.twopizzas.domain.EntityId;
 
 import java.util.List;
 
 @Component
-public class CustomerRepositoryImpl extends AbstractRepository<Customer, EntityId, CustomerSpecification, CustomerMapper> implements CustomerRepository {
+class CustomerRepositoryImpl extends AbstractRepository<Customer, CustomerSpecification, CustomerMapper> implements CustomerRepository {
 
     @Autowired
     public CustomerRepositoryImpl(CustomerMapper dataMapper) {
@@ -19,6 +19,6 @@ public class CustomerRepositoryImpl extends AbstractRepository<Customer, EntityI
 
     @Override
     public List<Customer> findAllCustomers() {
-        return null;
+        return dataMapper.readAll(new AllCustomersSpecification(dataMapper));
     }
 }

@@ -1,6 +1,6 @@
 package com.twopizzas.port.data.customer;
 
-import com.twopizzas.domain.Customer;
+import com.twopizzas.domain.user.Customer;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import org.junit.jupiter.api.*;
@@ -59,7 +59,13 @@ public class CustomerMapperImplTests {
 
         // THEN
         Customer persisted = mapper.read(id);
-        Assertions.assertEquals(persisted, updatedEntity);
+        Assertions.assertNotNull(persisted);
+        Assertions.assertEquals(persisted.getId(), updatedEntity.getId());
+        Assertions.assertEquals(persisted.getUsername(), updatedEntity.getUsername());
+        Assertions.assertNotNull(updatedEntity.getPassword());
+        Assertions.assertEquals(persisted.getGivenName(), updatedEntity.getGivenName());
+        Assertions.assertEquals(persisted.getLastName(), updatedEntity.getLastName());
+        Assertions.assertEquals(persisted.getEmail(), updatedEntity.getEmail());
     }
 
     @Test
@@ -79,7 +85,7 @@ public class CustomerMapperImplTests {
     }
 
     @Test
-    @DisplayName("GIVEN airline object in db WHEN delete invoked THEN object removed from db")
+    @DisplayName("GIVEN customer object in db WHEN delete invoked THEN object removed from db")
     void testValidDelete() {
         // GIVEN
         EntityId id = EntityId.nextId();

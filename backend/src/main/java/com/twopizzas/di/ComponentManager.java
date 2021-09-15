@@ -2,6 +2,7 @@ package com.twopizzas.di;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ComponentManager {
@@ -9,6 +10,7 @@ public class ComponentManager {
     private final Collection<Bean<?>> store = new ArrayList<>();;
     private final BeanResolver beanResolver;
     private final BeanLoader beanLoader;
+    private ApplicationContext context;
 
     ComponentManager(BeanResolver beanResolver, BeanLoader beanLoader) {
         this.beanResolver = beanResolver;
@@ -20,19 +22,33 @@ public class ComponentManager {
         return beanResolver;
     }
 
-    void init() {
-        store.addAll(beanLoader.load());
+    void setApplicationContext(ApplicationContext context) {
+        this.context = context;
     }
 
-    <T> T getComponent(ComponentSpecification<T> specification) throws ApplicationContextException {
+    void init() {
+        if (context == null) {
+            throw new ApplicationContextException("init called on componentManager with null application context");
+        }
+        store.addAll(beanLoader.load());
+        store.add(new ApplicationContextBean(context));
+        store.add(new ConfigurationContextBean(context.getProfile()));
+        store.forEach(b -> b.construct(this));
+    }
+
+    <T> T getComponent(TypedComponentSpecification<T> specification) throws ApplicationContextException {
         return getBean(specification).construct(this);
+    }
+
+    Collection<?> getComponents(ComponentSpecification specification) throws ApplicationContextException {
+        return specification.filter(store).stream().map(b -> b.construct(this)).collect(Collectors.toList());
     }
 
     public <T> T getComponent(Class<T> clasz) throws ApplicationContextException {
         return getBean(new BaseBeanSpecification<>(clasz)).construct(this);
     }
 
-    <T> Bean<T> getBean(ComponentSpecification<T> specification) {
+    <T> Bean<T> getBean(TypedComponentSpecification<T> specification) {
         Collection<Bean<T>> beans = beanResolver.resolve(specification, store);
 
         if (beans.size() > 1) {
@@ -46,6 +62,6 @@ public class ComponentManager {
             return beans.iterator().next();
         }
 
-        throw new ComponentNotFound(specification.getClass());
+        throw new ComponentNotFound(specification.getClasz());
     }
 }

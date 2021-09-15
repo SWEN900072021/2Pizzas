@@ -1,20 +1,27 @@
 package com.twopizzas.domain.flight;
 
+import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.data.Entity;
 import com.twopizzas.data.ValueHolder;
 import com.twopizzas.domain.*;
+import com.twopizzas.domain.EntityId;
+import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.domain.error.BusinessRuleException;
 import com.twopizzas.domain.error.DataFormatException;
+import com.twopizzas.domain.user.Airline;
+import com.twopizzas.port.data.DomainEntity;
 import com.twopizzas.util.AssertionConcern;
 import com.twopizzas.util.ValueViolation;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Flight extends AssertionConcern implements Entity<EntityId> {
+@Getter
+public class Flight extends DomainEntity {
 
-    private final EntityId id;
     private final AirplaneProfile airplaneProfile;
     private final Airline airline;
     private final ValueHolder<List<FlightSeat>> seats;
@@ -25,10 +32,12 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
     private final OffsetDateTime arrival;
     private final List<StopOver> stopOvers;
     private final String code;
+
+    @Setter
     private Status status;
 
     public Flight(EntityId id, ValueHolder<List<FlightSeatAllocation>> allocatedSeats, AirplaneProfile airplaneProfile, Airline airline, ValueHolder<List<FlightSeat>> seats, Airport origin, Airport destination, OffsetDateTime departure, OffsetDateTime arrival, List<StopOver> stopOvers, String code, Status status) {
-        this.id = notNull(id, "id");
+        super(id);
         this.allocatedSeats = notNull(allocatedSeats, "bookedSeats");
         this.airplaneProfile = notNull(airplaneProfile, "airplaneProfile");
         this.airline = notNull(airline, "airline");
@@ -36,7 +45,8 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
         this.arrival = notNull(arrival, "arrival");
 
         if(seats == null) {
-            this.seats = () -> buildSeats(airplaneProfile);
+            List<FlightSeat> built = airplaneProfile.getFlightSeats(this);
+            this.seats = BaseValueHolder.of(built);
         } else {
             this.seats = seats;
         }
@@ -54,12 +64,6 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
 
     public Flight(AirplaneProfile airplaneProfile, Airline airline, Airport origin, Airport destination, List<StopOver> stopOvers, String code, OffsetDateTime departure, OffsetDateTime arrival) {
         this(EntityId.nextId(), ArrayList::new, airplaneProfile, airline, null, origin, destination, departure, arrival, stopOvers, code, Status.TO_SCHEDULE);
-    }
-
-    private List<FlightSeat> buildSeats(AirplaneProfile profile) {
-        return profile.getSeatProfiles().stream().map(
-                        sp -> new FlightSeat(sp.getName(), sp.getSeatClass(), this)
-                ).collect(Collectors.toList());
     }
 
     public SeatBooking allocateSeats(BookingRequest request) {
@@ -81,7 +85,6 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
                         BookingRequest.SeatAllocationRequest::getPassenger
                 ));
 
-        Set<FlightSeat> seatsToBook = getSeats(seatNames);
         Set<FlightSeat> availableSeats = getAvailableSeats();
 
         Set<FlightSeat> bookingConflicts = getSeats().stream()
@@ -141,12 +144,16 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
     }
 
     public void addStopOver(Airport location, OffsetDateTime arrival, OffsetDateTime departure) {
-        addStopOver(new StopOver(location, arrival, departure, () -> this));
+        addStopOver(new StopOver(location, arrival, departure));
     }
 
     private void addStopOver(StopOver stopOver) {
         validateStopOver(stopOver);
         stopOvers.add(stopOver);
+    }
+
+    public List<FlightSeatAllocation> getAllocatedSeats() {
+        return Collections.unmodifiableList(allocatedSeats.get());
     }
 
     private void validateStopOver(StopOver stopOver) {
@@ -165,51 +172,6 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
                 throw new ValueViolation("conflicting stopovers");
             }
         });
-    }
-
-    public AirplaneProfile getAirplaneProfile() {
-        return airplaneProfile;
-    }
-
-    public Airline getAirline() {
-        return airline;
-    }
-
-    public Airport getOrigin() {
-        return origin;
-    }
-
-    public Airport getDestination() {
-        return destination;
-    }
-
-    public OffsetDateTime getDeparture() {
-        return departure;
-    }
-
-    public OffsetDateTime getArrival() {
-        return arrival;
-    }
-
-    public List<StopOver> getStopOvers() {
-        return stopOvers;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    @Override
-    public EntityId getId() {
-        return id;
     }
 
     public enum Status {

@@ -5,6 +5,7 @@ import com.twopizzas.util.AssertionConcern;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 class SeatProfile extends AssertionConcern {
     private static final List<Character> VALID_COLUMNS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".chars().mapToObj(e -> (char) e).collect(Collectors.toList());
     private final int rowId;

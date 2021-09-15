@@ -1,6 +1,7 @@
 package com.twopizzas.di;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class LazyComponentProxy<T> implements InvocationHandler {
@@ -24,6 +25,10 @@ public class LazyComponentProxy<T> implements InvocationHandler {
             wrapped = bean.construct(componentManager);
         }
 
-        return method.invoke(wrapped, args);
+        try {
+            return method.invoke(wrapped, args);
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
+        }
     }
 }
