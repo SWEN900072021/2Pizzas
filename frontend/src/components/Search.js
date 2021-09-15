@@ -3,12 +3,12 @@ import { bool, element, func, string } from 'prop-types'
 import { HiSearch } from 'react-icons/hi'
 
 const Search = ({
+  value,
+  placeholder,
   readOnly,
   className,
   StartIcon,
   EndIcon,
-  placeholder,
-  value,
   handleChange,
   handleKeyUp,
   handleClick
@@ -78,12 +78,12 @@ Search.defaultProps = {
 }
 
 Search.propTypes = {
+  value: string.isRequired,
+  placeholder: string.isRequired,
   readOnly: bool,
   className: string,
   StartIcon: element,
   EndIcon: element,
-  placeholder: string.isRequired,
-  value: string.isRequired,
   handleChange: func,
   handleKeyUp: func,
   handleClick: func

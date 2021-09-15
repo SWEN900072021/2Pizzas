@@ -14,7 +14,7 @@ import DestinationSearch from './DestinationSearch'
 import Button from '../components/Button'
 import Search from '../components/Search'
 import NavBar from '../components/NavBar'
-import useStore from '../hooks/Store'
+import { useStore } from '../hooks/Store'
 import landscapePicture from '../assets/home-landscape.png'
 
 const { RangePicker } = DatePicker
@@ -44,6 +44,66 @@ const airports = [
     code: 'CGK',
     name: 'Soekarno-Hatta',
     location: 'Jakarta'
+  },
+  {
+    code: 'SIN',
+    name: 'Singapore Changi',
+    location: 'Singapore'
+  },
+  {
+    code: 'BKK',
+    name: 'Suvarnabhumi',
+    location: 'Bangkok'
+  },
+  {
+    code: 'HKG',
+    name: 'Hong Kong',
+    location: 'Hong Kong'
+  },
+  {
+    code: 'MNL',
+    name: 'Minato',
+    location: 'Tokyo'
+  },
+  {
+    code: 'ICN',
+    name: 'Incheon',
+    location: 'Seoul'
+  },
+  {
+    code: 'PUS',
+    name: 'Busan',
+    location: 'Busan'
+  },
+  {
+    code: 'DPS',
+    name: 'Denpasar',
+    location: 'Bali'
+  },
+  {
+    code: 'HKT',
+    name: 'Phuket',
+    location: 'Phuket'
+  },
+  {
+    code: 'KUL',
+    name: 'Kuala Lumpur',
+    location: 'Kuala Lumpur'
+  },
+  {
+    code: 'SGN',
+    name: 'Tan Son Nhat',
+    location: 'Ho Chi Minh'
+  },
+  {
+    code: 'TPE',
+    name: 'Taipei',
+    location: 'Taipei'
+  },
+  {
+    code: 'HND',
+    name: 'Haneda',
+    location: 'Tokyo'
   }
 ]
 
@@ -69,7 +129,13 @@ const Home = () => {
     current < dates[0].endOf('day')
 
   const cabinClass = useStore((state) => state.cabinClass)
-  const setCabinClass = useStore((state) => state.setCabinClass)
+  const ECONOMY = useStore((state) => state.economyClass)
+  const BUSINESS = useStore((state) => state.businessClass)
+  const FIRST = useStore((state) => state.firstClass)
+  const setEconomyClass = useStore((state) => state.setEconomyClass)
+  const setBusinessClass = useStore((state) => state.setBusinessClass)
+  const setFirstClass = useStore((state) => state.setFirstClass)
+
   const passengerCount = useStore((state) => state.passengerCount)
   const addPassenger = useStore((state) => state.addPassenger)
   const removePassenger = useStore((state) => state.removePassenger)
@@ -83,9 +149,9 @@ const Home = () => {
       <span className='grid grid-cols-3 gap-0.5'>
         <button
           type='button'
-          onClick={() => setCabinClass('economy')}
+          onClick={setEconomyClass}
           className={`${
-            cabinClass === 'economy'
+            cabinClass === ECONOMY
               ? 'w-20 bg-yellow-600 text-xs font-medium text-white p-2 ring-1 ring-yellow-400'
               : 'w-20 bg-white text-xs font-medium p-2 border-2'
           } focus:outline-none focus:ring-2 focus:ring-yellow-400`}
@@ -94,9 +160,9 @@ const Home = () => {
         </button>
         <button
           type='button'
-          onClick={() => setCabinClass('business')}
+          onClick={setBusinessClass}
           className={`${
-            cabinClass === 'business'
+            cabinClass === BUSINESS
               ? 'w-20 bg-yellow-600 text-xs font-medium text-white p-2 ring-1 ring-yellow-400'
               : 'w-20 bg-white text-xs font-medium p-2 border-2'
           } focus:outline-none focus:ring-2 focus:ring-yellow-400`}
@@ -105,9 +171,9 @@ const Home = () => {
         </button>
         <button
           type='button'
-          onClick={() => setCabinClass('first')}
+          onClick={setFirstClass}
           className={`${
-            cabinClass === 'first'
+            cabinClass === FIRST
               ? 'w-20 bg-yellow-600 text-xs font-medium text-white p-2 ring-1 ring-yellow-400'
               : 'w-20 bg-white text-xs font-medium p-2 border-2'
           } focus:outline-none focus:ring-2 focus:ring-yellow-400`}
@@ -157,7 +223,7 @@ const Home = () => {
           className='
           absolute
           transform translate-y-36 sm:translate-y-32
-          self-center md:self-start mx-6'
+          self-center mx-6'
         >
           <h2 className='text-white text-center sm:text-left text-3xl sm:text-5xl font-bold select-none'>
             Search hundreds of flights
@@ -167,9 +233,8 @@ const Home = () => {
         <section
           className='
             absolute 
-            transform translate-y-52
             flex flex-wrap flex-col justify-center items-center gap-3 
-            max-w-max bg-yellow-50 p-5'
+            max-w-max bg-yellow-50 mt-52 p-5'
         >
           {/* Section 1: Origin/Destination Airport Search and Date Pickers */}
           <section
@@ -177,11 +242,11 @@ const Home = () => {
               !isTablet ? ' grid-rows-3' : 'grid-cols-3'
             }`}
           >
-            {/* Airport Pickers */}
+            {/* Airport Search */}
             <OriginSearch airports={airports} />
             <DestinationSearch airports={airports} />
 
-            {/* Date Pickers, visible only for Mobile Devices or One-Way Flights */}
+            {/* (Date Pickers) Visible only for Mobile Devices or One-Way Flights */}
             <span
               className={`${
                 isReturn && (!isMobile || !isReturn) && 'hidden'
@@ -223,7 +288,7 @@ const Home = () => {
               />
             </span>
 
-            {/* Date Range Picker, visible only for Return Flights or Non-Mobile Devices */}
+            {/* (Date Range Picker) visible only for Return Flights or Non-Mobile Devices */}
             <span
               className={`${(!isReturn || isMobile) && 'hidden'}
                 border border-bg-grey
@@ -246,7 +311,7 @@ const Home = () => {
             </span>
           </section>
 
-          {/* Section 2: Flight Type (Return/One-Way) Buttons, Cabin Class and Passenger Select, and Submit Button */}
+          {/* Section 2: Return/One-Way Buttons, Cabin Class and Passenger Select, and Find Flights Button */}
           <section className='grid grid-rows-2 w-full gap-4 md:flex md:flex-row md:flex-wrap md:items-center md:justify-between '>
             <section className='flex flex-row justify-center items-center gap-2 md:gap-5'>
               {/* Return and One-Way Buttons */}
@@ -282,15 +347,17 @@ const Home = () => {
                 </button>
               </span>
 
-              {/* Cabin Class and Passenger Popover */}
+              {/* Cabin Class and Passenger Select */}
               <span>
                 <Popover
-                  placement='bottom'
+                  // Will show the popover defined above when the user clicks on the Passenger Search field
                   content={cabinClassPassengersPopover}
                   trigger='click'
                   visible={visible}
                   onVisibleChange={handleVisibleChange}
+                  placement='bottom'
                 >
+                  {/* We need this div for the Popover to anchor onto Searchbar */}
                   <div>
                     <Search
                       readOnly

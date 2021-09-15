@@ -4,14 +4,18 @@ import { AutoComplete } from 'antd'
 import { FaPlaneArrival } from 'react-icons/fa'
 import { arrayOf, shape, string } from 'prop-types'
 import Search from '../components/Search'
-import useStore from '../hooks/Store'
+import { useStore } from '../hooks/Store'
 
 const DestinationSearch = ({ airports }) => {
+  // Visibility state of dropdown
   const [open, setOpen] = useState(false)
 
+  // Set the selected airport
   const setDestinationAirport = useStore(
     (state) => state.setDestinationAirport
   )
+
+  // Value of input element
   const destinationAirportSearchValue = useStore(
     (state) => state.destinationAirportSearchValue
   )
@@ -31,6 +35,7 @@ const DestinationSearch = ({ airports }) => {
       setDestinationAirport({})
     }
   }
+
   const handleKeyUp = (e) => {
     if (e.key === 'Escape') {
       e.target.blur()
@@ -38,11 +43,12 @@ const DestinationSearch = ({ airports }) => {
     }
   }
 
-  useEffect(() => {}, [])
-
+  // FIXME: Still buggy, still need to select all text in input every time input is focused
   const selectAllOnFocus = (e) => {
     e.target.select()
   }
+
+  useEffect(() => {}, [])
 
   return (
     <section>
@@ -56,12 +62,12 @@ const DestinationSearch = ({ airports }) => {
           handleKeyUp={handleKeyUp}
           handleClick={() => setOpen(true)}
         />
-        {/* Airport Search and Select */}
-        <div
+        {/* Airport Search and Select, which will be Full Screen in Mobile */}
+        <section
           className={`${
             !open
               ? 'hidden'
-              : 'fixed z-50 top-0 left-0 overflow-hidden bg-white w-screen p-5 space-y-5'
+              : 'fixed h-screen z-50 top-0 left-0 w-full bg-white p-5 space-y-5'
           } `}
         >
           <header className='flex justify-between'>
@@ -85,7 +91,8 @@ const DestinationSearch = ({ airports }) => {
             }}
             handleKeyUp={handleKeyUp}
           />
-          <div className='h-5/6 divide-y divide-gray-100 overflow-y-auto'>
+          {/* Airport Search Results */}
+          <section className='h-5/6 divide-y divide-gray-100 overflow-y-auto'>
             {airports.map((airport) => (
               <button
                 key={uuid()}
@@ -103,12 +110,13 @@ const DestinationSearch = ({ airports }) => {
                 </span>
               </button>
             ))}
-          </div>
-        </div>
+          </section>
+        </section>
       </section>
       {/* TABLET AND LARGER DISPLAYS */}
       <section className='relative hidden sm:flex sm:flex-grow'>
         <AutoComplete
+          // Need this width to fill the horizontal grid space completely
           style={{ width: '100%' }}
           onFocus={selectAllOnFocus}
           onKeyDown={(e) => {
@@ -117,8 +125,11 @@ const DestinationSearch = ({ airports }) => {
             }
           }}
           dropdownMatchSelectWidth={350}
+          // Airport Search Results: Mapping a list of airports to a list of options
           options={airports.map((airport) => ({
+            // Value: Will be shown as input value if this airport option is selected
             value: `(${airport.code}) ${airport.name}`,
+            // Label: The visual representation of the airport option
             label: (
               <button
                 type='button'
@@ -137,6 +148,7 @@ const DestinationSearch = ({ airports }) => {
             )
           }))}
         >
+          {/* The anchor input element that the search results dropdown will anchor onto */}
           <input
             placeholder='Destination airport'
             aria-label='search bar input'
@@ -152,6 +164,7 @@ const DestinationSearch = ({ airports }) => {
                 focus:outline-none focus:ring-2 focus:ring-yellow-400`}
           />
         </AutoComplete>
+        {/* Search input icon, adorning the left-hand side of searchbar */}
         <div
           name='icon'
           className='absolute inset-y-0 left-2.5 flex justify-center items-center pl-1 md:pl-2 pointer-events-none'
