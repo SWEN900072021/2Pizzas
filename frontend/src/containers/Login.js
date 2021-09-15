@@ -1,9 +1,15 @@
 import React from 'react'
+
+// Containers and Components
 import Button from '../components/Button'
 import TextField from '../components/TextField'
 import NavBar from '../components/NavBar'
-import thailandPicture from '../assets/thailand.png'
+
+// Hooks
 import { useFormStore } from '../hooks/Store'
+
+// Assets
+import thailandPicture from '../assets/thailand.png'
 
 const Login = () => {
   const username = useFormStore((state) => state.username)
@@ -21,7 +27,6 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(username, password)
   }
 
   return (

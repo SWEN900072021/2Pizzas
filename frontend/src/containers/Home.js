@@ -9,129 +9,59 @@ import { IoIosPerson } from 'react-icons/io'
 import { DatePicker, Popover } from 'antd'
 import { useMediaQuery } from 'react-responsive'
 import moment from 'moment'
+
+// Containers and Components
 import OriginSearch from './OriginSearch'
 import DestinationSearch from './DestinationSearch'
 import Button from '../components/Button'
 import Search from '../components/Search'
 import NavBar from '../components/NavBar'
-import { useStore } from '../hooks/Store'
+
+// Hooks
+import { useStore, useTestDataStore } from '../hooks/Store'
+
+// Assets
 import landscapePicture from '../assets/home-landscape.png'
 
 const { RangePicker } = DatePicker
 
-const airports = [
-  {
-    code: 'LHR',
-    name: 'London Heathrow',
-    location: 'London'
-  },
-  {
-    code: 'CDG',
-    name: 'Charles De Gaulle',
-    location: 'Paris'
-  },
-  {
-    code: 'ORY',
-    name: 'Paris Orly',
-    location: 'Paris'
-  },
-  {
-    code: 'JFK',
-    name: 'John F Kennedy',
-    location: 'New York'
-  },
-  {
-    code: 'CGK',
-    name: 'Soekarno-Hatta',
-    location: 'Jakarta'
-  },
-  {
-    code: 'SIN',
-    name: 'Singapore Changi',
-    location: 'Singapore'
-  },
-  {
-    code: 'BKK',
-    name: 'Suvarnabhumi',
-    location: 'Bangkok'
-  },
-  {
-    code: 'HKG',
-    name: 'Hong Kong',
-    location: 'Hong Kong'
-  },
-  {
-    code: 'MNL',
-    name: 'Minato',
-    location: 'Tokyo'
-  },
-  {
-    code: 'ICN',
-    name: 'Incheon',
-    location: 'Seoul'
-  },
-  {
-    code: 'PUS',
-    name: 'Busan',
-    location: 'Busan'
-  },
-  {
-    code: 'DPS',
-    name: 'Denpasar',
-    location: 'Bali'
-  },
-  {
-    code: 'HKT',
-    name: 'Phuket',
-    location: 'Phuket'
-  },
-  {
-    code: 'KUL',
-    name: 'Kuala Lumpur',
-    location: 'Kuala Lumpur'
-  },
-  {
-    code: 'SGN',
-    name: 'Tan Son Nhat',
-    location: 'Ho Chi Minh'
-  },
-  {
-    code: 'TPE',
-    name: 'Taipei',
-    location: 'Taipei'
-  },
-  {
-    code: 'HND',
-    name: 'Haneda',
-    location: 'Tokyo'
-  }
-]
-
 const Home = () => {
+  const airports = useTestDataStore((state) => state.airports)
+
   const [dates, setDates] = useState([
     moment(),
     moment().add(1, 'days')
   ])
 
   const [isReturn, setReturn] = useState(true)
-  const [visible, setVisible] = useState(false)
 
+  /* -------------------------------------------------------------------------- */
+
+  // Used to determine which elements to hide and show depending on the breakpoint
   const isMobile = useMediaQuery({ query: '(max-width: 640px)' })
   const isTablet = useMediaQuery({ query: '(min-width: 768px)' })
+
+  /* -------------------------------------------------------------------------- */
+
+  const [visible, setVisible] = useState(false)
 
   const handleVisibleChange = (visibleState) => {
     setVisible(visibleState)
   }
 
-  const disabledDepartureDates = (current) =>
-    current < moment().endOf('day')
-  const disabledReturnDates = (current) =>
-    current < dates[0].endOf('day')
+  /* -------------------------------------------------------------------------- */
 
-  const cabinClass = useStore((state) => state.cabinClass)
+  const disabledDepartureDates = (current) =>
+    current < moment().startOf('day')
+  const disabledReturnDates = (current) =>
+    current < dates[0].startOf('day')
+
+  /* -------------------------------------------------------------------------- */
+
   const ECONOMY = useStore((state) => state.economyClass)
   const BUSINESS = useStore((state) => state.businessClass)
   const FIRST = useStore((state) => state.firstClass)
+  const cabinClass = useStore((state) => state.cabinClass)
   const setEconomyClass = useStore((state) => state.setEconomyClass)
   const setBusinessClass = useStore((state) => state.setBusinessClass)
   const setFirstClass = useStore((state) => state.setFirstClass)
@@ -142,11 +72,11 @@ const Home = () => {
 
   const cabinClassPassengersPopover = (
     <section className='flex flex-col justify-center items-start gap-3 font-semibold'>
-      {/* Cabin Class Buttons */}
+      {/* --------------------------- Cabin Class Buttons -------------------------- */}
       <span>
         <h4>Cabin Class</h4>
       </span>
-      <span className='grid grid-cols-3 gap-0.5'>
+      <section className='grid grid-cols-3 gap-0.5'>
         <button
           type='button'
           onClick={setEconomyClass}
@@ -180,8 +110,9 @@ const Home = () => {
         >
           First
         </button>
-      </span>
-      {/* Passenger Count Buttons */}
+      </section>
+
+      {/* ----------------------------- Passenger Count ---------------------------- */}
       <span>
         <h4>Number of Passengers</h4>
       </span>
@@ -205,9 +136,20 @@ const Home = () => {
     </section>
   )
 
+  /* -------------------------------------------------------------------------- */
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    // Search for flights here
+  }
+
   return (
     <main className='h-screen'>
       <NavBar />
+
+      {/* -------------------------------------------------------------------------- */
+      /*                                  Jumbotron                                 */
+      /* -------------------------------------------------------------------------- */}
       <section className='h-full flex flex-col justify-start items-center'>
         <img
           draggable={false}
@@ -222,21 +164,27 @@ const Home = () => {
         <div
           className='
           absolute
-          transform translate-y-36 sm:translate-y-32
+          transform translate-y-36 md:translate-y-32
           self-center mx-6'
         >
-          <h2 className='text-white text-center sm:text-left text-3xl sm:text-5xl font-bold select-none'>
+          <h2 className='text-white text-center sm:text-left text-3xl md:text-5xl font-bold select-none'>
             Search hundreds of flights
           </h2>
         </div>
-        {/* Main Flight Search Form */}
+        {/* ------------------------------------------------------------------------- */
+        /*                           Main Flight Search Form                          */
+        /* -------------------------------------------------------------------------- */}
         <section
           className='
             absolute 
             flex flex-wrap flex-col justify-center items-center gap-3 
             max-w-max bg-yellow-50 mt-52 p-5'
         >
-          {/* Section 1: Origin/Destination Airport Search and Date Pickers */}
+          {/* 
+            Section 1: 
+              - Origin/Destination Airport Search fields
+              - Date Pickers 
+          */}
           <section
             className={`grid w-full items-center justify-stretch gap-2 ${
               !isTablet ? ' grid-rows-3' : 'grid-cols-3'
@@ -266,11 +214,14 @@ const Home = () => {
                 suffixIcon={<FiArrowRight />}
                 placeholder='Departure date'
                 onChange={(date) => {
-                  setDates((oldDates) =>
-                    date > oldDates[1].startOf('day')
-                      ? [date, date.add(1, 'days')]
-                      : [date, oldDates[1]]
-                  )
+                  setDates((oldDates) => {
+                    const oldReturnDate = oldDates[1]
+                    // If new departure date is beyond the return date,
+                    // set return date to same date as new departure date
+                    return date > oldReturnDate.startOf('day')
+                      ? [date, date]
+                      : [date, oldReturnDate]
+                  })
                 }}
               />
               <DatePicker
@@ -299,6 +250,7 @@ const Home = () => {
             >
               <RangePicker
                 value={dates}
+                allowClear={false}
                 inputReadOnly
                 separator={<FiArrowRight className='text-gray-400' />}
                 bordered={false}
@@ -311,7 +263,12 @@ const Home = () => {
             </span>
           </section>
 
-          {/* Section 2: Return/One-Way Buttons, Cabin Class and Passenger Select, and Find Flights Button */}
+          {/* 
+            Section 2: 
+              - Return/One-Way Buttons, 
+              - Cabin Class and Passenger Select, 
+              - Find Flights Button 
+          */}
           <section className='grid grid-rows-2 w-full gap-4 md:flex md:flex-row md:flex-wrap md:items-center md:justify-between '>
             <section className='flex flex-row justify-center items-center gap-2 md:gap-5'>
               {/* Return and One-Way Buttons */}
@@ -350,17 +307,18 @@ const Home = () => {
               {/* Cabin Class and Passenger Select */}
               <span>
                 <Popover
-                  // Will show the popover defined above when the user clicks on the Passenger Search field
+                  // Will show the popover defined when user clicks on Passenger Input field
                   content={cabinClassPassengersPopover}
                   trigger='click'
                   visible={visible}
                   onVisibleChange={handleVisibleChange}
                   placement='bottom'
                 >
-                  {/* We need this div for the Popover to anchor onto Searchbar */}
+                  {/* We need this div for Popover to anchor onto Passenger Input field */}
                   <div>
                     <Search
                       readOnly
+                      placeholder='Add passenger(s)'
                       className='cursor-default'
                       StartIcon={<IoIosPerson />}
                       EndIcon={<FiChevronDown />}
@@ -375,7 +333,7 @@ const Home = () => {
             </section>
 
             {/* Find Flight Button */}
-            <Button label='Find Flights' submit onClick={() => {}} />
+            <Button label='Find Flights' onClick={handleSubmit} />
           </section>
         </section>
       </section>

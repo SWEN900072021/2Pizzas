@@ -18,8 +18,101 @@ const immer = (config) => (set, get, api) =>
 const ECONOMY = 'economy'
 const BUSINESS = 'business'
 const FIRST = 'first'
+const AIRPORTS = [
+  {
+    code: 'LHR',
+    name: 'London Heathrow',
+    location: 'London'
+  },
+  {
+    code: 'CDG',
+    name: 'Charles De Gaulle',
+    location: 'Paris'
+  },
+  {
+    code: 'ORY',
+    name: 'Paris Orly',
+    location: 'Paris'
+  },
+  {
+    code: 'JFK',
+    name: 'John F Kennedy',
+    location: 'New York'
+  },
+  {
+    code: 'CGK',
+    name: 'Soekarno-Hatta',
+    location: 'Jakarta'
+  },
+  {
+    code: 'SIN',
+    name: 'Singapore Changi',
+    location: 'Singapore'
+  },
+  {
+    code: 'BKK',
+    name: 'Suvarnabhumi',
+    location: 'Bangkok'
+  },
+  {
+    code: 'HKG',
+    name: 'Hong Kong',
+    location: 'Hong Kong'
+  },
+  {
+    code: 'MNL',
+    name: 'Minato',
+    location: 'Tokyo'
+  },
+  {
+    code: 'ICN',
+    name: 'Incheon',
+    location: 'Seoul'
+  },
+  {
+    code: 'PUS',
+    name: 'Busan',
+    location: 'Busan'
+  },
+  {
+    code: 'DPS',
+    name: 'Denpasar',
+    location: 'Bali'
+  },
+  {
+    code: 'HKT',
+    name: 'Phuket',
+    location: 'Phuket'
+  },
+  {
+    code: 'KUL',
+    name: 'Kuala Lumpur',
+    location: 'Kuala Lumpur'
+  },
+  {
+    code: 'SGN',
+    name: 'Tan Son Nhat',
+    location: 'Ho Chi Minh'
+  },
+  {
+    code: 'TPE',
+    name: 'Taipei',
+    location: 'Taipei'
+  },
+  {
+    code: 'HND',
+    name: 'Haneda',
+    location: 'Tokyo'
+  }
+]
 
 // STORES
+
+const useTestDataStore = create(
+  immer(() => ({
+    airports: AIRPORTS
+  }))
+)
 
 const useFormStore = create(
   immer((set) => ({
@@ -100,4 +193,4 @@ const useStore = create(
   }))
 )
 
-export { useStore, useFormStore }
+export { useStore, useFormStore, useTestDataStore }
