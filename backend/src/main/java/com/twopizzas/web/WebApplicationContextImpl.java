@@ -3,12 +3,9 @@ package com.twopizzas.web;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.twopizzas.data.IdentityMapper;
-import com.twopizzas.data.UnitOfWork;
+import com.twopizzas.auth.AuthenticationProvider;
 import com.twopizzas.di.*;
-import org.reflections.ReflectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,10 +19,12 @@ class WebApplicationContextImpl implements WebApplicationContext {
             .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
             .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     private List<HttpRequestDelegate> delegates;
+    private final AuthenticationProvider authenticationProvider;
 
     @Autowired
-    WebApplicationContextImpl(ApplicationContext applicationContext) {
+    WebApplicationContextImpl(ApplicationContext applicationContext, AuthenticationProvider authenticationProvider) {
         this.applicationContext = applicationContext;
+        this.authenticationProvider = authenticationProvider;
     }
 
     @PostConstruct
@@ -46,7 +45,8 @@ class WebApplicationContextImpl implements WebApplicationContext {
                         requestMapping.method(),
                         c,
                         m,
-                        getObjectMapper());
+                        getObjectMapper(),
+                        authenticationProvider);
 
                 boolean registered = false;
                 Iterator<CompositeHttpRequestDelegate> delegateIterator = delegates.iterator();

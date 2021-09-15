@@ -2,12 +2,14 @@ package com.twopizzas.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twopizzas.data.IdentityMapper;
-import com.twopizzas.data.UnitOfWork;
+import com.twopizzas.auth.AuthenticationProvider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BaseRequestDelegate implements HttpRequestDelegate {
@@ -16,14 +18,16 @@ public class BaseRequestDelegate implements HttpRequestDelegate {
     private final Object targetController;
     private final Method handler;
     private final ObjectMapper mapper;
+    private final AuthenticationProvider authenticationProvider;
 
 
-    public BaseRequestDelegate(PathResolver pathResolver, HttpMethod method, Object targetController, Method handler, ObjectMapper mapper) {
+    public BaseRequestDelegate(PathResolver pathResolver, HttpMethod method, Object targetController, Method handler, ObjectMapper mapper, AuthenticationProvider authenticationProvider) {
         this.pathResolver = pathResolver;
         this.method = method;
         this.targetController = targetController;
         this.handler = handler;
         this.mapper = mapper;
+        this.authenticationProvider = authenticationProvider;
     }
 
     @Override
