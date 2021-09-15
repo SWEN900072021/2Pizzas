@@ -25,3 +25,5 @@ jobs:
           delay: 30
         env:
           APP_NAME: backend-2-pizzas
+          DATABASE_USERNAME: ${{ secrets.DB_USER }}
+          DATABASE_PASSWORD: ${{ secrets.DB_PASSWORD }}
