@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 // Containers and Components
 import Button from '../components/Button'
@@ -32,13 +33,16 @@ const Login = () => {
   return (
     <main className='h-screen'>
       <NavBar />
-      <section className='h-screen flex flex-wrap justify-center content-center'>
+      <section className='h-screen flex flex-col justify-center items-center gap-5'>
         <img
           draggable={false}
           src={thailandPicture}
           alt='Landscape with stone structures in Thailand'
           className='fixed h-screen w-screen object-cover object-center'
         />
+        <h1 className='z-10 text-white text-lg font-bold'>
+          Login
+        </h1>
         <form
           onSubmit={handleSubmit}
           className='z-10 flex flex-wrap flex-col justify-center content-center mx-auto p-5 space-y-4 rounded-xl bg-yellow-50'
@@ -55,13 +59,15 @@ const Login = () => {
             password
           />
           <Button submit label='Log In' />
-          <button
-            type='button'
-            onClick={() => {}}
-            className='self-center rounded-sm text-sm px-1 text-yellow-800 hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:underline'
-          >
-            Don&apos;t have an account?
-          </button>
+          <Link to='/signup'>
+            <button
+              type='button'
+              onClick={() => {}}
+              className='self-center rounded-sm text-sm px-1 text-yellow-800 hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:underline'
+            >
+              Don&apos;t have an account?
+            </button>
+          </Link>
         </form>
       </section>
     </main>
