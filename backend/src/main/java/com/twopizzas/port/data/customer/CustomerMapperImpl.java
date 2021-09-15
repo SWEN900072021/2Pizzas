@@ -2,7 +2,7 @@ package com.twopizzas.port.data.customer;
 
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
-import com.twopizzas.domain.Customer;
+import com.twopizzas.domain.user.Customer;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;

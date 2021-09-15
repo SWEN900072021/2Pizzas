@@ -11,7 +11,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +28,7 @@ public class ComponentManagerTests {
     void setup() {
         MockitoAnnotations.initMocks(this);
         componentManager = new ComponentManager(beanResolver, beanLoader);
+        componentManager.setApplicationContext(new ApplicationContextComponent(null, componentManager));
     }
 
     @Test
@@ -53,7 +53,7 @@ public class ComponentManagerTests {
         );
 
         // WHEN
-        ComponentSpecification<StubComponent> specification = Mockito.mock(ComponentSpecification.class);
+        TypedComponentSpecification<StubComponent> specification = Mockito.mock(TypedComponentSpecification.class);
         StubComponent retrieved = componentManager.getComponent(specification);
 
         // THEN
@@ -71,7 +71,8 @@ public class ComponentManagerTests {
         );
 
         // WHEN + THEN
-        ComponentSpecification<StubComponent> specification = Mockito.mock(ComponentSpecification.class);
+        TypedComponentSpecification<StubComponent> specification = Mockito.mock(TypedComponentSpecification.class);
+        Mockito.when(specification.getClasz()).thenReturn(StubComponent.class);
         Assertions.assertThrows(ComponentNotFound.class, () -> componentManager.getComponent(specification));
 
         // THEN
@@ -91,7 +92,7 @@ public class ComponentManagerTests {
         );
 
         // WHEN + THEN
-        ComponentSpecification<StubComponent> specification = Mockito.mock(ComponentSpecification.class);
+        TypedComponentSpecification<StubComponent> specification = Mockito.mock(TypedComponentSpecification.class);
         Assertions.assertThrows(DuplicateComponentException.class, () -> componentManager.getComponent(specification));
 
         // THEN

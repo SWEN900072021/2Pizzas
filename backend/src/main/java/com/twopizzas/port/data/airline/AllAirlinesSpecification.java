@@ -1,7 +1,7 @@
 package com.twopizzas.port.data.airline;
 
 import com.twopizzas.di.Autowired;
-import com.twopizzas.domain.Airline;
+import com.twopizzas.domain.user.Airline;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 

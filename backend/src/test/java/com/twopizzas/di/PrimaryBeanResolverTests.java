@@ -21,7 +21,7 @@ public class PrimaryBeanResolverTests {
         Mockito.when(bean2.isPrimary()).thenReturn(false);
         BaseBeanResolver baseBeanResolver = Mockito.mock(BaseBeanResolver.class);
         Mockito.when(baseBeanResolver.resolve(Mockito.any(), Mockito.any())).thenAnswer(args -> args.getArgument(1));
-        ComponentSpecification<TestDependency> specification = Mockito.mock(ComponentSpecification.class);
+        TypedComponentSpecification<TestDependency> specification = Mockito.mock(TypedComponentSpecification.class);
 
         // WHEN
         Collection<Bean<TestDependency>> resolved = new PrimaryBeanResolver(baseBeanResolver)
@@ -44,7 +44,7 @@ public class PrimaryBeanResolverTests {
         Mockito.when(bean2.isPrimary()).thenReturn(false);
         BaseBeanResolver baseBeanResolver = Mockito.mock(BaseBeanResolver.class);
         Mockito.when(baseBeanResolver.resolve(Mockito.any(), Mockito.any())).thenAnswer(args -> args.getArgument(1));
-        ComponentSpecification<TestDependency> specification = Mockito.mock(ComponentSpecification.class);
+        TypedComponentSpecification<TestDependency> specification = Mockito.mock(TypedComponentSpecification.class);
 
         // WHEN
         Collection<Bean<TestDependency>> resolved = new PrimaryBeanResolver(baseBeanResolver)

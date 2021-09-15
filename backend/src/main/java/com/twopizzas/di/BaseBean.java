@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 class BaseBean<T> extends AssertionConcern implements Bean<T> {
 
     private final Constructor<T> constructor;
-    private final List<ComponentSpecification<?>> dependencies;
+    private final List<TypedComponentSpecification<?>> dependencies;
     private final Method postConstruct;
     private final Class<T> clasz;
     private final String qualifier;
@@ -25,7 +25,7 @@ class BaseBean<T> extends AssertionConcern implements Bean<T> {
              List<String> profiles,
              boolean primary,
              Constructor<T> constructor,
-             List<ComponentSpecification<?>> dependencies,
+             List<TypedComponentSpecification<?>> dependencies,
              Method postConstruct,
              List<ComponentConstructionInterceptor> interceptors)
     {
@@ -70,7 +70,7 @@ class BaseBean<T> extends AssertionConcern implements Bean<T> {
     }
 
     @Override
-    public List<ComponentSpecification<?>> getDependencies() { return dependencies; }
+    public List<TypedComponentSpecification<?>> getDependencies() { return dependencies; }
 
     @Override
     public T construct(ComponentManager componentManager) {
@@ -91,19 +91,31 @@ class BaseBean<T> extends AssertionConcern implements Bean<T> {
         try {
             constructor.setAccessible(true);
             instance = constructor.newInstance(dependencyBeans.toArray());
-        } catch (InvocationTargetException | InstantiationException | IllegalAccessException | IllegalArgumentException e) {
+        } catch (InvocationTargetException e) {
             throw new ComponentInstantiationException(String.format(
                     "failed to construct component %s, error: %s",
                     clasz.getName(),
-                    e.getMessage()
-            ));
+                    e.getTargetException().getMessage()),
+                    e.getTargetException());
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
+            throw new ComponentInstantiationException(String.format(
+                    "failed to construct component %s, error: %s",
+                    clasz.getName(),
+                    e.getMessage()),
+                    e);
         }
 
         if (postConstruct != null) {
             postConstruct.setAccessible(true); // maybe a little naughty here
             try {
                 postConstruct.invoke(instance);
-            } catch (IllegalAccessException | InvocationTargetException e) {
+            } catch (InvocationTargetException e) {
+                throw new ComponentInstantiationException(String.format(
+                        "failed to construct component %s, error: %s",
+                        clasz.getName(),
+                        e.getTargetException().getMessage()),
+                        e.getTargetException());
+            } catch (IllegalAccessException e) {
                 throw new ComponentInstantiationException(String.format(
                         "error invoking %s annotated method %s on component %s: %s",
                         PostConstruct.class.getName(),

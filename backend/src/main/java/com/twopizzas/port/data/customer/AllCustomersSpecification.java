@@ -1,9 +1,8 @@
 package com.twopizzas.port.data.customer;
 
 import com.twopizzas.di.Autowired;
-import com.twopizzas.domain.Customer;
+import com.twopizzas.domain.user.Customer;
 import com.twopizzas.port.data.SqlStatement;
-import com.twopizzas.port.data.airline.AirlineMapper;
 import com.twopizzas.port.data.db.ConnectionPool;
 
 import java.util.List;

@@ -1,6 +1,7 @@
 package com.twopizzas.di;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class ThreadLocalProxy<T> implements InvocationHandler {
@@ -22,6 +23,11 @@ public class ThreadLocalProxy<T> implements InvocationHandler {
         if (local.get() == null) {
             local.set(componentConstructor.construct(componentManager));
         }
-        return method.invoke(local.get(), args);
+
+        try {
+            return method.invoke(local.get(), args);
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
+        }
     }
 }

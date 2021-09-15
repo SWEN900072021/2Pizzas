@@ -4,18 +4,24 @@ import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.data.Entity;
 import com.twopizzas.data.ValueHolder;
 import com.twopizzas.domain.*;
+import com.twopizzas.domain.EntityId;
+import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.domain.error.BusinessRuleException;
 import com.twopizzas.domain.error.DataFormatException;
+import com.twopizzas.domain.user.Airline;
+import com.twopizzas.port.data.DomainEntity;
 import com.twopizzas.util.AssertionConcern;
 import com.twopizzas.util.ValueViolation;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Flight extends AssertionConcern implements Entity<EntityId> {
+@Getter
+public class Flight extends DomainEntity {
 
-    private final EntityId id;
     private final AirplaneProfile airplaneProfile;
     private final Airline airline;
     private final ValueHolder<List<FlightSeat>> seats;
@@ -26,10 +32,12 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
     private final OffsetDateTime arrival;
     private final List<StopOver> stopOvers;
     private final String code;
+
+    @Setter
     private Status status;
 
     public Flight(EntityId id, ValueHolder<List<FlightSeatAllocation>> allocatedSeats, AirplaneProfile airplaneProfile, Airline airline, ValueHolder<List<FlightSeat>> seats, Airport origin, Airport destination, OffsetDateTime departure, OffsetDateTime arrival, List<StopOver> stopOvers, String code, Status status) {
-        this.id = notNull(id, "id");
+        super(id);
         this.allocatedSeats = notNull(allocatedSeats, "bookedSeats");
         this.airplaneProfile = notNull(airplaneProfile, "airplaneProfile");
         this.airline = notNull(airline, "airline");
@@ -164,51 +172,6 @@ public class Flight extends AssertionConcern implements Entity<EntityId> {
                 throw new ValueViolation("conflicting stopovers");
             }
         });
-    }
-
-    public AirplaneProfile getAirplaneProfile() {
-        return airplaneProfile;
-    }
-
-    public Airline getAirline() {
-        return airline;
-    }
-
-    public Airport getOrigin() {
-        return origin;
-    }
-
-    public Airport getDestination() {
-        return destination;
-    }
-
-    public OffsetDateTime getDeparture() {
-        return departure;
-    }
-
-    public OffsetDateTime getArrival() {
-        return arrival;
-    }
-
-    public List<StopOver> getStopOvers() {
-        return stopOvers;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    @Override
-    public EntityId getId() {
-        return id;
     }
 
     public enum Status {

@@ -22,7 +22,7 @@ public class ProfileBeanResolverTests {
         Mockito.when(bean2.getProfiles()).thenReturn(Arrays.asList("test", "model"));
         BaseBeanResolver baseBeanResolver = Mockito.mock(BaseBeanResolver.class);
         Mockito.when(baseBeanResolver.resolve(Mockito.any(), Mockito.any())).thenAnswer(args -> args.getArgument(1));
-        ComponentSpecification<TestDependency> specification = Mockito.mock(ComponentSpecification.class);
+        TypedComponentSpecification<TestDependency> specification = Mockito.mock(TypedComponentSpecification.class);
 
         // WHEN
         Collection<Bean<TestDependency>> resolved = new ProfileBeanResolver(baseBeanResolver, "prod")
@@ -45,7 +45,7 @@ public class ProfileBeanResolverTests {
         Mockito.when(bean2.getProfiles()).thenReturn(Arrays.asList("test", "model"));
         BaseBeanResolver baseBeanResolver = Mockito.mock(BaseBeanResolver.class);
         Mockito.when(baseBeanResolver.resolve(Mockito.any(), Mockito.any())).thenAnswer(args -> args.getArgument(1));
-        ComponentSpecification<TestDependency> specification = Mockito.mock(ComponentSpecification.class);
+        TypedComponentSpecification<TestDependency> specification = Mockito.mock(TypedComponentSpecification.class);
 
         // WHEN
         Collection<Bean<TestDependency>> resolved = new ProfileBeanResolver(baseBeanResolver, "prod")
@@ -68,7 +68,7 @@ public class ProfileBeanResolverTests {
         Mockito.when(bean2.getProfiles()).thenReturn(Arrays.asList("test", "prod"));
         BaseBeanResolver baseBeanResolver = Mockito.mock(BaseBeanResolver.class);
         Mockito.when(baseBeanResolver.resolve(Mockito.any(), Mockito.any())).thenAnswer(args -> args.getArgument(1));
-        ComponentSpecification<TestDependency> specification = Mockito.mock(ComponentSpecification.class);
+        TypedComponentSpecification<TestDependency> specification = Mockito.mock(TypedComponentSpecification.class);
 
         // WHEN
         Collection<Bean<TestDependency>> resolved = new ProfileBeanResolver(baseBeanResolver, "prod")

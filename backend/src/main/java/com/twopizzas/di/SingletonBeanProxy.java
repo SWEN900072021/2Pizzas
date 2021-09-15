@@ -56,7 +56,7 @@ class SingletonBeanProxy<T> implements Bean<T> {
     }
 
     @Override
-    public List<ComponentSpecification<?>> getDependencies() {
+    public List<TypedComponentSpecification<?>> getDependencies() {
         return wrapped.getDependencies();
     }
 }

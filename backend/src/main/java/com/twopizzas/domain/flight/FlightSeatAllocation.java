@@ -1,6 +1,6 @@
 package com.twopizzas.domain.flight;
 
-import com.twopizzas.domain.Passenger;
+import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.util.AssertionConcern;
 
 public class FlightSeatAllocation extends AssertionConcern {

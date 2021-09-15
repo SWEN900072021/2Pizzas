@@ -4,7 +4,7 @@ import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.data.ValueHolder;
 import com.twopizzas.data.ValueLoader;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.domain.Passenger;
+import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 

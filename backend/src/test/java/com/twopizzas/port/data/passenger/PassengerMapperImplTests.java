@@ -1,14 +1,13 @@
 package com.twopizzas.port.data.passenger;
 
-import com.twopizzas.domain.Booking;
+import com.twopizzas.domain.booking.Booking;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.domain.Passenger;
+import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.domain.flight.Flight;
 import com.twopizzas.port.data.DataTestConfig;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.booking.BookingMapper;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
-import com.twopizzas.port.data.flight.FlightMapper;
 import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -113,7 +112,7 @@ public class PassengerMapperImplTests {
         insertTestBooking(bookingUpdated.getId().toString(), flightUpdated.getId().toString());
         Mockito.doReturn(bookingUpdated).when(bookingMapper).read(Mockito.eq(bookingIdUpdated));
 
-        Passenger update = new Passenger(entity.getId(), "Jane", "Vulpix", LocalDate.now(), "Australian", "ABCD", bookingUpdated);
+        Passenger update = new Passenger(entity.getId(), "Jane", "Vulpix", LocalDate.now(), "Australian", "ABCD", () -> bookingUpdated);
 
         // WHEN
         mapper.update(update);

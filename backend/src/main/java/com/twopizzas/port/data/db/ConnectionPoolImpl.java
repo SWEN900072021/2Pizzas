@@ -1,5 +1,7 @@
 package com.twopizzas.port.data.db;
 
+import com.twopizzas.configuration.Configuration;
+import com.twopizzas.configuration.Value;
 import com.twopizzas.data.DataSource;
 import com.twopizzas.di.ThreadLocalComponent;
 import org.postgresql.Driver;
@@ -9,11 +11,17 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 @ThreadLocalComponent
+@Configuration
 public class ConnectionPoolImpl implements DataSource, ConnectionPool {
 
-    private final String user;
-    private final String password;
-    private final String url;
+    @Value("datasource.username")
+    private String user;
+
+    @Value("datasource.password")
+    private String password;
+
+    @Value("datasource.url")
+    private String url;
 
     static {
         try {
@@ -23,9 +31,7 @@ public class ConnectionPoolImpl implements DataSource, ConnectionPool {
         }
     }
 
-    ConnectionPoolImpl(String user, String password, String host, String port, String database) {
-        this(String.format("jdbc:postgresql://%s:%s/%s", host, port, database), user, password);
-    }
+    ConnectionPoolImpl() {}
 
     public ConnectionPoolImpl(String url, String user, String password) {
         this.password = password;
@@ -49,6 +55,8 @@ public class ConnectionPoolImpl implements DataSource, ConnectionPool {
         }
         try {
             currentTransaction = DriverManager.getConnection(url, user, password);
+            currentTransaction.setAutoCommit(false);
+
         } catch (SQLException e) {
             throw new ConnectionPoolTransactionException(String.format("failed to open connection to database, error: %s", e.getMessage()));
         }

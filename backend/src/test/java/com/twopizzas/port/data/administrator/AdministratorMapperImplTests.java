@@ -1,8 +1,7 @@
 package com.twopizzas.port.data.administrator;
 
-import com.twopizzas.domain.Administrator;
+import com.twopizzas.domain.user.Administrator;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.port.data.administrator.AdministratorMapperImpl;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import org.junit.jupiter.api.*;
 
@@ -60,7 +59,7 @@ public class AdministratorMapperImplTests {
         Assertions.assertNotNull(persisted);
         Assertions.assertEquals(newEntity.getId(), persisted.getId());
         Assertions.assertEquals(newEntity.getUsername(), persisted.getUsername());
-        Assertions.assertEquals(newEntity.getPassword(), persisted.getPassword());
+        Assertions.assertNotNull(persisted.getPassword());
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.twopizzas.port.data.booking;
 
-import com.twopizzas.domain.Booking;
+import com.twopizzas.domain.booking.Booking;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;

@@ -1,4 +1,5 @@
 openapi: '3.0.2'
+
 info:
   title: 2Pizzas API
   version: '1.0'
@@ -14,15 +15,37 @@ paths:
           required: false
           schema:
             $ref: "#/components/schemas/Id"
+        - in: query
+          name: arrivalId
+          required: false
+          schema:
+            $ref: "#/components/schemas/Id"
+        - in: query
+          name: departure
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: arrival
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: airline
+          required: false
+          schema: 
+            type: string
       responses:
         '200':
           description: OK
           content:
-            application/json:   
-              schema: 
+            application/json:
+              schema:
                 type: array
-                items: 
-                  $ref: "#/components/schemas/Flight"
+                items:
+                  $ref: '#/components/schemas/Flight'
   /flight/{id}:
     get:
       operationId: getFlightById
@@ -30,38 +53,335 @@ paths:
         - in: path
           name: id
           required: true
-          schema: 
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Flight"
+        '404':
+          description: Not Found
+    patch:
+      operationId: updateFlight
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Flight"
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: "#/components/responses/UnauthorisedError"
+        '404':
+          description: Not Found
+  /flight:  
+    post:
+      operationId: createFlight
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Flight"
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: "#/components/responses/UnauthorisedError"
+  /booking: 
+    post: 
+      operationId: createBooking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Booking"
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+  /booking/{id}:  
+    get:
+      operationId: getBookingById
+      parameters:
+        - in: query
+          name: bookingId
+          required: true
+          schema:
             $ref: "#/components/schemas/Id"
       responses:
         '200':
           description: OK
-    patch:
-  /flight:  
-    post:
-  /booking: 
-    post: 
-  /booking/{id}:  
-    get:
+        '401':
+          $ref: "#/components/responses/UnauthorisedError"
+        '404':
+          description: Not Found
     patch:  
+      operationId: updateBooking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Booking"
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: "#/components/responses/UnauthorisedError"
+        '404':
+          description: Not Found
   /airport:   
     post:
     get:
   /airplane-profile:
-    get:  
+    get:
   /user:
     get:
+      operationId: getAllUsers
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorisedError'
     post:
-  /user/{id}: 
-    get: 
-  /signup:  
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserSchema'
+      responses:
+        '201':
+          description: User created
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorisedError'
+
+  /user/{id}:
+    get:
+      operationId: getUserById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorisedError'
+  /signup:
     post:
+      operationId: signup
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpSchema'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
   /login:
     post:
+      operationId: login
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogInSchema'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
 
 components:
   schemas:
     Id:
       type: string
       format: uuid
+    Booking:
+      type: object
+      properties:
+        flightId:
+          $ref: "#/components/schemas/Id"
+        returnFlightId:
+          $ref: "#/components/schemas/Id"
+        passengers:
+          type: array
+          items:
+            type: object
+            properties:
+              firstName:
+                type: string
+              lastName:
+                type: string
+              dateOfBirth:
+                type: string
+                format: date
+              nationality:
+                type: string
+              passportNumber:
+                type: string
+              flights:
+                type: object
+                properties:
+                  flightId:
+                    $ref: "#/components/schemas/Id"
+                  seatNumber:
+                    type: string
+                required:
+                  - flightId
+                  - seatNumber
+          required:
+            - firstName
+            - lastName
+            - dateOfBirth
+            - nationality
+            - passportNumber
+            - flights
+      required: 
+      - flightId
+      - passengers
+    UserType:
+      type: string
+      enum: ['administrator', 'airline']
     Flight:
       type: object
+      properties:
+        airplane:
+          type: string
+        airline:
+          type: string
+        origin:
+          type: string
+        destination:
+          type: string
+        departure:
+          type: string
+          format: date-time
+        arrival:
+          type: string
+          format: date-time
+        stopovers:
+          type: array
+          items:
+            type: object
+            properties:
+              location:
+                type: string
+              arrival:
+                type: string
+                format: date-time
+              departure:
+                type: string
+                format: date-time
+              code:
+                type: string
+              status:
+                type: string
+          required:
+            - airplane
+            - airline
+            - seats
+            - origin
+            - destination
+            - departure
+            - arrival
+        
+        
+    CreateUserSchema:
+      type: object
+      required:
+        - username
+        - password
+        - userType
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        userType:
+          $ref: '#/components/schemas/UserType'
+        code:
+          type: string
+        name:
+          type: string
+    SignUpSchema:
+      type: object
+      required:
+        - username
+        - password
+        - email
+        - givenName
+        - surname
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+          format: email
+        givenName:
+          type: string
+        surname:
+          type: string
+    LogInSchema:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    JWT:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/Id'
+            username:
+              type: string
+  responses:
+    UnauthorisedError:
+      description: Access token is missing or invalid
+    BadRequestError:
+      description: Bad request
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []

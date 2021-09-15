@@ -1,6 +1,8 @@
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 CREATE TABLE "user"
 (
     id       varchar(36) PRIMARY KEY,

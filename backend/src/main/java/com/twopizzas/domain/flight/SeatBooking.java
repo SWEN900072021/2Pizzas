@@ -1,7 +1,10 @@
 package com.twopizzas.domain.flight;
 
+import lombok.Getter;
+
 import java.util.Set;
 
+@Getter
 public class SeatBooking {
     private final Set<FlightSeatAllocation> allocations;
     private final Flight flight;
@@ -9,13 +12,5 @@ public class SeatBooking {
     public SeatBooking(Flight flight, Set<FlightSeatAllocation> allocations) {
         this.allocations = allocations;
         this.flight = flight;
-    }
-
-    public Set<FlightSeatAllocation> getAllocations() {
-        return allocations;
-    }
-
-    public Flight getFlight() {
-        return flight;
     }
 }

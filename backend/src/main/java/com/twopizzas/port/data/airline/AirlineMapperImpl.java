@@ -1,7 +1,8 @@
 package com.twopizzas.port.data.airline;
 
 import com.twopizzas.di.Autowired;
-import com.twopizzas.domain.Airline;
+import com.twopizzas.di.Component;
+import com.twopizzas.domain.user.Airline;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;
@@ -13,13 +14,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements AirlineMapper {
 
     static final String TABLE_AIRLINE = "airline";
     static final String COLUMN_ID = "id";
     static final String COLUMN_NAME = "name";
     static final String COLUMN_CODE = "code";
-
 
     private static final String CREATE_TEMPLATE =
             "INSERT INTO " + TABLE_AIRLINE + "(" + COLUMN_ID + " , " + COLUMN_NAME + ", " + COLUMN_CODE + ")" +

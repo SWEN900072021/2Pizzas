@@ -1,7 +1,7 @@
 package com.twopizzas.port.data.booking;
 
 import com.twopizzas.di.Autowired;
-import com.twopizzas.domain.Booking;
+import com.twopizzas.domain.booking.Booking;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.flight.SeatBooking;
 import com.twopizzas.port.data.DataMappingException;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class BookingMapperImpl implements BookingMapper {
+class BookingMapperImpl implements BookingMapper {
 
     static final String TABLE_BOOKING = "booking";
     static final String COLUMN_ID = "id";

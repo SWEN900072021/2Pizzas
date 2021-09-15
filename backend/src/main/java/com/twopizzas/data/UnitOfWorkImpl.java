@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @ThreadLocalComponent
-public class UnitOfWorkImpl implements UnitOfWork {
+class UnitOfWorkImpl implements UnitOfWork {
 
     private final DataSource dataSource;
     private final DataMapperRegistry dataMapperRegistry;
@@ -59,25 +59,28 @@ public class UnitOfWorkImpl implements UnitOfWork {
 
     @Override
     public void commit() {
-        if (newEntities.isEmpty() && dirtyEntities.isEmpty() && removedEntities.isEmpty()) {
-            // nothing to do!
-            return;
-        }
-
-        // open a new db transaction
-        dataSource.startNewTransaction();
         // apply each action
         newEntities.forEach(this::doCreate);
         dirtyEntities.forEach(this::doUpdate);
         removedEntities.forEach(this::doDelete);
         // commit
         dataSource.commitTransaction();
+    }
 
-        // reset for next commit
+    @Override
+    public void start() {
         newEntities = new ArrayList<>();
         cleanEntities = new ArrayList<>();
         dirtyEntities = new ArrayList<>();
         removedEntities = new ArrayList<>();
+
+        // open a new db transaction
+        dataSource.startNewTransaction();
+    }
+
+    @Override
+    public void rollback() {
+        dataSource.rollbackTransaction();
     }
 
     private void assertTrueOrThrow(boolean shouldBeTrue, String message) {
@@ -87,7 +90,7 @@ public class UnitOfWorkImpl implements UnitOfWork {
     }
 
     private <T extends Entity<ID>, ID> DataMapper<T, ID, Specification<T, ?>> getMapper(T entity) {
-        return dataMapperRegistry.getForClass(entity.getClass());
+        return (DataMapper<T, ID, Specification<T, ?>>) dataMapperRegistry.getForClass(entity.getClass());
     }
 
     private <T extends Entity<ID>, ID> void doUpdate(T entity) {

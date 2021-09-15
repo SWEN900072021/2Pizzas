@@ -1,29 +1,27 @@
 package com.twopizzas.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twopizzas.di.ApplicationContext;
+import com.twopizzas.di.Autowired;
+import com.twopizzas.di.Component;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
+@Component
 public class DispatcherServlet implements Servlet {
 
-    ServletConfig config;
-    ApplicationContext context;
-    List<HttpRequestDelegate> delegates;
-    private ObjectMapper mapper = new ObjectMapper();
+    private ServletConfig config;
+    private final HttpRequestDispatcher dispatcher;
 
-    public DispatcherServlet(ApplicationContext context) {
-        this.context = context;
+    @Autowired
+    public DispatcherServlet(HttpRequestDispatcher dispatcher) {
+        this.dispatcher = dispatcher;
     }
 
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
-        this.config = servletConfig;
-
+        config = servletConfig;
     }
 
     @Override
@@ -32,33 +30,12 @@ public class DispatcherServlet implements Servlet {
     }
 
     @Override
-    public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+    public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws IOException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-        try {
-            dispatch(httpServletRequest, httpServletResponse);
-        } catch (HttpException e) {
-            servletResponse.setContentType("application/json");
-            httpServletResponse.setStatus(e.getStatus().getStatusCode());
 
-            ErrorResponseDto error = new ErrorResponseDto()
-                    .setMessage(e.getMessage())
-                    .setStatus(e.getStatus().getStatusCode());
-
-            mapper.writeValue(servletResponse.getWriter(), error);
-        }
-    }
-
-    public void dispatch(HttpServletRequest request, HttpServletResponse response) throws HttpException {
-        try {
-            for (HttpRequestDelegate delegate : delegates) {
-                if (delegate.handle(request, response)) return;
-            }
-        } catch (HttpException e) {
-            throw e;
-        } catch (Throwable e) {
-            throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-        }
+        HttpResponse response = dispatcher.dispatch(HttpRequest.from(httpServletRequest));
+        response.send(httpServletResponse);
     }
 
     @Override

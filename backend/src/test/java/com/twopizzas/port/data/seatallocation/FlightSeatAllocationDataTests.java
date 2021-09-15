@@ -2,7 +2,7 @@ package com.twopizzas.port.data.seatallocation;
 
 import com.twopizzas.data.ValueHolder;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.domain.Passenger;
+import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.domain.flight.FlightSeat;
 import com.twopizzas.domain.flight.FlightSeatAllocation;
 import com.twopizzas.port.data.DataTestConfig;

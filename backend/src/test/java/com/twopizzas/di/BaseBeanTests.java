@@ -25,7 +25,7 @@ public class BaseBeanTests {
         TestDependency testDependency = new TestDependency();
         Mockito.when(dependencyBean.getClasz()).thenReturn(TestDependency.class);
         Mockito.when(dependencyBean.construct(Mockito.any())).thenReturn(testDependency);
-        ComponentSpecification<TestDependencyInterface> testDependencyComponentSpecification = new BaseBeanSpecification<>(TestDependencyInterface.class);
+        TypedComponentSpecification<TestDependencyInterface> testDependencyComponentSpecification = new BaseBeanSpecification<>(TestDependencyInterface.class);
         Mockito.doReturn(dependencyBean).when(componentManager)
                 .getBean(Mockito.argThat(a -> a.getClasz().equals(TestDependencyInterface.class)));
 
@@ -33,7 +33,7 @@ public class BaseBeanTests {
         TestDependencyOther testDependencyOther = new TestDependencyOther();
         Mockito.when(dependencyOtherBean.getClasz()).thenReturn(TestDependencyOther.class);
         Mockito.when(dependencyOtherBean.construct(Mockito.any())).thenReturn(testDependencyOther);
-        ComponentSpecification<TestDependencyOtherInterface> testDependencyOtherComponentSpecification = new BaseBeanSpecification<>(TestDependencyOtherInterface.class);
+        TypedComponentSpecification<TestDependencyOtherInterface> testDependencyOtherComponentSpecification = new BaseBeanSpecification<>(TestDependencyOtherInterface.class);
         Mockito.doReturn(dependencyOtherBean).when(componentManager)
                 .getBean(Mockito.argThat(a -> a.getClasz().equals(TestDependencyOtherInterface.class)));
 
@@ -41,7 +41,7 @@ public class BaseBeanTests {
         InterfaceComponent interfaceComponent = new InterfaceComponentImpl();
         Mockito.when(interfaceComponentBean.getClasz()).thenReturn(InterfaceComponent.class);
         Mockito.when(interfaceComponentBean.construct(Mockito.any())).thenReturn(interfaceComponent);
-        ComponentSpecification<InterfaceComponent> interfaceComponentComponentSpecification = new BaseBeanSpecification<>(InterfaceComponent.class);
+        TypedComponentSpecification<InterfaceComponent> interfaceComponentComponentSpecification = new BaseBeanSpecification<>(InterfaceComponent.class);
         Mockito.doReturn(interfaceComponentBean).when(componentManager)
                 .getBean(Mockito.argThat(a -> a.getClasz().equals(InterfaceComponent.class)));
 
@@ -116,7 +116,7 @@ public class BaseBeanTests {
         TestDependency testDependency = new TestDependency();
         Mockito.when(dependencyBean.getClasz()).thenReturn(TestDependency.class);
         Mockito.when(dependencyBean.construct(Mockito.any())).thenReturn(testDependency);
-        ComponentSpecification<TestDependencyInterface> testDependencyComponentSpecification = new BaseBeanSpecification<>(TestDependencyInterface.class);
+        TypedComponentSpecification<TestDependencyInterface> testDependencyComponentSpecification = new BaseBeanSpecification<>(TestDependencyInterface.class);
         Mockito.doReturn(dependencyBean).when(componentManager)
                 .getBean(Mockito.argThat(a -> a.getClasz().equals(TestDependencyInterface.class)));
 
@@ -124,7 +124,7 @@ public class BaseBeanTests {
         TestDependencyOther testDependencyOther = new TestDependencyOther();
         Mockito.when(dependencyOtherBean.getClasz()).thenReturn(TestDependencyOther.class);
         Mockito.when(dependencyOtherBean.construct(Mockito.any())).thenReturn(testDependencyOther);
-        ComponentSpecification<TestDependencyOtherInterface> testDependencyOtherComponentSpecification = new BaseBeanSpecification<>(TestDependencyOtherInterface.class);
+        TypedComponentSpecification<TestDependencyOtherInterface> testDependencyOtherComponentSpecification = new BaseBeanSpecification<>(TestDependencyOtherInterface.class);
         Mockito.doReturn(dependencyOtherBean).when(componentManager)
                 .getBean(Mockito.argThat(a -> a.getClasz().equals(TestDependencyOtherInterface.class)));
 
@@ -132,7 +132,7 @@ public class BaseBeanTests {
         InterfaceComponent interfaceComponent = new InterfaceComponentImpl();
         Mockito.when(interfaceComponentBean.getClasz()).thenReturn(InterfaceComponent.class);
         Mockito.when(interfaceComponentBean.construct(Mockito.any())).thenReturn(interfaceComponent);
-        ComponentSpecification<InterfaceComponent> interfaceComponentComponentSpecification = new BaseBeanSpecification<>(InterfaceComponent.class);
+        TypedComponentSpecification<InterfaceComponent> interfaceComponentComponentSpecification = new BaseBeanSpecification<>(InterfaceComponent.class);
         Mockito.doReturn(interfaceComponentBean).when(componentManager)
                 .getBean(Mockito.argThat(a -> a.getClasz().equals(InterfaceComponent.class)));
 

@@ -2,10 +2,11 @@ package com.twopizzas.port.data.user;
 
 import com.twopizzas.di.Autowired;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.domain.User;
+import com.twopizzas.domain.user.User;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 
 
@@ -17,13 +18,17 @@ public abstract class AbstractUserMapper<T extends User> {
     public static final String COLUMN_TYPE = "userType";
 
     private static final String CREATE_TEMPLATE =
-            "INSERT INTO " + TABLE_USER + "(" + COLUMN_ID + ", " + COLUMN_USERNAME +
-                    ", " + COLUMN_PASSWORD + ", " + COLUMN_TYPE + ")" + " VALUES (?, ?, ?, ?);";
+            "INSERT INTO " + TABLE_USER +
+                    " (" + COLUMN_ID + ", " + COLUMN_USERNAME + ", " + COLUMN_PASSWORD + ", " + COLUMN_TYPE + ")" +
+                    " VALUES (?, ?, crypt(?, gen_salt('bf')), ?);";
 
     private static final String UPDATE_TEMPLATE =
+  // password has not changed do not encrypt again
             "UPDATE " + TABLE_USER +
-                    " SET " + COLUMN_USERNAME + " = ?, " + COLUMN_PASSWORD + " = ?, " + COLUMN_TYPE + " = ?" +
-                    " WHERE id = ?;";
+            " SET " + COLUMN_USERNAME + " = ?, " +
+                    COLUMN_PASSWORD + " = CASE WHEN password = ? THEN ? ELSE crypt(?, gen_salt('bf')) END, " +
+                    COLUMN_TYPE + " = ?" +
+            " WHERE id = ?;";
 
     private static final String DELETE_TEMPLATE =
             "DELETE FROM " + TABLE_USER + " WHERE id = ?;";
@@ -55,6 +60,8 @@ public abstract class AbstractUserMapper<T extends User> {
     public void abstractUpdate(T entity) {
         new SqlStatement(UPDATE_TEMPLATE,
                 entity.getUsername(),
+                entity.getPassword(),
+                entity.getPassword(),
                 entity.getPassword(),
                 entity.getUserType(),
                 entity.getId().toString()

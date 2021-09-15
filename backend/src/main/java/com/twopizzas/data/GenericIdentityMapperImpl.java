@@ -5,7 +5,7 @@ import com.twopizzas.di.ThreadLocalComponent;
 import java.util.*;
 
 @ThreadLocalComponent
-public class GenericIdentityMapperImpl implements IdentityMapper {
+class GenericIdentityMapperImpl implements IdentityMapper {
 
     private Map<Object, Entity<?>> entities = new HashMap<>();
     private List<Object> goneIds = new ArrayList<>();
