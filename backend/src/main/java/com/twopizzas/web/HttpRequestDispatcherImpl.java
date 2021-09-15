@@ -27,6 +27,12 @@ public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
 
     @Override
     public HttpResponse dispatch(HttpRequest request) {
+        HttpResponse response = doDispatch(request);
+        response.getHeaders().put("Access-Control-Allow-Origin", request.getHeaders().getOrDefault("origin", "*"));
+        return response;
+    }
+
+    private HttpResponse doDispatch(HttpRequest request) {
         List<HttpRequestDelegate> delegates = context.getDelegatesForPath(request.getPath());
         if (delegates.isEmpty()) {
             return buildErrorResponse(request, HttpStatus.NOT_FOUND, null);
@@ -35,7 +41,7 @@ public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
         // handle CORS
         if (request.getMethod().equals(HttpMethod.OPTIONS)) {
             Map<String, String> headers = new HashMap<>();
-            headers.put("Access-Control-Allow-Origin", request.getHeaders().getOrDefault("origin", "*"));
+
             headers.put("Access-Control-Allow-Methods", delegates.stream().flatMap(d -> d.getMethods().stream()).map(HttpMethod::name).distinct().collect(Collectors.joining(", ")));
             headers.put("Access-Control-Allow-Headers", request.getHeaders().getOrDefault("access-control-request-headers", "*"));
             return new HttpResponse(
@@ -69,7 +75,6 @@ public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
             }
 
             Map<String, String> headers = new HashMap<>();
-            headers.put("Access-Control-Allow-Origin", request.getHeaders().getOrDefault("origin", "*"));
             HttpResponse response = new HttpResponse(
                     restResponse.getStatus(),
                     context.getObjectMapper().writeValueAsString(restResponse.getBody()),
