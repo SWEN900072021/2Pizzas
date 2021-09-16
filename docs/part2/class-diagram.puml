@@ -1,0 +1,193 @@
+@startuml 
+
+header Online Travel Booking Application Domain 
+
+class Administrator {
+}
+
+class Customer {
+  givenName
+  surname
+  email
+}
+
+class Booking {
+  date
+  time
+  totalCost
+  bookingReference
+}
+
+class Flight {
+  flightCode
+  departureTime
+  arrivalTime
+  origin
+  destination
+  airline
+}
+
+class Airplane {
+  planeCode
+}
+
+class Airport {
+  airportCode
+  name
+  location
+}
+
+class Seat {
+  aisle
+  letter
+}
+
+class Airline {
+  airlineCode
+  name
+}
+
+enum SeatType {
+  FIRST
+  BUSINESS
+  ECONOMY
+}
+
+enum AirplaneType {
+  AIRBUS
+  BOEING
+}
+
+class Passenger {
+  givenName
+  surname
+  age
+  nationality
+  passportNumber
+}
+
+class User {
+  username
+  password
+}
+
+class Stopover {
+  duration
+}
+
+interface UnitOfWork {
+  Collection<Entity> created
+  Collection<Entity> updated 
+  Collection<Enity> deleted
+  Collection<Entity> read
+
+  init(): void
+  registerCreated(entity: Entity): void
+  registerUpdated(entity: Entity): void
+  registerRead(entity: Entity): void
+  registerDeleted(entity: Entity): void
+  commit(): void
+  rollback(): void
+}
+
+class Entity {
+  id: ID
+  version: long
+}
+
+class UserDataMapper<User> {}
+
+class FlightDataMapper<Flight> {}
+
+class BookingDataMapper<Booking> {}
+
+class AirportDataMapper<Airport> {}
+
+class PassengerDataMapper<Passenger> {}
+
+class SeatDataMapper<Seat> {}
+
+
+interface DataMapper<T> {
+  insert(id: String): void
+  update(T): void
+  delete(id: String): void
+  find(id: String): void
+}
+
+interface IdentiyMapper<Entity, ID> {
+  find(type: String, id: ID) Optional<Entity>
+  register(type: String, entity: Entity): void
+}
+
+interface CRUDRepository<T, ID> {
+  save(t: T): T
+  find(id: ID): T
+  remove(t: T): T
+}
+
+class UserRepository<User, ID> {
+
+}
+
+class FlightRepository<Fight, ID> {
+
+}
+
+class BookingRepository<Booking, ID> {
+
+}
+
+class AirportRepository<Airport, ID> {
+
+}
+
+
+CRUDRepository --> UnitOfWork: unitOfWork
+CRUDRepository --> IdentiyMapper: identityMapper
+CRUDRepository -->"*" DataMapper: dataMappers
+UnitOfWork -->"*" DataMapper: dataMappers
+
+UserRepository .up.|> CRUDRepository 
+FlightRepository .up.|> CRUDRepository 
+BookingRepository .up.|> CRUDRepository
+AirportRepository .up.|> CRUDRepository 
+
+UserDataMapper .up.|> DataMapper
+FlightDataMapper .up.|> DataMapper
+BookingDataMapper .left.|> DataMapper
+AirportDataMapper .right.|> DataMapper
+PassengerDataMapper .right.|> DataMapper
+
+BookingRepository --> UserDataMapper: customerMapper
+BookingRepository --> BookingDataMapper: bookingMapper
+BookingRepository --> PassengerDataMapper: pasengerMapper
+BookingRepository --> FlightDataMapper: flightMapper
+AirportRepository --> AirportDataMapper: airportMapper
+FlightRepository --> FlightDataMapper: flightMapper
+FlightRepository --> UserDataMapper: airlineMapper
+FlightRepository --> AirportDataMapper: airportMapper
+
+
+Booking "*"--down--"1" Flight: is for >
+Booking "*"--down--"0..1" Flight: return flight >
+Booking "*"-right-"*" Seat: is for >
+Booking "*"-left-"*" Passenger: is for >
+Flight "1"-right-"*" Seat: contains >
+Customer "1"---"*" Booking: creates >
+Flight "*"---"1" Airport: destination >
+Flight "*"-down-"1" Airport: origin >
+Administrator "1"-left-"*" Airport: add/remove >
+Airline "1"-right-"*" Flight: creates/deletes >
+Flight "*"---"1" Airplane: uses >
+Seat "*"-down-"1" SeatType: represented by >
+Airline "1"-"*" Airplane: owns >
+Airplane "1"-"*" Seat: contains >
+Airplane "*"-down-"1" AirplaneType: represented by >
+Flight "1"-right-"*" Stopover: has >
+Stopover "*"-"1" Airport: stops at >
+Administrator -|> User
+Customer -|> User
+Airline -|> User
+
+@enduml

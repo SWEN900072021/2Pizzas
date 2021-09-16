@@ -1,21 +1,19 @@
 package com.twopizzas.domain.flight;
 
-import com.twopizzas.data.Entity;
 import com.twopizzas.data.ValueHolder;
 import com.twopizzas.domain.EntityId;
-import com.twopizzas.util.AssertionConcern;
+import com.twopizzas.port.data.DomainEntity;
+import lombok.Getter;
 
-import java.util.Objects;
+@Getter
+public class FlightSeat extends DomainEntity {
 
-public class FlightSeat extends AssertionConcern implements Entity<EntityId> {
-
-    private final EntityId id;
     private final String name;
     private final SeatClass seatClass;
     private final ValueHolder<Flight> flight;
 
     public FlightSeat(EntityId id, String name, SeatClass seatClass, ValueHolder<Flight> flight) {
-        this.id = notNull(id, "id");
+        super(id);
         this.name = notNullAndNotBlank(name, "name");
         this.seatClass = notNull(seatClass, "seatClass");
         this.flight = notNull(flight, "flight");
@@ -25,33 +23,7 @@ public class FlightSeat extends AssertionConcern implements Entity<EntityId> {
         this(EntityId.nextId(), name, seatClass, () -> flight);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public SeatClass getSeatClass() {
-        return seatClass;
-    }
-
     public Flight getFlight() {
         return flight.get();
-    }
-
-    @Override
-    public EntityId getId() {
-        return id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FlightSeat that = (FlightSeat) o;
-        return id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

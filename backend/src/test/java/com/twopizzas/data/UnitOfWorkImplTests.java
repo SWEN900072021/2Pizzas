@@ -40,7 +40,6 @@ public class UnitOfWorkImplTests {
         // THEN
         Mockito.verify(dataSource, Mockito.never()).startNewTransaction();
         Mockito.verify(dataMapperRegistry, Mockito.never()).getForClass(Mockito.any());
-        Mockito.verify(dataSource, Mockito.never()).commitTransaction();
     }
 
     @Test
@@ -57,7 +56,6 @@ public class UnitOfWorkImplTests {
 
         // THEN
         InOrder events = Mockito.inOrder(dataSource, dataMapper);
-        events.verify(dataSource).startNewTransaction();
         events.verify(dataMapper).create(Mockito.eq(entity));
         events.verify(dataSource).commitTransaction();
         events.verifyNoMoreInteractions();
@@ -77,7 +75,6 @@ public class UnitOfWorkImplTests {
 
         // THEN
         InOrder events = Mockito.inOrder(dataSource, dataMapper);
-        events.verify(dataSource).startNewTransaction();
         events.verify(dataMapper).update(Mockito.eq(entity));
         events.verify(dataSource).commitTransaction();
         events.verifyNoMoreInteractions();
@@ -97,7 +94,6 @@ public class UnitOfWorkImplTests {
 
         // THEN
         InOrder events = Mockito.inOrder(dataSource, dataMapper);
-        events.verify(dataSource).startNewTransaction();
         events.verify(dataMapper).delete(Mockito.eq(entity));
         events.verify(dataSource).commitTransaction();
         events.verifyNoMoreInteractions();
@@ -114,9 +110,8 @@ public class UnitOfWorkImplTests {
         unitOfWork.commit();
 
         // THEN
-        Mockito.verify(dataSource, Mockito.never()).startNewTransaction();
         Mockito.verify(dataMapperRegistry, Mockito.never()).getForClass(Mockito.any());
-        Mockito.verify(dataSource, Mockito.never()).commitTransaction();
+        Mockito.verify(dataSource).commitTransaction();
     }
 
     @Test
@@ -134,7 +129,6 @@ public class UnitOfWorkImplTests {
 
         // THEN
         InOrder events = Mockito.inOrder(dataSource, dataMapper);
-        events.verify(dataSource).startNewTransaction();
         events.verify(dataMapper).create(Mockito.eq(entity));
         events.verify(dataSource).commitTransaction();
         events.verifyNoMoreInteractions();
@@ -152,9 +146,8 @@ public class UnitOfWorkImplTests {
         unitOfWork.commit();
 
         // THEN
-        Mockito.verify(dataSource, Mockito.never()).startNewTransaction();
         Mockito.verify(dataMapperRegistry, Mockito.never()).getForClass(Mockito.any());
-        Mockito.verify(dataSource, Mockito.never()).commitTransaction();
+        Mockito.verify(dataSource).commitTransaction();
     }
 
     @Test
@@ -172,7 +165,6 @@ public class UnitOfWorkImplTests {
 
         // THEN
         InOrder events = Mockito.inOrder(dataSource, dataMapper);
-        events.verify(dataSource).startNewTransaction();
         events.verify(dataMapper).update(Mockito.eq(entity));
         events.verify(dataSource).commitTransaction();
         events.verifyNoMoreInteractions();
@@ -193,7 +185,6 @@ public class UnitOfWorkImplTests {
 
         // THEN
         InOrder events = Mockito.inOrder(dataSource, dataMapper);
-        events.verify(dataSource).startNewTransaction();
         events.verify(dataMapper).delete(Mockito.eq(entity));
         events.verify(dataSource).commitTransaction();
         events.verifyNoMoreInteractions();

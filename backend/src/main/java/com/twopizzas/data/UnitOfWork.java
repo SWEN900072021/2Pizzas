@@ -6,4 +6,6 @@ public interface UnitOfWork {
     <T extends Entity<ID>, ID> void registerClean(T entity);
     <T extends Entity<ID>, ID> void registerDeleted(T entity);
     void commit();
+    void start();
+    void rollback();
 }

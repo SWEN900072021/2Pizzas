@@ -31,13 +31,15 @@ public class ComponentLoaderTests {
 
         // THEN
         Assertions.assertNotNull(componentClasses);
-        Assertions.assertEquals(6, componentClasses.size());
+        Assertions.assertEquals(8, componentClasses.size());
         Assertions.assertTrue(componentClasses.contains(TestClientComponent.class));
         Assertions.assertTrue(componentClasses.contains(TestDependency.class));
         Assertions.assertTrue(componentClasses.contains(TestDependencyOther.class));
         Assertions.assertTrue(componentClasses.contains(ModuleComponent.class));
         Assertions.assertTrue(componentClasses.contains(InterfaceComponentImpl.class));
         Assertions.assertTrue(componentClasses.contains(AbstractComponentImpl.class));
+        Assertions.assertTrue(componentClasses.contains(CycleDependencyOne.class));
+        Assertions.assertTrue(componentClasses.contains(CycleDependencyTwo.class));
     }
 
     @Test

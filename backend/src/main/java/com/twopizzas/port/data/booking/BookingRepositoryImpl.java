@@ -1,14 +1,16 @@
 package com.twopizzas.port.data.booking;
 
-import com.twopizzas.data.AbstractRepository;
+import com.twopizzas.port.data.AbstractRepository;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
-import com.twopizzas.domain.*;
+import com.twopizzas.domain.booking.Booking;
+import com.twopizzas.domain.booking.BookingRepository;
+import com.twopizzas.domain.EntityId;
 
 import java.util.List;
 
 @Component
-class BookingRepositoryImpl extends AbstractRepository<Booking, EntityId, BookingSpecification, BookingMapper> implements BookingRepository {
+class BookingRepositoryImpl extends AbstractRepository<Booking, BookingSpecification, BookingMapper> implements BookingRepository {
 
     @Autowired
     public BookingRepositoryImpl(BookingMapper mapper) {

@@ -1,6 +1,6 @@
 package com.twopizzas.port.data.airline;
 
-import com.twopizzas.domain.Airline;
+import com.twopizzas.domain.user.Airline;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import org.junit.jupiter.api.*;
@@ -50,11 +50,15 @@ public class AirlineMapperImplTests {
         Airline oldEntity = new Airline(id, "airline", "password", "qantas", "QN");
         mapper.create(oldEntity);
 
-        Airline updatedEntity = new Airline(id, "airline", "newPassword", "qantas", "QN");
+        Airline updatedEntity = new Airline(id, "newAirline", "newPassword", "newQantas", "newQN");
         mapper.update(updatedEntity);
 
         Airline persisted = mapper.read(id);
-        Assertions.assertEquals(persisted, updatedEntity);
+        Assertions.assertEquals(persisted.getId(), updatedEntity.getId());
+        Assertions.assertEquals(persisted.getUsername(), updatedEntity.getUsername());
+        Assertions.assertNotNull(updatedEntity.getPassword());
+        Assertions.assertEquals(persisted.getName(), updatedEntity.getName());
+        Assertions.assertEquals(persisted.getCode(), updatedEntity.getCode());
     }
 
     @Test

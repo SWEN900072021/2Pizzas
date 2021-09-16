@@ -1,6 +1,8 @@
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 CREATE TABLE "user"
 (
     id       varchar(36) PRIMARY KEY,
@@ -64,13 +66,13 @@ CREATE TABLE flight
 (
     id          varchar(36) PRIMARY KEY,
     code        varchar(255),
-    departure   timestamp,
-    arrival     timestamp,
+    departure   timestamp(3) with time zone,
+    arrival     timestamp(3) with time zone,
     origin      varchar(36),  -- airport ID
     destination varchar(36),  -- airport ID
     airlineId   varchar(36),
     airplaneId  varchar(36),
-    status      varchar(255), -- "scheduled", "ongoing", "deleted"
+    status      varchar(255),
     CONSTRAINT airlineFK
         FOREIGN KEY (airlineId)
             REFERENCES airline (id),
@@ -88,8 +90,8 @@ CREATE TABLE flight
 CREATE TABLE stopover
 (
     flightId  varchar(36),
-    arrival   timestamp,
-    departure timestamp,
+    arrival   timestamp(3) with time zone,
+    departure timestamp(3) with time zone,
     airportId varchar(36),
     CONSTRAINT flightFK
         FOREIGN KEY (flightId)
@@ -103,7 +105,7 @@ CREATE TABLE stopover
 CREATE TABLE booking
 (
     id             varchar(36) PRIMARY KEY,
-    date           timestamp,
+    date           timestamp(3) with time zone,
     totalCost      numeric,
     customerId     varchar(36),
     flightId       varchar(36) NOT NULL,
@@ -149,6 +151,7 @@ CREATE TABLE seatAllocation
 (
     passengerId varchar(36),
     seatId      varchar(36),
+    flightId    varchar(36),
     CONSTRAINT seatFK
         FOREIGN KEY (seatId)
             REFERENCES seat (id),

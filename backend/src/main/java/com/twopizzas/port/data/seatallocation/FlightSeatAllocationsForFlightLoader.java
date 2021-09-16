@@ -16,10 +16,10 @@ public class FlightSeatAllocationsForFlightLoader implements ValueLoader<List<Fl
             "SELECT * FROM (seatAllocation JOIN seat ON seatAllocation.seatId = seat.id) WHERE seat.flightId = ?;";
 
     private final ConnectionPool connectionPool;
-    private final FlightSeatAllocationResultsMapper mapper;
+    private final FlightSeatAllocationMapper mapper;
     private final EntityId flightId;
 
-    public FlightSeatAllocationsForFlightLoader(ConnectionPool connectionPool, FlightSeatAllocationResultsMapper mapper, EntityId flightId) {
+    public FlightSeatAllocationsForFlightLoader(ConnectionPool connectionPool, FlightSeatAllocationMapper mapper, EntityId flightId) {
         this.connectionPool = connectionPool;
         this.mapper = mapper;
         this.flightId = flightId;

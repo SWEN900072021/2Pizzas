@@ -2,8 +2,7 @@ package com.twopizzas.di;
 
 import java.util.Collection;
 
-interface ComponentSpecification<T> {
+public interface ComponentSpecification {
     String describe();
-    Class<T> getClasz();
-    Collection<Bean<T>> filter(Collection<Bean<?>> beans);
+    Collection<Bean<?>> filter(Collection<Bean<?>> beans);
 }

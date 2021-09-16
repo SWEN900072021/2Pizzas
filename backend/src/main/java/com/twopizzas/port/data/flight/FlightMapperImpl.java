@@ -4,7 +4,6 @@ import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.data.LazyValueHolderProxy;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
-import com.twopizzas.domain.Airport;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.flight.Flight;
 import com.twopizzas.port.data.DataMappingException;
@@ -15,12 +14,13 @@ import com.twopizzas.port.data.airport.AirportMapper;
 import com.twopizzas.port.data.db.ConnectionPool;
 import com.twopizzas.port.data.seat.AllSeatsForFlightSpecification;
 import com.twopizzas.port.data.seat.FlightSeatMapper;
-import com.twopizzas.port.data.seatallocation.FlightSeatAllocationResultsMapper;
+import com.twopizzas.port.data.seatallocation.FlightSeatAllocationMapper;
 import com.twopizzas.port.data.seatallocation.FlightSeatAllocationsForFlightLoader;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +44,7 @@ class FlightMapperImpl implements FlightMapper {
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_FLIGHT +
-            " SET " + COLUMN_CODE + " = ?, " + COLUMN_DEPARTURE + " = ?, " + COLUMN_ARRIVAL + " = ?, " + COLUMN_ORIGIN + " = ?" + COLUMN_DESTINATION + " = ?" + COLUMN_AIRLINE_ID + " = ?" + COLUMN_AIRPLANE_ID + " = ?" + COLUMN_STATUS + " = ?" +
+            " SET " + COLUMN_CODE + " = ?, " + COLUMN_DEPARTURE + " = ?, " + COLUMN_ARRIVAL + " = ?, " + COLUMN_ORIGIN + " = ?, " + COLUMN_DESTINATION + " = ?, " + COLUMN_AIRLINE_ID + " = ?, " + COLUMN_AIRPLANE_ID + " = ?, " + COLUMN_STATUS + " = ?" +
             " WHERE id = ?;";
 
     private static final String DELETE_TEMPLATE =
@@ -55,15 +55,35 @@ class FlightMapperImpl implements FlightMapper {
             "SELECT * FROM " + TABLE_FLIGHT +
             " WHERE id = ?;";
 
+    private static final String DELETE_STOPOVERS_TEMPLATE =
+            "DELETE FROM " + FlightStopOversLoader.TABLE_STOPOVER +
+            " WHERE flightId = ?;";
+
+    private static final String INSERT_STOPOVER_TEMPLATE =
+            "INSERT INTO " + FlightStopOversLoader.TABLE_STOPOVER +
+            " (" + FlightStopOversLoader.COLUMN_FLIGHT_ID + ", " + FlightStopOversLoader.COLUMN_ARRIVAL + ", " + FlightStopOversLoader.COLUMN_DEPARTURE + ", " + FlightStopOversLoader.COLUMN_AIRPORT_ID + ")" +
+            " VALUES (?, ?, ?, ?);";
+
+    private static final String DELETE_ALLOCATIONS_TEMPLATE =
+            "DELETE FROM seatAllocation" +
+            " WHERE EXISTS" +
+            " (SELECT 1 FROM seatAllocation JOIN seat ON seat.id = seatAllocation.seatId" +
+            " WHERE seat.flightId = ?);";
+
+    private static final String INSERT_ALLOCATION_TEMPLATE =
+            "INSERT INTO seatAllocation" +
+            " (passengerId, seatId)" +
+            " VALUES (?, ?);";
+
     private final ConnectionPool connectionPool;
     private final FlightSeatMapper flightSeatMapper;
     private final AirlineMapper airlineMapper;
-    private final FlightSeatAllocationResultsMapper flightSeatAllocationMapper;
+    private final FlightSeatAllocationMapper flightSeatAllocationMapper;
     private final AirplaneProfileMapper airplaneProfileMapper;
     private final AirportMapper airportMapper;
 
     @Autowired
-    protected FlightMapperImpl(ConnectionPool connectionPool, FlightSeatMapper flightSeatMapper, AirlineMapper airlineMapper, FlightSeatAllocationResultsMapper flightSeatAllocationMapper, AirplaneProfileMapper airplaneProfileMapper, AirportMapper airportMapper) {
+    protected FlightMapperImpl(ConnectionPool connectionPool, FlightSeatMapper flightSeatMapper, AirlineMapper airlineMapper, FlightSeatAllocationMapper flightSeatAllocationMapper, AirplaneProfileMapper airplaneProfileMapper, AirportMapper airportMapper) {
         this.connectionPool = connectionPool;
         this.flightSeatMapper = flightSeatMapper;
         this.airlineMapper = airlineMapper;
@@ -85,6 +105,9 @@ class FlightMapperImpl implements FlightMapper {
                 entity.getAirplaneProfile().getId().toString(),
                 entity.getStatus().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
+
+        insertAllocations(entity);
+        insertStopOvers(entity);
     }
 
     @Override
@@ -103,8 +126,8 @@ class FlightMapperImpl implements FlightMapper {
     public void update(Flight entity) {
         new SqlStatement(UPDATE_TEMPLATE,
                 entity.getCode(),
-                entity.getDeparture(),
-                entity.getArrival(),
+                entity.getDeparture().withOffsetSameInstant(ZoneOffset.UTC),
+                entity.getArrival().withOffsetSameInstant(ZoneOffset.UTC),
                 entity.getOrigin().getId().toString(),
                 entity.getDestination().getId().toString(),
                 entity.getAirline().getId().toString(),
@@ -112,10 +135,19 @@ class FlightMapperImpl implements FlightMapper {
                 entity.getStatus().toString(),
                 entity.getId().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
+
+        deleteAllocations(entity);
+        insertAllocations(entity);
+
+        deleteStopOvers(entity);
+        insertStopOvers(entity);
     }
 
     @Override
     public void delete(Flight entity) {
+        deleteStopOvers(entity);
+        deleteAllocations(entity);
+
         new SqlStatement(DELETE_TEMPLATE,
                 entity.getId().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
@@ -151,9 +183,9 @@ class FlightMapperImpl implements FlightMapper {
                     BaseValueHolder.of(flightSeatMapper.readAll(new AllSeatsForFlightSpecification(flightSeatMapper, flightId))),
                     airportMapper.read(EntityId.of(resultSet.getObject(COLUMN_ORIGIN, String.class))),
                     airportMapper.read(EntityId.of(resultSet.getObject(COLUMN_DESTINATION, String.class))),
-                    resultSet.getObject(COLUMN_DEPARTURE, OffsetDateTime.class),
-                    resultSet.getObject(COLUMN_ARRIVAL, OffsetDateTime.class),
-                    new FlightStopOversLoader(connectionPool, airportMapper, this, flightId).load().get(),
+                    resultSet.getObject(COLUMN_DEPARTURE, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
+                    resultSet.getObject(COLUMN_ARRIVAL, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
+                    new FlightStopOversLoader(connectionPool, airportMapper, flightId).load().get(),
                     resultSet.getObject(COLUMN_CODE, String.class),
                     Flight.Status.valueOf(resultSet.getObject(COLUMN_STATUS, String.class))
             );
@@ -162,6 +194,32 @@ class FlightMapperImpl implements FlightMapper {
                     "failed to map results from result set to %s entity, error: %s", getEntityClass().getName(), e.getMessage()),
                     e);
         }
+    }
 
+    private void insertAllocations(Flight flight) {
+        flight.getAllocatedSeats().forEach(
+                a -> new SqlStatement(INSERT_ALLOCATION_TEMPLATE,
+                        a.getPassenger().getId().toString(),
+                        a.getSeat().getId().toString()
+                ).doExecute(connectionPool.getCurrentTransaction()));
+    }
+
+    private void deleteAllocations(Flight flight) {
+        new SqlStatement(DELETE_ALLOCATIONS_TEMPLATE,
+                flight.getId().toString()).doExecute(connectionPool.getCurrentTransaction());
+    }
+
+    private void insertStopOvers(Flight entity) {
+        entity.getStopOvers().forEach(
+                s -> new SqlStatement(INSERT_STOPOVER_TEMPLATE,
+                        entity.getId().toString(),
+                        s.getArrival().withOffsetSameInstant(ZoneOffset.UTC),
+                        s.getDeparture().withOffsetSameInstant(ZoneOffset.UTC),
+                        s.getLocation().getId().toString()
+                ).doExecute(connectionPool.getCurrentTransaction()));
+    }
+
+    private void deleteStopOvers(Flight entity) {
+        new SqlStatement(DELETE_STOPOVERS_TEMPLATE, entity.getId().toString()).doExecute(connectionPool.getCurrentTransaction());
     }
 }

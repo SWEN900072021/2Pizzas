@@ -1,7 +1,7 @@
 package com.twopizzas.port.data.booking;
 
 import com.twopizzas.di.Autowired;
-import com.twopizzas.domain.Booking;
+import com.twopizzas.domain.booking.Booking;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.flight.SeatBooking;
 import com.twopizzas.port.data.DataMappingException;
@@ -9,7 +9,7 @@ import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.customer.CustomerMapper;
 import com.twopizzas.port.data.db.ConnectionPool;
 import com.twopizzas.port.data.flight.FlightMapper;
-import com.twopizzas.port.data.seatallocation.FlightSeatAllocationResultsMapper;
+import com.twopizzas.port.data.seatallocation.FlightSeatAllocationMapper;
 import com.twopizzas.port.data.seatallocation.FlightSeatAllocationsForFlightBookingLoader;
 
 import java.math.BigDecimal;
@@ -17,10 +17,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class BookingMapperImpl implements BookingMapper {
+class BookingMapperImpl implements BookingMapper {
 
     static final String TABLE_BOOKING = "booking";
     static final String COLUMN_ID = "id";
@@ -30,19 +30,12 @@ public class BookingMapperImpl implements BookingMapper {
     static final String COLUMN_FLIGHT_ID = "flightid";
     static final String COLUMN_RETURNFLIGHT_ID = "returnflightid";
 
-    private static final String CREATE_WITH_RETURN_TEMPLATE =
+    private static final String CREATE_TEMPLATE =
             "INSERT INTO " + TABLE_BOOKING + "(" + COLUMN_ID + ", " + COLUMN_DATE + ", " + COLUMN_TOTALCOST + ", " + COLUMN_CUSTOMER_ID + ", " + COLUMN_FLIGHT_ID + ", " + COLUMN_RETURNFLIGHT_ID + ")" +
                     " VALUES (?, ?, ?, ?, ? ,?);";
-    private static final String CREATE_TEMPLATE =
-            "INSERT INTO " + TABLE_BOOKING + "(" + COLUMN_ID + ", " + COLUMN_DATE + ", " + COLUMN_TOTALCOST + ", " + COLUMN_CUSTOMER_ID + ", " + COLUMN_FLIGHT_ID + ", " + ")" +
-                    " VALUES (?, ?, ?, ?, ? ,?);";
-    private static final String UPDATE_WITH_RETURN_TEMPLATE =
-            "UPDATE " + TABLE_BOOKING +
-                    " SET " + COLUMN_DATE + " = ?, " + COLUMN_TOTALCOST + " = ?, " + COLUMN_CUSTOMER_ID + " = ?, " + COLUMN_FLIGHT_ID + " = ?, " + COLUMN_RETURNFLIGHT_ID + " = ? " +
-                    " WHERE id = ?;";
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_BOOKING +
-                    " SET " + COLUMN_DATE + " = ?, " + COLUMN_TOTALCOST + " = ?, " + COLUMN_CUSTOMER_ID + " = ?, " + COLUMN_FLIGHT_ID + " = ? " +
+                    " SET " + COLUMN_DATE + " = ?, " + COLUMN_TOTALCOST + " = ?, " + COLUMN_CUSTOMER_ID + " = ?, " + COLUMN_FLIGHT_ID + " = ?, " + COLUMN_RETURNFLIGHT_ID + " = ? " +
                     " WHERE id = ?;";
     private static final String DELETE_TEMPLATE =
             "DELETE FROM " + TABLE_BOOKING +
@@ -51,17 +44,17 @@ public class BookingMapperImpl implements BookingMapper {
             "SELECT * FROM " + TABLE_BOOKING +
                     " WHERE id = ?;";
 
-    private ConnectionPool connectionPool;
+    private final ConnectionPool connectionPool;
 
     private final CustomerMapper customerMapper;
     private final FlightMapper flightMapper;
-    private final FlightSeatAllocationResultsMapper flightSeatAllocationResultsMapper;
+    private final FlightSeatAllocationMapper flightSeatAllocationResultsMapper;
 
     @Autowired
     BookingMapperImpl(ConnectionPool connectionPool,
                       CustomerMapper customerMapper,
                       FlightMapper flightMapper,
-                      FlightSeatAllocationResultsMapper flightSeatAllocationResultsMapper
+                      FlightSeatAllocationMapper flightSeatAllocationResultsMapper
                       ) {
         this.connectionPool = connectionPool;
         this.customerMapper = customerMapper;
@@ -77,26 +70,16 @@ public class BookingMapperImpl implements BookingMapper {
         BigDecimal totalCost = entity.getTotalCost();
         EntityId customerId = entity.getCustomer().getId();
         EntityId flightId = entity.getFlightReservation().getFlight().getId();
+        String returnId = entity.getReturnFlightReservation() == null ? null : entity.getReturnFlightReservation().getFlight().getId().toString();
 
-        if (entity.getReturnFlightReservation() == null) {
-            new SqlStatement(CREATE_TEMPLATE,
-                    bookingId.toString(),
-                    date,
-                    totalCost,
-                    customerId.toString(),
-                    flightId.toString()
-            ).doExecute(connectionPool.getCurrentTransaction());
-        } else {
-            new SqlStatement(CREATE_WITH_RETURN_TEMPLATE,
-                    bookingId.toString(),
-                    date,
-                    totalCost,
-                    customerId.toString(),
-                    flightId.toString(),
-                    entity.getReturnFlightReservation().getFlight().getId().toString()
-            ).doExecute(connectionPool.getCurrentTransaction());
-        }
-
+        new SqlStatement(CREATE_TEMPLATE,
+                bookingId.toString(),
+                date,
+                totalCost,
+                customerId.toString(),
+                flightId.toString(),
+                returnId
+        ).doExecute(connectionPool.getCurrentTransaction());
     }
 
     @Override
@@ -119,25 +102,16 @@ public class BookingMapperImpl implements BookingMapper {
         BigDecimal totalCost = entity.getTotalCost();
         EntityId customerId = entity.getCustomer().getId();
         EntityId flightId = entity.getFlightReservation().getFlight().getId();
+        String returnId = entity.getReturnFlightReservation() == null ? null : entity.getReturnFlightReservation().getFlight().getId().toString();
 
-        if (entity.getReturnFlightReservation() == null) {
-            new SqlStatement(UPDATE_TEMPLATE,
-                    date,
-                    totalCost,
-                    customerId.toString(),
-                    flightId.toString(),
-                    bookingId.toString()
-            ).doExecute(connectionPool.getCurrentTransaction());
-        } else {
-            new SqlStatement(UPDATE_WITH_RETURN_TEMPLATE,
-                    date,
-                    totalCost,
-                    customerId.toString(),
-                    flightId.toString(),
-                    entity.getReturnFlightReservation().getFlight().getId().toString(),
-                    bookingId.toString()
-            ).doExecute(connectionPool.getCurrentTransaction());
-        }
+        new SqlStatement(UPDATE_TEMPLATE,
+                date,
+                totalCost,
+                customerId.toString(),
+                flightId.toString(),
+                returnId,
+                bookingId.toString()
+        ).doExecute(connectionPool.getCurrentTransaction());
     }
 
     @Override
@@ -185,25 +159,24 @@ public class BookingMapperImpl implements BookingMapper {
             EntityId flightId = EntityId.of(resultSet.getObject(COLUMN_FLIGHT_ID, String.class));
             one.addFlight(new SeatBooking(
                     flightMapper.read(flightId),
-                    new FlightSeatAllocationsForFlightBookingLoader(
+                    new HashSet<>(new FlightSeatAllocationsForFlightBookingLoader(
                             connectionPool,
                             flightSeatAllocationResultsMapper,
                             flightId,
-                            bookingId).load().get().stream().collect(Collectors.toSet()
-                    )
+                            bookingId).load().get())
             ));
 
-            EntityId returnFlightId = EntityId.of(resultSet.getObject(COLUMN_RETURNFLIGHT_ID, String.class));
+            String returnId =  resultSet.getObject(COLUMN_RETURNFLIGHT_ID, String.class);
 
-            if (!returnFlightId.toString().isEmpty()) {
+            if (returnId != null) {
+                EntityId returnFlightId = EntityId.of(returnId);
                 one.addReturnFlight(new SeatBooking(
                         flightMapper.read(returnFlightId),
-                        new FlightSeatAllocationsForFlightBookingLoader(
+                        new HashSet<>(new FlightSeatAllocationsForFlightBookingLoader(
                                 connectionPool,
                                 flightSeatAllocationResultsMapper,
                                 returnFlightId,
-                                bookingId).load().get().stream().collect(Collectors.toSet()
-                        )
+                                bookingId).load().get())
                 ));
             }
 

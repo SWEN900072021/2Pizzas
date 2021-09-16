@@ -17,7 +17,7 @@ public class QualifiedBeanSpecificationTests {
         // GIVEN
         Bean<InterfaceComponent> bean = Mockito.mock(Bean.class);
         Mockito.when(bean.getQualifier()).thenReturn(null);
-        ComponentSpecification<InterfaceComponent> wrapped = Mockito.mock(ComponentSpecification.class);
+        TypedComponentSpecification<InterfaceComponent> wrapped = Mockito.mock(TypedComponentSpecification.class);
         Mockito.when(wrapped.filter(Mockito.any())).thenAnswer(args -> args.getArgument(0));
 
         // WHEN
@@ -36,7 +36,7 @@ public class QualifiedBeanSpecificationTests {
         // GIVEN
         Bean<InterfaceComponent> bean = Mockito.mock(Bean.class);
         Mockito.when(bean.getQualifier()).thenReturn("differnt");
-        ComponentSpecification<InterfaceComponent> wrapped = Mockito.mock(ComponentSpecification.class);
+        TypedComponentSpecification<InterfaceComponent> wrapped = Mockito.mock(TypedComponentSpecification.class);
         Mockito.when(wrapped.filter(Mockito.any())).thenAnswer(args -> args.getArgument(0));
 
         // WHEN
@@ -55,7 +55,7 @@ public class QualifiedBeanSpecificationTests {
         // GIVEN
         Bean<InterfaceComponent> bean = Mockito.mock(Bean.class);
         Mockito.when(bean.getQualifier()).thenReturn("qualifier");
-        ComponentSpecification<InterfaceComponent> wrapped = Mockito.mock(ComponentSpecification.class);
+        TypedComponentSpecification<InterfaceComponent> wrapped = Mockito.mock(TypedComponentSpecification.class);
         Mockito.when(wrapped.filter(Mockito.any())).thenAnswer(args -> args.getArgument(0));
 
         // WHEN
