@@ -106,11 +106,35 @@ const AIRPORTS = [
   }
 ]
 
+// HELPER FUNCTIONS
+
+const getLocalStorage = (key) =>
+  JSON.parse(window.localStorage.getItem(key))
+const setLocalStorage = (key, value) =>
+  window.localStorage.setItem(key, JSON.stringify(value))
+
 // STORES
 
 const useTestDataStore = create(
   immer(() => ({
     airports: AIRPORTS
+  }))
+)
+
+const useSessionStore = create(
+  immer((set) => ({
+    token: getLocalStorage('token') || null,
+    setToken: (token) =>
+      set(() => {
+        setLocalStorage('token', token)
+        return { token }
+      }),
+    username: getLocalStorage('username') || null,
+    setSessionValue: (key, value) =>
+      set(() => {
+        setLocalStorage(key, value)
+        return value
+      })
   }))
 )
 
@@ -193,4 +217,4 @@ const useStore = create(
   }))
 )
 
-export { useStore, useFormStore, useTestDataStore }
+export { useStore, useSessionStore, useFormStore, useTestDataStore }

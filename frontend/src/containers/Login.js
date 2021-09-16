@@ -1,22 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
+
+// Hooks
+import { useFormStore, useSessionStore } from '../hooks/Store'
 
 // Containers and Components
 import Button from '../components/Button'
 import TextField from '../components/TextField'
 import NavBar from '../components/NavBar'
 
-// Hooks
-import { useFormStore } from '../hooks/Store'
-
 // Assets
 import thailandPicture from '../assets/thailand.png'
+import { login } from '../api'
 
 const Login = () => {
+  const history = useHistory()
+  const setToken = useSessionStore((state) => state.setToken)
+  const setSessionValue = useSessionStore(
+    (state) => state.setSessionValue
+  )
+
   const username = useFormStore((state) => state.username)
-  const password = useFormStore((state) => state.password)
   const setUsername = useFormStore((state) => state.setUsername)
-  const setPassword = useFormStore((state) => state.setPassword)
+  const [password, setPassword] = useState('')
+
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value)
@@ -28,6 +37,22 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    const user = { username, password }
+
+    login(user)
+      .then((res) => {
+        if (res.status === 200) {
+          setToken(res.data.token)
+          setSessionValue('username', user.username)
+          history.push('/')
+        }
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          setErrorMessage('Invalid username or password.')
+        }
+      })
   }
 
   return (
@@ -40,12 +65,10 @@ const Login = () => {
           alt='Landscape with stone structures in Thailand'
           className='fixed h-screen w-screen object-cover object-center'
         />
-        <h1 className='z-10 text-white text-lg font-bold'>
-          Login
-        </h1>
+        <h1 className='z-10 text-white text-lg font-bold'>Login</h1>
         <form
           onSubmit={handleSubmit}
-          className='z-10 flex flex-wrap flex-col justify-center content-center mx-auto p-5 space-y-4 rounded-xl bg-yellow-50'
+          className='z-10 flex flex-wrap flex-col justify-center items-stretch text-center mx-auto p-5 space-y-4 rounded-xl bg-yellow-50'
         >
           <TextField
             value={username}
@@ -58,6 +81,15 @@ const Login = () => {
             placeholder='Password'
             password
           />
+          <div
+            className={`${
+              !errorMessage
+                ? 'hidden'
+                : 'flex py-1 text-red-500 text-xs text-center'
+            }`}
+          >
+            {errorMessage}
+          </div>
           <Button submit label='Log In' />
           <Link to='/signup'>
             <button
