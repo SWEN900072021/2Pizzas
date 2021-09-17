@@ -65,7 +65,7 @@ const Login = () => {
           alt='Landscape with stone structures in Thailand'
           className='fixed h-screen w-screen object-cover object-center'
         />
-        <h1 className='z-10 text-white text-lg font-bold'>Login</h1>
+        <h1 className='z-10 text-white text-4xl font-bold'>Log in</h1>
         <form
           onSubmit={handleSubmit}
           className='z-10 flex flex-wrap flex-col justify-center items-stretch text-center mx-auto p-5 space-y-4 rounded-xl bg-yellow-50'
@@ -85,7 +85,7 @@ const Login = () => {
             className={`${
               !errorMessage
                 ? 'hidden'
-                : 'flex py-1 text-red-500 text-xs text-center'
+                : 'flex py-1 text-red-500 text-xs self-center'
             }`}
           >
             {errorMessage}
