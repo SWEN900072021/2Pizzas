@@ -6,7 +6,7 @@ info:
 servers:
   - url: https://api.server.test/v1
 paths:
-  /flight/search:
+  /search/flight:
     get:
       operationId: searchFlights
       parameters:
@@ -21,22 +21,22 @@ paths:
           schema:
             $ref: "#/components/schemas/Id"
         - in: query
-          name: departure
+          name: departingBefore
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
         - in: query
-          name: arrival
+          name: departingAfter
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
         - in: query
           name: airline
           required: false
           schema: 
-            type: string
+            $ref: "#/components/schemas/Id"
       responses:
         '200':
           description: OK
@@ -46,6 +46,22 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Flight'
+  /flight:  
+    post:
+      operationId: createFlight
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Flight"
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: "#/components/responses/UnauthorisedError"
   /flight/{id}:
     get:
       operationId: getFlightById
@@ -79,22 +95,8 @@ paths:
           $ref: "#/components/responses/UnauthorisedError"
         '404':
           description: Not Found
-  /flight:  
-    post:
-      operationId: createFlight
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Flight"
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-        '401':
-          $ref: "#/components/responses/UnauthorisedError"
+  /flight/{id}/passenger:
+    get:
   /booking: 
     post: 
       operationId: createBooking
