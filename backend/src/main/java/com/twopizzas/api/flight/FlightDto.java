@@ -1,6 +1,7 @@
 package com.twopizzas.api.flight;
 
 import com.twopizzas.api.search.FlightSearchResultDto;
+import com.twopizzas.domain.flight.Flight;
 import com.twopizzas.domain.flight.SeatClass;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class FlightDto {
     private FlightSearchResultDto.Airport destination;
     private List<FlightSearchResultDto.Seat> seats;
     private List<FlightSearchResultDto.StopOver> stopovers;
+    private Flight.Status status;
 
     @Data
     public static class Seat {

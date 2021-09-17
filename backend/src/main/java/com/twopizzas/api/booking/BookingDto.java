@@ -14,6 +14,7 @@ public class BookingDto {
     private Flight flight;
     private Flight returnFlight;
 
+    @Data
     public static class Flight {
         private String code;
         private OffsetDateTime departure;
@@ -21,8 +22,10 @@ public class BookingDto {
         private Airport origin;
         private Airport destination;
         private List<SeatAllocation> seats;
+        private com.twopizzas.domain.flight.Flight.Status status;
     }
 
+    @Data
     private static class SeatAllocation {
         private String seat;
         private SeatClass seatClass;
@@ -30,6 +33,7 @@ public class BookingDto {
         private String surname;
     }
 
+    @Data
     public static class Airport {
         private String name;
         private String location;
