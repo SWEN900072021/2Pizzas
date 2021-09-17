@@ -1,21 +1,30 @@
 package com.twopizzas.api.search;
 
 import com.twopizzas.api.ValidationUtils;
+import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Controller;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.booking.TimePeriod;
+import com.twopizzas.domain.flight.FlightRepository;
 import com.twopizzas.domain.flight.FlightSearch;
-import com.twopizzas.web.HttpMethod;
-import com.twopizzas.web.QueryParameter;
-import com.twopizzas.web.RequestMapping;
-import com.twopizzas.web.RestResponse;
+import com.twopizzas.web.*;
+import org.mapstruct.factory.Mappers;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class FlightSearchController {
+
+    private static final FlightSearchMapper MAPPER = Mappers.getMapper(FlightSearchMapper.class);
+    private final FlightRepository repository;
+
+    @Autowired
+    public FlightSearchController(FlightRepository repository) {
+        this.repository = repository;
+    }
 
     @RequestMapping(
             path = "/search/flight",
@@ -26,8 +35,7 @@ public class FlightSearchController {
         @QueryParameter("origin") String origin,
         @QueryParameter("departingAfter") String departingAfter,
         @QueryParameter("departingBefore") String departingBefore,
-        @QueryParameter("airline") String airline)
-    {
+        @QueryParameter("airline") String airline) throws HttpException {
         List<String> errors = new ArrayList<>();
         FlightSearch.FlightSearchBuilder builder = FlightSearch.builder();
 
@@ -72,5 +80,29 @@ public class FlightSearchController {
                 builder.from(EntityId.of(origin));
             }
         }
+
+        if (destination != null) {
+            if (!ValidationUtils.isUUID(destination)) {
+                errors.add("destination must be a uuid");
+            } else {
+                builder.to(EntityId.of(destination));
+            }
+        }
+
+        if (airline != null) {
+            if (!ValidationUtils.isUUID(airline)) {
+                errors.add("airline must be a uuid");
+            } else {
+                builder.airline(EntityId.of(airline));
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, String.join(", ", errors));
+        }
+
+        return RestResponse.ok(repository.searchFlights(builder.build()).stream().map(MAPPER::map).collect(Collectors.toList()));
     }
+
+
 }

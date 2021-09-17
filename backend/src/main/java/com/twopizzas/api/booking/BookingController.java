@@ -17,14 +17,14 @@ import com.twopizzas.web.*;
 import java.util.List;
 
 @Controller
-public class NewBookingController {
+public class BookingController {
 
     private final FlightRepository flightRepository;
     private final BookingRepository bookingRepository;
     private final PassengerMapper passengerRepository;
 
     @Autowired
-    public NewBookingController(FlightRepository repository, BookingRepository bookingRepository, PassengerMapper passengerRepository) {
+    public BookingController(FlightRepository repository, BookingRepository bookingRepository, PassengerMapper passengerRepository) {
         this.flightRepository = repository;
         this.bookingRepository = bookingRepository;
         this.passengerRepository = passengerRepository;
