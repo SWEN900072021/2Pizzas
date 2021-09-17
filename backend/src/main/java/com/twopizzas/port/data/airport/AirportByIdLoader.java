@@ -3,7 +3,7 @@ package com.twopizzas.port.data.airport;
 import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.data.ValueHolder;
 import com.twopizzas.data.ValueLoader;
-import com.twopizzas.domain.Airport;
+import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.domain.EntityId;
 
 public class AirportByIdLoader implements ValueLoader<Airport> {

@@ -1,8 +1,7 @@
 package com.twopizzas.port.data.airport;
 
-import com.twopizzas.domain.Airport;
+import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.port.data.DataTestConfig;
-import com.twopizzas.port.data.db.ConnectionPool;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import org.junit.jupiter.api.*;
 

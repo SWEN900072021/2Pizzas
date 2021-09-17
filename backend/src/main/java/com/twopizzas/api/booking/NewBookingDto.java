@@ -1,4 +1,4 @@
-package com.twopizzas.api;
+package com.twopizzas.api.booking;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import java.time.LocalDate;
 import java.util.List;
 @Data
-public class BookingRequestDto {
+public class NewBookingDto {
     private String flightId;
     private String returnId;
     private String customerId;

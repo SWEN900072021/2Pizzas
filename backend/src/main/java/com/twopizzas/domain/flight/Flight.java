@@ -1,16 +1,14 @@
 package com.twopizzas.domain.flight;
 
 import com.twopizzas.data.BaseValueHolder;
-import com.twopizzas.data.Entity;
 import com.twopizzas.data.ValueHolder;
-import com.twopizzas.domain.*;
 import com.twopizzas.domain.EntityId;
+import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.domain.error.BusinessRuleException;
 import com.twopizzas.domain.error.DataFormatException;
 import com.twopizzas.domain.user.Airline;
 import com.twopizzas.port.data.DomainEntity;
-import com.twopizzas.util.AssertionConcern;
 import com.twopizzas.util.ValueViolation;
 import lombok.Getter;
 import lombok.Setter;

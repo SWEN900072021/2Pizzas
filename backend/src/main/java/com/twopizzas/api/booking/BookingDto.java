@@ -1,10 +1,10 @@
-package com.twopizzas.api;
+package com.twopizzas.api.booking;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class BookingResponseDto {
+public class BookingDto {
     private String id;
 }
