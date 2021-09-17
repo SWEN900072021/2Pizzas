@@ -11,7 +11,6 @@ import {
 import { IoIosAirplane, IoIosLogOut } from 'react-icons/io'
 
 import { useSessionStore } from '../hooks/Store'
-import Button from './Button'
 
 const NavBar = () => {
   const history = useHistory()
@@ -60,6 +59,7 @@ const NavBar = () => {
           Pepperoni Planes
         </h1>
       </NavLink>
+      {/* ----------------------------- LOGGED IN MENU ----------------------------- */}
       <Dropdown
         overlay={loggedInMenu}
         trigger={['click']}
@@ -73,6 +73,7 @@ const NavBar = () => {
           <BsChevronDown className='h-5 w-5 text-gray-600' />
         </span>
       </Dropdown>
+      {/* ----------------------------- LOGGED OUT MENU ---------------------------- */}
       <span className={`${token && 'hidden'}`}>
         {history.location.pathname === '/login' ||
         history.location.pathname === '/signup' ? (
@@ -80,10 +81,11 @@ const NavBar = () => {
             <NavLink to='/'>
               <button
                 type='button'
-                className='p-3 rounded-lg transition-colors bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white font-bold'
+                className='p-2 sm:py-3 sm:px-4 rounded-lg transition-colors border-2 border-yellow-500 bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white font-bold'
               >
                 <span className='flex gap-2 justify-center items-center'>
-                  <BsChevronLeft /> Back to Home
+                  <BsChevronLeft />
+                  Back to Home
                 </span>
               </button>
             </NavLink>
@@ -91,12 +93,17 @@ const NavBar = () => {
         ) : (
           <span className='flex justify-center items-center gap-3'>
             <NavLink to='/login'>
-              <Button label='Log In' />
+              <button
+                type='button'
+                className='p-2 sm:py-3 sm:px-4 rounded-lg transition-colors border-2 border-yellow-500 bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white font-bold'
+              >
+                Log In
+              </button>
             </NavLink>
             <NavLink to='/signup'>
               <button
                 type='button'
-                className='py-3 px-4 rounded-lg bg-white border-2 border-yellow-500 text-yellow-600 font-bold hover:border-yellow-500 hover:bg-yellow-600 hover:text-white transition-colors'
+                className='p-2 sm:py-3 sm:px-4 rounded-lg border-2 border-yellow-500 bg-white text-yellow-600 font-bold hover:border-yellow-500 hover:bg-yellow-600 hover:text-white transition-colors'
               >
                 Sign Up
               </button>
