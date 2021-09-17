@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom'
 import { useFormStore, useSessionStore } from '../hooks/Store'
 
 // Containers and Components
-import Button from '../components/Button'
 import TextField from '../components/TextField'
 import NavBar from '../components/NavBar'
+import Spinner from '../components/Spinner'
 
 // Assets
 import thailandPicture from '../assets/thailand.png'
@@ -25,6 +25,7 @@ const Login = () => {
   const setUsername = useFormStore((state) => state.setUsername)
   const [password, setPassword] = useState('')
 
+  const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
   const handleUsernameChange = (e) => {
@@ -40,16 +41,20 @@ const Login = () => {
 
     const user = { username, password }
 
+    setLoading(true)
+
     login(user)
       .then((res) => {
         if (res.status === 200) {
           setToken(res.data.token)
           setSessionValue('username', user.username)
+          setLoading(false)
           history.push('/')
         }
       })
       .catch((err) => {
         if (err.response.status === 401) {
+          setLoading(false)
           setErrorMessage('Invalid username or password.')
         }
       })
@@ -65,17 +70,19 @@ const Login = () => {
           alt='Landscape with stone structures in Thailand'
           className='fixed h-screen w-screen object-cover object-center'
         />
-        <h1 className='z-10 text-white text-4xl font-bold'>Log in</h1>
+        <h1 className='z-10 text-white text-4xl font-bold'>Log In</h1>
         <form
           onSubmit={handleSubmit}
           className='z-10 flex flex-wrap flex-col justify-center items-stretch text-center mx-auto p-5 space-y-4 rounded-xl bg-yellow-50'
         >
           <TextField
+            required
             value={username}
             onChange={handleUsernameChange}
             placeholder='Username'
           />
           <TextField
+            required
             value={password}
             onChange={handlePasswordChange}
             placeholder='Password'
@@ -90,7 +97,20 @@ const Login = () => {
           >
             {errorMessage}
           </div>
-          <Button submit label='Log In' />
+          <button
+            type='submit'
+            className='p-3 rounded-lg transition-colors bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white font-bold'
+          >
+            <span className={`${loading && 'hidden'}`}>Log In</span>
+            <span
+              className={`${
+                !loading && 'hidden'
+              } flex justify-center items-center gap-3`}
+            >
+              Logging in...
+              <Spinner />
+            </span>
+          </button>
           <Link to='/signup'>
             <button
               type='button'

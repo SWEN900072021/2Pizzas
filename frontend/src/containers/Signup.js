@@ -5,6 +5,7 @@ import { useHistory } from 'react-router'
 // import Button from '../components/Button'
 import TextField from '../components/TextField'
 import NavBar from '../components/NavBar'
+import Spinner from '../components/Spinner'
 
 // Hooks
 import { useFormStore, useSessionStore } from '../hooks/Store'
@@ -31,6 +32,7 @@ const Signup = () => {
   const setSurname = useFormStore((state) => state.setSurname)
   const setEmail = useFormStore((state) => state.setEmail)
 
+  const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
   const handleChange = (e) => {
@@ -58,16 +60,20 @@ const Signup = () => {
       password
     }
 
+    setLoading(true)
+
     signup(user)
       .then((res) => {
         if (res.status === 200) {
           setToken(res.data.token)
           setSessionValue('username', user.username)
+          setLoading(false)
           history.push('/')
         }
       })
-      .catch((err) => {
-        console.log(err)
+      .catch(() => {
+        // console.log(err)
+        setLoading(false)
         setErrorMessage('Cannot create user.')
       })
   }
@@ -83,37 +89,47 @@ const Signup = () => {
           className='fixed h-screen w-screen object-cover object-center'
         />
         <h1 className='z-10 text-white text-4xl font-bold'>
-          Sign up
+          Sign Up
         </h1>
         <form
           onSubmit={handleSubmit}
-          className='z-10 bg-green-600 flex flex-wrap flex-col mx-auto space-y-4 p-5 rounded-xl'
+          className='z-10 bg-blue-50 flex flex-wrap flex-col mx-auto space-y-4 p-5 rounded-xl'
         >
           <TextField
+            required
+            className='focus:ring-blue-500'
             value={username}
             name='Username'
             onChange={handleChange}
             placeholder='Username'
           />
           <TextField
+            required
+            className='focus:ring-blue-500'
             value={givenName}
             name='Given Name'
             onChange={handleChange}
             placeholder='Given Name'
           />
           <TextField
+            required
+            className='focus:ring-blue-500'
             value={surname}
             name='Surname'
             onChange={handleChange}
             placeholder='Surname'
           />
           <TextField
+            required
+            className='focus:ring-blue-500'
             value={email}
             name='Email'
             onChange={handleChange}
             placeholder='Email'
           />
           <TextField
+            required
+            className='focus:ring-blue-500'
             value={password}
             name='Password'
             onChange={handleChange}
@@ -131,9 +147,17 @@ const Signup = () => {
           </div>
           <button
             type='submit'
-            className='self-center rounded-sm text-sm px-1 text-yellow-800 hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:underline'
+            className='p-3 rounded-lg transition-colors bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white font-bold'
           >
-            Confirm
+            <span className={`${loading && 'hidden'}`}>Sign Up</span>
+            <span
+              className={`${
+                !loading && 'hidden'
+              } flex justify-center items-center gap-3`}
+            >
+              Signing up...
+              <Spinner />
+            </span>
           </button>
         </form>
       </section>

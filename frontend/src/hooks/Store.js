@@ -133,7 +133,14 @@ const useSessionStore = create(
     setSessionValue: (key, value) =>
       set(() => {
         setLocalStorage(key, value)
-        return value
+        return { [key]: value }
+      }),
+    resetSession: () =>
+      set(() => {
+        setLocalStorage('token', null)
+        setLocalStorage('username', null)
+
+        return { token: null, username: null }
       })
   }))
 )
