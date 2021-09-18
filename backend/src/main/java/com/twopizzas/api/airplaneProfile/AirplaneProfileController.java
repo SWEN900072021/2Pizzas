@@ -1,17 +1,15 @@
 package com.twopizzas.api.airplaneProfile;
 
 import com.twopizzas.api.ValidationUtils;
-import com.twopizzas.domain.flight.AirplaneProfile;
-import com.twopizzas.domain.flight.AirplaneProfileRepository;
-import com.twopizzas.port.data.airplane.AirplaneProfileMapper;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Controller;
 import com.twopizzas.domain.EntityId;
+import com.twopizzas.domain.flight.AirplaneProfile;
+import com.twopizzas.domain.flight.AirplaneProfileRepository;
 import com.twopizzas.domain.user.Administrator;
 import com.twopizzas.web.*;
 import org.mapstruct.factory.Mappers;
 
-import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +53,6 @@ public class AirplaneProfileController {
             path = "/airplane-profile/{id}",
             method = HttpMethod.GET
     )
-    @Authenticated(Administrator.TYPE)
     public RestResponse<AirplaneProfileDto> getAirplaneProfileById(@PathVariable("id") String id) throws HttpException {
         if (!ValidationUtils.isUUID(id)) {
             throw new HttpException(HttpStatus.BAD_REQUEST, "id must be a uuid");

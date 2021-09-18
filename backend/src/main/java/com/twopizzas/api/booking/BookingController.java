@@ -13,12 +13,14 @@ import com.twopizzas.domain.user.Customer;
 import com.twopizzas.domain.user.User;
 import com.twopizzas.port.data.passenger.PassengerMapper;
 import com.twopizzas.web.*;
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
 @Controller
 public class BookingController {
 
+    private static final BookingMapper MAPPER = Mappers.getMapper(BookingMapper.class);
     private final FlightRepository flightRepository;
     private final BookingRepository bookingRepository;
     private final PassengerMapper passengerRepository;
@@ -80,6 +82,6 @@ public class BookingController {
         booking.addFlight(flightSeatBooking);
         booking.addReturnFlight(returnSeatBooking);
         bookingRepository.save(booking);
-        return RestResponse.ok(new BookingDto().setId(booking.getId().toString()));
+        return RestResponse.ok(MAPPER.map(booking));
     }
 }

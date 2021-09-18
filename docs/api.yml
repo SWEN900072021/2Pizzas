@@ -1,8 +1,8 @@
-openapi: '3.0.2'
+openapi: "3.0.2"
 
 info:
   title: 2Pizzas API
-  version: '1.0'
+  version: "1.0"
 servers:
   - url: https://api.server.test/v1
 paths:
@@ -11,12 +11,12 @@ paths:
       operationId: searchFlights
       parameters:
         - in: query
-          name: destinationId
+          name: destination
           required: false
           schema:
             $ref: "#/components/schemas/Id"
         - in: query
-          name: arrivalId
+          name: arrival
           required: false
           schema:
             $ref: "#/components/schemas/Id"
@@ -35,18 +35,18 @@ paths:
         - in: query
           name: airline
           required: false
-          schema: 
+          schema:
             $ref: "#/components/schemas/Id"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Flight'
-  /flight:  
+                  $ref: "#/components/schemas/FlightSearchResult"
+  /flight:
     post:
       operationId: createFlight
       requestBody:
@@ -54,13 +54,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Flight"
+              $ref: "#/components/schemas/NewFlight"
       responses:
-        '200':
+        "200":
           description: OK
-        '400':
-          description: Bad Request
-        '401':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Flight"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
           $ref: "#/components/responses/UnauthorisedError"
   /flight/{id}:
     get:
@@ -70,16 +76,20 @@ paths:
           name: id
           required: true
           schema:
-            $ref: '#/components/schemas/Id'
+            $ref: "#/components/schemas/Id"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Flight"
-        '404':
-          description: Not Found
+        "401":
+          $ref: "#/components/responses/UnauthorisedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
     patch:
       operationId: updateFlight
       requestBody:
@@ -89,162 +99,168 @@ paths:
             schema:
               $ref: "#/components/schemas/Flight"
       responses:
-        '200':
+        "200":
           description: OK
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorisedError"
-        '404':
-          description: Not Found
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
   /flight/{id}/passenger:
     get:
-  /booking: 
-    post: 
+      operationId: getFlightPassengers
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            $ref: "#/components/schemas/Id"
+      responses:
+        "200":
+          description: OK
+        "401":
+          $ref: "#/components/responses/UnauthorisedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+  /booking:
+    post:
       operationId: createBooking
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Booking"
+              $ref: "#/components/schemas/NewBooking"
       responses:
-        '200':
+        "200":
           description: OK
-        '400':
-          description: Bad Request
-  /booking/{id}:  
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorisedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+  /customer/booking:
     get:
-      operationId: getBookingById
-      parameters:
-        - in: query
-          name: bookingId
-          required: true
-          schema:
-            $ref: "#/components/schemas/Id"
+      operationId: getCustomerBookings
       responses:
-        '200':
-          description: OK
-        '401':
+        "200":
+          description: All customer bookings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
           $ref: "#/components/responses/UnauthorisedError"
-        '404':
-          description: Not Found
-    patch:  
-      operationId: updateBooking
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Booking"
-      responses:
-        '200':
-          description: OK
-        '401':
-          $ref: "#/components/responses/UnauthorisedError"
-        '404':
-          description: Not Found
+        "404":
+          $ref: "#/components/responses/NotFoundError"
   /airport:
     post:
       operationId: createAirport
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Flight"
+              $ref: "#/components/schemas/NewAirport"
       responses:
-        '201':
+        "201":
           description: Airport created
-        '400':
-          description: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorisedError'
-  /airport/{id}:
-    get:
-      operationId: getAirportById
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            $ref: '#/components/schemas/Id'
-      responses:
-        '200':
-          description: OK
-        '401':
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
           $ref: "#/components/responses/UnauthorisedError"
-        '404':
-          description: Not Found
+    get:
+      operationId: getAllAirports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Airport"
+      responses:
+        "201":
+          description: User created
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorisedError"
   /airplane-profile:
     post:
       operationId: createAirplaneProfile
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Airplane"
+              $ref: "#/components/schemas/NewAirplaneProfile"
       responses:
-        '201':
-          description: AirplaneProfile created
-        '400':
-          description: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorisedError'
-  /airplane-profile/{id}:  
-    get:
-      operationId: getAirplaneProfileById
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            $ref: '#/components/schemas/Id'
-      responses:
-        '200':
-          description: OK
-        '401':
+        "201":
+          description: Airport created
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
           $ref: "#/components/responses/UnauthorisedError"
-        '404':
-          description: Not Found
-  /user:
     get:
-      operationId: getAllUsers
-      responses:
-        '200':
-          description: OK
-        '401':
-          $ref: '#/components/responses/UnauthorisedError'
-    post:
-      operationId: createUser
+      operationId: getAllAirplaneProfiles
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateUserSchema'
+              type: array
+              items:
+                $ref: "#/components/schemas/AirplaneProfile"
       responses:
-        '201':
+        "201":
           description: User created
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorisedError'
-
-  /user/{id}:
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorisedError"
+  /user:
     get:
-      operationId: getUserById
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            $ref: '#/components/schemas/Id'
+      operationId: getAllUsers
       responses:
-        '200':
+        "200":
           description: OK
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorisedError'
+        "401":
+          $ref: "#/components/responses/UnauthorisedError"
+  /airline:
+    post:
+      operationId: createAirline
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAirline"
+      responses:
+        "201":
+          description: Airline created
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorisedError"
+  /admin:
+    post:
+      operationId: createAdmin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAdmin"
+      responses:
+        "201":
+          description: Admin created
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorisedError"
   /signup:
     post:
       operationId: signup
@@ -253,16 +269,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SignUpSchema'
+              $ref: "#/components/schemas/SignUp"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JWT'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
+                $ref: "#/components/schemas/JWT"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
   /login:
     post:
       operationId: login
@@ -271,23 +287,83 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LogInSchema'
+              $ref: "#/components/schemas/LogIn"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JWT'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
+                $ref: "#/components/schemas/JWT"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
 
 components:
   schemas:
     Id:
       type: string
       format: uuid
-    Booking:
+    Passenger:
+      type: object
+      properties:
+        givenName: 
+          type: string
+        surname:
+          type: string
+        passportNumber:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        nationality:
+          type: string
+        seatName:
+          type: string
+    BookingCustomer:
+      type: object
+      properties:
+        username:
+          type: string
+        givenName:
+          type: string
+        surname:
+          type: string
+    PassengerBooking:
+      type: object
+      properties:
+        givenName: 
+          type: string
+        surname:
+          type: string
+        passportNumber:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        nationality:
+          type: string
+        seatName:
+          type: string
+        seatAllocations:
+          type: array
+          items: 
+            type: object
+            properties:
+              seatName:
+                type: string
+              flightId:
+                $ref: "#/components/schemas/Id"
+            required:
+              - seatName
+              - flightId
+      required:
+        - givenName
+        - surname
+        - passportNumber
+        - dateOfBirth
+        - nationality
+        - seatName
+    NewBooking:
       type: object
       properties:
         flightId:
@@ -297,104 +373,328 @@ components:
         passengers:
           type: array
           items:
-            type: object
-            properties:
-              firstName:
-                type: string
-              lastName:
-                type: string
-              dateOfBirth:
-                type: string
-                format: date
-              nationality:
-                type: string
-              passportNumber:
-                type: string
-              flights:
-                type: object
-                properties:
-                  flightId:
-                    $ref: "#/components/schemas/Id"
-                  seatNumber:
-                    type: string
-                required:
-                  - flightId
-                  - seatNumber
-          required:
-            - firstName
-            - lastName
-            - dateOfBirth
-            - nationality
-            - passportNumber
-            - flights
-      required: 
-      - flightId
-      - passengers
-    UserType:
-      type: string
-      enum: ['administrator', 'airline']
-    Flight:
+            $ref: "#/components/schemas/PassengerBooking"
+    FlightBooking:
       type: object
       properties:
-        airplane:
-          type: string
         airline:
-          type: string
+          $ref: "#/components/schemas/AirlineDescription"
         origin:
-          type: string
+          $ref: "#/components/schemas/AirportDescription"
         destination:
-          type: string
+          $ref: "#/components/schemas/AirportDescription"
         departure:
           type: string
           format: date-time
         arrival:
           type: string
           format: date-time
-        stopovers:
+        code:
+          type: string
+        status:
+          $ref: "#/components/schemas/FlightStatus"
+        seatAllocations:
           type: array
           items:
-            type: object
-            properties:
-              location:
-                type: string
-              arrival:
-                type: string
-                format: date-time
-              departure:
-                type: string
-                format: date-time
-              code:
-                type: string
-              status:
-                type: string
-          required:
-            - airplane
-            - airline
-            - seats
-            - origin
-            - destination
-            - departure
-            - arrival
-        
-        
-    CreateUserSchema:
+           $ref: "#/components/schemas/Passenger"
+    Booking:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        flight:
+          $ref: "#/components/schemas/FlightBooking"
+        returnFlight:
+          $ref: "#/components/schemas/FlightBooking"
+        customer:
+          $ref: "#/components/schemas/BookingCustomer"
+      required:
+        - id
+        - flight
+        - returnFlight
+        - customer
+    AirportDescription:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        location:
+          type: string
+    AirlineDescription:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+    AirplaneProfileDescription:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+    AirplaneProfile:
+      type: object
+      properties:
+        id: 
+          $ref: "#/components/schemas/Id"
+        name:
+          type: string
+        code:
+          type: string
+        firstClassRows:
+          type: number
+          format: int32
+        firstClassColumns:
+          type: number
+          format: int32
+        businessClassRows:
+          type: number
+          format: int32
+        businessClassColumns:
+          type: number
+          format: int32
+        economyClassRows:
+          type: number
+          format: int32
+        economyClassColumns:
+          type: number
+          format: int32
+    NewAirplaneProfile:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        firstClassRows:
+          type: number
+          format: int32
+          minimum: 0
+        firstClassColumns:
+          type: number
+          format: int32
+          minimum: 0
+        businessClassRows:
+          type: number
+          format: int32
+          minimum: 0
+        businessClassColumns:
+          type: number
+          format: int32
+          minimum: 0
+        economyClassRows:
+          type: number
+          format: int32
+          minimum: 0
+        economyClassColumns:
+          type: number
+          format: int32
+          minimum: 0
+      required:
+        - name
+        - code
+    UserType:
+      type: string
+      enum:
+        - administrator
+        - airline
+        - customer
+    FlightStatus:
+      type: string
+      enum:
+        - TO_SCHEDULE
+        - CANCELLED
+        - DELAYED
+    NewStopOver:
+      type: object
+      properties:
+        location:
+          $ref: "#/components/schemas/Id"
+        departure:
+          type: string
+          format: date-time
+        arrival:
+          type: string
+          format: date-time
+    NewFlight:
+      type: object
+      properties:
+        profile:
+          $ref: "#/components/schemas/Id"
+        origin:
+          $ref: "#/components/schemas/Id"
+        destination:
+          $ref: "#/components/schemas/Id"
+        departure:
+          type: string
+          format: date-time
+        arrival:
+          type: string
+          format: date-time
+        stopOvers:
+          type: array
+          items:
+            $ref: "#/components/schemas/NewStopOver"
+      required:
+        - profile
+        - airline
+        - origin
+        - destination
+        - departure
+        - arrival
+    StopOver:
+      type: object
+      properties:
+        location:
+          $ref: "#/components/schemas/AirportDescription"
+        departure:
+          type: string
+          format: date-time
+        arrival:
+          type: string
+          format: date-time
+    SeatClass:
+      type: string
+      enum:
+        - FIRST
+        - BUSINESS
+        - ECONOMY
+    FlightSeat:
+      type: object
+      properties:
+        name:
+          type: string
+        seatClass:
+          $ref: "#/components/schemas/SeatClass"
+    Flight:
+      type: object
+      properties:
+        airplane:
+          $ref: "#/components/schemas/AirplaneProfileDescription"
+        airline:
+          $ref: "#/components/schemas/AirlineDescription"
+        origin:
+          $ref: "#/components/schemas/AirportDescription"
+        destination:
+          $ref: "#/components/schemas/AirportDescription"
+        departure:
+          type: string
+          format: date-time
+        arrival:
+          type: string
+          format: date-time
+        code:
+          type: string
+        status:
+          $ref: "#/components/schemas/FlightStatus"
+        seats:
+          type: array
+          items:
+            $ref: "#/components/schemas/FlightSeat"
+        stopOvers:
+          type: array
+          items:
+            $ref: "#/components/schemas/StopOver"
+    FlightSeatSearchResult:
+      type: object
+      properties:
+        name:
+          type: string
+        seatClass:
+          $ref: "#/components/schemas/SeatClass"
+        booked:
+          type: boolean
+    FlightSearchResult:
+      type: object
+      properties:
+        airplane:
+          $ref: "#/components/schemas/AirplaneProfileDescription"
+        airline:
+          $ref: "#/components/schemas/AirlineDescription"
+        origin:
+          $ref: "#/components/schemas/AirportDescription"
+        destination:
+          $ref: "#/components/schemas/AirportDescription"
+        departure:
+          type: string
+          format: date-time
+        arrival:
+          type: string
+          format: date-time
+        code:
+          type: string
+        status:
+          $ref: "#/components/schemas/FlightStatus"
+        seats:
+          type: array
+          items:
+            $ref: "#/components/schemas/FlightSeatSearchResult"
+        stopOvers:
+          type: array
+          items:
+            $ref: "#/components/schemas/StopOver"
+    NewAirport:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        location:
+          type: string
+        zoneId:
+          type: string
+          format: timezoneId
+      required:
+        - name
+        - code
+        - location
+        - zoneId
+    Airport:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        name:
+          type: string
+        code:
+          type: string
+        location:
+          type: string
+        zoneId:
+          type: string
+          format: timezoneId
+    NewAdmin:
       type: object
       required:
         - username
         - password
-        - userType
       properties:
         username:
           type: string
         password:
           type: string
-        userType:
-          $ref: '#/components/schemas/UserType'
+    NewAirline:
+      type: object
+      required:
+        - username
+        - password
+        - code
+        - name
+      properties:
+        username:
+          type: string
+        password:
+          type: string
         code:
           type: string
         name:
           type: string
-    SignUpSchema:
+    SignUp:
       type: object
       required:
         - username
@@ -414,30 +714,32 @@ components:
           type: string
         surname:
           type: string
-    LogInSchema:
+    LogIn:
       type: object
       properties:
         username:
           type: string
         password:
           type: string
+      required:
+        - username
+        - password
     JWT:
       type: object
       properties:
         token:
           type: string
-        user:
-          type: object
-          properties:
-            id:
-              $ref: '#/components/schemas/Id'
-            username:
-              type: string
   responses:
     UnauthorisedError:
-      description: Access token is missing or invalid
+      description: UnauthorisedError
     BadRequestError:
       description: Bad request
+    NotFoundError:
+      description: Not Found
+    ForbiddenError:
+      description: Forbidden
+    ConflictError:
+      description: Conflict
   securitySchemes:
     BearerAuth:
       type: http

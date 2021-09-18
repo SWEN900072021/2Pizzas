@@ -9,12 +9,12 @@ import java.util.List;
 public class NewAirplaneProfileDto {
     private String code;
     private String type;
-    private Integer firstClassRows;
-    private Integer firstClassColumns;
-    private Integer businessClassRows;
-    private Integer businessClassColumns;
-    private Integer economyClassRows;
-    private Integer economyClassColumns;
+    private int firstClassRows;
+    private int firstClassColumns;
+    private int businessClassRows;
+    private int businessClassColumns;
+    private int economyClassRows;
+    private int economyClassColumns;
 
     public List<String> validate() {
         List<String> errors = new ArrayList<>();
@@ -24,23 +24,23 @@ public class NewAirplaneProfileDto {
         if (type == null || type.trim().isEmpty()) {
             errors.add("type must not be blank");
         }
-        if (firstClassRows == null) {
-            errors.add("first class rows must not be blank");
+        if (firstClassRows < 0) {
+            errors.add("firstClassRows must not be less than 0");
         }
-        if (firstClassColumns == null) {
-            errors.add("first class columns must not be blank");
+        if (firstClassColumns < 0) {
+            errors.add("firstClassColumns must not be less than 0");
         }
-        if (businessClassRows == null) {
-            errors.add("business class rows must not be blank");
+        if (businessClassRows < 0) {
+            errors.add("businessClassRows must not be less than 0");
         }
-        if (businessClassColumns == null) {
-            errors.add("business class columns must not be blank");
+        if (businessClassColumns < 0) {
+            errors.add("businessClassColumns must not be less than 0");
         }
-        if (economyClassRows == null) {
-            errors.add("economy class rows must not be blank");
+        if (economyClassRows < 0) {
+            errors.add("economyClassRows must not be less than 0");
         }
-        if (economyClassColumns == null) {
-            errors.add("economy class columns must not be blank");
+        if (economyClassColumns < 0) {
+            errors.add("economyClassColumns must not be less than 0");
         }
         return errors;
     }
