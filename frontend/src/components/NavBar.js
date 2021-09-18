@@ -48,7 +48,7 @@ const NavBar = () => {
   )
 
   return (
-    <nav className='fixed w-screen top-0 z-30 px-5 py-3 h-16 bg-white shadow-md focus:outline-none flex items-center justify-between'>
+    <nav className='w-screen top-0 z-30 px-5 py-3 h-16 bg-white shadow-md focus:outline-none flex items-center justify-between'>
       <NavLink to='/' className='group inline-flex gap-3 '>
         <FaPizzaSlice className='text-yellow-600 h-8 w-8 group-hover:text-yellow-700 transition-colors' />
         <h1 className='font-medium text-2xl text-gray-800 group-hover:text-gray-600 transition-colors'>
