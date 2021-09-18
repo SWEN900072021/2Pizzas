@@ -97,10 +97,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Flight"
+              $ref: "#/components/schemas/FlightUpdate"
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Flight"
         "401":
           $ref: "#/components/responses/UnauthorisedError"
         "403":
@@ -119,6 +123,12 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/Passenger"
         "401":
           $ref: "#/components/responses/UnauthorisedError"
         "403":
@@ -137,6 +147,10 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
         "400":
           $ref: "#/components/responses/BadRequestError"
         "401":
@@ -154,7 +168,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Booking"
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
         "400":
           $ref: "#/components/responses/BadRequestError"
         "401":
@@ -172,22 +188,25 @@ paths:
       responses:
         "201":
           description: Airport created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Airport"
         "400":
           $ref: "#/components/responses/BadRequestError"
         "401":
           $ref: "#/components/responses/UnauthorisedError"
     get:
       operationId: getAllAirports
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/Airport"
       responses:
-        "201":
-          description: User created
+        "200":
+          description: All airports
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Airport"
         "400":
           $ref: "#/components/responses/BadRequestError"
         "401":
@@ -202,23 +221,22 @@ paths:
               $ref: "#/components/schemas/NewAirplaneProfile"
       responses:
         "201":
-          description: Airport created
+          description: Airplane profile created
         "400":
           $ref: "#/components/responses/BadRequestError"
         "401":
           $ref: "#/components/responses/UnauthorisedError"
     get:
       operationId: getAllAirplaneProfiles
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/AirplaneProfile"
       responses:
-        "201":
+        "200":
           description: User created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AirplaneProfile"
         "400":
           $ref: "#/components/responses/BadRequestError"
         "401":
@@ -282,7 +300,6 @@ paths:
   /login:
     post:
       operationId: login
-      security: []
       requestBody:
         content:
           application/json:
