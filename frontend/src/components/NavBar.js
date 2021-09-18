@@ -32,7 +32,7 @@ const NavBar = () => {
         </NavLink>
       </Menu.Item>
       <Menu.Item key='1'>
-        <NavLink to='/dashboard' className='flex gap-2 items-center'>
+        <NavLink to='/dashboard/myInfo' className='flex gap-2 items-center'>
           <BsPerson className='h-5 w-5 text-gray-600' />
           Account dashboard
         </NavLink>
@@ -52,7 +52,7 @@ const NavBar = () => {
   )
 
   return (
-    <nav className='fixed w-screen top-0 z-30 px-5 py-3 h-16 bg-white shadow-md focus:outline-none flex items-center justify-between'>
+    <nav className='w-full top-0 z-30 px-5 py-3 h-16 bg-white shadow-md focus:outline-none flex items-center justify-between'>
       <NavLink to='/' className='group inline-flex gap-3 '>
         <FaPizzaSlice className='text-yellow-600 h-8 w-8 group-hover:text-yellow-700 transition-colors' />
         <h1 className='font-medium text-2xl text-gray-800 group-hover:text-gray-600 transition-colors'>
