@@ -92,15 +92,18 @@ const FlightListings = () => {
       cost: 500
     }
   ]
+
   return (
-    <main className='h-screen'>
+    <main className='h-screen w-full flex flex-col items-start'>
       <NavBar />
-      <section className='h-full flex flex-col justify-start items-center gap-10'>
+      <section className='h-full w-full self-center mt-8 flex md:max-w-screen-md flex-col justify-start items-stretch gap-10'>
         <FlightSearch />
         {/* <FlightFilter /> */}
-        {flights.map((flight) => (
-          <FlightCard flight={flight} />
-        ))}
+        <section className='flex flex-col justify-center items-end gap-5'>
+          {flights.map((flight) => (
+            <FlightCard flight={flight} />
+          ))}
+        </section>
       </section>
     </main>
   )

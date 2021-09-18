@@ -1,5 +1,6 @@
 import create from 'zustand'
 import produce from 'immer'
+import moment from 'moment'
 
 // Copied from zustand GitHub docs to easily change nested state
 const immer = (config) => (set, get, api) =>
@@ -213,6 +214,17 @@ const useStore = create(
           passengerCount: state.passengerCount - 1
         }))
       }
+    },
+    dates: [moment(), moment()],
+    setDepartureDate: (date) => {
+      set((state) => ({
+        dates: [date, state.dates[1]]
+      }))
+    },
+    setArrivalDate: (date) => {
+      set((state) => ({
+        dates: [state.dates[0], date]
+      }))
     }
   }))
 )
