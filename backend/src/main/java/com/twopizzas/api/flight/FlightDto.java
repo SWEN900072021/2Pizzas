@@ -18,6 +18,7 @@ public class FlightDto {
     private List<FlightSearchResultDto.Seat> seats;
     private List<FlightSearchResultDto.StopOver> stopovers;
     private Flight.Status status;
+    private Airline airline;
 
     @Data
     public static class Seat {
@@ -37,5 +38,11 @@ public class FlightDto {
         private OffsetDateTime arriving;
         private OffsetDateTime departing;
         private FlightSearchResultDto.Airport location;
+    }
+
+    @Data
+    public static class Airline {
+        private String name;
+        private String code;
     }
 }

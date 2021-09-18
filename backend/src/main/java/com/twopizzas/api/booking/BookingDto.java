@@ -23,6 +23,7 @@ public class BookingDto {
         private Airport destination;
         private List<SeatAllocation> seats;
         private com.twopizzas.domain.flight.Flight.Status status;
+        private Airline airline;
     }
 
     @Data
@@ -37,6 +38,12 @@ public class BookingDto {
     public static class Airport {
         private String name;
         private String location;
+        private String code;
+    }
+
+    @Data
+    public static class Airline {
+        private String name;
         private String code;
     }
 }

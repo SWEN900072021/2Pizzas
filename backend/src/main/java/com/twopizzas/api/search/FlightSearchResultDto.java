@@ -15,6 +15,7 @@ public class FlightSearchResultDto {
     private Airport destination;
     private List<Seat> seats;
     private List<StopOver> stopovers;
+    private Airline airline;
 
     @Data
     public static class Seat {
@@ -35,5 +36,11 @@ public class FlightSearchResultDto {
         private OffsetDateTime arriving;
         private OffsetDateTime departing;
         private Airport location;
+    }
+
+    @Data
+    public static class Airline {
+        private String name;
+        private String code;
     }
 }
