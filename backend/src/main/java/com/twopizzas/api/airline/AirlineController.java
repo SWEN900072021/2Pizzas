@@ -26,7 +26,6 @@ public class AirlineController {
             path = "/airline",
             method = HttpMethod.GET
     )
-    @Authenticated(Administrator.TYPE)
     public RestResponse<List<AirlineDto>> getAllAirlines() {
         return RestResponse.ok(airlineRepository.findAllAirlines().stream().map(MAPPER::map).collect(Collectors.toList()));
     }
@@ -50,20 +49,5 @@ public class AirlineController {
         ));
 
         return RestResponse.ok(MAPPER.map(newAirline));
-    }
-
-    @RequestMapping(
-            path = "/airline/{id}",
-            method = HttpMethod.GET
-    )
-    @Authenticated(Administrator.TYPE)
-    public RestResponse<AirlineDto> getAirlineById(@PathVariable("id") String id) throws HttpException {
-        if (!ValidationUtils.isUUID(id)) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, "id must be a uuid");
-        }
-        EntityId airlineId = EntityId.of(id);
-        return airlineRepository.find(airlineId)
-                .map(a -> RestResponse.ok(MAPPER.map(a)))
-                .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND));
     }
 }

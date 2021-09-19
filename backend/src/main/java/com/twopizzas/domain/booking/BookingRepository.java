@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface BookingRepository extends Repository<Booking, EntityId> {
     List<Booking> findAllFlightBookings(EntityId flightId);
+    List<Booking> findAllCustomerBookings(EntityId customerId);
 }

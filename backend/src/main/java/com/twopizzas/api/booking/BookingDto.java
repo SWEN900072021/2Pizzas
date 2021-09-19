@@ -1,5 +1,6 @@
 package com.twopizzas.api.booking;
 
+import com.twopizzas.api.flight.FlightDto;
 import com.twopizzas.domain.flight.SeatClass;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -21,9 +22,16 @@ public class BookingDto {
         private OffsetDateTime arrival;
         private Airport origin;
         private Airport destination;
-        private List<SeatAllocation> seats;
+        private List<SeatAllocation> seatAllocations;
         private com.twopizzas.domain.flight.Flight.Status status;
         private Airline airline;
+        private AirplaneProfile profile;
+    }
+
+    @Data
+    public static class AirplaneProfile {
+        private String name;
+        private String code;
     }
 
     @Data

@@ -51,18 +51,4 @@ public class AirportController {
         ));
         return RestResponse.ok(MAPPER.map(newAirport));
     }
-
-    @RequestMapping(
-            path = "/airport/{id}",
-            method = HttpMethod.GET
-    )
-    public RestResponse<AirportDto> getAirportById(@PathVariable("id") String id) throws HttpException {
-        if (!ValidationUtils.isUUID(id)) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, "id must be a uuid");
-        }
-        EntityId airportId = EntityId.of(id);
-        return repository.find(airportId)
-                .map(a -> RestResponse.ok(MAPPER.map(a)))
-                .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND));
-    }
 }

@@ -25,7 +25,7 @@ public class AirplaneProfileController {
     }
 
     @RequestMapping(path = "/airplane-profile", method = HttpMethod.GET)
-    public RestResponse<List<AirplaneProfileDto>> getAllAirplanes() {
+    public RestResponse<List<AirplaneProfileDto>> getAllAirplaneProfiles() {
         return RestResponse.ok(repository.findAllAirplanes().stream().map(MAPPER::map).collect(Collectors.toList()));
     }
 
@@ -47,19 +47,5 @@ public class AirplaneProfileController {
                 body.getEconomyClassColumns()
         ));
         return RestResponse.ok(MAPPER.map(newAirplaneProfile));
-    }
-
-    @RequestMapping(
-            path = "/airplane-profile/{id}",
-            method = HttpMethod.GET
-    )
-    public RestResponse<AirplaneProfileDto> getAirplaneProfileById(@PathVariable("id") String id) throws HttpException {
-        if (!ValidationUtils.isUUID(id)) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, "id must be a uuid");
-        }
-        EntityId airplaneProfileId = EntityId.of(id);
-        return repository.find(airplaneProfileId)
-                .map(a -> RestResponse.ok(MAPPER.map(a)))
-                .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND));
     }
 }

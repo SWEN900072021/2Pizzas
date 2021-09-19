@@ -15,6 +15,7 @@ public class UpdateFlightDto {
         if (status == null) {
             errors.add("status is required");
         }
+
         return errors;
     }
 }

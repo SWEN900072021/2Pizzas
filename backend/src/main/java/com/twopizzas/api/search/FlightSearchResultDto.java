@@ -33,8 +33,8 @@ public class FlightSearchResultDto {
 
     @Data
     public static class StopOver {
-        private OffsetDateTime arriving;
-        private OffsetDateTime departing;
+        private OffsetDateTime arrival;
+        private OffsetDateTime departure;
         private Airport location;
     }
 

@@ -8,4 +8,5 @@ public class AirportDto {
     private String id;
     private String code;
     private String location;
+    private String zoneId;
 }

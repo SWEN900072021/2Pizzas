@@ -16,6 +16,7 @@ import com.twopizzas.web.*;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class BookingController {
@@ -35,48 +36,62 @@ public class BookingController {
     @RequestMapping(path = "/customer/booking", method = HttpMethod.GET)
     @Authenticated({Customer.TYPE})
     RestResponse<List<BookingDto>> getCustomerBookings(User authenticatedUser) {
-        return null;
+        return RestResponse.ok(bookingRepository.findAllCustomerBookings(authenticatedUser.getId()).stream().map(MAPPER::map).collect(Collectors.toList()));
     }
 
     @RequestMapping(path = "/booking", method = HttpMethod.POST)
     @Authenticated({Customer.TYPE})
-    RestResponse<BookingDto> createBooking(@RequestBody NewBookingDto requestDto, User authenticatedUser) {
-        Flight flight = flightRepository.find(EntityId.of(requestDto.getFlightId())).orElseThrow(() -> new NotFoundException("flight", requestDto.getFlightId()));
-        Flight returnFlight = flightRepository.find(EntityId.of(requestDto.getReturnId())).orElseThrow(() -> new NotFoundException("returnFlight", requestDto.getReturnId()));
+    RestResponse<BookingDto> createBooking(@RequestBody NewBookingDto body, User authenticatedUser) throws HttpException {
+        List<String> errors = body.validate();
+        if (!errors.isEmpty()) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, String.join(", ", errors));
+        }
+        Flight flight = flightRepository.find(EntityId.of(body.getFlightId())).orElseThrow(() -> new NotFoundException("flight", body.getFlightId()));
+        Flight returnFlight = flightRepository.find(EntityId.of(body.getReturnFlightId())).orElseThrow(() -> new NotFoundException("returnFlight", body.getReturnFlightId()));
 
         Customer customer = (Customer) authenticatedUser;
 
         BookingRequest.BookingRequestBuilder flightBuilder = BookingRequest.builder();
         BookingRequest.BookingRequestBuilder returnBuilder = BookingRequest.builder();
-        requestDto.getPassengerBookings().forEach(
+        body.getPassengerBookings().forEach(
                 passengerBooking -> {
                     Passenger passenger = new Passenger(
                             passengerBooking.getGivenName(),
-                            passengerBooking.getLastName(),
+                            passengerBooking.getSurname(),
                             passengerBooking.getDateOfBirth(),
                             passengerBooking.getNationality(),
-                            passengerBooking.getPassport()
+                            passengerBooking.getPassportNumber()
                     );
                     passengerRepository.create(passenger);
                     passengerBooking.getSeatAllocations().forEach(a -> {
 
-                        if (a.getFlightId().equals(requestDto.getFlightId())) {
+                        if (a.getFlightId().equals(body.getFlightId())) {
                             flightBuilder.withSeatAllocation(a.getSeatName(), passenger);
-                            return;
                         }
 
-                        if (a.getFlightId().equals(requestDto.getReturnId())) {
+                        if (a.getFlightId().equals(body.getReturnFlightId())) {
                             returnBuilder.withSeatAllocation(a.getSeatName(), passenger);
-                            return;
                         }
-
-                        throw new DataFormatException(String.format("unknown flight id %s", a.getFlightId()));
                     });
                 }
         );
 
+        BookingRequest flightBooking = flightBuilder.build();
+        if (flightBooking.getAllocations().isEmpty()) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, String.format("no seat allocations provided for flight %s", body.getFlightId()));
+        }
         SeatBooking flightSeatBooking = flight.allocateSeats(flightBuilder.build());
-        SeatBooking returnSeatBooking = returnFlight.allocateSeats(returnBuilder.build());
+        flightRepository.save(flight);
+
+        SeatBooking returnSeatBooking = null;
+        if (body.getReturnFlightId() != null) {
+            BookingRequest returnFlightBooking = returnBuilder.build();
+            if (returnFlightBooking.getAllocations().isEmpty()) {
+                throw new HttpException(HttpStatus.BAD_REQUEST, String.format("no seat allocations provided for return flight %s", body.getFlightId()));
+            }
+            returnSeatBooking = returnFlight.allocateSeats(returnFlightBooking);
+            flightRepository.save(returnFlight);
+        }
 
         Booking booking = new Booking(customer);
         booking.addFlight(flightSeatBooking);
