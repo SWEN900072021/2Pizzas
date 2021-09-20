@@ -14,7 +14,7 @@ import OriginSearch from './OriginSearch'
 import DestinationSearch from './DestinationSearch'
 import Button from '../components/Button'
 import Search from '../components/Search'
-import { useStore, useTestDataStore } from '../hooks/Store'
+import { useFlightStore, useTestDataStore } from '../hooks/Store'
 
 const { RangePicker } = DatePicker
 
@@ -22,23 +22,23 @@ const FlightForm = () => {
   const history = useHistory()
   const airports = useTestDataStore((state) => state.airports)
 
-  const originAirport = useStore((state) => state.originAirport)
-  const destinationAirport = useStore(
+  const originAirport = useFlightStore((state) => state.originAirport)
+  const destinationAirport = useFlightStore(
     (state) => state.destinationAirport
   )
 
-  const departDate = useStore((state) => state.departDate)
-  const returnDate = useStore((state) => state.returnDate)
-  const setDepartDate = useStore((state) => state.setDepartDate)
-  const setReturnDate = useStore((state) => state.setReturnDate)
+  const departDate = useFlightStore((state) => state.departDate)
+  const returnDate = useFlightStore((state) => state.returnDate)
+  const setDepartDate = useFlightStore((state) => state.setDepartDate)
+  const setReturnDate = useFlightStore((state) => state.setReturnDate)
 
   const [dates, setDates] = useState([
     moment(departDate),
     moment(returnDate)
   ])
 
-  const isReturn = useStore((state) => state.return)
-  const setReturn = useStore((state) => state.setReturn)
+  const isReturn = useFlightStore((state) => state.return)
+  const setReturn = useFlightStore((state) => state.setReturn)
 
   /* -------------------------------------------------------------------------- */
 
@@ -63,18 +63,26 @@ const FlightForm = () => {
 
   /* -------------------------------------------------------------------------- */
 
-  const ECONOMY = useStore((state) => state.economyClass)
-  const BUSINESS = useStore((state) => state.businessClass)
-  const FIRST = useStore((state) => state.firstClass)
+  const ECONOMY = useFlightStore((state) => state.economyClass)
+  const BUSINESS = useFlightStore((state) => state.businessClass)
+  const FIRST = useFlightStore((state) => state.firstClass)
 
-  const cabinClass = useStore((state) => state.cabinClass)
-  const setEconomyClass = useStore((state) => state.setEconomyClass)
-  const setBusinessClass = useStore((state) => state.setBusinessClass)
-  const setFirstClass = useStore((state) => state.setFirstClass)
+  const cabinClass = useFlightStore((state) => state.cabinClass)
+  const setEconomyClass = useFlightStore(
+    (state) => state.setEconomyClass
+  )
+  const setBusinessClass = useFlightStore(
+    (state) => state.setBusinessClass
+  )
+  const setFirstClass = useFlightStore((state) => state.setFirstClass)
 
-  const passengerCount = useStore((state) => state.passengerCount)
-  const addPassenger = useStore((state) => state.addPassenger)
-  const removePassenger = useStore((state) => state.removePassenger)
+  const passengerCount = useFlightStore(
+    (state) => state.passengerCount
+  )
+  const addPassenger = useFlightStore((state) => state.addPassenger)
+  const removePassenger = useFlightStore(
+    (state) => state.removePassenger
+  )
 
   const cabinClassPassengersPopover = (
     <section className='flex flex-col items-start justify-center gap-3 font-semibold'>
@@ -146,7 +154,7 @@ const FlightForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // Search for flights here
+    // Search for flights here, requery flight data
     if (originAirport.code && destinationAirport.code) {
       history.push('/flight/results')
     }
@@ -267,8 +275,8 @@ const FlightForm = () => {
               }}
               className={`${
                 isReturn
-                  ? 'bg-yellow-600 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400'
-                  : 'bg-white text-xs font-semibold p-2 border-2'
+                  ? 'bg-yellow-600 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400 ring-opacity-50'
+                  : 'bg-gray-400 text-xs font-semibold text-gray-100 p-2 ring-1 ring-gray-200 ring-opacity-50'
               } 
                     focus:outline-none focus:ring-2 focus:ring-yellow-400
                 `}
@@ -282,8 +290,8 @@ const FlightForm = () => {
               }}
               className={`${
                 !isReturn
-                  ? 'bg-yellow-600 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400'
-                  : 'bg-white text-xs font-semibold p-2 border-2'
+                  ? 'bg-yellow-600 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400 ring-opacity-50'
+                  : 'bg-gray-400 text-xs font-semibold text-gray-100 p-2 ring-1 ring-gray-200 ring-opacity-50'
               }
                     focus:outline-none focus:ring-2 focus:ring-yellow-400`}
             >

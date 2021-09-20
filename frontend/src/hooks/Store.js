@@ -236,7 +236,7 @@ const useFlightStore = create(
 )
 
 export {
-  useFlightStore as useStore,
+  useFlightStore,
   useSessionStore,
   useFormStore,
   useTestDataStore

@@ -9,26 +9,49 @@ import {
 } from 'react-icons/fa'
 import moment from 'moment'
 
-// import DatePicker from './DatePicker'
-import { useStore } from '../hooks/Store'
+import { useFlightStore } from '../hooks/Store'
 import FlightForm from '../containers/FlightForm'
 
 const FlightSearch = () => {
-  const originAirport = useStore((state) => state.originAirport)
-  const destinationAirport = useStore(
+  const originAirport = useFlightStore((state) => state.originAirport)
+  const destinationAirport = useFlightStore(
     (state) => state.destinationAirport
   )
-  const passengerCount = useStore((state) => state.passengerCount)
-  const cabinClass = useStore((state) => state.cabinClass)
+  const passengerCount = useFlightStore(
+    (state) => state.passengerCount
+  )
+  const cabinClass = useFlightStore((state) => state.cabinClass)
 
-  const departDate = useStore((state) => state.departDate)
-  const returnDate = useStore((state) => state.returnDate)
-  const setDepartDate = useStore((state) => state.setDepartDate)
-  const setReturnDate = useStore((state) => state.setReturnDate)
+  /* -------------------------------------------------------------------------- */
+
+  const departDate = useFlightStore((state) => state.departDate)
+  const returnDate = useFlightStore((state) => state.returnDate)
+  const setDepartDate = useFlightStore((state) => state.setDepartDate)
+  const setReturnDate = useFlightStore((state) => state.setReturnDate)
   const [departureOpen, setDepartureOpen] = useState(false)
   const [returnOpen, setReturnOpen] = useState(false)
 
+  const disabledDates = (current) => current < moment().startOf('day')
+
+  const handleDepartDateChange = (date) => {
+    if (date > moment(returnDate).startOf('day')) {
+      setReturnDate(date)
+    }
+    setDepartDate(date)
+  }
+
+  const handleReturnDateChange = (date) => {
+    if (date < moment(departDate).startOf('day')) {
+      setDepartDate(date)
+    }
+    setReturnDate(date)
+  }
+
+  /* -------------------------------------------------------------------------- */
+
   const [searchOpen, setSearchOpen] = useState(false)
+
+  /* -------------------------------------------------------------------------- */
 
   useEffect(() => {
     // update departure and return dates
@@ -50,21 +73,31 @@ const FlightSearch = () => {
           <FaSearch />
         </button>
 
-        {/* Depart and Return Locations and Dates */}
-        <div className='flex flex-col justify-between flex-grow-0 gap-1 md:flex-row md:flex-grow'>
+        <section className='flex flex-col justify-between flex-grow-0 gap-1 md:flex-row md:flex-grow'>
+          {/* -------------- Depart and Return Locations and Date Pickers -------------- */}
           <div className='flex items-center gap-5'>
+            {/* Depart Location and Date */}
             <section className='flex flex-col justify-center'>
               <div className='flex items-center self-center justify-center gap-2 text-lg font-bold'>
                 <FaPlaneDeparture />
                 {originAirport.location} ({originAirport.code})
               </div>
               <div className='flex items-center self-center justify-center'>
-                <button type='button'>
+                <button
+                  type='button'
+                  onClick={() =>
+                    handleDepartDateChange(
+                      moment(departDate).subtract(1, 'day')
+                    )
+                  }
+                >
                   <FaChevronLeft />
                 </button>
 
                 <span className='flex justify-center pr-5 transition-colors w-36 hover:bg-yellow-500 rounded-2xl'>
                   <DatePicker
+                    disabledDate={disabledDates}
+                    value={moment(departDate)}
                     allowClear={false}
                     open={departureOpen}
                     onOpenChange={(open) => {
@@ -72,7 +105,7 @@ const FlightSearch = () => {
                     }}
                     style={{ visibility: 'hidden', width: 0 }}
                     onChange={(date) => {
-                      setDepartDate(date)
+                      handleDepartDateChange(date)
                     }}
                   />
                   <button
@@ -86,12 +119,20 @@ const FlightSearch = () => {
                   </button>
                 </span>
 
-                <button type='button'>
+                <button
+                  type='button'
+                  onClick={() =>
+                    handleDepartDateChange(
+                      moment(departDate).add(1, 'day')
+                    )
+                  }
+                >
                   <FaChevronRight />
                 </button>
               </div>
             </section>
 
+            {/* Return Location and Date */}
             <section className='flex flex-col justify-center'>
               <div className='flex items-center self-center justify-center gap-2 text-lg font-bold'>
                 <FaPlaneArrival />
@@ -99,12 +140,21 @@ const FlightSearch = () => {
                 {destinationAirport.code})
               </div>
               <div className='flex items-center self-center justify-center'>
-                <button type='button'>
+                <button
+                  type='button'
+                  onClick={() =>
+                    handleReturnDateChange(
+                      moment(returnDate).subtract(1, 'day')
+                    )
+                  }
+                >
                   <FaChevronLeft />
                 </button>
 
                 <span className='flex justify-center pr-5 transition-colors w-36 hover:bg-yellow-500 rounded-2xl'>
                   <DatePicker
+                    disabledDate={disabledDates}
+                    value={moment(returnDate)}
                     allowClear={false}
                     open={returnOpen}
                     onOpenChange={(open) => {
@@ -112,7 +162,7 @@ const FlightSearch = () => {
                     }}
                     style={{ visibility: 'hidden', width: 0 }}
                     onChange={(date) => {
-                      setReturnDate(date)
+                      handleReturnDateChange(date)
                     }}
                   />
                   <button
@@ -126,12 +176,21 @@ const FlightSearch = () => {
                   </button>
                 </span>
 
-                <button type='button'>
+                <button
+                  type='button'
+                  onClick={() =>
+                    handleReturnDateChange(
+                      moment(returnDate).add(1, 'day')
+                    )
+                  }
+                >
                   <FaChevronRight />
                 </button>
               </div>
             </section>
           </div>
+
+          {/* ----------------------------- Passenger Count ---------------------------- */}
           <div className='flex gap-2 font-semibold'>
             <div>{passengerCount} passenger(s)</div>
             <div>•</div>
@@ -140,7 +199,7 @@ const FlightSearch = () => {
                 cabinClass.slice(1)}
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Search Button for Mobile/Tablet Devices */}
         <button

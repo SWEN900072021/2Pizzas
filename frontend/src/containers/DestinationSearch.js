@@ -4,25 +4,25 @@ import { AutoComplete } from 'antd'
 import { FaPlaneArrival } from 'react-icons/fa'
 import { arrayOf, shape, string } from 'prop-types'
 import Search from '../components/Search'
-import { useStore } from '../hooks/Store'
+import { useFlightStore } from '../hooks/Store'
 
 const DestinationSearch = ({ airports }) => {
   // Visibility state of dropdown
   const [open, setOpen] = useState(false)
 
   // Set the selected airport
-  const destinationAirport = useStore(
+  const destinationAirport = useFlightStore(
     (state) => state.destinationAirport
   )
-  const setDestinationAirport = useStore(
+  const setDestinationAirport = useFlightStore(
     (state) => state.setDestinationAirport
   )
 
   // Value of input element
-  const destinationAirportSearchValue = useStore(
+  const destinationAirportSearchValue = useFlightStore(
     (state) => state.destinationAirportSearchValue
   )
-  const setDestinationAirportSearchValue = useStore(
+  const setDestinationAirportSearchValue = useFlightStore(
     (state) => state.setDestinationAirportSearchValue
   )
 
