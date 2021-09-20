@@ -21,6 +21,7 @@ import org.mockito.MockitoAnnotations;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 public class BookingMapperImplTests {
@@ -89,14 +90,14 @@ public class BookingMapperImplTests {
         FlightSeatAllocation flightSeatAllocation = Mockito.mock(FlightSeatAllocation.class);
         FlightSeatAllocation returnFlightSeatAllocation = Mockito.mock(FlightSeatAllocation.class);
 
-        Set<FlightSeatAllocation> allocationSet = Mockito.mock(Set.class);
+        Set<FlightSeatAllocation> allocationSet = new HashSet<>();
         allocationSet.add(flightSeatAllocation);
         allocationSet.add(returnFlightSeatAllocation);
 
         SeatBooking flightBooking = new SeatBooking(flight, allocationSet);
         SeatBooking returnFlightBooking = new SeatBooking(flight, allocationSet);
 
-        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), new BigDecimal("100.0"), customer);
+        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer);
         entity.addFlight(flightBooking);
         entity.addReturnFlight(returnFlightBooking);
 
@@ -113,10 +114,9 @@ public class BookingMapperImplTests {
 
         Assertions.assertEquals(entity.getId(), persisted.getId());
         Assertions.assertEquals(entity.getDate().toInstant(), persisted.getDate().toInstant());
-        Assertions.assertEquals(entity.getTotalCost(), persisted.getTotalCost());
         Assertions.assertEquals(entity.getCustomer(), persisted.getCustomer());
-        Assertions.assertEquals(entity.getFlightReservation().getFlight(), persisted.getFlightReservation().getFlight());
-        Assertions.assertEquals(entity.getReturnFlightReservation().getFlight(), persisted.getReturnFlightReservation().getFlight());
+        Assertions.assertEquals(entity.getFlightBooking().getFlight(), persisted.getFlightBooking().getFlight());
+        Assertions.assertEquals(entity.getReturnFlightBooking().getFlight(), persisted.getReturnFlightBooking().getFlight());
 
         Mockito.verify(customerMapper).read(Mockito.eq(customerId));
 
@@ -147,12 +147,12 @@ public class BookingMapperImplTests {
 
         FlightSeatAllocation flightSeatAllocation = Mockito.mock(FlightSeatAllocation.class);
 
-        Set<FlightSeatAllocation> allocationSet = Mockito.mock(Set.class);
+        Set<FlightSeatAllocation> allocationSet = new HashSet<>();
         allocationSet.add(flightSeatAllocation);
 
         SeatBooking flightBooking = new SeatBooking(flight, allocationSet);
 
-        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), new BigDecimal("100.0"), customer);
+        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer);
         entity.addFlight(flightBooking);
 
         Mockito.when(customerMapper.read(Mockito.eq(customerId))).thenReturn(customer);
@@ -167,10 +167,9 @@ public class BookingMapperImplTests {
 
         Assertions.assertEquals(entity.getId(), persisted.getId());
         Assertions.assertEquals(entity.getDate().toInstant(), persisted.getDate().toInstant());
-        Assertions.assertEquals(entity.getTotalCost(), persisted.getTotalCost());
         Assertions.assertEquals(entity.getCustomer(), persisted.getCustomer());
-        Assertions.assertEquals(entity.getFlightReservation().getFlight(), persisted.getFlightReservation().getFlight());
-        Assertions.assertNull(persisted.getReturnFlightReservation());
+        Assertions.assertEquals(entity.getFlightBooking().getFlight(), persisted.getFlightBooking().getFlight());
+        Assertions.assertNull(persisted.getReturnFlightBooking());
 
         Mockito.verify(customerMapper).read(Mockito.eq(customerId));
     }
@@ -214,14 +213,14 @@ public class BookingMapperImplTests {
         FlightSeatAllocation flightSeatAllocation = Mockito.mock(FlightSeatAllocation.class);
         FlightSeatAllocation returnFlightSeatAllocation = Mockito.mock(FlightSeatAllocation.class);
 
-        Set<FlightSeatAllocation> allocationSet = Mockito.mock(Set.class);
+        Set<FlightSeatAllocation> allocationSet = new HashSet<>();
         allocationSet.add(flightSeatAllocation);
         allocationSet.add(returnFlightSeatAllocation);
 
         SeatBooking flightBooking = new SeatBooking(flight, allocationSet);
         SeatBooking returnFlightBooking = new SeatBooking(flight, allocationSet);
 
-        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), new BigDecimal("100.0"), customer);
+        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer);
         entity.addFlight(flightBooking);
         entity.addReturnFlight(returnFlightBooking);
 
@@ -265,14 +264,14 @@ public class BookingMapperImplTests {
         FlightSeatAllocation flightSeatAllocationUpdated = Mockito.mock(FlightSeatAllocation.class);
         FlightSeatAllocation returnFlightSeatAllocationUpdated = Mockito.mock(FlightSeatAllocation.class);
 
-        Set<FlightSeatAllocation> allocationSetUpdated = Mockito.mock(Set.class);
+        Set<FlightSeatAllocation> allocationSetUpdated = new HashSet<>();
         allocationSetUpdated.add(flightSeatAllocationUpdated);
         allocationSetUpdated.add(returnFlightSeatAllocationUpdated);
 
         SeatBooking flightBookingUpdated = new SeatBooking(flightUpdated, allocationSetUpdated);
         SeatBooking returnFlightBookingUpdated = new SeatBooking(flightUpdated, allocationSetUpdated);
 
-        Booking update = new Booking(entity.getId(), OffsetDateTime.now().withNano(0), new BigDecimal("930.00"), customerUpdated);
+        Booking update = new Booking(entity.getId(), OffsetDateTime.now().withNano(0), customerUpdated);
         update.addFlight(flightBookingUpdated);
         update.addReturnFlight(returnFlightBookingUpdated);
 
@@ -289,14 +288,11 @@ public class BookingMapperImplTests {
 
         Assertions.assertEquals(update.getId(), updated.getId());
         Assertions.assertEquals(update.getDate().toInstant(), updated.getDate().toInstant());
-        Assertions.assertEquals(update.getTotalCost(), updated.getTotalCost());
         Assertions.assertEquals(update.getCustomer(), updated.getCustomer());
-        Assertions.assertEquals(update.getFlightReservation().getFlight(), updated.getFlightReservation().getFlight());
-        Assertions.assertEquals(update.getReturnFlightReservation().getFlight(), updated.getReturnFlightReservation().getFlight());
+        Assertions.assertEquals(update.getFlightBooking().getFlight(), updated.getFlightBooking().getFlight());
+        Assertions.assertEquals(update.getReturnFlightBooking().getFlight(), updated.getReturnFlightBooking().getFlight());
 
         Mockito.verify(customerMapper).read(Mockito.eq(customerIdUpdated));
-
-
     }
 
     @Test
@@ -338,14 +334,14 @@ public class BookingMapperImplTests {
         FlightSeatAllocation flightSeatAllocation = Mockito.mock(FlightSeatAllocation.class);
         FlightSeatAllocation returnFlightSeatAllocation = Mockito.mock(FlightSeatAllocation.class);
 
-        Set<FlightSeatAllocation> allocationSet = Mockito.mock(Set.class);
+        Set<FlightSeatAllocation> allocationSet = new HashSet<>();
         allocationSet.add(flightSeatAllocation);
         allocationSet.add(returnFlightSeatAllocation);
 
         SeatBooking flightBooking = new SeatBooking(flight, allocationSet);
         SeatBooking returnFlightBooking = new SeatBooking(flight, allocationSet);
 
-        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), new BigDecimal("100.0"), customer);
+        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer);
         entity.addFlight(flightBooking);
         entity.addReturnFlight(returnFlightBooking);
 

@@ -1,6 +1,7 @@
 package com.twopizzas.domain.booking;
 
 import com.twopizzas.domain.EntityId;
+import com.twopizzas.domain.flight.FlightSeatAllocation;
 import com.twopizzas.domain.flight.SeatBooking;
 import com.twopizzas.domain.user.Customer;
 import com.twopizzas.port.data.DomainEntity;
@@ -13,21 +14,19 @@ import java.time.OffsetDateTime;
 public class Booking extends DomainEntity {
 
     private final OffsetDateTime date;
-    private BigDecimal totalCost;
     private final Customer customer;
 
     private SeatBooking flightBooking;
     private SeatBooking returnFlightBooking;
 
-    public Booking(EntityId id, OffsetDateTime date, BigDecimal totalCost, Customer customer) {
+    public Booking(EntityId id, OffsetDateTime date, Customer customer) {
         super(id);
         this.date = notNull(date, "date");
-        this.totalCost = notNull(totalCost, "totalCost");
         this.customer = notNull(customer, "customer");
     }
 
     public Booking(Customer customer) {
-        this(EntityId.nextId(), OffsetDateTime.now(), null, customer);
+        this(EntityId.nextId(), OffsetDateTime.now(), customer);
     }
 
 
@@ -39,11 +38,31 @@ public class Booking extends DomainEntity {
         returnFlightBooking = seatBooking;
     }
 
-    public SeatBooking getFlightReservation() {
+    public BigDecimal getTotalCost() {
+        BigDecimal totalCost = BigDecimal.valueOf(0);
+        if (flightBooking != null) {
+            totalCost = totalCost.add(getTotalCostForBooking(flightBooking));
+        }
+
+        if (returnFlightBooking != null) {
+            totalCost = totalCost.add(getTotalCostForBooking(returnFlightBooking));
+        }
+        return totalCost;
+    }
+
+    private BigDecimal getTotalCostForBooking(SeatBooking seatBooking) {
+        BigDecimal totalCost = BigDecimal.valueOf(0);
+        for (FlightSeatAllocation allocation : seatBooking.getAllocations()) {
+            totalCost = totalCost.add(allocation.getCost());
+        }
+        return totalCost;
+    }
+
+    public SeatBooking getFlightBooking() {
         return flightBooking;
     }
 
-    public SeatBooking getReturnFlightReservation() {
+    public SeatBooking getReturnFlightBooking() {
         return returnFlightBooking;
     }
 }

@@ -18,6 +18,11 @@ class BookingRepositoryImpl extends AbstractRepository<Booking, BookingSpecifica
     }
 
     public List<Booking> findAllFlightBookings(EntityId flightId) {
-        return dataMapper.readAll(new FlightBookingsSpecification(flightId, dataMapper));
+        return doSpecification(new FlightBookingsSpecification(flightId, dataMapper));
+    }
+
+    @Override
+    public List<Booking> findAllCustomerBookings(EntityId customerId) {
+        return doSpecification(new CustomerBookingsSpecification(customerId, dataMapper));
     }
 }

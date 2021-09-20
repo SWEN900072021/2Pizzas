@@ -1,5 +1,6 @@
-package com.twopizzas.domain;
+package com.twopizzas.domain.airport;
 
+import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.DomainEntity;
 import lombok.Getter;
 

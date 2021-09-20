@@ -24,4 +24,9 @@ class UserRepositoryImpl extends AbstractRepository<User, UserSpecification, Use
         }
         return Optional.of(users.get(0));
     }
+
+    @Override
+    public List<User> allUsers() {
+        return null;
+    }
 }
