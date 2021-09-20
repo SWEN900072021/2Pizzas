@@ -108,6 +108,110 @@ const AIRPORTS = [
   }
 ]
 
+const RETURN_FLIGHTS = [
+  {
+    flight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Melbourne',
+      destination: 'Sydney',
+      departure: '2020/10/10 09:00',
+      arrival: '2020/10/10 15:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    returnFlight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Sydney',
+      destination: 'Melbourne',
+      departure: '2020/10/10 21:00',
+      arrival: '2020/10/11 00:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    cost: 500
+  },
+  {
+    flight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Melbourne',
+      destination: 'Sydney',
+      departure: '2020/10/10 09:00',
+      arrival: '2020/10/10 15:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    returnFlight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Sydney',
+      destination: 'Melbourne',
+      departure: '2020/10/10 21:00',
+      arrival: '2020/10/11 00:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    cost: 500
+  },
+  {
+    flight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Melbourne',
+      destination: 'Sydney',
+      departure: '2020/10/10 09:00',
+      arrival: '2020/10/10 15:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    returnFlight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Sydney',
+      destination: 'Melbourne',
+      departure: '2020/10/10 21:00',
+      arrival: '2020/10/11 00:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    cost: 500
+  }
+]
+
+const ONE_WAY_FLIGHTS = [
+  {
+    flight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Melbourne',
+      destination: 'Sydney',
+      departure: '2020/10/10 09:00',
+      arrival: '2020/10/10 15:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    cost: 500
+  },
+  {
+    flight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Melbourne',
+      destination: 'Sydney',
+      departure: '2020/10/10 09:00',
+      arrival: '2020/10/10 15:00',
+      stopovers: ['Perth', 'Darwin', 'Brisbane']
+    },
+    cost: 500
+  },
+  {
+    flight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Melbourne',
+      destination: 'Sydney',
+      departure: '2020/10/10 09:00',
+      arrival: '2020/10/10 15:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    cost: 500
+  }
+]
 // HELPER FUNCTIONS
 
 // const getLocalStorage = (key) =>
@@ -119,7 +223,9 @@ const AIRPORTS = [
 
 const useTestDataStore = create(
   immer(() => ({
-    airports: AIRPORTS
+    airports: AIRPORTS,
+    returnFlights: RETURN_FLIGHTS,
+    oneWayFlights: ONE_WAY_FLIGHTS
   }))
 )
 
@@ -181,9 +287,9 @@ const useFlightStore = create(
         set({ destinationAirportSearchValue: value })
       },
 
-      return: true,
+      isReturn: true,
       setReturn: (value) => {
-        set({ return: value })
+        set({ isReturn: value })
       },
 
       // Contains string for cabin class type

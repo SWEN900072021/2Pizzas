@@ -22,6 +22,8 @@ const FlightSearch = () => {
   )
   const cabinClass = useFlightStore((state) => state.cabinClass)
 
+  const isReturn = useFlightStore((state) => state.isReturn)
+
   /* -------------------------------------------------------------------------- */
 
   const departDate = useFlightStore((state) => state.departDate)
@@ -59,7 +61,7 @@ const FlightSearch = () => {
   }, [])
 
   return (
-    <section className='flex flex-col items-center justify-center flex-grow p-2 py-3 text-white bg-yellow-600 rounded-none sm:p-3 md:p-4 md:rounded-md'>
+    <section className='flex flex-col items-center justify-center p-2 py-3 text-white bg-yellow-600 rounded-none max-h-max sm:p-3 md:p-4 md:rounded-md'>
       {/* -------------------------------------------------------------------------- */
       /*                 Flight Description with Simple Date Pickers                */
       /* -------------------------------------------------------------------------- */}
@@ -73,12 +75,12 @@ const FlightSearch = () => {
           <FaSearch />
         </button>
 
-        <section className='flex flex-col justify-between flex-grow-0 gap-1 md:flex-row md:flex-grow'>
+        <section className='flex flex-col justify-between flex-grow-0 md:flex-row md:flex-grow'>
           {/* -------------- Depart and Return Locations and Date Pickers -------------- */}
           <div className='flex items-center gap-5'>
             {/* Depart Location and Date */}
             <section className='flex flex-col justify-center'>
-              <div className='flex items-center self-center justify-center gap-2 text-lg font-bold'>
+              <div className='flex items-center self-center justify-center gap-2 font-black sm:font-bold text-md sm:text-lg'>
                 <FaPlaneDeparture />
                 {originAirport.location} ({originAirport.code})
               </div>
@@ -131,15 +133,18 @@ const FlightSearch = () => {
                 </button>
               </div>
             </section>
-
             {/* Return Location and Date */}
-            <section className='flex flex-col justify-center'>
-              <div className='flex items-center self-center justify-center gap-2 text-lg font-bold'>
+            <section className='flex flex-col self-start min-h-full'>
+              <div className='flex items-center self-center justify-center gap-2 font-black sm:font-bold text-md sm:text-lg'>
                 <FaPlaneArrival />
                 {destinationAirport.location} (
                 {destinationAirport.code})
               </div>
-              <div className='flex items-center self-center justify-center'>
+              <div
+                className={`${
+                  !isReturn && 'hidden'
+                } flex items-center self-center justify-center`}
+              >
                 <button
                   type='button'
                   onClick={() =>
@@ -191,7 +196,7 @@ const FlightSearch = () => {
           </div>
 
           {/* ----------------------------- Passenger Count ---------------------------- */}
-          <div className='flex gap-2 font-semibold'>
+          <div className='flex self-center gap-2 font-medium sm:self-start'>
             <div>{passengerCount} passenger(s)</div>
             <div>•</div>
             <div>
@@ -217,7 +222,7 @@ const FlightSearch = () => {
       <section
         className={`${
           searchOpen ? 'block' : 'hidden'
-        } my-3 md:my-0 md:mt-3`}
+        } mt-5 mb-3 md:my-0 md:mt-3`}
       >
         <FlightForm />
       </section>

@@ -37,7 +37,9 @@ const FlightForm = () => {
     moment(returnDate)
   ])
 
-  const isReturn = useFlightStore((state) => state.return)
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const isReturn = useFlightStore((state) => state.isReturn)
   const setReturn = useFlightStore((state) => state.setReturn)
 
   /* -------------------------------------------------------------------------- */
@@ -157,6 +159,8 @@ const FlightForm = () => {
     // Search for flights here, requery flight data
     if (originAirport.code && destinationAirport.code) {
       history.push('/flight/results')
+    } else {
+      setErrorMessage('Airport fields are required.')
     }
   }
 
@@ -264,7 +268,7 @@ const FlightForm = () => {
               - Cabin Class and Passenger Select, 
               - Find Flights Button 
           */}
-      <section className='grid w-full grid-rows-2 gap-4 md:flex md:flex-row md:flex-wrap md:items-center md:justify-between '>
+      <section className='flex flex-col flex-wrap items-center justify-between w-full gap-5 md:flex-row'>
         <section className='flex flex-row items-center justify-center gap-2 md:gap-5'>
           {/* Return and One-Way Buttons */}
           <span className='inline'>
@@ -275,8 +279,8 @@ const FlightForm = () => {
               }}
               className={`${
                 isReturn
-                  ? 'bg-yellow-600 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400 ring-opacity-50'
-                  : 'bg-gray-400 text-xs font-semibold text-gray-100 p-2 ring-1 ring-gray-200 ring-opacity-50'
+                  ? 'bg-yellow-500 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400 ring-opacity-50'
+                  : 'text-xs font-semibold text-yellow-400 p-2 ring-1 ring-yellow-500 ring-opacity-50'
               } 
                     focus:outline-none focus:ring-2 focus:ring-yellow-400
                 `}
@@ -290,8 +294,8 @@ const FlightForm = () => {
               }}
               className={`${
                 !isReturn
-                  ? 'bg-yellow-600 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400 ring-opacity-50'
-                  : 'bg-gray-400 text-xs font-semibold text-gray-100 p-2 ring-1 ring-gray-200 ring-opacity-50'
+                  ? 'bg-yellow-500 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400 ring-opacity-50'
+                  : 'text-xs font-semibold text-yellow-400 p-2 ring-1 ring-yellow-500 ring-opacity-50'
               }
                     focus:outline-none focus:ring-2 focus:ring-yellow-400`}
             >
@@ -328,7 +332,14 @@ const FlightForm = () => {
         </section>
 
         {/* Find Flight Button */}
-        <Button label='Find Flights' onClick={handleSubmit} />
+        <section className='flex flex-col flex-wrap items-center justify-center gap-4 md:flex-row'>
+          <span
+            className={`${!errorMessage && 'hidden'} text-red-500`}
+          >
+            {errorMessage}
+          </span>
+          <Button label='Find Flights' onClick={handleSubmit} />
+        </section>
       </section>
     </section>
   )
