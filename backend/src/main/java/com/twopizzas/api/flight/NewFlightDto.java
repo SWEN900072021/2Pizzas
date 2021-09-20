@@ -3,6 +3,7 @@ package com.twopizzas.api.flight;
 import com.twopizzas.api.ValidationUtils;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,9 @@ public class NewFlightDto {
     private List<StopOver> stopOvers;
     private String code;
     private String profile;
+    private BigDecimal firstClassCost;
+    private BigDecimal businessClassCost;
+    private BigDecimal economyClassCost;
 
     public List<String> validate() {
         List<String> errors = new ArrayList<>();
@@ -45,6 +49,18 @@ public class NewFlightDto {
 
         if (!ValidationUtils.isUUID(profile)) {
             errors.add("profile must be a uuid");
+        }
+
+        if (firstClassCost == null || firstClassCost.compareTo(BigDecimal.ZERO) < 0) {
+            errors.add("first class cost must be a positive numeric value");
+        }
+
+        if (businessClassCost == null || businessClassCost.compareTo(BigDecimal.ZERO) < 0) {
+            errors.add("first class cost must be a positive numeric value");
+        }
+
+        if (economyClassCost == null || economyClassCost.compareTo(BigDecimal.ZERO) < 0) {
+            errors.add("first class cost must be a positive numeric value");
         }
 
         if (stopOvers != null ) {

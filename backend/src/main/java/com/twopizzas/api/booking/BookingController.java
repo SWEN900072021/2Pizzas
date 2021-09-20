@@ -15,6 +15,8 @@ import com.twopizzas.port.data.passenger.PassengerMapper;
 import com.twopizzas.web.*;
 import org.mapstruct.factory.Mappers;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,7 +95,39 @@ public class BookingController {
             flightRepository.save(returnFlight);
         }
 
-        Booking booking = new Booking(customer);
+        BigDecimal flightCost = flightSeatBooking.getAllocations().stream().map(allocation -> {
+            Flight currentFlight = flightSeatBooking.getFlight();
+            BigDecimal currentSeatCost = BigDecimal.ZERO;
+            SeatClass cabinClass = allocation.getSeat().getSeatClass();
+
+            if (cabinClass == SeatClass.FIRST) currentSeatCost = currentFlight.getFirstClassCost();
+            if (cabinClass == SeatClass.BUSINESS) currentSeatCost = currentFlight.getBusinessClassCost();
+            if (cabinClass == SeatClass.ECONOMY) currentSeatCost = currentFlight.getEconomyClassCost();
+
+            return currentSeatCost;
+        }).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal returnCost = BigDecimal.ZERO;
+
+        if (returnSeatBooking != null) {
+            SeatBooking nonNullReturnSeatBooking = returnSeatBooking;
+            returnCost = nonNullReturnSeatBooking.getAllocations().stream().map(allocation -> {
+                Flight currentFlight = nonNullReturnSeatBooking.getFlight();
+                BigDecimal currentSeatCost = BigDecimal.ZERO;
+                SeatClass cabinClass = allocation.getSeat().getSeatClass();
+
+                if (cabinClass == SeatClass.FIRST) currentSeatCost = currentFlight.getFirstClassCost();
+                if (cabinClass == SeatClass.BUSINESS) currentSeatCost = currentFlight.getBusinessClassCost();
+                if (cabinClass == SeatClass.ECONOMY) currentSeatCost = currentFlight.getEconomyClassCost();
+
+                return currentSeatCost;
+            }).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        }
+
+        BigDecimal totalCost = flightCost.add(returnCost);
+
+        Booking booking = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), totalCost, customer);
         booking.addFlight(flightSeatBooking);
         booking.addReturnFlight(returnSeatBooking);
         bookingRepository.save(booking);

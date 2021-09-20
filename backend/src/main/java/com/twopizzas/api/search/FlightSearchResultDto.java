@@ -3,6 +3,7 @@ package com.twopizzas.api.search;
 import com.twopizzas.domain.flight.SeatClass;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -16,6 +17,9 @@ public class FlightSearchResultDto {
     private List<Seat> seats;
     private List<StopOver> stopovers;
     private Airline airline;
+    private BigDecimal firstClassCost;
+    private BigDecimal businessClassCost;
+    private BigDecimal economyClassCost;
 
     @Data
     public static class Seat {

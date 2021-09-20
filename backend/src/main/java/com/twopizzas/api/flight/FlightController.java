@@ -71,7 +71,10 @@ public class FlightController {
                 stopOvers,
                 body.getCode(),
                 body.getDeparture(),
-                body.getArrival()
+                body.getArrival(),
+                body.getFirstClassCost(),
+                body.getBusinessClassCost(),
+                body.getEconomyClassCost()
         ));
 
         return RestResponse.ok(MAPPER.map(newFlight));

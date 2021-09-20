@@ -1,9 +1,7 @@
 package com.twopizzas.api.booking;
 
-import com.twopizzas.api.flight.FlightDto;
 import com.twopizzas.domain.flight.SeatClass;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import java.time.OffsetDateTime;
 import java.util.List;
