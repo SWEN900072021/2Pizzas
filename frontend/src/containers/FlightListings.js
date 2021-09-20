@@ -1,4 +1,6 @@
 import React from 'react'
+// import { v4 as uuid } from 'uuid'
+
 import FlightCard from '../components/FlightCard'
 // eslint-disable-next-line no-unused-vars
 import FlightFilter from '../components/FlightFilter'
@@ -94,12 +96,12 @@ const FlightListings = () => {
   ]
 
   return (
-    <main className='h-screen w-full flex flex-col items-start'>
+    <main className='flex flex-col items-start w-full h-screen'>
       <NavBar />
-      <section className='h-full w-full self-center mt-8 flex md:max-w-screen-md flex-col justify-start items-stretch gap-10'>
+      <section className='flex flex-col items-stretch self-center justify-start w-full h-full mt-8 md:max-w-screen-md gap-10'>
         <FlightSearch />
         {/* <FlightFilter /> */}
-        <section className='flex flex-col justify-center items-end gap-5'>
+        <section className='flex flex-col items-end justify-center gap-5'>
           {flights.map((flight) => (
             <FlightCard flight={flight} />
           ))}

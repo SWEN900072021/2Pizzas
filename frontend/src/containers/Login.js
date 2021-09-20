@@ -58,17 +58,17 @@ const Login = () => {
   return (
     <main className='h-screen'>
       <NavBar />
-      <section className='h-screen flex flex-col justify-center items-center gap-5'>
+      <section className='flex flex-col items-center justify-center h-screen gap-5'>
         <img
           draggable={false}
           src={thailandPicture}
           alt='Landscape with stone structures in Thailand'
-          className='fixed h-screen w-screen object-cover object-center'
+          className='fixed object-cover object-center w-screen h-screen'
         />
-        <h1 className='z-10 text-white text-lg font-bold'>Login</h1>
+        <h1 className='z-10 text-lg font-bold text-white'>Login</h1>
         <form
           onSubmit={handleSubmit}
-          className='z-10 flex flex-wrap flex-col justify-center items-stretch text-center mx-auto p-5 space-y-4 rounded-xl bg-yellow-50'
+          className='z-10 flex flex-col flex-wrap items-stretch justify-center p-5 mx-auto text-center space-y-4 rounded-xl bg-yellow-50'
         >
           <TextField
             value={username}
@@ -95,7 +95,7 @@ const Login = () => {
             <button
               type='button'
               onClick={() => {}}
-              className='self-center rounded-sm text-sm px-1 text-yellow-800 hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:underline'
+              className='self-center px-1 text-sm text-yellow-800 rounded-sm hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:underline'
             >
               Don&apos;t have an account?
             </button>

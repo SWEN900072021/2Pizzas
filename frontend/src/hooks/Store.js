@@ -1,4 +1,5 @@
 import create from 'zustand'
+import { persist } from 'zustand/middleware'
 import produce from 'immer'
 import moment from 'moment'
 
@@ -109,10 +110,10 @@ const AIRPORTS = [
 
 // HELPER FUNCTIONS
 
-const getLocalStorage = (key) =>
-  JSON.parse(window.localStorage.getItem(key))
-const setLocalStorage = (key, value) =>
-  window.localStorage.setItem(key, JSON.stringify(value))
+// const getLocalStorage = (key) =>
+//   JSON.parse(window.localStorage.getItem(key))
+// const setLocalStorage = (key, value) =>
+//   window.localStorage.setItem(key, JSON.stringify(value))
 
 // STORES
 
@@ -123,34 +124,28 @@ const useTestDataStore = create(
 )
 
 const useSessionStore = create(
-  immer((set) => ({
-    token: getLocalStorage('token') || null,
-    setToken: (token) =>
-      set(() => {
-        setLocalStorage('token', token)
-        return { token }
-      }),
-    username: getLocalStorage('username') || null,
-    setSessionValue: (key, value) =>
-      set(() => {
-        setLocalStorage(key, value)
-        return value
-      })
-  }))
+  persist(
+    immer((set) => ({
+      token: null,
+      setToken: (token) => set({ token }),
+      username: null,
+      setSessionValue: (key, value) => set({ key: value })
+    })),
+    {
+      name: 'session-store',
+      getStorage: () => sessionStorage
+    }
+  )
 )
 
 const useFormStore = create(
   immer((set) => ({
     username: '',
-    password: '',
     givenName: '',
     surname: '',
     email: '',
     setUsername: (username) => {
       set({ username })
-    },
-    setPassword: (password) => {
-      set({ password })
     },
     setGivenName: (givenName) => {
       set({ givenName })
@@ -164,69 +159,86 @@ const useFormStore = create(
   }))
 )
 
-const useStore = create(
-  immer((set, get) => ({
-    // Contains objects for origin and destination airports
-    originAirport: {},
-    destinationAirport: {},
-    setOriginAirport: (airport) => {
-      set({ originAirport: { ...airport } })
-    },
-    setDestinationAirport: (airport) => {
-      set({ destinationAirport: { ...airport } })
-    },
+const useFlightStore = create(
+  persist(
+    immer((set, get) => ({
+      // Contains objects for origin and destination airports
+      originAirport: {},
+      destinationAirport: {},
+      setOriginAirport: (airport) => {
+        set({ originAirport: { ...airport } })
+      },
+      setDestinationAirport: (airport) => {
+        set({ destinationAirport: { ...airport } })
+      },
 
-    // Contains strings for the value of the origin and destination airport input fields
-    originAirportSearchValue: '',
-    destinationAirportSearchValue: '',
-    setOriginAirportSearchValue: (value) => {
-      set({ originAirportSearchValue: value })
-    },
-    setDestinationAirportSearchValue: (value) => {
-      set({ destinationAirportSearchValue: value })
-    },
+      // Contains strings for the value of the origin and destination airport input fields
+      originAirportSearchValue: '',
+      destinationAirportSearchValue: '',
+      setOriginAirportSearchValue: (value) => {
+        set({ originAirportSearchValue: value })
+      },
+      setDestinationAirportSearchValue: (value) => {
+        set({ destinationAirportSearchValue: value })
+      },
 
-    // Contains string
-    economyClass: ECONOMY,
-    businessClass: BUSINESS,
-    firstClass: FIRST,
-    cabinClass: ECONOMY,
-    setEconomyClass: () => {
-      set({ cabinClass: ECONOMY })
-    },
-    setBusinessClass: () => {
-      set({ cabinClass: BUSINESS })
-    },
-    setFirstClass: () => {
-      set({ cabinClass: FIRST })
-    },
+      return: true,
+      setReturn: (value) => {
+        set({ return: value })
+      },
 
-    //
-    passengerCount: 1,
-    addPassenger: () => {
-      set((state) => ({
-        passengerCount: state.passengerCount + 1
-      }))
-    },
-    removePassenger: () => {
-      if (get().passengerCount > 1) {
+      // Contains string for cabin class type
+      economyClass: ECONOMY,
+      businessClass: BUSINESS,
+      firstClass: FIRST,
+      cabinClass: ECONOMY,
+      setEconomyClass: () => {
+        set({ cabinClass: ECONOMY })
+      },
+      setBusinessClass: () => {
+        set({ cabinClass: BUSINESS })
+      },
+      setFirstClass: () => {
+        set({ cabinClass: FIRST })
+      },
+
+      // Contains number of passenger
+      passengerCount: 1,
+      addPassenger: () => {
         set((state) => ({
-          passengerCount: state.passengerCount - 1
+          passengerCount: state.passengerCount + 1
+        }))
+      },
+      removePassenger: () => {
+        if (get().passengerCount > 1) {
+          set((state) => ({
+            passengerCount: state.passengerCount - 1
+          }))
+        }
+      },
+      departDate: moment(),
+      returnDate: moment(),
+      setDepartDate: (date) => {
+        set(() => ({
+          departDate: date
+        }))
+      },
+      setReturnDate: (date) => {
+        set(() => ({
+          returnDate: date
         }))
       }
-    },
-    dates: [moment(), moment()],
-    setDepartureDate: (date) => {
-      set((state) => ({
-        dates: [date, state.dates[1]]
-      }))
-    },
-    setArrivalDate: (date) => {
-      set((state) => ({
-        dates: [state.dates[0], date]
-      }))
+    })),
+    {
+      name: 'flight-store',
+      getStorage: () => sessionStorage
     }
-  }))
+  )
 )
 
-export { useStore, useSessionStore, useFormStore, useTestDataStore }
+export {
+  useFlightStore as useStore,
+  useSessionStore,
+  useFormStore,
+  useTestDataStore
+}

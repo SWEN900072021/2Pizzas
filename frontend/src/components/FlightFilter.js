@@ -4,9 +4,9 @@ import Dropdown from './Dropdown'
 
 // eslint-disable-next-line no-unused-vars
 const FlightFilter = ({ results }) => (
-  <section className='flex flexbox justify-around item-center'>
+  <section className='flex justify-around flexbox item-center'>
     <div>4 results</div>
-    <div className='flex-col flexbox justify-center item-center'>
+    <div className='flex-col justify-center flexbox item-center'>
       <div>Sort by</div>
       <Dropdown />
     </div>

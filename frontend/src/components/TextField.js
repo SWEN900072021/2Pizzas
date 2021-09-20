@@ -19,7 +19,7 @@ const TextField = ({
         type={password ? 'password' : 'text'}
         id={label || placeholder}
         placeholder={placeholder || label}
-        className='px-4 py-3 rounded-lg border border-bg-grey focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:border-transparent'
+        className='px-4 py-3 border rounded-lg border-bg-grey focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:border-transparent'
       />
     </label>
   </div>

@@ -75,17 +75,17 @@ const Signup = () => {
   return (
     <main className='h-screen'>
       <NavBar />
-      <section className='h-screen flex flex-col justify-center items-center gap-5'>
+      <section className='flex flex-col items-center justify-center h-screen gap-5'>
         <img
           draggable={false}
           src={pisaPicture}
           alt='Leaning Tower of Pisa in Italy'
-          className='fixed h-screen w-screen object-cover object-center'
+          className='fixed object-cover object-center w-screen h-screen'
         />
-        <h1 className='z-10 text-white text-lg font-bold'>Signup</h1>
+        <h1 className='z-10 text-lg font-bold text-white'>Signup</h1>
         <form
           onSubmit={handleSubmit}
-          className='z-10 bg-green-600 flex flex-wrap flex-col mx-auto space-y-4 p-5 rounded-xl'
+          className='z-10 flex flex-col flex-wrap p-5 mx-auto bg-green-600 space-y-4 rounded-xl'
         >
           <TextField
             value={username}
@@ -129,7 +129,7 @@ const Signup = () => {
           </div>
           <button
             type='submit'
-            className='self-center rounded-sm text-sm px-1 text-yellow-800 hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:underline'
+            className='self-center px-1 text-sm text-yellow-800 rounded-sm hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:underline'
           >
             Confirm
           </button>
