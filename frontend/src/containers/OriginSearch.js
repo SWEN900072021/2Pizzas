@@ -11,6 +11,7 @@ const OriginSearch = ({ airports }) => {
   const [open, setOpen] = useState(false)
 
   // Set the selected airport
+  const originAirport = useStore((state) => state.originAirport)
   const setOriginAirport = useStore((state) => state.setOriginAirport)
 
   // Value of input element
@@ -44,7 +45,12 @@ const OriginSearch = ({ airports }) => {
     e.target.select()
   }
 
-  useEffect(() => {}, [])
+  useEffect(() => {
+    if (originAirport.code)
+      setOriginAirportSearchValue(
+        `(${originAirport.code}) ${originAirport.name}`
+      )
+  }, [originAirport, setOriginAirportSearchValue])
 
   return (
     <section className='text-black'>
@@ -88,7 +94,7 @@ const OriginSearch = ({ airports }) => {
             handleKeyUp={handleKeyUp}
           />
           {/* Airport Search Results */}
-          <section className='overflow-y-auto h-5/6 divide-y divide-gray-100'>
+          <section className='overflow-y-auto divide-y divide-gray-100 h-5/6'>
             {airports.map((airport) => (
               <button
                 key={uuid()}
@@ -96,7 +102,7 @@ const OriginSearch = ({ airports }) => {
                 onClick={() => {
                   updateOriginAirport(airport)
                 }}
-                className='flex flex-col w-full px-3 py-2 align-top cursor-pointer group z-11 space-y-1 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none'
+                className='flex flex-col w-full px-3 py-2 space-y-1 align-top cursor-pointer group z-11 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none'
               >
                 <span className='self-start text-sm font-semibold cursor-pointer group-hover:text-yellow-600 group-focus:text-yellow-600'>
                   {airport.name} ({airport.code})
@@ -113,6 +119,7 @@ const OriginSearch = ({ airports }) => {
       <section className='relative hidden text-black sm:flex sm:flex-grow'>
         <AutoComplete
           // Need this width to fill the horizontal grid space completely
+          value={originAirportSearchValue}
           style={{ width: '100%' }}
           onFocus={selectAllOnFocus}
           onKeyDown={(e) => {
@@ -132,7 +139,7 @@ const OriginSearch = ({ airports }) => {
                 onClick={() => {
                   updateOriginAirport(airport)
                 }}
-                className='flex flex-col w-full px-3 py-2 align-top cursor-pointer group z-11 space-y-1 focus:outline-none'
+                className='flex flex-col w-full px-3 py-2 space-y-1 align-top cursor-pointer group z-11 focus:outline-none'
               >
                 <span className='self-start text-sm font-semibold cursor-pointer group-hover:text-yellow-600 group-focus:text-yellow-600'>
                   {airport.name} ({airport.code})

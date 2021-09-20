@@ -11,6 +11,9 @@ const DestinationSearch = ({ airports }) => {
   const [open, setOpen] = useState(false)
 
   // Set the selected airport
+  const destinationAirport = useStore(
+    (state) => state.destinationAirport
+  )
   const setDestinationAirport = useStore(
     (state) => state.setDestinationAirport
   )
@@ -48,10 +51,15 @@ const DestinationSearch = ({ airports }) => {
     e.target.select()
   }
 
-  useEffect(() => {}, [])
+  useEffect(() => {
+    if (destinationAirport.code)
+      setDestinationAirportSearchValue(
+        `(${destinationAirport.code}) ${destinationAirport.name}`
+      )
+  }, [destinationAirport, setDestinationAirportSearchValue])
 
   return (
-    <section>
+    <section className='text-black'>
       {/* MOBILE */}
       <section className='flex flex-grow sm:hidden sm:flex-none'>
         {/* Input Field */}
@@ -92,7 +100,7 @@ const DestinationSearch = ({ airports }) => {
             handleKeyUp={handleKeyUp}
           />
           {/* Airport Search Results */}
-          <section className='overflow-y-auto h-5/6 divide-y divide-gray-100'>
+          <section className='overflow-y-auto divide-y divide-gray-100 h-5/6'>
             {airports.map((airport) => (
               <button
                 key={uuid()}
@@ -100,7 +108,7 @@ const DestinationSearch = ({ airports }) => {
                 onClick={() => {
                   updateDestinationAirport(airport)
                 }}
-                className='flex flex-col w-full px-3 py-2 align-top cursor-pointer group z-11 space-y-1 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none'
+                className='flex flex-col w-full px-3 py-2 space-y-1 align-top cursor-pointer group z-11 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none'
               >
                 <span className='self-start text-sm font-semibold cursor-pointer group-hover:text-yellow-600 group-focus:text-yellow-600'>
                   {airport.name} ({airport.code})
@@ -114,9 +122,10 @@ const DestinationSearch = ({ airports }) => {
         </section>
       </section>
       {/* TABLET AND LARGER DISPLAYS */}
-      <section className='relative hidden sm:flex sm:flex-grow'>
+      <section className='relative hidden text-black sm:flex sm:flex-grow'>
         <AutoComplete
           // Need this width to fill the horizontal grid space completely
+          value={destinationAirportSearchValue}
           style={{ width: '100%' }}
           onFocus={selectAllOnFocus}
           onKeyDown={(e) => {
@@ -136,7 +145,7 @@ const DestinationSearch = ({ airports }) => {
                 onClick={() => {
                   updateDestinationAirport(airport)
                 }}
-                className='flex flex-col w-full px-3 py-2 align-top cursor-pointer group z-11 space-y-1 focus:outline-none'
+                className='flex flex-col w-full px-3 py-2 space-y-1 align-top cursor-pointer group z-11 focus:outline-none'
               >
                 <span className='self-start text-sm font-semibold cursor-pointer group-hover:text-yellow-600 group-focus:text-yellow-600'>
                   {airport.name} ({airport.code})

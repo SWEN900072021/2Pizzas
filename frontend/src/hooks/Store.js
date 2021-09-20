@@ -171,7 +171,6 @@ const useFlightStore = create(
       setDestinationAirport: (airport) => {
         set({ destinationAirport: { ...airport } })
       },
-
       // Contains strings for the value of the origin and destination airport input fields
       originAirportSearchValue: '',
       destinationAirportSearchValue: '',
