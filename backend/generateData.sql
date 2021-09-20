@@ -177,43 +177,43 @@ INSERT INTO stopover(flightId, departure, arrival, airportId) VALUES
         );
 
 -- Booking Table
-INSERT INTO booking(id, date, totalCost, customerId, flightId, returnFlightId) VALUES
+INSERT INTO booking(id, date, customerId, flightId, returnFlightId) VALUES
         (
             gen_random_uuid(),
-            '2020-10-31 21:08', '180.00',
+            '2020-10-31 21:08',
             ( SELECT id FROM "user" WHERE username = 'customer_1' ),
             ( SELECT id FROM flight WHERE code = 'QN111' ),
             ( SELECT id FROM flight WHERE code = 'QN112' )
         );
-INSERT INTO booking(id, date, totalCost, customerId, flightId) VALUES
+INSERT INTO booking(id, date, customerId, flightId) VALUES
         (
             gen_random_uuid(),
-            '2020-10-31 21:20', '60.00',
+            '2020-10-31 21:20',
             ( SELECT id FROM "user" WHERE username = 'customer_1' ),
             ( SELECT id FROM flight WHERE code = 'QN113' )
         );
 
-INSERT INTO booking(id, date, totalCost, customerId, flightId, returnFlightId) VALUES
+INSERT INTO booking(id, date, customerId, flightId, returnFlightId) VALUES
         (
             gen_random_uuid(),
-            '2020-11-24 08:02', '105.00',
+            '2020-11-24 08:02',
             ( SELECT id FROM "user" WHERE username = 'customer_2' ),
             ( SELECT id FROM flight WHERE code = 'VA113' ),
             ( SELECT id FROM flight WHERE code = 'EM112' )
         );
 
-INSERT INTO booking(id, date, totalCost, customerId, flightId, returnFlightId) VALUES
+INSERT INTO booking(id, date, customerId, flightId, returnFlightId) VALUES
         (
             gen_random_uuid(),
-            '2020-12-12 11:08', '180.00',
+            '2020-12-12 11:08',
             ( SELECT id FROM "user" WHERE username = 'customer_3' ),
             ( SELECT id FROM flight WHERE code = 'QN111' ),
             ( SELECT id FROM flight WHERE code = 'QN112' )
         );
-INSERT INTO booking(id, date, totalCost, customerId, flightId) VALUES
+INSERT INTO booking(id, date, customerId, flightId) VALUES
         (
             gen_random_uuid(),
-            '2020-12-12 11:20', '60.00',
+            '2020-12-12 11:20',
             ( SELECT id FROM "user" WHERE username = 'customer_3' ),
             ( SELECT id FROM flight WHERE code = 'EM113' )
         );

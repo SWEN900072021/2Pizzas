@@ -51,16 +51,16 @@ public class NewFlightDto {
             errors.add("profile must be a uuid");
         }
 
-        if (firstClassCost == null || firstClassCost.signum() == -1) {
-            errors.add("firstClassCost must not be less than 0");
+        if (firstClassCost == null || firstClassCost.compareTo(BigDecimal.ZERO) < 0) {
+            errors.add("first class cost must be a positive numeric value");
         }
 
-        if (businessClassCost == null || businessClassCost.signum() == -1) {
-            errors.add("businessClassCost must not be less than 0");
+        if (businessClassCost == null || businessClassCost.compareTo(BigDecimal.ZERO) < 0) {
+            errors.add("first class cost must be a positive numeric value");
         }
 
-        if (economyClassCost == null || economyClassCost.signum() == -1) {
-            errors.add("economyClassCost must not be less than 0");
+        if (economyClassCost == null || economyClassCost.compareTo(BigDecimal.ZERO) < 0) {
+            errors.add("first class cost must be a positive numeric value");
         }
 
         if (stopOvers != null ) {

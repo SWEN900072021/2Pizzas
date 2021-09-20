@@ -4,6 +4,7 @@ import com.twopizzas.domain.flight.Flight;
 import com.twopizzas.domain.flight.SeatClass;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class FlightSearchResultDto {
     private String code;
     private Flight.Status status;
     private AirplaneProfile profile;
+    private BigDecimal firstClassCost;
+    private BigDecimal businessClassCost;
+    private BigDecimal economyClassCost;
 
     @Data
     public static class AirplaneProfile {

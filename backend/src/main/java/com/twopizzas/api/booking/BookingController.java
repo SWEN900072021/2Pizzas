@@ -15,6 +15,8 @@ import com.twopizzas.port.data.passenger.PassengerMapper;
 import com.twopizzas.web.*;
 import org.mapstruct.factory.Mappers;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,7 +95,7 @@ public class BookingController {
             flightRepository.save(returnFlight);
         }
 
-        Booking booking = new Booking(customer);
+        Booking booking = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer);
         booking.addFlight(flightSeatBooking);
         booking.addReturnFlight(returnSeatBooking);
         bookingRepository.save(booking);
