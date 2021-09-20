@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -119,6 +120,10 @@ public class FlightMapperImplTests {
         OffsetDateTime departure = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC).withNano(0);
         OffsetDateTime arrival = departure.plus(12, ChronoUnit.HOURS);
 
+        BigDecimal firstClassCost = new BigDecimal(100);
+        BigDecimal businessClassCost = new BigDecimal(80);
+        BigDecimal economyClassCost = new BigDecimal(40);
+
         Flight flight = new Flight(
                 profile,
                 airline,
@@ -131,7 +136,10 @@ public class FlightMapperImplTests {
                 )),
                 "code",
                 departure,
-                arrival
+                arrival,
+                firstClassCost,
+                businessClassCost,
+                economyClassCost
         );
 
         Assertions.assertNotNull(flight.getStatus());
@@ -151,6 +159,9 @@ public class FlightMapperImplTests {
         Assertions.assertEquals(flight.getDeparture(), created.getDeparture());
         Assertions.assertEquals(flight.getArrival(), created.getArrival());
         Assertions.assertEquals(flight.getStatus(), created.getStatus());
+        Assertions.assertEquals(flight.getFirstClassCost(), created.getFirstClassCost());
+        Assertions.assertEquals(flight.getBusinessClassCost(), created.getBusinessClassCost());
+        Assertions.assertEquals(flight.getEconomyClassCost(), created.getEconomyClassCost());
         Assertions.assertNotNull(created.getStopOvers());
         Assertions.assertEquals(1, created.getStopOvers().size());
         Assertions.assertNotNull(created.getStopOvers().get(0));
@@ -175,6 +186,10 @@ public class FlightMapperImplTests {
         OffsetDateTime departure = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC).withNano(0);
         OffsetDateTime arrival = departure.plus(12, ChronoUnit.HOURS);
 
+        BigDecimal firstClassCost = new BigDecimal(100);
+        BigDecimal businessClassCost = new BigDecimal(80);
+        BigDecimal economyClassCost = new BigDecimal(40);
+
         Flight flight = new Flight(
                 profile,
                 airline,
@@ -187,7 +202,10 @@ public class FlightMapperImplTests {
                 )),
                 "code",
                 departure,
-                arrival
+                arrival,
+                firstClassCost,
+                businessClassCost,
+                economyClassCost
         );
 
         mapper.create(flight);
@@ -206,6 +224,10 @@ public class FlightMapperImplTests {
         insertTestAirports(stopOverLocationUpdate.getId());
 
         OffsetDateTime departureUpdate = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC).withNano(0);
+
+        BigDecimal firstClassCostUpdate = new BigDecimal(110);
+        BigDecimal businessClassCostUpdate = new BigDecimal(90);
+        BigDecimal economyClassCostUpdate = new BigDecimal(50);
 
         Flight update = new Flight(
                 flight.getId(),
@@ -227,7 +249,10 @@ public class FlightMapperImplTests {
                         departureUpdate.plus(7, ChronoUnit.HOURS)
                 )),
                 "codeUpdate",
-                Flight.Status.CANCELLED
+                Flight.Status.CANCELLED,
+                firstClassCostUpdate,
+                businessClassCostUpdate,
+                economyClassCostUpdate
         );
 
         // WHEN
@@ -245,6 +270,9 @@ public class FlightMapperImplTests {
         Assertions.assertEquals(update.getDeparture(), updated.getDeparture());
         Assertions.assertEquals(update.getArrival(), updated.getArrival());
         Assertions.assertEquals(update.getStatus(), updated.getStatus());
+        Assertions.assertEquals(update.getFirstClassCost(), updated.getFirstClassCost());
+        Assertions.assertEquals(update.getBusinessClassCost(), updated.getBusinessClassCost());
+        Assertions.assertEquals(update.getEconomyClassCost(), updated.getEconomyClassCost());
         Assertions.assertNotNull(updated.getStopOvers());
         Assertions.assertEquals(1, updated.getStopOvers().size());
         Assertions.assertNotNull(updated.getStopOvers().get(0));
@@ -273,6 +301,10 @@ public class FlightMapperImplTests {
         OffsetDateTime departure = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC).withNano(0);
         OffsetDateTime arrival = departure.plus(12, ChronoUnit.HOURS);
 
+        BigDecimal firstClassCost = new BigDecimal(100);
+        BigDecimal businessClassCost = new BigDecimal(80);
+        BigDecimal economyClassCost = new BigDecimal(40);
+
         Flight flight = new Flight(
                 profile,
                 airline,
@@ -285,7 +317,10 @@ public class FlightMapperImplTests {
                 )),
                 "code",
                 departure,
-                arrival
+                arrival,
+                firstClassCost,
+                businessClassCost,
+                economyClassCost
         );
 
         mapper.create(flight);
