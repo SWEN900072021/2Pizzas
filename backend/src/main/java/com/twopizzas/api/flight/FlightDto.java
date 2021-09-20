@@ -13,12 +13,13 @@ public class FlightDto {
     private String id;
     private OffsetDateTime departure;
     private OffsetDateTime arrival;
-    private FlightSearchResultDto.Airport origin;
-    private FlightSearchResultDto.Airport destination;
-    private List<FlightSearchResultDto.Seat> seats;
-    private List<FlightSearchResultDto.StopOver> stopovers;
+    private Airport origin;
+    private Airport destination;
+    private List<Seat> seats;
+    private List<StopOver> stopOvers;
     private Flight.Status status;
     private Airline airline;
+    private String code;
     private AirplaneProfile profile;
 
     @Data
@@ -36,8 +37,8 @@ public class FlightDto {
 
     @Data
     public static class StopOver {
-        private OffsetDateTime arriving;
-        private OffsetDateTime departing;
+        private OffsetDateTime arrival;
+        private OffsetDateTime departure;
         private FlightSearchResultDto.Airport location;
     }
 
@@ -49,7 +50,7 @@ public class FlightDto {
 
     @Data
     public static class AirplaneProfile {
-        private String name;
+        private String type;
         private String code;
     }
 }
