@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -37,7 +38,10 @@ public class BookingMapperTests {
                 ),
                 "code",
                 now,
-                now.plus(3, ChronoUnit.HOURS)
+                now.plus(3, ChronoUnit.HOURS),
+                BigDecimal.valueOf(20),
+                BigDecimal.valueOf(10),
+                BigDecimal.valueOf(2)
         );
 
         Passenger passenger = new Passenger("givenName", "surname", LocalDate.now(), "passport", "nationality");
