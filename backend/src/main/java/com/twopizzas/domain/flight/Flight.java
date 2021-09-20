@@ -13,6 +13,7 @@ import com.twopizzas.util.ValueViolation;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,17 +31,26 @@ public class Flight extends DomainEntity {
     private final OffsetDateTime arrival;
     private final List<StopOver> stopOvers;
     private final String code;
+    private final BigDecimal firstClassCost;
+    private final BigDecimal businessClassCost;
+    private final BigDecimal economyClassCost;
 
     @Setter
     private Status status;
 
-    public Flight(EntityId id, ValueHolder<List<FlightSeatAllocation>> allocatedSeats, AirplaneProfile airplaneProfile, Airline airline, ValueHolder<List<FlightSeat>> seats, Airport origin, Airport destination, OffsetDateTime departure, OffsetDateTime arrival, List<StopOver> stopOvers, String code, Status status) {
+    public Flight(EntityId id, ValueHolder<List<FlightSeatAllocation>> allocatedSeats, AirplaneProfile airplaneProfile,
+                  Airline airline, ValueHolder<List<FlightSeat>> seats, Airport origin, Airport destination,
+                  OffsetDateTime departure, OffsetDateTime arrival, List<StopOver> stopOvers, String code, Status status,
+                  BigDecimal firstClassCost, BigDecimal businessClassCost, BigDecimal economyClassCost) {
         super(id);
         this.allocatedSeats = notNull(allocatedSeats, "bookedSeats");
         this.airplaneProfile = notNull(airplaneProfile, "airplaneProfile");
         this.airline = notNull(airline, "airline");
         this.departure = notNull(departure, "departure");
         this.arrival = notNull(arrival, "arrival");
+        this.firstClassCost = notNull(firstClassCost, "firstClassCost");
+        this.businessClassCost = notNull(businessClassCost, "businessClassCost");
+        this.economyClassCost = notNull(economyClassCost, "economyClassCost");
 
         if(seats == null) {
             List<FlightSeat> built = airplaneProfile.getFlightSeats(this);
@@ -60,8 +70,8 @@ public class Flight extends DomainEntity {
         this.status = notNull(status, "status");
     }
 
-    public Flight(AirplaneProfile airplaneProfile, Airline airline, Airport origin, Airport destination, List<StopOver> stopOvers, String code, OffsetDateTime departure, OffsetDateTime arrival) {
-        this(EntityId.nextId(), ArrayList::new, airplaneProfile, airline, null, origin, destination, departure, arrival, stopOvers, code, Status.TO_SCHEDULE);
+    public Flight(AirplaneProfile airplaneProfile, Airline airline, Airport origin, Airport destination, List<StopOver> stopOvers, String code, OffsetDateTime departure, OffsetDateTime arrival, BigDecimal firstClassCost, BigDecimal businessClassCost, BigDecimal economyClassCost) {
+        this(EntityId.nextId(), ArrayList::new, airplaneProfile, airline, null, origin, destination, departure, arrival, stopOvers, code, Status.TO_SCHEDULE, firstClassCost, businessClassCost, economyClassCost);
     }
 
     public SeatBooking allocateSeats(BookingRequest request) {
