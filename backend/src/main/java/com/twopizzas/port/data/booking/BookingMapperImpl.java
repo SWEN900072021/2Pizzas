@@ -69,8 +69,8 @@ class BookingMapperImpl implements BookingMapper {
         OffsetDateTime date = entity.getDate();
         BigDecimal totalCost = entity.getTotalCost();
         EntityId customerId = entity.getCustomer().getId();
-        EntityId flightId = entity.getFlightReservation().getFlight().getId();
-        String returnId = entity.getReturnFlightReservation() == null ? null : entity.getReturnFlightReservation().getFlight().getId().toString();
+        EntityId flightId = entity.getFlightBooking().getFlight().getId();
+        String returnId = entity.getReturnFlightBooking() == null ? null : entity.getReturnFlightBooking().getFlight().getId().toString();
 
         new SqlStatement(CREATE_TEMPLATE,
                 bookingId.toString(),
@@ -101,8 +101,8 @@ class BookingMapperImpl implements BookingMapper {
         OffsetDateTime date = entity.getDate();
         BigDecimal totalCost = entity.getTotalCost();
         EntityId customerId = entity.getCustomer().getId();
-        EntityId flightId = entity.getFlightReservation().getFlight().getId();
-        String returnId = entity.getReturnFlightReservation() == null ? null : entity.getReturnFlightReservation().getFlight().getId().toString();
+        EntityId flightId = entity.getFlightBooking().getFlight().getId();
+        String returnId = entity.getReturnFlightBooking() == null ? null : entity.getReturnFlightBooking().getFlight().getId().toString();
 
         new SqlStatement(UPDATE_TEMPLATE,
                 date,

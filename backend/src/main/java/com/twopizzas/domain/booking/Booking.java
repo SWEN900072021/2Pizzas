@@ -22,7 +22,7 @@ public class Booking extends DomainEntity {
     public Booking(EntityId id, OffsetDateTime date, BigDecimal totalCost, Customer customer) {
         super(id);
         this.date = notNull(date, "date");
-        this.totalCost = notNull(totalCost, "totalCost");
+        this.totalCost = totalCost;
         this.customer = notNull(customer, "customer");
     }
 
@@ -39,11 +39,11 @@ public class Booking extends DomainEntity {
         returnFlightBooking = seatBooking;
     }
 
-    public SeatBooking getFlightReservation() {
+    public SeatBooking getFlightBooking() {
         return flightBooking;
     }
 
-    public SeatBooking getReturnFlightReservation() {
+    public SeatBooking getReturnFlightBooking() {
         return returnFlightBooking;
     }
 }

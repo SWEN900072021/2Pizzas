@@ -115,8 +115,8 @@ public class BookingMapperImplTests {
         Assertions.assertEquals(entity.getDate().toInstant(), persisted.getDate().toInstant());
         Assertions.assertEquals(entity.getTotalCost(), persisted.getTotalCost());
         Assertions.assertEquals(entity.getCustomer(), persisted.getCustomer());
-        Assertions.assertEquals(entity.getFlightReservation().getFlight(), persisted.getFlightReservation().getFlight());
-        Assertions.assertEquals(entity.getReturnFlightReservation().getFlight(), persisted.getReturnFlightReservation().getFlight());
+        Assertions.assertEquals(entity.getFlightBooking().getFlight(), persisted.getFlightBooking().getFlight());
+        Assertions.assertEquals(entity.getReturnFlightBooking().getFlight(), persisted.getReturnFlightBooking().getFlight());
 
         Mockito.verify(customerMapper).read(Mockito.eq(customerId));
 
@@ -169,8 +169,8 @@ public class BookingMapperImplTests {
         Assertions.assertEquals(entity.getDate().toInstant(), persisted.getDate().toInstant());
         Assertions.assertEquals(entity.getTotalCost(), persisted.getTotalCost());
         Assertions.assertEquals(entity.getCustomer(), persisted.getCustomer());
-        Assertions.assertEquals(entity.getFlightReservation().getFlight(), persisted.getFlightReservation().getFlight());
-        Assertions.assertNull(persisted.getReturnFlightReservation());
+        Assertions.assertEquals(entity.getFlightBooking().getFlight(), persisted.getFlightBooking().getFlight());
+        Assertions.assertNull(persisted.getReturnFlightBooking());
 
         Mockito.verify(customerMapper).read(Mockito.eq(customerId));
     }
@@ -291,8 +291,8 @@ public class BookingMapperImplTests {
         Assertions.assertEquals(update.getDate().toInstant(), updated.getDate().toInstant());
         Assertions.assertEquals(update.getTotalCost(), updated.getTotalCost());
         Assertions.assertEquals(update.getCustomer(), updated.getCustomer());
-        Assertions.assertEquals(update.getFlightReservation().getFlight(), updated.getFlightReservation().getFlight());
-        Assertions.assertEquals(update.getReturnFlightReservation().getFlight(), updated.getReturnFlightReservation().getFlight());
+        Assertions.assertEquals(update.getFlightBooking().getFlight(), updated.getFlightBooking().getFlight());
+        Assertions.assertEquals(update.getReturnFlightBooking().getFlight(), updated.getReturnFlightBooking().getFlight());
 
         Mockito.verify(customerMapper).read(Mockito.eq(customerIdUpdated));
 
