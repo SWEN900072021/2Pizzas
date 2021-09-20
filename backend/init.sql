@@ -109,7 +109,6 @@ CREATE TABLE booking
 (
     id             varchar(36) PRIMARY KEY,
     date           timestamp(3) with time zone,
-    totalCost      numeric,
     customerId     varchar(36),
     flightId       varchar(36) NOT NULL,
     returnFlightId varchar(36),

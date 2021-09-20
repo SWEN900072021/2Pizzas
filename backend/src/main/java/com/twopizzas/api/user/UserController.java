@@ -6,7 +6,6 @@ import com.twopizzas.domain.user.Administrator;
 import com.twopizzas.domain.user.User;
 import com.twopizzas.domain.user.UserRepository;
 import com.twopizzas.web.*;
-import jdk.internal.joptsimple.internal.Strings;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;

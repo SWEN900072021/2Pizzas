@@ -17,9 +17,9 @@ public class NewFlightDto {
     private List<StopOver> stopOvers;
     private String code;
     private String profile;
-    private BigDecimal firstClassCost;
-    private BigDecimal businessClassCost;
-    private BigDecimal economyClassCost;
+    private final BigDecimal firstClassCost;
+    private final BigDecimal businessClassCost;
+    private final BigDecimal economyClassCost;
 
     public List<String> validate() {
         List<String> errors = new ArrayList<>();

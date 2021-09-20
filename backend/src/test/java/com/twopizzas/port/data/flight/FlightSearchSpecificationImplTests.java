@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
@@ -114,7 +115,10 @@ public class FlightSearchSpecificationImplTests {
                 Collections.emptyList(),
                 "code",
                 departure,
-                departure.plus(2, ChronoUnit.HOURS)
+                departure.plus(2, ChronoUnit.HOURS),
+                BigDecimal.ONE,
+                BigDecimal.ONE,
+                BigDecimal.ONE
         );
 
         Flight flightOther = new Flight(
@@ -125,7 +129,10 @@ public class FlightSearchSpecificationImplTests {
                 Collections.emptyList(),
                 "code",
                 departure,
-                departure.plus(2, ChronoUnit.HOURS)
+                departure.plus(2, ChronoUnit.HOURS),
+                BigDecimal.ONE,
+                BigDecimal.ONE,
+                BigDecimal.ONE
         );
 
         mapper.create(flight);
@@ -160,7 +167,10 @@ public class FlightSearchSpecificationImplTests {
                 Collections.emptyList(),
                 "code",
                 departure,
-                departure.plus(2, ChronoUnit.HOURS)
+                departure.plus(2, ChronoUnit.HOURS),
+                BigDecimal.ONE,
+                BigDecimal.ONE,
+                BigDecimal.ONE
         );
 
         Flight flightOther = new Flight(
@@ -171,7 +181,10 @@ public class FlightSearchSpecificationImplTests {
                 Collections.emptyList(),
                 "code",
                 departure,
-                departure.plus(2, ChronoUnit.HOURS)
+                departure.plus(2, ChronoUnit.HOURS),
+                BigDecimal.ONE,
+                BigDecimal.ONE,
+                BigDecimal.ONE
         );
 
         mapper.create(flight);
@@ -206,7 +219,10 @@ public class FlightSearchSpecificationImplTests {
                 Collections.emptyList(),
                 "code",
                 departure,
-                departure.plus(2, ChronoUnit.HOURS)
+                departure.plus(2, ChronoUnit.HOURS),
+                BigDecimal.ONE,
+                BigDecimal.ONE,
+                BigDecimal.ONE
         );
 
         Flight flightOther = new Flight(
@@ -217,7 +233,10 @@ public class FlightSearchSpecificationImplTests {
                 Collections.emptyList(),
                 "code",
                 departure,
-                departure.plus(2, ChronoUnit.HOURS)
+                departure.plus(2, ChronoUnit.HOURS),
+                BigDecimal.ONE,
+                BigDecimal.ONE,
+                BigDecimal.ONE
         );
 
         mapper.create(flight);
@@ -252,7 +271,10 @@ public class FlightSearchSpecificationImplTests {
                 Collections.emptyList(),
                 "code",
                 departure,
-                departure.plus(2, ChronoUnit.HOURS)
+                departure.plus(2, ChronoUnit.HOURS),
+                BigDecimal.ONE,
+                BigDecimal.ONE,
+                BigDecimal.ONE
         );
 
         Flight flightOther = new Flight(
@@ -263,7 +285,10 @@ public class FlightSearchSpecificationImplTests {
                 Collections.emptyList(),
                 "code",
                 departure.plus(2, ChronoUnit.HOURS),
-                departure.plus(4, ChronoUnit.HOURS)
+                departure.plus(4, ChronoUnit.HOURS),
+                BigDecimal.ONE,
+                BigDecimal.ONE,
+                BigDecimal.ONE
         );
 
         mapper.create(flight);
@@ -298,7 +323,10 @@ public class FlightSearchSpecificationImplTests {
                 Collections.emptyList(),
                 "code",
                 departure,
-                departure.plus(2, ChronoUnit.HOURS)
+                departure.plus(2, ChronoUnit.HOURS),
+                BigDecimal.ONE,
+                BigDecimal.ONE,
+                BigDecimal.ONE
         );
 
         Flight flightOther = new Flight(
@@ -309,7 +337,10 @@ public class FlightSearchSpecificationImplTests {
                 Collections.emptyList(),
                 "code",
                 departure.plus(2, ChronoUnit.HOURS),
-                departure.plus(4, ChronoUnit.HOURS)
+                departure.plus(4, ChronoUnit.HOURS),
+                BigDecimal.ONE,
+                BigDecimal.ONE,
+                BigDecimal.ONE
         );
 
         mapper.create(flight);

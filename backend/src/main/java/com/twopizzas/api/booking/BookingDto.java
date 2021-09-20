@@ -3,6 +3,7 @@ package com.twopizzas.api.booking;
 import com.twopizzas.domain.flight.SeatClass;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -12,9 +13,12 @@ public class BookingDto {
     private OffsetDateTime dateTime;
     private Flight flight;
     private Flight returnFlight;
+    private BigDecimal totalCost;
+    private Customer customer;
 
     @Data
     public static class Flight {
+        private String id;
         private String code;
         private OffsetDateTime departure;
         private OffsetDateTime arrival;
@@ -27,13 +31,20 @@ public class BookingDto {
     }
 
     @Data
+    public static class Customer {
+        String username;
+        String email;
+    }
+
+
+    @Data
     public static class AirplaneProfile {
-        private String name;
         private String code;
+        private String type;
     }
 
     @Data
-    private static class SeatAllocation {
+    public static class SeatAllocation {
         private String seat;
         private SeatClass seatClass;
         private String givenName;
