@@ -2,7 +2,7 @@ package com.twopizzas.port.data.flight;
 
 import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.domain.user.Airline;
-import com.twopizzas.domain.Airport;
+import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.domain.flight.*;
@@ -87,6 +87,7 @@ public class FlightMapperImplTests {
         origin = Mockito.mock(Airport.class);
         EntityId originId = EntityId.nextId();
         Mockito.when(origin.getId()).thenReturn(originId);
+
         destination = Mockito.mock(Airport.class);
         EntityId destinationId = EntityId.nextId();
         Mockito.when(destination.getId()).thenReturn(destinationId);

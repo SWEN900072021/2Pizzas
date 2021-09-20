@@ -25,17 +25,16 @@ class BookingMapperImpl implements BookingMapper {
     static final String TABLE_BOOKING = "booking";
     static final String COLUMN_ID = "id";
     static final String COLUMN_DATE = "date";
-    static final String COLUMN_TOTALCOST = "totalcost";
     static final String COLUMN_CUSTOMER_ID = "customerid";
     static final String COLUMN_FLIGHT_ID = "flightid";
     static final String COLUMN_RETURNFLIGHT_ID = "returnflightid";
 
     private static final String CREATE_TEMPLATE =
-            "INSERT INTO " + TABLE_BOOKING + "(" + COLUMN_ID + ", " + COLUMN_DATE + ", " + COLUMN_TOTALCOST + ", " + COLUMN_CUSTOMER_ID + ", " + COLUMN_FLIGHT_ID + ", " + COLUMN_RETURNFLIGHT_ID + ")" +
-                    " VALUES (?, ?, ?, ?, ? ,?);";
+            "INSERT INTO " + TABLE_BOOKING + "(" + COLUMN_ID + ", " + COLUMN_DATE + ", " + COLUMN_CUSTOMER_ID + ", " + COLUMN_FLIGHT_ID + ", " + COLUMN_RETURNFLIGHT_ID + ")" +
+                    " VALUES (?, ?, ?, ? ,?);";
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_BOOKING +
-                    " SET " + COLUMN_DATE + " = ?, " + COLUMN_TOTALCOST + " = ?, " + COLUMN_CUSTOMER_ID + " = ?, " + COLUMN_FLIGHT_ID + " = ?, " + COLUMN_RETURNFLIGHT_ID + " = ? " +
+                    " SET " + COLUMN_DATE + " = ?, " + COLUMN_CUSTOMER_ID + " = ?, " + COLUMN_FLIGHT_ID + " = ?, " + COLUMN_RETURNFLIGHT_ID + " = ? " +
                     " WHERE id = ?;";
     private static final String DELETE_TEMPLATE =
             "DELETE FROM " + TABLE_BOOKING +
@@ -67,15 +66,13 @@ class BookingMapperImpl implements BookingMapper {
 
         EntityId bookingId = entity.getId();
         OffsetDateTime date = entity.getDate();
-        BigDecimal totalCost = entity.getTotalCost();
         EntityId customerId = entity.getCustomer().getId();
-        EntityId flightId = entity.getFlightReservation().getFlight().getId();
-        String returnId = entity.getReturnFlightReservation() == null ? null : entity.getReturnFlightReservation().getFlight().getId().toString();
+        EntityId flightId = entity.getFlightBooking().getFlight().getId();
+        String returnId = entity.getReturnFlightBooking() == null ? null : entity.getReturnFlightBooking().getFlight().getId().toString();
 
         new SqlStatement(CREATE_TEMPLATE,
                 bookingId.toString(),
                 date,
-                totalCost,
                 customerId.toString(),
                 flightId.toString(),
                 returnId
@@ -99,14 +96,12 @@ class BookingMapperImpl implements BookingMapper {
     public void update(Booking entity) {
         EntityId bookingId = entity.getId();
         OffsetDateTime date = entity.getDate();
-        BigDecimal totalCost = entity.getTotalCost();
         EntityId customerId = entity.getCustomer().getId();
-        EntityId flightId = entity.getFlightReservation().getFlight().getId();
-        String returnId = entity.getReturnFlightReservation() == null ? null : entity.getReturnFlightReservation().getFlight().getId().toString();
+        EntityId flightId = entity.getFlightBooking().getFlight().getId();
+        String returnId = entity.getReturnFlightBooking() == null ? null : entity.getReturnFlightBooking().getFlight().getId().toString();
 
         new SqlStatement(UPDATE_TEMPLATE,
                 date,
-                totalCost,
                 customerId.toString(),
                 flightId.toString(),
                 returnId,
@@ -152,7 +147,6 @@ class BookingMapperImpl implements BookingMapper {
             Booking one = new Booking(
                     bookingId,
                     resultSet.getObject(COLUMN_DATE, OffsetDateTime.class),
-                    resultSet.getObject(COLUMN_TOTALCOST, BigDecimal.class),
                     customerMapper.read(EntityId.of(resultSet.getObject(COLUMN_CUSTOMER_ID, String.class)))
             );
 

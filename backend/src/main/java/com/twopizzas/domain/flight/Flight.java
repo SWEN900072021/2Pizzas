@@ -2,8 +2,8 @@ package com.twopizzas.domain.flight;
 
 import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.data.ValueHolder;
-import com.twopizzas.domain.*;
 import com.twopizzas.domain.EntityId;
+import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.domain.error.BusinessRuleException;
 import com.twopizzas.domain.error.DataFormatException;

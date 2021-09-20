@@ -1,6 +1,6 @@
 package com.twopizzas.port.data.airport;
 
-import com.twopizzas.domain.Airport;
+import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 
