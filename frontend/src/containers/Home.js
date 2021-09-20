@@ -38,13 +38,13 @@ const Home = () => {
   ])
 
   return (
-    <main className='h-screen'>
+    <main className='flex flex-col h-screen'>
       <NavBar />
 
       {/* -------------------------------------------------------------------------- */
       /*                                  Jumbotron                                 */
       /* -------------------------------------------------------------------------- */}
-      <section className='flex flex-col items-center justify-start h-full'>
+      <section className='flex flex-col items-center justify-start flex-grow h-full gap-5'>
         <img
           draggable={false}
           src={landscapePicture}

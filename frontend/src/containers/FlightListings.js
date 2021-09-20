@@ -35,8 +35,8 @@ const FlightListings = () => {
       <section className='flex flex-col self-center justify-start w-full h-full gap-10 mt-8 md:max-w-screen-md'>
         <FlightSearch />
         {/* <FlightFilter /> */}
-        <div className='grid justify-center grid-flow-row px-3 sm:justify-end auto-cols-min md:px-0'>
-          <section className='flex flex-col items-center justify-center gap-5 sm:items-end'>
+        <div className='grid justify-center grid-flow-row sm:justify-end auto-cols-min md:px-0'>
+          <section className='flex flex-col items-center justify-center gap-5 sm:items-end sm:px-3 md:px-0'>
             {flights.map((flight) => (
               <FlightCard flight={flight} />
             ))}
