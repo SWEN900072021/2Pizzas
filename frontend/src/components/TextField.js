@@ -7,19 +7,22 @@ const TextField = ({
   label,
   placeholder,
   password,
-  onChange
+  onChange,
+  className,
+  required
 }) => (
   <div>
     <label htmlFor={label || placeholder} className='space-y-1'>
       <div className='font-medium'>{label}</div>
       <input
         value={value}
+        required={required}
         name={name || label || placeholder}
         onChange={onChange}
         type={password ? 'password' : 'text'}
         id={label || placeholder}
         placeholder={placeholder || label}
-        className='px-4 py-3 border rounded-lg border-bg-grey focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:border-transparent'
+        className={`${className} px-4 py-3 rounded-lg border border-bg-grey focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:border-transparent`}
       />
     </label>
   </div>
@@ -31,7 +34,9 @@ TextField.defaultProps = {
   label: '',
   placeholder: '',
   password: false,
-  onChange: () => {}
+  onChange: () => {},
+  className: '',
+  required: false
 }
 
 TextField.propTypes = {
@@ -40,7 +45,9 @@ TextField.propTypes = {
   label: string,
   placeholder: string,
   password: bool,
-  onChange: func
+  onChange: func,
+  className: string,
+  required: bool
 }
 
 export default TextField

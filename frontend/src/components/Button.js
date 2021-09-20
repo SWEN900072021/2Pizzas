@@ -1,12 +1,12 @@
-import { bool, func, string } from 'prop-types'
+import { bool, element, func, string } from 'prop-types'
 import React from 'react'
 
-const Button = ({ label, onClick, submit }) => (
+const Button = ({ label, onClick, submit, className }) => (
   <div>
     <button
       type={submit ? 'submit' : 'button'}
       onClick={onClick}
-      className='w-full px-4 py-3 font-bold text-white transition-colors bg-yellow-500 rounded-lg hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50'
+      className={`${className} w-full px-4 py-3 border-2 border-yellow-500 rounded-lg text-white font-bold bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-opacity-50 transition-colors`}
     >
       {label}
     </button>
@@ -14,13 +14,16 @@ const Button = ({ label, onClick, submit }) => (
 )
 
 Button.defaultProps = {
+  label: '',
   submit: false,
-  onClick: () => {}
+  onClick: () => {},
+  className: ''
 }
 
 Button.propTypes = {
-  label: string.isRequired,
+  label: string || element,
   onClick: func,
-  submit: bool
+  submit: bool,
+  className: string
 }
 export default Button

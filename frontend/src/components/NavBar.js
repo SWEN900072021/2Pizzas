@@ -44,7 +44,7 @@ const NavBar = () => {
           onClick={handleLogout}
           className='flex items-center gap-2'
         >
-          <IoIosLogOut className='w-5 h-5 text-gray-600' />
+          <IoIosLogOut className='h-5 w-5 text-gray-600' />
           Log out
         </button>
       </Menu.Item>
@@ -67,10 +67,10 @@ const NavBar = () => {
         className={`${!token && 'hidden'}`}
       >
         <span className='flex gap-2'>
-          <span className='cursor-pointer select-none hover:underline'>
+          <span className='select-none cursor-pointer hover:underline'>
             Welcome, <span className='font-bold'>{username}</span>
           </span>
-          <BsChevronDown className='w-5 h-5 text-gray-600' />
+          <BsChevronDown className='h-5 w-5 text-gray-600' />
         </span>
       </Dropdown>
       {/* ----------------------------- LOGGED OUT MENU ---------------------------- */}
@@ -81,9 +81,9 @@ const NavBar = () => {
             <NavLink to='/'>
               <button
                 type='button'
-                className='p-2 font-bold text-white bg-yellow-500 border-2 border-yellow-500 rounded-lg sm:py-3 sm:px-4 transition-colors hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400'
+                className='p-2 sm:py-3 sm:px-4 rounded-lg transition-colors border-2 border-yellow-500 bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white font-bold'
               >
-                <span className='flex items-center justify-center gap-2'>
+                <span className='flex gap-2 justify-center items-center'>
                   <BsChevronLeft />
                   Back to Home
                 </span>
@@ -91,11 +91,11 @@ const NavBar = () => {
             </NavLink>
           </span>
         ) : (
-          <span className='flex items-center justify-center gap-3'>
+          <span className='flex justify-center items-center gap-3'>
             <NavLink to='/login'>
               <button
                 type='button'
-                className='p-2 font-bold text-white bg-yellow-500 border-2 border-yellow-500 rounded-lg sm:py-3 sm:px-4 transition-colors hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400'
+                className='p-2 sm:py-3 sm:px-4 rounded-lg transition-colors border-2 border-yellow-500 bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white font-bold'
               >
                 Log In
               </button>
@@ -103,7 +103,7 @@ const NavBar = () => {
             <NavLink to='/signup'>
               <button
                 type='button'
-                className='p-2 font-bold text-yellow-600 bg-white border-2 border-yellow-500 rounded-lg sm:py-3 sm:px-4 hover:border-yellow-500 hover:bg-yellow-600 hover:text-white transition-colors'
+                className='p-2 sm:py-3 sm:px-4 rounded-lg border-2 border-yellow-500 bg-white text-yellow-600 font-bold hover:border-yellow-500 hover:bg-yellow-600 hover:text-white transition-colors'
               >
                 Sign Up
               </button>
