@@ -131,22 +131,21 @@ const FlightCard = ({ flight }) => (
 FlightCard.propTypes = {
   flight: shape({
     flight: shape({
-      airlineName: string,
-      airlineCode: string,
+      airline: string,
       origin: string,
+
       destination: string,
       departure: string,
       arrival: string,
-      stopovers: arrayOf(string)
+      stopovers: arrayOf(string) || []
     }),
     returnFlight: shape({
-      airlineName: string,
-      airlineCode: string,
+      airline: string,
       origin: string,
       destination: string,
       departure: string,
       arrival: string,
-      stopovers: arrayOf(string)
+      stopovers: arrayOf(string) || []
     }),
     cost: number
   }).isRequired

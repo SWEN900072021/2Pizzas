@@ -8,20 +8,23 @@ import {
 import { IoIosPerson } from 'react-icons/io'
 import { DatePicker, Popover } from 'antd'
 import { useMediaQuery } from 'react-responsive'
-import moment from 'moment'
 import { useHistory } from 'react-router-dom'
+
 import OriginSearch from './OriginSearch'
 import DestinationSearch from './DestinationSearch'
 import Button from '../components/Button'
 import Search from '../components/Search'
 import { useFlightStore } from '../hooks/Store'
 import useAirports from '../hooks/useAirports'
+import useFlights from '../hooks/useFlights'
+
+const moment = require('moment-timezone')
 
 const { RangePicker } = DatePicker
 
 const FlightForm = () => {
   const history = useHistory()
-  const { data } = useAirports()
+  const airports = useAirports()
 
   /* -------------------------------------------------------------------------- */
 
@@ -157,10 +160,43 @@ const FlightForm = () => {
 
   /* -------------------------------------------------------------------------- */
 
+  const outboundFlights = useFlights({
+    origin: originAirport.id,
+    destination: destinationAirport.id,
+    departDate: moment
+      .tz(departDate, destinationAirport.utcOffset)
+      .utc(),
+    airline: null
+  })
+
+  const returnFlights = useFlights({
+    origin: destinationAirport.id,
+    destination: originAirport.id,
+    departDate: moment.tz(returnDate, originAirport.utcOffset).utc(),
+    airline: null
+  })
+
   const handleSubmit = (e) => {
     e.preventDefault()
     // Search for flights here, requery flight data
     if (originAirport.code && destinationAirport.code) {
+      if (originAirport.code === destinationAirport.code) {
+        setErrorMessage(
+          'Must choose different origin and destination airports.'
+        )
+        return
+      }
+
+      // search for outbound flight
+      // origin to destination flying on depart date
+      outboundFlights.refetch()
+
+      // if return flight, search for return flight
+      // destination to origin flying on return date
+      if (isReturn) {
+        returnFlights.refetch()
+      }
+
       history.push('/flight/results')
     } else {
       setErrorMessage('Airport fields are required.')
@@ -180,8 +216,8 @@ const FlightForm = () => {
         }`}
       >
         {/* Airport Search */}
-        <OriginSearch airports={data} />
-        <DestinationSearch airports={data} />
+        <OriginSearch airports={airports.data} />
+        <DestinationSearch airports={airports.data} />
 
         {/* (Date Pickers) Visible only for Mobile Devices or One-Way Flights */}
         <span

@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 // import { v4 as uuid } from 'uuid'
 
 import FlightCard from '../components/FlightCard'
-// eslint-disable-next-line no-unused-vars
-import FlightFilter from '../components/FlightFilter'
+// import FlightFilter from '../components/FlightFilter'
 import FlightSearch from '../components/FlightSearch'
 import NavBar from '../components/NavBar'
 import { useFlightStore, useTestDataStore } from '../hooks/Store'

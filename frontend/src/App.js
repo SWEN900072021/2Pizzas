@@ -1,6 +1,7 @@
 import React from 'react'
 import { Route, Switch } from 'react-router'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 
 import Login from './containers/Login'
 import Home from './containers/Home'
@@ -17,9 +18,14 @@ function App() {
           <Route exact path='/' render={() => <Home />} />
           <Route exact path='/login' render={() => <Login />} />
           <Route exact path='/signup' render={() => <Signup />} />
-          <Route exact path='/flight/results' render={() => <FlightListings />} />
+          <Route
+            exact
+            path='/flight/results'
+            render={() => <FlightListings />}
+          />
         </Switch>
       </main>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )
 }
