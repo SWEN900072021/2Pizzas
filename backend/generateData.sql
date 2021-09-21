@@ -233,7 +233,7 @@ VALUES ((SELECT id FROM flight WHERE code = 'QN111'),
 -- Virgin
 INSERT INTO stopover(flightId, departure, arrival, airportId)
 VALUES ((SELECT id FROM flight WHERE code = 'VA111'),
-        '2021-01-01 10:30', '2021-01-01 10:00',
+        '2021-02-01 10:30', '2021-02-01 10:00',
         (SELECT id FROM airport WHERE code = 'AVV'));
 
 -- Booking Table
