@@ -14,9 +14,10 @@ const useBookings = (token) => {
             [
               'bookings',
               {
-                flightId: booking.flightId,
-                returnFlightId: booking.returnFlightId,
-                customerId: booking.customerId
+                id: booking.id,
+                flight: booking.flight,
+                returnFlight: booking.returnFlight,
+                customer: booking.customer
               }
             ],
             booking
