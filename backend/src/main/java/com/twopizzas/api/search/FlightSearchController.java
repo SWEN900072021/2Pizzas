@@ -103,6 +103,4 @@ public class FlightSearchController {
 
         return RestResponse.ok(repository.searchFlights(builder.build()).stream().map(MAPPER::map).collect(Collectors.toList()));
     }
-
-
 }

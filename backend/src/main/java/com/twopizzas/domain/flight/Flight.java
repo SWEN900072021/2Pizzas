@@ -71,7 +71,7 @@ public class Flight extends DomainEntity {
     }
 
     public Flight(AirplaneProfile airplaneProfile, Airline airline, Airport origin, Airport destination, List<StopOver> stopOvers, String code, OffsetDateTime departure, OffsetDateTime arrival, BigDecimal firstClassCost, BigDecimal businessClassCost, BigDecimal economyClassCost) {
-        this(EntityId.nextId(), ArrayList::new, airplaneProfile, airline, null, origin, destination, departure, arrival, stopOvers, code, Status.TO_SCHEDULE, firstClassCost, businessClassCost, economyClassCost);
+        this(EntityId.nextId(), BaseValueHolder.of(new ArrayList<>()), airplaneProfile, airline, null, origin, destination, departure, arrival, stopOvers, code, Status.TO_SCHEDULE, firstClassCost, businessClassCost, economyClassCost);
     }
 
     public SeatBooking allocateSeats(BookingRequest request) {
@@ -106,6 +106,7 @@ public class Flight extends DomainEntity {
         }
 
         Set<FlightSeatAllocation> newAllocations = availableSeats.stream()
+                .filter(s -> passengerSeatNames.containsKey(s.getName()))
                 .map(s -> new FlightSeatAllocation(s, passengerSeatNames.get(s.getName())))
                 .collect(Collectors.toSet());
 
