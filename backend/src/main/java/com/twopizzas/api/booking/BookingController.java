@@ -6,6 +6,7 @@ import com.twopizzas.domain.booking.Booking;
 import com.twopizzas.domain.booking.BookingRepository;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.booking.Passenger;
+import com.twopizzas.domain.booking.PassengerRepository;
 import com.twopizzas.domain.error.DataFormatException;
 import com.twopizzas.domain.error.NotFoundException;
 import com.twopizzas.domain.flight.*;
@@ -26,10 +27,10 @@ public class BookingController {
     private static final BookingMapper MAPPER = Mappers.getMapper(BookingMapper.class);
     private final FlightRepository flightRepository;
     private final BookingRepository bookingRepository;
-    private final PassengerMapper passengerRepository;
+    private final PassengerRepository passengerRepository;
 
     @Autowired
-    public BookingController(FlightRepository repository, BookingRepository bookingRepository, PassengerMapper passengerRepository) {
+    public BookingController(FlightRepository repository, BookingRepository bookingRepository, PassengerRepository passengerRepository) {
         this.flightRepository = repository;
         this.bookingRepository = bookingRepository;
         this.passengerRepository = passengerRepository;
@@ -64,7 +65,7 @@ public class BookingController {
                             passengerBooking.getNationality(),
                             passengerBooking.getPassportNumber()
                     );
-                    passengerRepository.create(passenger);
+                    passengerRepository.save(passenger);
                     passengerBooking.getSeatAllocations().forEach(a -> {
 
                         if (a.getFlightId().equals(body.getFlightId())) {

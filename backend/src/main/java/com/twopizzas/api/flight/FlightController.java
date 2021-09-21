@@ -22,15 +22,13 @@ import java.util.stream.Collectors;
 public class FlightController {
 
     private static final FlightMapper MAPPER = Mappers.getMapper(FlightMapper.class);
-    private final FlightRepository repository;
-    private final PassengerRepository passengerRepository;
+    private final FlightRepository repository;;
     private final AirportRepository airportRepository;
     private final AirplaneProfileRepository airplaneProfileRepository;
 
     @Autowired
-    public FlightController(FlightRepository repository, PassengerRepository passengerRepository, AirportRepository airportRepository, AirplaneProfileRepository airplaneProfileRepository) {
+    public FlightController(FlightRepository repository, AirportRepository airportRepository, AirplaneProfileRepository airplaneProfileRepository) {
         this.repository = repository;
-        this.passengerRepository = passengerRepository;
         this.airportRepository = airportRepository;
         this.airplaneProfileRepository = airplaneProfileRepository;
     }
