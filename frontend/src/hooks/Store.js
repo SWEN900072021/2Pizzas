@@ -235,7 +235,13 @@ const useSessionStore = create(
       token: null,
       setToken: (token) => set({ token }),
       username: null,
-      setSessionValue: (key, value) => set({ key: value })
+      setUsername: (username) => set({ username }),
+      resetSession: () =>
+        set((state) => {
+          state.setToken(null)
+          state.setUsername(null)
+          return { token: null, username: null }
+        })
     })),
     {
       name: 'session-store',

@@ -9,16 +9,16 @@ import Spinner from '../components/Spinner'
 
 // Hooks
 import { useFormStore, useSessionStore } from '../hooks/Store'
+import { AuthenticationService } from '../api'
 
 // Assets
 import pisaPicture from '../assets/pisa.jpg'
-import { signup } from '../api'
 
 const Signup = () => {
   const history = useHistory()
   const setToken = useSessionStore((state) => state.setToken)
-  const setSessionValue = useSessionStore(
-    (state) => state.setSessionValue
+  const setSessionUsername = useSessionStore(
+    (state) => state.setUsername
   )
 
   const username = useFormStore((state) => state.username)
@@ -62,20 +62,22 @@ const Signup = () => {
 
     setLoading(true)
 
-    signup(user)
-      .then((res) => {
+    AuthenticationService.signup({
+      data: user,
+      onSuccess: (res) => {
         if (res.status === 200) {
           setToken(res.data.token)
-          setSessionValue('username', user.username)
+          setSessionUsername(user.username)
           setLoading(false)
           history.push('/')
         }
-      })
-      .catch(() => {
+      },
+      onError: () => {
         // console.log(err)
         setLoading(false)
         setErrorMessage('Cannot create user.')
-      })
+      }
+    })
   }
 
   return (

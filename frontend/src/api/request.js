@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { API_URL } from './index'
+
+const API_URL = process.env.REACT_APP_API_URL
 
 // React Query + Axios: https://alexstreza.hashnode.dev/data-fetching-with-react-query-and-axios
 const client = (() =>
@@ -8,15 +9,18 @@ const client = (() =>
   }))()
 
 // options format: https://axios-http.com/docs/req_config
-const request = async (options) => {
-  const onSuccess = (response) => {
-    const { data } = response
-    return data
-  }
+const request = async ({ options, onSuccess, onError }) => {
+  const onSuccessFn =
+    onSuccess ||
+    ((response) => {
+      const { data } = response
+      return data
+    })
 
-  const onError = (error) => Promise.reject(error.response)
+  const onErrorFn =
+    onError || ((error) => Promise.reject(error.response))
 
-  return client(options).then(onSuccess).catch(onError)
+  return client(options).then(onSuccessFn).catch(onErrorFn)
 }
 
 export default request

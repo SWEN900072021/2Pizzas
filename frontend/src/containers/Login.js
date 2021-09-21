@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 
 // Hooks
 import { useFormStore, useSessionStore } from '../hooks/Store'
+import { AuthenticationService } from '../api'
 
 // Containers and Components
 import TextField from '../components/TextField'
@@ -12,13 +13,12 @@ import Spinner from '../components/Spinner'
 
 // Assets
 import thailandPicture from '../assets/thailand.png'
-import { login } from '../api'
 
 const Login = () => {
   const history = useHistory()
   const setToken = useSessionStore((state) => state.setToken)
-  const setSessionValue = useSessionStore(
-    (state) => state.setSessionValue
+  const setSessionUsername = useSessionStore(
+    (state) => state.setUsername
   )
 
   const username = useFormStore((state) => state.username)
@@ -43,21 +43,23 @@ const Login = () => {
 
     setLoading(true)
 
-    login(user)
-      .then((res) => {
+    AuthenticationService.login({
+      data: user,
+      onSuccess: (res) => {
         if (res.status === 200) {
           setToken(res.data.token)
-          setSessionValue('username', user.username)
+          setSessionUsername(user.username)
           setLoading(false)
           history.push('/')
         }
-      })
-      .catch((err) => {
+      },
+      onError: (err) => {
         if (err.response.status === 401) {
           setLoading(false)
           setErrorMessage('Invalid username or password.')
         }
-      })
+      }
+    })
   }
 
   return (

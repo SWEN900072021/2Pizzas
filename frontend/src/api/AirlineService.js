@@ -1,21 +1,21 @@
 import request from './request'
 
-export default class AirportService {
-  static getAllAirports() {
+export default class AirlineService {
+  static getAllAirlines() {
     return request({
       options: {
-        url: '/airport',
-        method: 'GET'
+        method: 'GET',
+        url: '/airline'
       }
     })
   }
 
-  static createAirport(token, airport) {
+  static createAirline(token, airline) {
     return request({
       options: {
-        url: '/airport',
         method: 'POST',
-        data: airport,
+        url: '/airline',
+        data: airline,
         headers: {
           Authorization: `Bearer ${token}`
         }
