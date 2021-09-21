@@ -32,7 +32,7 @@ const NavBar = () => {
         </NavLink>
       </Menu.Item>
       <Menu.Item key='1'>
-        <NavLink to='/dashboard/myInfo' className='flex gap-2 items-center'>
+        <NavLink to='/dashboard' className='flex gap-2 items-center'>
           <BsPerson className='h-5 w-5 text-gray-600' />
           Account dashboard
         </NavLink>

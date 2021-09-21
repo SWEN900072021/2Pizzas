@@ -5,20 +5,24 @@ import React from 'react'
 // import { NavLink } from 'react-router-dom'
 
 // Hooks
-// import { useFormStore, useSessionStore } from '../hooks/Store'
+// import Spinner from '../components/Spinner'
+import { useSessionStore } from '../hooks/Store'
+// import useUsers from '../hooks/useUsers'
 
 // Containers and Components
 // import NavBar from '../components/NavBar'
 // import Spinner from '../components/Spinner'
 
-const UserInfo = () => 
-    // const hello = 'hello'
-     (
-        // eslint-disable-next-line react/jsx-filename-extension
+const UserInfo = () => {
+    const username = useSessionStore((state) => state.username)
+
+    const userDetails = <div>Your username is: {username}</div>
+
+    return (
         <main>
-            hello i am user info
+            {userDetails}
         </main>
     )
-
+}
 
 export default UserInfo

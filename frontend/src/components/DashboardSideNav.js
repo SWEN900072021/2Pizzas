@@ -26,7 +26,7 @@ const DashboardSideNav = ({sectionOpened}) => {
             <NavBar />
             <div className='flex h-full'>
                 <section className='h-full bg-yellow-600 text-blue-100 w-64 px-2'>
-                    <NavLink to='/dashboard/myInfo' className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'>
+                    <NavLink to='/dashboard/' className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'>
                         My Info
                     </NavLink>
                     <NavLink to='/dashboard/currentBookings' className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'>
