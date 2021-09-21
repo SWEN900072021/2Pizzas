@@ -19,7 +19,7 @@ public class UserMapperImplTests {
     private AdministratorMapperImpl administratorMapper;
     private AirlineMapperImpl airlineMapper;
     private CustomerMapperImpl customerMapper;
-    private ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
+    private final ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
 
     @BeforeEach
     void setup() throws SQLException {

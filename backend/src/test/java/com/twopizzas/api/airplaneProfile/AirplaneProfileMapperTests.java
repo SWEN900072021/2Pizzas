@@ -8,7 +8,7 @@ import org.mapstruct.factory.Mappers;
 
 public class AirplaneProfileMapperTests {
 
-    private AirplaneProfileMapper mapper = Mappers.getMapper(AirplaneProfileMapper.class);
+    private final AirplaneProfileMapper mapper = Mappers.getMapper(AirplaneProfileMapper.class);
 
     @Test
     @DisplayName("GIVEN valid AirplanProfile WHEN mapped THEN returns valid AirplaneProfileDto")

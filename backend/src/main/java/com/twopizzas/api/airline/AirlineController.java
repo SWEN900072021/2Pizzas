@@ -1,8 +1,7 @@
 package com.twopizzas.api.airline;
 
-import com.twopizzas.api.ValidationUtils;
+import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Controller;
-import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.user.Administrator;
 import com.twopizzas.domain.user.Airline;
 import com.twopizzas.domain.user.AirlineRepository;
@@ -18,6 +17,7 @@ public class AirlineController {
     private static final AirlineMapper MAPPER = Mappers.getMapper(AirlineMapper.class);
     private final AirlineRepository airlineRepository;
 
+    @Autowired
     public AirlineController(AirlineRepository airlineRepository) {
         this.airlineRepository = airlineRepository;
     }

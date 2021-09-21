@@ -49,7 +49,7 @@ public class FlightMapperImplTests {
     @Mock
     private PassengerMapper passengerMapper;
 
-    private ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
+    private final ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
 
     private AirplaneProfile profile;
     private Airline airline;

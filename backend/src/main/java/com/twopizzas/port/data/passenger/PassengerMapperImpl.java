@@ -49,7 +49,7 @@ class PassengerMapperImpl implements PassengerMapper {
             "SELECT * FROM " + TABLE_PASSENGER +
                     " WHERE id = ?;";
 
-    private ConnectionPool connectionPool;
+    private final ConnectionPool connectionPool;
 
     private final BookingMapper bookingMapper;
 

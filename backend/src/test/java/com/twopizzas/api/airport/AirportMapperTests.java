@@ -10,7 +10,7 @@ import java.time.ZoneId;
 
 public class AirportMapperTests {
 
-    private AirportMapper mapper = Mappers.getMapper(AirportMapper.class);
+    private final AirportMapper mapper = Mappers.getMapper(AirportMapper.class);
 
     @Test
     @DisplayName("GIVEN valid Airport WHEN mapped THEN returns valid AirportDto")

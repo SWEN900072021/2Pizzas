@@ -37,7 +37,7 @@ public class BookingMapperImplTests {
     @Mock
     private FlightSeatAllocationMapper flightSeatAllocationMapper;
 
-    private ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
+    private final ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
 
     @BeforeEach
     void setup() throws SQLException {

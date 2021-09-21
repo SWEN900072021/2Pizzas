@@ -2,20 +2,21 @@ package com.twopizzas.api.booking;
 
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Controller;
+import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.booking.Booking;
 import com.twopizzas.domain.booking.BookingRepository;
-import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.booking.Passenger;
-import com.twopizzas.domain.error.DataFormatException;
+import com.twopizzas.domain.booking.PassengerRepository;
 import com.twopizzas.domain.error.NotFoundException;
-import com.twopizzas.domain.flight.*;
+import com.twopizzas.domain.flight.BookingRequest;
+import com.twopizzas.domain.flight.Flight;
+import com.twopizzas.domain.flight.FlightRepository;
+import com.twopizzas.domain.flight.SeatBooking;
 import com.twopizzas.domain.user.Customer;
 import com.twopizzas.domain.user.User;
-import com.twopizzas.port.data.passenger.PassengerMapper;
 import com.twopizzas.web.*;
 import org.mapstruct.factory.Mappers;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,10 +27,10 @@ public class BookingController {
     private static final BookingMapper MAPPER = Mappers.getMapper(BookingMapper.class);
     private final FlightRepository flightRepository;
     private final BookingRepository bookingRepository;
-    private final PassengerMapper passengerRepository;
+    private final PassengerRepository passengerRepository;
 
     @Autowired
-    public BookingController(FlightRepository repository, BookingRepository bookingRepository, PassengerMapper passengerRepository) {
+    public BookingController(FlightRepository repository, BookingRepository bookingRepository, PassengerRepository passengerRepository) {
         this.flightRepository = repository;
         this.bookingRepository = bookingRepository;
         this.passengerRepository = passengerRepository;
@@ -48,8 +49,8 @@ public class BookingController {
         if (!errors.isEmpty()) {
             throw new HttpException(HttpStatus.BAD_REQUEST, String.join(", ", errors));
         }
-        Flight flight = flightRepository.find(EntityId.of(body.getFlightId())).orElseThrow(() -> new NotFoundException("flight", body.getFlightId()));
-        Flight returnFlight = flightRepository.find(EntityId.of(body.getReturnFlightId())).orElseThrow(() -> new NotFoundException("returnFlight", body.getReturnFlightId()));
+        Flight flight = flightRepository.find(EntityId.of(body.getFlightId())).orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, String.format("flight %s not found", body.getFlightId())));
+        Flight returnFlight = flightRepository.find(EntityId.of(body.getReturnFlightId())).orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, String.format("flight %s not found", body.getFlightId())));
 
         Customer customer = (Customer) authenticatedUser;
 
@@ -64,7 +65,7 @@ public class BookingController {
                             passengerBooking.getNationality(),
                             passengerBooking.getPassportNumber()
                     );
-                    passengerRepository.create(passenger);
+                    passengerRepository.save(passenger);
                     passengerBooking.getSeatAllocations().forEach(a -> {
 
                         if (a.getFlightId().equals(body.getFlightId())) {

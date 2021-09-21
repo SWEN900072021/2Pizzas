@@ -8,7 +8,7 @@ import org.mapstruct.factory.Mappers;
 
 public class AirlineMapperTests {
 
-    private AirlineMapper mapper = Mappers.getMapper(AirlineMapper.class);
+    private final AirlineMapper mapper = Mappers.getMapper(AirlineMapper.class);
 
     @Test
     @DisplayName("GIVEN valid Airline WHEN mapped THEN valid AirlineDto")

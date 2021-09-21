@@ -22,7 +22,7 @@ import java.util.Optional;
 
 public class FlightMapperTests {
 
-    private FlightMapper mapper = Mappers.getMapper(FlightMapper.class);
+    private final FlightMapper mapper = Mappers.getMapper(FlightMapper.class);
 
     @Test
     @DisplayName("GIVEN valid flight WHEN mapped THEN return valid FlightDto")

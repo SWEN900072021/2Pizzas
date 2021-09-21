@@ -20,7 +20,7 @@ import java.util.Collections;
 
 public class BookingMapperTests {
 
-    private BookingMapper mapper = Mappers.getMapper(BookingMapper.class);
+    private final BookingMapper mapper = Mappers.getMapper(BookingMapper.class);
 
     @Test
     @DisplayName("GIVEN valid Booking WHEN mapped THEN returns valid BookingDto")

@@ -30,6 +30,4 @@ public class FlightSeatAllocation extends AssertionConcern {
             default: throw new IllegalStateException(String.format("error calculating cost of unknown seatClass %s", seat.getSeatClass()));
         }
     }
-
-
 }

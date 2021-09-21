@@ -25,7 +25,7 @@ public class FlightSeatMapperImplTests {
     @Mock
     private FlightMapper flightMapper;
 
-    private ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
+    private final ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
 
     @BeforeEach
     void setup() throws SQLException {

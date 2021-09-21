@@ -8,8 +8,8 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public abstract class User extends DomainEntity {
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
 
     public User(EntityId id, String username, String password) {
         super(id);

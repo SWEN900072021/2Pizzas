@@ -48,7 +48,7 @@ class AirplaneProfileMapperImpl implements AirplaneProfileMapper {
             "SELECT * FROM " + TABLE_AIRPLANE +
                     " WHERE id = ?;";
 
-    private ConnectionPool connectionPool;
+    private final ConnectionPool connectionPool;
 
     @Autowired
     AirplaneProfileMapperImpl(ConnectionPool connectionPool) {
