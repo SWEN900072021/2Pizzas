@@ -103,7 +103,7 @@ class LazyValueHolderProxyTests {
         Assertions.assertSame(result, returnVal);
     }
 
-    static interface ExtendedInterface<T> extends ValueHolder<T> {
+    interface ExtendedInterface<T> extends ValueHolder<T> {
         Object someOtherMethod();
     }
 

@@ -6,12 +6,10 @@ import com.twopizzas.di.Controller;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.domain.airport.AirportRepository;
-import com.twopizzas.domain.booking.PassengerRepository;
 import com.twopizzas.domain.flight.*;
 import com.twopizzas.domain.user.Airline;
 import com.twopizzas.domain.user.User;
 import com.twopizzas.web.*;
-import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
@@ -22,7 +20,7 @@ import java.util.stream.Collectors;
 public class FlightController {
 
     private static final FlightMapper MAPPER = Mappers.getMapper(FlightMapper.class);
-    private final FlightRepository repository;;
+    private final FlightRepository repository;
     private final AirportRepository airportRepository;
     private final AirplaneProfileRepository airplaneProfileRepository;
 

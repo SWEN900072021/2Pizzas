@@ -1,9 +1,7 @@
 package com.twopizzas.api.airplaneProfile;
 
-import com.twopizzas.api.ValidationUtils;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Controller;
-import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.flight.AirplaneProfile;
 import com.twopizzas.domain.flight.AirplaneProfileRepository;
 import com.twopizzas.domain.user.Administrator;

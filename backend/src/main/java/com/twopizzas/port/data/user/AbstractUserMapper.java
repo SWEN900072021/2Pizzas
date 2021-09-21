@@ -41,7 +41,7 @@ public abstract class AbstractUserMapper<T extends User> {
                     " LEFT JOIN airline ON \"user\".id = airline.id" +
                     " WHERE \"user\".id = ?;";
 
-    private ConnectionPool connectionPool;
+    private final ConnectionPool connectionPool;
 
     @Autowired
     public AbstractUserMapper(ConnectionPool connectionPool) {

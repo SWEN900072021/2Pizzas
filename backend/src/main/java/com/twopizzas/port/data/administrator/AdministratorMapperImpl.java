@@ -29,7 +29,7 @@ public class AdministratorMapperImpl extends AbstractUserMapper<Administrator> i
                     " ON " + TABLE_USER + ".id =" + TABLE_ADMINISTRATOR + ".id" +
                     " WHERE " + TABLE_USER + ".id = ?;";
 
-    private ConnectionPool connectionPool;
+    private final ConnectionPool connectionPool;
 
     @Autowired
     public AdministratorMapperImpl(ConnectionPool connectionPool) {

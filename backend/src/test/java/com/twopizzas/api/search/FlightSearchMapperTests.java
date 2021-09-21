@@ -20,7 +20,7 @@ import java.util.Optional;
 
 public class FlightSearchMapperTests {
 
-    private FlightSearchMapper mapper = Mappers.getMapper(FlightSearchMapper.class);
+    private final FlightSearchMapper mapper = Mappers.getMapper(FlightSearchMapper.class);
 
     @Test
     @DisplayName("GIVEN valid flight WHEN mapped THEN return valid FlightDto")
