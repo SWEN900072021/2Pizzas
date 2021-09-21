@@ -22,4 +22,12 @@ public class StopOver extends AssertionConcern {
             throw new ValueViolation("departure time must be after arrival time");
         }
     }
+
+    public OffsetDateTime getDepartureLocal() {
+        return departure.atZoneSameInstant(location.getUtcOffset()).toOffsetDateTime();
+    }
+
+    public OffsetDateTime getArrivalLocal() {
+        return arrival.atZoneSameInstant(location.getUtcOffset()).toOffsetDateTime();
+    }
 }

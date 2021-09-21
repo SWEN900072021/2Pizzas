@@ -15,6 +15,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -181,6 +182,14 @@ public class Flight extends DomainEntity {
                 throw new ValueViolation("conflicting stopovers");
             }
         });
+    }
+
+    public OffsetDateTime getDepartureLocal() {
+        return departure.atZoneSameInstant(origin.getUtcOffset()).toOffsetDateTime();
+    }
+
+    public OffsetDateTime getArrivalLocal() {
+        return arrival.atZoneSameInstant(destination.getUtcOffset()).toOffsetDateTime();
     }
 
     public enum Status {

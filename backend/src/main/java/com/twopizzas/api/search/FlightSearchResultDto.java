@@ -24,6 +24,8 @@ public class FlightSearchResultDto {
     private BigDecimal firstClassCost;
     private BigDecimal businessClassCost;
     private BigDecimal economyClassCost;
+    private OffsetDateTime departureLocal;
+    private OffsetDateTime arrivalLocal;
 
     @Data
     public static class AirplaneProfile {
@@ -50,6 +52,8 @@ public class FlightSearchResultDto {
         private OffsetDateTime arrival;
         private OffsetDateTime departure;
         private Airport location;
+        private OffsetDateTime departureLocal;
+        private OffsetDateTime arrivalLocal;
     }
 
     @Data

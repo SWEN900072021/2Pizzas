@@ -1,5 +1,6 @@
 package com.twopizzas.api.booking;
 
+import com.twopizzas.api.search.FlightSearchResultDto;
 import com.twopizzas.domain.flight.SeatClass;
 import lombok.Data;
 
@@ -22,12 +23,24 @@ public class BookingDto {
         private String code;
         private OffsetDateTime departure;
         private OffsetDateTime arrival;
+        private OffsetDateTime departureLocal;
+        private OffsetDateTime arrivalLocal;
         private Airport origin;
         private Airport destination;
         private List<SeatAllocation> seatAllocations;
+        private List<StopOver> stopOvers;
         private com.twopizzas.domain.flight.Flight.Status status;
         private Airline airline;
         private AirplaneProfile profile;
+    }
+
+    @Data
+    public static class StopOver {
+        private OffsetDateTime arrival;
+        private OffsetDateTime departure;
+        private FlightSearchResultDto.Airport location;
+        private OffsetDateTime departureLocal;
+        private OffsetDateTime arrivalLocal;
     }
 
     @Data

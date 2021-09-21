@@ -13,6 +13,8 @@ public class FlightDto {
     private String id;
     private OffsetDateTime departure;
     private OffsetDateTime arrival;
+    private OffsetDateTime departureLocal;
+    private OffsetDateTime arrivalLocal;
     private Airport origin;
     private Airport destination;
     private List<Seat> seats;
@@ -40,6 +42,8 @@ public class FlightDto {
         private OffsetDateTime arrival;
         private OffsetDateTime departure;
         private FlightSearchResultDto.Airport location;
+        private OffsetDateTime departureLocal;
+        private OffsetDateTime arrivalLocal;
     }
 
     @Data
