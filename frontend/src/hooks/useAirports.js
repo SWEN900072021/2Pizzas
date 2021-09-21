@@ -11,7 +11,15 @@ const useAirports = () => {
       onSuccess: (data) => {
         data.forEach((airport) => {
           queryClient.setQueryData(
-            ['airports', { id: airport.id }],
+            [
+              'airports',
+              {
+                id: airport.id,
+                code: airport.code,
+                name: airport.name,
+                location: airport.location
+              }
+            ],
             airport
           )
         })
