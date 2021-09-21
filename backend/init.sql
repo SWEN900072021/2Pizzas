@@ -64,15 +64,18 @@ CREATE TABLE airplaneProfile
 
 CREATE TABLE flight
 (
-    id          varchar(36) PRIMARY KEY,
-    code        varchar(255),
-    departure   timestamp(3) with time zone,
-    arrival     timestamp(3) with time zone,
-    origin      varchar(36),  -- airport ID
-    destination varchar(36),  -- airport ID
-    airlineId   varchar(36),
-    airplaneId  varchar(36),
-    status      varchar(255),
+    id                  varchar(36) PRIMARY KEY,
+    code                varchar(255),
+    departure           timestamp(3) with time zone,
+    arrival             timestamp(3) with time zone,
+    origin              varchar(36),  -- airport ID
+    destination         varchar(36),  -- airport ID
+    airlineId           varchar(36),
+    airplaneId          varchar(36),
+    status              varchar(255),
+    firstClassCost      numeric,
+    businessClassCost   numeric,
+    economyClassCost    numeric,
     CONSTRAINT airlineFK
         FOREIGN KEY (airlineId)
             REFERENCES airline (id),
@@ -106,7 +109,6 @@ CREATE TABLE booking
 (
     id             varchar(36) PRIMARY KEY,
     date           timestamp(3) with time zone,
-    totalCost      numeric,
     customerId     varchar(36),
     flightId       varchar(36) NOT NULL,
     returnFlightId varchar(36),

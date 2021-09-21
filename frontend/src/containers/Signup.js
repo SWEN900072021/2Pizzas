@@ -9,16 +9,16 @@ import Spinner from '../components/Spinner'
 
 // Hooks
 import { useFormStore, useSessionStore } from '../hooks/Store'
+import { AuthenticationService } from '../api'
 
 // Assets
 import pisaPicture from '../assets/pisa.jpg'
-import { signup } from '../api'
 
 const Signup = () => {
   const history = useHistory()
   const setToken = useSessionStore((state) => state.setToken)
-  const setSessionValue = useSessionStore(
-    (state) => state.setSessionValue
+  const setSessionUsername = useSessionStore(
+    (state) => state.setUsername
   )
 
   const username = useFormStore((state) => state.username)
@@ -62,38 +62,40 @@ const Signup = () => {
 
     setLoading(true)
 
-    signup(user)
-      .then((res) => {
+    AuthenticationService.signup({
+      data: user,
+      onSuccess: (res) => {
         if (res.status === 200) {
           setToken(res.data.token)
-          setSessionValue('username', user.username)
+          setSessionUsername(user.username)
           setLoading(false)
           history.push('/')
         }
-      })
-      .catch(() => {
+      },
+      onError: () => {
         // console.log(err)
         setLoading(false)
         setErrorMessage('Cannot create user.')
-      })
+      }
+    })
   }
 
   return (
-    <main className='h-screen'>
+    <main className='flex flex-col h-screen'>
       <NavBar />
-      <section className='h-screen flex flex-col justify-center items-center gap-5'>
+      <section className='flex flex-col items-center justify-center flex-grow h-full gap-5'>
         <img
           draggable={false}
           src={pisaPicture}
           alt='Leaning Tower of Pisa in Italy'
-          className='fixed h-screen w-screen object-cover object-center'
+          className='fixed object-cover object-center w-screen h-screen'
         />
-        <h1 className='z-10 text-white text-4xl font-bold'>
+        <h1 className='z-10 text-4xl font-bold text-white'>
           Sign Up
         </h1>
         <form
           onSubmit={handleSubmit}
-          className='z-10 bg-blue-50 flex flex-wrap flex-col mx-auto space-y-4 p-5 rounded-xl'
+          className='z-10 flex flex-col flex-wrap p-5 mx-auto space-y-4 bg-blue-50 rounded-xl'
         >
           <TextField
             required
@@ -147,7 +149,7 @@ const Signup = () => {
           </div>
           <button
             type='submit'
-            className='p-3 rounded-lg transition-colors bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white font-bold'
+            className='p-3 font-bold text-white transition-colors bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400'
           >
             <span className={`${loading && 'hidden'}`}>Sign Up</span>
             <span

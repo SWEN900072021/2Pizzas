@@ -26,8 +26,8 @@ const NavBar = () => {
   const loggedInMenu = (
     <Menu>
       <Menu.Item key='0'>
-        <NavLink to='/' className='flex gap-2 items-center'>
-          <IoIosAirplane className='h-5 w-5 text-gray-600' />
+        <NavLink to='/' className='flex items-center gap-2'>
+          <IoIosAirplane className='w-5 h-5 text-gray-600' />
           Find flights
         </NavLink>
       </Menu.Item>
@@ -42,9 +42,9 @@ const NavBar = () => {
         <button
           type='button'
           onClick={handleLogout}
-          className='flex gap-2 items-center'
+          className='flex items-center gap-2'
         >
-          <IoIosLogOut className='h-5 w-5 text-gray-600' />
+          <IoIosLogOut className='w-5 h-5 text-gray-600' />
           Log out
         </button>
       </Menu.Item>
@@ -52,10 +52,10 @@ const NavBar = () => {
   )
 
   return (
-    <nav className='w-full top-0 z-30 px-5 py-3 h-16 bg-white shadow-md focus:outline-none flex items-center justify-between'>
-      <NavLink to='/' className='group inline-flex gap-3 '>
-        <FaPizzaSlice className='text-yellow-600 h-8 w-8 group-hover:text-yellow-700 transition-colors' />
-        <h1 className='font-medium text-2xl text-gray-800 group-hover:text-gray-600 transition-colors'>
+    <nav className='z-30 flex items-center justify-between w-full h-16 px-5 py-3 bg-white shadow-md -0 focus:outline-none'>
+      <NavLink to='/' className='inline-flex gap-3 group '>
+        <FaPizzaSlice className='w-8 h-8 text-yellow-600 transition-colors group-hover:text-yellow-700' />
+        <h1 className='text-2xl font-medium text-gray-800 transition-colors group-hover:text-gray-600'>
           Pepperoni Planes
         </h1>
       </NavLink>
@@ -67,10 +67,10 @@ const NavBar = () => {
         className={`${!token && 'hidden'}`}
       >
         <span className='flex gap-2'>
-          <span className='select-none cursor-pointer hover:underline'>
+          <span className='cursor-pointer select-none hover:underline'>
             Welcome, <span className='font-bold'>{username}</span>
           </span>
-          <BsChevronDown className='h-5 w-5 text-gray-600' />
+          <BsChevronDown className='w-5 h-5 text-gray-600' />
         </span>
       </Dropdown>
       {/* ----------------------------- LOGGED OUT MENU ---------------------------- */}
@@ -81,9 +81,9 @@ const NavBar = () => {
             <NavLink to='/'>
               <button
                 type='button'
-                className='p-2 sm:py-3 sm:px-4 rounded-lg transition-colors border-2 border-yellow-500 bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white font-bold'
+                className='p-2 font-bold text-white transition-colors bg-yellow-500 border-2 border-yellow-500 rounded-lg sm:py-3 sm:px-4 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400'
               >
-                <span className='flex gap-2 justify-center items-center'>
+                <span className='flex items-center justify-center gap-2'>
                   <BsChevronLeft />
                   Back to Home
                 </span>
@@ -91,11 +91,11 @@ const NavBar = () => {
             </NavLink>
           </span>
         ) : (
-          <span className='flex justify-center items-center gap-3'>
+          <span className='flex items-center justify-center gap-3'>
             <NavLink to='/login'>
               <button
                 type='button'
-                className='p-2 sm:py-3 sm:px-4 rounded-lg transition-colors border-2 border-yellow-500 bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white font-bold'
+                className='p-2 font-bold text-white transition-colors bg-yellow-500 border-2 border-yellow-500 rounded-lg sm:py-3 sm:px-4 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400'
               >
                 Log In
               </button>
@@ -103,7 +103,7 @@ const NavBar = () => {
             <NavLink to='/signup'>
               <button
                 type='button'
-                className='p-2 sm:py-3 sm:px-4 rounded-lg border-2 border-yellow-500 bg-white text-yellow-600 font-bold hover:border-yellow-500 hover:bg-yellow-600 hover:text-white transition-colors'
+                className='p-2 font-bold text-yellow-600 transition-colors bg-white border-2 border-yellow-500 rounded-lg sm:py-3 sm:px-4 hover:border-yellow-500 hover:bg-yellow-600 hover:text-white'
               >
                 Sign Up
               </button>

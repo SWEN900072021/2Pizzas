@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class ComponentManager {
 
-    private final Collection<Bean<?>> store = new ArrayList<>();;
+    private final Collection<Bean<?>> store = new ArrayList<>();
     private final BeanResolver beanResolver;
     private final BeanLoader beanLoader;
     private ApplicationContext context;

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 
 // Hooks
 import { useFormStore, useSessionStore } from '../hooks/Store'
+import { AuthenticationService } from '../api'
 
 // Containers and Components
 import TextField from '../components/TextField'
@@ -12,13 +13,12 @@ import Spinner from '../components/Spinner'
 
 // Assets
 import thailandPicture from '../assets/thailand.png'
-import { login } from '../api'
 
 const Login = () => {
   const history = useHistory()
   const setToken = useSessionStore((state) => state.setToken)
-  const setSessionValue = useSessionStore(
-    (state) => state.setSessionValue
+  const setSessionUsername = useSessionStore(
+    (state) => state.setUsername
   )
 
   const username = useFormStore((state) => state.username)
@@ -43,37 +43,39 @@ const Login = () => {
 
     setLoading(true)
 
-    login(user)
-      .then((res) => {
+    AuthenticationService.login({
+      data: user,
+      onSuccess: (res) => {
         if (res.status === 200) {
           setToken(res.data.token)
-          setSessionValue('username', user.username)
+          setSessionUsername(user.username)
           setLoading(false)
           history.push('/')
         }
-      })
-      .catch((err) => {
+      },
+      onError: (err) => {
         if (err.response.status === 401) {
           setLoading(false)
           setErrorMessage('Invalid username or password.')
         }
-      })
+      }
+    })
   }
 
   return (
-    <main className='h-screen'>
+    <main className='flex flex-col h-screen'>
       <NavBar />
-      <section className='h-screen flex flex-col justify-center items-center gap-5'>
+      <section className='flex flex-col items-center justify-center flex-grow h-full gap-5'>
         <img
           draggable={false}
           src={thailandPicture}
           alt='Landscape with stone structures in Thailand'
-          className='fixed h-screen w-screen object-cover object-center'
+          className='fixed object-cover object-center w-screen h-screen'
         />
-        <h1 className='z-10 text-white text-4xl font-bold'>Log In</h1>
+        <h1 className='z-10 text-4xl font-bold text-white'>Log In</h1>
         <form
           onSubmit={handleSubmit}
-          className='z-10 flex flex-wrap flex-col justify-center items-stretch text-center mx-auto p-5 space-y-4 rounded-xl bg-yellow-50'
+          className='z-10 flex flex-col flex-wrap items-stretch justify-center p-5 mx-auto space-y-4 text-center rounded-xl bg-yellow-50'
         >
           <TextField
             required
@@ -99,7 +101,7 @@ const Login = () => {
           </div>
           <button
             type='submit'
-            className='p-3 rounded-lg transition-colors bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white font-bold'
+            className='p-3 font-bold text-white transition-colors bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400'
           >
             <span className={`${loading && 'hidden'}`}>Log In</span>
             <span
@@ -115,7 +117,7 @@ const Login = () => {
             <button
               type='button'
               onClick={() => {}}
-              className='self-center rounded-sm text-sm px-1 text-yellow-800 hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:underline'
+              className='self-center px-1 text-sm text-yellow-800 rounded-sm hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:underline'
             >
               Don&apos;t have an account?
             </button>

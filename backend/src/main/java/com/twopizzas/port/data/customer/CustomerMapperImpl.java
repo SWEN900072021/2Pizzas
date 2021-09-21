@@ -37,7 +37,7 @@ public class CustomerMapperImpl extends AbstractUserMapper<Customer> implements 
                     " ON " + TABLE_USER + ".id =" + TABLE_CUSTOMER + ".id" +
             " WHERE " + TABLE_USER + ".id = ?;";
 
-    private ConnectionPool connectionPool;
+    private final ConnectionPool connectionPool;
 
     @Autowired
     public CustomerMapperImpl(ConnectionPool connectionPool) {

@@ -3,7 +3,7 @@ package com.twopizzas.port.data.seat;
 import com.twopizzas.data.LazyValueHolderProxy;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
-import com.twopizzas.domain.Airport;
+import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.flight.FlightSeat;
 import com.twopizzas.domain.flight.SeatClass;

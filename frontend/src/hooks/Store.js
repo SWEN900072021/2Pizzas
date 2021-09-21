@@ -1,5 +1,7 @@
 import create from 'zustand'
+import { persist } from 'zustand/middleware'
 import produce from 'immer'
+import moment from 'moment'
 
 // Copied from zustand GitHub docs to easily change nested state
 const immer = (config) => (set, get, api) =>
@@ -106,57 +108,156 @@ const AIRPORTS = [
   }
 ]
 
+const RETURN_FLIGHTS = [
+  {
+    flight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Melbourne',
+      destination: 'Sydney',
+      departure: '2020/10/10 09:00',
+      arrival: '2020/10/10 15:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    returnFlight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Sydney',
+      destination: 'Melbourne',
+      departure: '2020/10/10 21:00',
+      arrival: '2020/10/11 00:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    cost: 500
+  },
+  {
+    flight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Melbourne',
+      destination: 'Sydney',
+      departure: '2020/10/10 09:00',
+      arrival: '2020/10/10 15:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    returnFlight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Sydney',
+      destination: 'Melbourne',
+      departure: '2020/10/10 21:00',
+      arrival: '2020/10/11 00:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    cost: 500
+  },
+  {
+    flight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Melbourne',
+      destination: 'Sydney',
+      departure: '2020/10/10 09:00',
+      arrival: '2020/10/10 15:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    returnFlight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Sydney',
+      destination: 'Melbourne',
+      departure: '2020/10/10 21:00',
+      arrival: '2020/10/11 00:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    cost: 500
+  }
+]
+
+const ONE_WAY_FLIGHTS = [
+  {
+    flight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Melbourne',
+      destination: 'Sydney',
+      departure: '2020/10/10 09:00',
+      arrival: '2020/10/10 15:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    cost: 500
+  },
+  {
+    flight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Melbourne',
+      destination: 'Sydney',
+      departure: '2020/10/10 09:00',
+      arrival: '2020/10/10 15:00',
+      stopovers: ['Perth', 'Darwin', 'Brisbane']
+    },
+    cost: 500
+  },
+  {
+    flight: {
+      airlineName: 'QANTAS',
+      airlineCode: 'QA',
+      origin: 'Melbourne',
+      destination: 'Sydney',
+      departure: '2020/10/10 09:00',
+      arrival: '2020/10/10 15:00',
+      stopovers: ['Perth', 'Darwin']
+    },
+    cost: 500
+  }
+]
 // HELPER FUNCTIONS
 
-const getLocalStorage = (key) =>
-  JSON.parse(window.localStorage.getItem(key))
-const setLocalStorage = (key, value) =>
-  window.localStorage.setItem(key, JSON.stringify(value))
+// const getLocalStorage = (key) =>
+//   JSON.parse(window.localStorage.getItem(key))
+// const setLocalStorage = (key, value) =>
+//   window.localStorage.setItem(key, JSON.stringify(value))
 
 // STORES
 
 const useTestDataStore = create(
   immer(() => ({
-    airports: AIRPORTS
+    airports: AIRPORTS,
+    returnFlights: RETURN_FLIGHTS,
+    oneWayFlights: ONE_WAY_FLIGHTS
   }))
 )
 
 const useSessionStore = create(
-  immer((set) => ({
-    token: getLocalStorage('token') || null,
-    setToken: (token) =>
-      set(() => {
-        setLocalStorage('token', token)
-        return { token }
-      }),
-    username: getLocalStorage('username') || null,
-    setSessionValue: (key, value) =>
-      set(() => {
-        setLocalStorage(key, value)
-        return { [key]: value }
-      }),
-    resetSession: () =>
-      set(() => {
-        setLocalStorage('token', null)
-        setLocalStorage('username', null)
-
-        return { token: null, username: null }
-      })
-  }))
+  persist(
+    immer((set) => ({
+      token: null,
+      setToken: (token) => set({ token }),
+      username: null,
+      setUsername: (username) => set({ username }),
+      resetSession: () =>
+        set((state) => {
+          state.setToken(null)
+          state.setUsername(null)
+          return { token: null, username: null }
+        })
+    })),
+    {
+      name: 'session-store',
+      getStorage: () => sessionStorage
+    }
+  )
 )
 
 const useFormStore = create(
   immer((set) => ({
     username: '',
-    password: '',
     givenName: '',
     surname: '',
     email: '',
     setUsername: (username) => {
       set({ username })
-    },
-    setPassword: (password) => {
-      set({ password })
     },
     setGivenName: (givenName) => {
       set({ givenName })
@@ -170,58 +271,85 @@ const useFormStore = create(
   }))
 )
 
-const useStore = create(
-  immer((set, get) => ({
-    // Contains objects for origin and destination airports
-    originAirport: {},
-    destinationAirport: {},
-    setOriginAirport: (airport) => {
-      set({ originAirport: { ...airport } })
-    },
-    setDestinationAirport: (airport) => {
-      set({ destinationAirport: { ...airport } })
-    },
+const useFlightStore = create(
+  persist(
+    immer((set, get) => ({
+      // Contains objects for origin and destination airports
+      originAirport: {},
+      destinationAirport: {},
+      setOriginAirport: (airport) => {
+        set({ originAirport: { ...airport } })
+      },
+      setDestinationAirport: (airport) => {
+        set({ destinationAirport: { ...airport } })
+      },
+      // Contains strings for the value of the origin and destination airport input fields
+      originAirportSearchValue: '',
+      destinationAirportSearchValue: '',
+      setOriginAirportSearchValue: (value) => {
+        set({ originAirportSearchValue: value })
+      },
+      setDestinationAirportSearchValue: (value) => {
+        set({ destinationAirportSearchValue: value })
+      },
 
-    // Contains strings for the value of the origin and destination airport input fields
-    originAirportSearchValue: '',
-    destinationAirportSearchValue: '',
-    setOriginAirportSearchValue: (value) => {
-      set({ originAirportSearchValue: value })
-    },
-    setDestinationAirportSearchValue: (value) => {
-      set({ destinationAirportSearchValue: value })
-    },
+      isReturn: true,
+      setReturn: (value) => {
+        set({ isReturn: value })
+      },
 
-    // Contains string
-    economyClass: ECONOMY,
-    businessClass: BUSINESS,
-    firstClass: FIRST,
-    cabinClass: ECONOMY,
-    setEconomyClass: () => {
-      set({ cabinClass: ECONOMY })
-    },
-    setBusinessClass: () => {
-      set({ cabinClass: BUSINESS })
-    },
-    setFirstClass: () => {
-      set({ cabinClass: FIRST })
-    },
+      // Contains string for cabin class type
+      economyClass: ECONOMY,
+      businessClass: BUSINESS,
+      firstClass: FIRST,
+      cabinClass: ECONOMY,
+      setEconomyClass: () => {
+        set({ cabinClass: ECONOMY })
+      },
+      setBusinessClass: () => {
+        set({ cabinClass: BUSINESS })
+      },
+      setFirstClass: () => {
+        set({ cabinClass: FIRST })
+      },
 
-    //
-    passengerCount: 1,
-    addPassenger: () => {
-      set((state) => ({
-        passengerCount: state.passengerCount + 1
-      }))
-    },
-    removePassenger: () => {
-      if (get().passengerCount > 1) {
+      // Contains number of passenger
+      passengerCount: 1,
+      addPassenger: () => {
         set((state) => ({
-          passengerCount: state.passengerCount - 1
+          passengerCount: state.passengerCount + 1
+        }))
+      },
+      removePassenger: () => {
+        if (get().passengerCount > 1) {
+          set((state) => ({
+            passengerCount: state.passengerCount - 1
+          }))
+        }
+      },
+      departDate: moment(),
+      returnDate: moment(),
+      setDepartDate: (date) => {
+        set(() => ({
+          departDate: date
+        }))
+      },
+      setReturnDate: (date) => {
+        set(() => ({
+          returnDate: date
         }))
       }
+    })),
+    {
+      name: 'flight-store',
+      getStorage: () => sessionStorage
     }
-  }))
+  )
 )
 
-export { useStore, useSessionStore, useFormStore, useTestDataStore }
+export {
+  useFlightStore,
+  useSessionStore,
+  useFormStore,
+  useTestDataStore
+}

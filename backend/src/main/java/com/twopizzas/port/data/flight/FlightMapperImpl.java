@@ -17,6 +17,7 @@ import com.twopizzas.port.data.seat.FlightSeatMapper;
 import com.twopizzas.port.data.seatallocation.FlightSeatAllocationMapper;
 import com.twopizzas.port.data.seatallocation.FlightSeatAllocationsForFlightLoader;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
@@ -37,14 +38,17 @@ class FlightMapperImpl implements FlightMapper {
     static final String COLUMN_AIRLINE_ID = "airlineId";
     static final String COLUMN_AIRPLANE_ID = "airplaneId";
     static final String COLUMN_STATUS = "status";
+    static final String COLUMN_FIRST_CLASS_COST = "firstClassCost";
+    static final String COLUMN_BUSINESS_CLASS_COST = "businessClassCost";
+    static final String COLUMN_ECONOMY_CLASS_COST = "economyClassCost";
 
     private static final String INSERT_TEMPLATE =
-            "INSERT INTO " + TABLE_FLIGHT + "(" + COLUMN_ID + " , " + COLUMN_CODE + ", " + COLUMN_DEPARTURE + ", " + COLUMN_ARRIVAL + ", " + COLUMN_ORIGIN + ", " + COLUMN_DESTINATION + ", " + COLUMN_AIRLINE_ID + ", " + COLUMN_AIRPLANE_ID + ", " + COLUMN_STATUS +")" +
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "INSERT INTO " + TABLE_FLIGHT + "(" + COLUMN_ID + " , " + COLUMN_CODE + ", " + COLUMN_DEPARTURE + ", " + COLUMN_ARRIVAL + ", " + COLUMN_ORIGIN + ", " + COLUMN_DESTINATION + ", " + COLUMN_AIRLINE_ID + ", " + COLUMN_AIRPLANE_ID + ", " + COLUMN_STATUS + ", " + COLUMN_FIRST_CLASS_COST + ", " + COLUMN_BUSINESS_CLASS_COST + ", " + COLUMN_ECONOMY_CLASS_COST + ")" +
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_FLIGHT +
-            " SET " + COLUMN_CODE + " = ?, " + COLUMN_DEPARTURE + " = ?, " + COLUMN_ARRIVAL + " = ?, " + COLUMN_ORIGIN + " = ?, " + COLUMN_DESTINATION + " = ?, " + COLUMN_AIRLINE_ID + " = ?, " + COLUMN_AIRPLANE_ID + " = ?, " + COLUMN_STATUS + " = ?" +
+            " SET " + COLUMN_CODE + " = ?, " + COLUMN_DEPARTURE + " = ?, " + COLUMN_ARRIVAL + " = ?, " + COLUMN_ORIGIN + " = ?, " + COLUMN_DESTINATION + " = ?, " + COLUMN_AIRLINE_ID + " = ?, " + COLUMN_AIRPLANE_ID + " = ?, " + COLUMN_STATUS + " = ?, " + COLUMN_FIRST_CLASS_COST + " = ?, " + COLUMN_BUSINESS_CLASS_COST + " = ?, " + COLUMN_ECONOMY_CLASS_COST + " = ?" +
             " WHERE id = ?;";
 
     private static final String DELETE_TEMPLATE =
@@ -103,7 +107,10 @@ class FlightMapperImpl implements FlightMapper {
                 entity.getDestination().getId().toString(),
                 entity.getAirline().getId().toString(),
                 entity.getAirplaneProfile().getId().toString(),
-                entity.getStatus().toString()
+                entity.getStatus().toString(),
+                entity.getFirstClassCost(),
+                entity.getBusinessClassCost(),
+                entity.getEconomyClassCost()
         ).doExecute(connectionPool.getCurrentTransaction());
 
         insertAllocations(entity);
@@ -133,6 +140,9 @@ class FlightMapperImpl implements FlightMapper {
                 entity.getAirline().getId().toString(),
                 entity.getAirplaneProfile().getId().toString(),
                 entity.getStatus().toString(),
+                entity.getFirstClassCost(),
+                entity.getBusinessClassCost(),
+                entity.getEconomyClassCost(),
                 entity.getId().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
 
@@ -187,7 +197,10 @@ class FlightMapperImpl implements FlightMapper {
                     resultSet.getObject(COLUMN_ARRIVAL, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
                     new FlightStopOversLoader(connectionPool, airportMapper, flightId).load().get(),
                     resultSet.getObject(COLUMN_CODE, String.class),
-                    Flight.Status.valueOf(resultSet.getObject(COLUMN_STATUS, String.class))
+                    Flight.Status.valueOf(resultSet.getObject(COLUMN_STATUS, String.class)),
+                            resultSet.getObject(COLUMN_FIRST_CLASS_COST, BigDecimal.class),
+                            resultSet.getObject(COLUMN_BUSINESS_CLASS_COST, BigDecimal.class),
+                            resultSet.getObject(COLUMN_ECONOMY_CLASS_COST, BigDecimal.class)
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

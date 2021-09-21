@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class AirplaneProfileMapperImplTests {
     private AirplaneProfileMapperImpl mapper;
-    private ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
+    private final ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
 
     @BeforeEach
     void setup() throws SQLException {

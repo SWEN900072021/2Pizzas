@@ -29,7 +29,7 @@ public class FlightSeatAllocationDataTests {
     @Mock
     private PassengerMapper passengerMapper;
 
-    private ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
+    private final ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
 
     @BeforeEach
     void setup() throws SQLException {

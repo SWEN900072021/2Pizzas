@@ -9,9 +9,9 @@ import lombok.Getter;
 public class Customer extends User {
 
     public static final String TYPE = "customer";
-    private String givenName;
-    private String lastName;
-    private String email;
+    private final String givenName;
+    private final String lastName;
+    private final String email;
 
     public Customer(EntityId id, String username, String password, String givenName, String lastName, String email) {
         super(id, username, password);

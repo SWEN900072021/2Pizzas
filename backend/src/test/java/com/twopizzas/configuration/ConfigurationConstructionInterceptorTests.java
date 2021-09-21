@@ -68,15 +68,15 @@ public class ConfigurationConstructionInterceptorTests {
         @Value("test.property")
         private String testProperty;
 
-        private String notAProperty = "notChanged";
+        private final String notAProperty = "notChanged";
     }
 
     @Getter
     static class TestNonConfiguration {
         @Value("test.property")
-        private String testProperty = "notChanged";
+        private final String testProperty = "notChanged";
 
-        private String notAProperty = "notChanged";
+        private final String notAProperty = "notChanged";
     }
 
 }
