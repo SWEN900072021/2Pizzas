@@ -1,18 +1,18 @@
 -- User Table
 INSERT INTO "user"(id, username, password)
-VALUES (gen_random_uuid(), 'customer_1', 'password_1'),
-       (gen_random_uuid(), 'customer_2', 'password_2'),
-       (gen_random_uuid(), 'customer_3', 'password_3');
+VALUES (gen_random_uuid(), 'customer_1', crypt('password_1', gen_salt('bf'))),
+       (gen_random_uuid(), 'customer_2', crypt('password_2', gen_salt('bf'))),
+       (gen_random_uuid(), 'customer_3', crypt('password_3', gen_salt('bf')));
 
 INSERT INTO "user"(id, username, password)
-VALUES (gen_random_uuid(), 'airline_1', 'password_1'),
-       (gen_random_uuid(), 'airline_2', 'password_2'),
-       (gen_random_uuid(), 'airline_3', 'password_3');
+VALUES (gen_random_uuid(), 'airline_1', crypt('password_1', gen_salt('bf'))),
+       (gen_random_uuid(), 'airline_2', crypt('password_2', gen_salt('bf'))),
+       (gen_random_uuid(), 'airline_3', crypt('password_3', gen_salt('bf')));
 
 INSERT INTO "user"(id, username, password)
-VALUES (gen_random_uuid(), 'admin_1', 'password_1'),
-       (gen_random_uuid(), 'admin_2', 'password_2'),
-       (gen_random_uuid(), 'admin_3', 'password_3');
+VALUES (gen_random_uuid(), 'admin_1', crypt('password_1', gen_salt('bf'))),
+       (gen_random_uuid(), 'admin_2', crypt('password_2', gen_salt('bf'))),
+       (gen_random_uuid(), 'admin_3', crypt('password_3', gen_salt('bf')));
 
 -- Customer Table
 INSERT INTO customer(id, givenName, surname, email)
