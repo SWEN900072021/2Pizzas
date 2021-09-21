@@ -1,3 +1,5 @@
+
+
 -- User Table
 INSERT INTO "user"(id, username, password, userType)
 VALUES (gen_random_uuid(), 'customer_1', crypt('password_1', gen_salt('bf')), 'customer'),
@@ -49,14 +51,14 @@ VALUES (gen_random_uuid(), 'planecode_1', 'boeing', 6, 3, 8, 4, 40, 7),
 
 -- Flight Table
 -- Qantas Flights
-INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, firstClassCost,
+INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, status, firstClassCost,
                    businessClassCost, economyClassCost)
 VALUES (gen_random_uuid(),
         'QN111', '2021-01-01 08:00', '2021-01-01 13:00',
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'QFA'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'),
+        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
         100.0,
         80.0,
         50.0),
@@ -65,7 +67,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airline WHERE code = 'QFA'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'),
+        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
         100.0,
         80.0,
         50.0),
@@ -74,7 +76,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'AVV'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'QFA'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'),
+        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
         100.0,
         80.0,
         50.0);
@@ -107,14 +109,14 @@ VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'QN113'), '
        (gen_random_uuid(), '7A', (SELECT id FROM flight WHERE code = 'QN113'), 'ECONOMY');
 
 -- Virgin Flights
-INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, firstClassCost,
+INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, status, firstClassCost,
                    businessClassCost, economyClassCost)
 VALUES (gen_random_uuid(),
         'VA111', '2021-02-01 08:00', '2021-02-01 13:00',
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'VIR'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'),
+        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
         101.0,
         81.0,
         51.0),
@@ -123,7 +125,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airline WHERE code = 'VIR'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'),
+        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
         101.0,
         81.0,
         51.0),
@@ -132,7 +134,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'AVV'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'VIR'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'),
+        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
         101.0,
         81.0,
         51.0);
@@ -165,14 +167,14 @@ VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'VA113'), '
        (gen_random_uuid(), '7A', (SELECT id FROM flight WHERE code = 'VA113'), 'ECONOMY');
 
 -- Emirates Flights
-INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, firstClassCost,
+INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, status, firstClassCost,
                    businessClassCost, economyClassCost)
 VALUES (gen_random_uuid(),
         'EM111', '2021-03-01 08:00', '2021-03-01 13:00',
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'UAE'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'),
+        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
         102.0,
         82.0,
         52.0),
@@ -181,7 +183,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airline WHERE code = 'UAE'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'),
+        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
         102.0,
         82.0,
         52.0),
@@ -190,7 +192,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'UAE'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'),
+        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
         102.0,
         82.0,
         52.0);
@@ -267,8 +269,8 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM flight WHERE code = 'EM113'));
 
 -- Passenger Table
-INSERT INTO passenger(id, givenName, surname, dob, nationality, passportNumber)
+INSERT INTO passenger(id, givenName, surname, dob, nationality, passportNumber, bookingId)
 VALUES (gen_random_uuid(),
-        'John', 'Doe', '1996-01-01', 'Australian', 'PA11231'),
+        'John', 'Doe', '1996-01-01', 'Australian', 'PA11231', (SELECT id FROM booking ORDER BY random() LIMIT 1) ),
        (gen_random_uuid(),
-        'Jane', 'Doe', '1999-01-01', 'American', 'US1293');
+        'Jane', 'Doe', '1999-01-01', 'American', 'US1293', (SELECT id FROM booking ORDER BY random() LIMIT 1) );
