@@ -90,21 +90,21 @@ VALUES (gen_random_uuid(), "1A", (SELECT id FROM flight WHERE code = 'QN111'), '
 
 INSERT INTO seats(id, name, flightId, class)
 VALUES (gen_random_uuid(), "1A", (SELECT id FROM flight WHERE code = 'QN112'), 'FIRST'),
-    (gen_random_uuid(), "2A", (SELECT id FROM flight WHERE code = 'QN112'), 'FIRST'),
-    (gen_random_uuid(), "3A", (SELECT id FROM flight WHERE code = 'QN112'), 'BUSINESS'),
-    (gen_random_uuid(), "4A", (SELECT id FROM flight WHERE code = 'QN112'), 'BUSINESS'),
-    (gen_random_uuid(), "5A", (SELECT id FROM flight WHERE code = 'QN112'), 'ECONOMY'),
-    (gen_random_uuid(), "6A", (SELECT id FROM flight WHERE code = 'QN112'), 'ECONOMY'),
-    (gen_random_uuid(), "7A", (SELECT id FROM flight WHERE code = 'QN112'), 'ECONOMY');
+       (gen_random_uuid(), "2A", (SELECT id FROM flight WHERE code = 'QN112'), 'FIRST'),
+       (gen_random_uuid(), "3A", (SELECT id FROM flight WHERE code = 'QN112'), 'BUSINESS'),
+       (gen_random_uuid(), "4A", (SELECT id FROM flight WHERE code = 'QN112'), 'BUSINESS'),
+       (gen_random_uuid(), "5A", (SELECT id FROM flight WHERE code = 'QN112'), 'ECONOMY'),
+       (gen_random_uuid(), "6A", (SELECT id FROM flight WHERE code = 'QN112'), 'ECONOMY'),
+       (gen_random_uuid(), "7A", (SELECT id FROM flight WHERE code = 'QN112'), 'ECONOMY');
 
 INSERT INTO seats(id, name, flightId, class)
 VALUES (gen_random_uuid(), "1A", (SELECT id FROM flight WHERE code = 'QN113'), 'FIRST'),
-    (gen_random_uuid(), "2A", (SELECT id FROM flight WHERE code = 'QN113'), 'FIRST'),
-    (gen_random_uuid(), "3A", (SELECT id FROM flight WHERE code = 'QN113'), 'BUSINESS'),
-    (gen_random_uuid(), "4A", (SELECT id FROM flight WHERE code = 'QN113'), 'BUSINESS'),
-    (gen_random_uuid(), "5A", (SELECT id FROM flight WHERE code = 'QN113'), 'ECONOMY'),
-    (gen_random_uuid(), "6A", (SELECT id FROM flight WHERE code = 'QN113'), 'ECONOMY'),
-    (gen_random_uuid(), "7A", (SELECT id FROM flight WHERE code = 'QN113'), 'ECONOMY');
+       (gen_random_uuid(), "2A", (SELECT id FROM flight WHERE code = 'QN113'), 'FIRST'),
+       (gen_random_uuid(), "3A", (SELECT id FROM flight WHERE code = 'QN113'), 'BUSINESS'),
+       (gen_random_uuid(), "4A", (SELECT id FROM flight WHERE code = 'QN113'), 'BUSINESS'),
+       (gen_random_uuid(), "5A", (SELECT id FROM flight WHERE code = 'QN113'), 'ECONOMY'),
+       (gen_random_uuid(), "6A", (SELECT id FROM flight WHERE code = 'QN113'), 'ECONOMY'),
+       (gen_random_uuid(), "7A", (SELECT id FROM flight WHERE code = 'QN113'), 'ECONOMY');
 
 -- Virgin Flights
 INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, firstClassCost,
