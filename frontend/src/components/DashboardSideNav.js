@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unused-expressions */
 import React, { useState } from 'react'
-import PropTypes, { string } from 'prop-types';
+import { element } from 'prop-types';
 import { useHistory } from 'react-router'
 import { Route, Switch, NavLink } from 'react-router-dom'
 
@@ -12,16 +12,10 @@ import { Route, Switch, NavLink } from 'react-router-dom'
 import ListBookings from '../containers/ListBookings'
 import UserInfo from '../containers/UserInfo'
 import NavBar from './NavBar'
+import ViewBooking from '../containers/ViewBooking'
 // import Spinner from '../components/Spinner'
 
-const DashboardSideNav = ({sectionOpened}) => {
-
-    let opened = null
-    if (sectionOpened === 'myInfo') opened = <UserInfo />
-    else if (sectionOpened === 'currentBookings') opened = <ListBookings bookingsStatus='current'/>
-    else if (sectionOpened === 'previousBookings') opened = <ListBookings bookingsStatus='previous' />
-
-    return (
+const DashboardSideNav = ({sectionOpened}) => (
         <main className='relative h-screen flex flex-col'>
             <NavBar />
             <div className='flex h-full'>
@@ -36,14 +30,13 @@ const DashboardSideNav = ({sectionOpened}) => {
                         Previous Bookings
                     </NavLink>
                 </section>
-                {opened}
+                {sectionOpened}
             </div>
         </main>
     )
-}
 
 DashboardSideNav.propTypes = {
-    sectionOpened: string.isRequired
+    sectionOpened: element.isRequired
 }
 
 export default DashboardSideNav
