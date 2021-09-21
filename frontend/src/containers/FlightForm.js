@@ -15,11 +15,16 @@ import DestinationSearch from './DestinationSearch'
 import Button from '../components/Button'
 import Search from '../components/Search'
 import { useFlightStore, useTestDataStore } from '../hooks/Store'
+// import useAirports from '../hooks/useAirports'
 
 const { RangePicker } = DatePicker
 
 const FlightForm = () => {
   const history = useHistory()
+  // const { data } = useAirports()
+
+  /* -------------------------------------------------------------------------- */
+
   const airports = useTestDataStore((state) => state.airports)
 
   const originAirport = useFlightStore((state) => state.originAirport)

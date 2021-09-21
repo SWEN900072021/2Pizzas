@@ -1,11 +1,11 @@
 import axios from 'axios'
 
-const URL = process.env.REACT_APP_API_URL
+const API_URL = process.env.REACT_APP_API_URL
 
 const login = ({ username, password }) => {
   const user = { username, password }
 
-  return axios.post(`${URL}/login`, user)
+  return axios.post(`${API_URL}/login`, user)
 }
 
 const signup = ({
@@ -17,7 +17,7 @@ const signup = ({
 }) => {
   const user = { username, password, email, givenName, surname }
 
-  return axios.post(`${URL}/signup`, user)
+  return axios.post(`${API_URL}/signup`, user)
 }
 
-export { login, signup }
+export { API_URL, login, signup }
