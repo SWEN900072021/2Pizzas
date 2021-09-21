@@ -1,18 +1,18 @@
 -- User Table
-INSERT INTO "user"(id, username, password)
-VALUES (gen_random_uuid(), 'customer_1', crypt('password_1', gen_salt('bf'))),
-       (gen_random_uuid(), 'customer_2', crypt('password_2', gen_salt('bf'))),
-       (gen_random_uuid(), 'customer_3', crypt('password_3', gen_salt('bf')));
+INSERT INTO "user"(id, username, password, userType)
+VALUES (gen_random_uuid(), 'customer_1', crypt('password_1', gen_salt('bf')), 'customer'),
+       (gen_random_uuid(), 'customer_2', crypt('password_2', gen_salt('bf')), 'customer'),
+       (gen_random_uuid(), 'customer_3', crypt('password_3', gen_salt('bf')), 'customer');
 
-INSERT INTO "user"(id, username, password)
-VALUES (gen_random_uuid(), 'airline_1', crypt('password_1', gen_salt('bf'))),
-       (gen_random_uuid(), 'airline_2', crypt('password_2', gen_salt('bf'))),
-       (gen_random_uuid(), 'airline_3', crypt('password_3', gen_salt('bf')));
+INSERT INTO "user"(id, username, password, userType)
+VALUES (gen_random_uuid(), 'airline_1', crypt('password_1', gen_salt('bf')), 'airline'),
+       (gen_random_uuid(), 'airline_2', crypt('password_2', gen_salt('bf')), 'airline'),
+       (gen_random_uuid(), 'airline_3', crypt('password_3', gen_salt('bf')), 'airline');
 
-INSERT INTO "user"(id, username, password)
-VALUES (gen_random_uuid(), 'admin_1', crypt('password_1', gen_salt('bf'))),
-       (gen_random_uuid(), 'admin_2', crypt('password_2', gen_salt('bf'))),
-       (gen_random_uuid(), 'admin_3', crypt('password_3', gen_salt('bf')));
+INSERT INTO "user"(id, username, password, userType)
+VALUES (gen_random_uuid(), 'admin_1', crypt('password_1', gen_salt('bf')), 'administrator'),
+       (gen_random_uuid(), 'admin_2', crypt('password_2', gen_salt('bf')), 'administrator'),
+       (gen_random_uuid(), 'admin_3', crypt('password_3', gen_salt('bf')), 'administrator');
 
 -- Customer Table
 INSERT INTO customer(id, givenName, surname, email)
@@ -79,32 +79,32 @@ VALUES (gen_random_uuid(),
         80.0,
         50.0);
 
-INSERT INTO seats(id, name, flightId, class)
-VALUES (gen_random_uuid(), "1A", (SELECT id FROM flight WHERE code = 'QN111'), 'FIRST'),
-       (gen_random_uuid(), "2A", (SELECT id FROM flight WHERE code = 'QN111'), 'FIRST'),
-       (gen_random_uuid(), "3A", (SELECT id FROM flight WHERE code = 'QN111'), 'BUSINESS'),
-       (gen_random_uuid(), "4A", (SELECT id FROM flight WHERE code = 'QN111'), 'BUSINESS'),
-       (gen_random_uuid(), "5A", (SELECT id FROM flight WHERE code = 'QN111'), 'ECONOMY'),
-       (gen_random_uuid(), "6A", (SELECT id FROM flight WHERE code = 'QN111'), 'ECONOMY'),
-       (gen_random_uuid(), "7A", (SELECT id FROM flight WHERE code = 'QN111'), 'ECONOMY');
+INSERT INTO seat(id, name, flightId, class)
+VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'QN111'), 'FIRST'),
+       (gen_random_uuid(), '2A', (SELECT id FROM flight WHERE code = 'QN111'), 'FIRST'),
+       (gen_random_uuid(), '3A', (SELECT id FROM flight WHERE code = 'QN111'), 'BUSINESS'),
+       (gen_random_uuid(), '4A', (SELECT id FROM flight WHERE code = 'QN111'), 'BUSINESS'),
+       (gen_random_uuid(), '5A', (SELECT id FROM flight WHERE code = 'QN111'), 'ECONOMY'),
+       (gen_random_uuid(), '6A', (SELECT id FROM flight WHERE code = 'QN111'), 'ECONOMY'),
+       (gen_random_uuid(), '7A', (SELECT id FROM flight WHERE code = 'QN111'), 'ECONOMY');
 
-INSERT INTO seats(id, name, flightId, class)
-VALUES (gen_random_uuid(), "1A", (SELECT id FROM flight WHERE code = 'QN112'), 'FIRST'),
-       (gen_random_uuid(), "2A", (SELECT id FROM flight WHERE code = 'QN112'), 'FIRST'),
-       (gen_random_uuid(), "3A", (SELECT id FROM flight WHERE code = 'QN112'), 'BUSINESS'),
-       (gen_random_uuid(), "4A", (SELECT id FROM flight WHERE code = 'QN112'), 'BUSINESS'),
-       (gen_random_uuid(), "5A", (SELECT id FROM flight WHERE code = 'QN112'), 'ECONOMY'),
-       (gen_random_uuid(), "6A", (SELECT id FROM flight WHERE code = 'QN112'), 'ECONOMY'),
-       (gen_random_uuid(), "7A", (SELECT id FROM flight WHERE code = 'QN112'), 'ECONOMY');
+INSERT INTO seat(id, name, flightId, class)
+VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'QN112'), 'FIRST'),
+       (gen_random_uuid(), '2A', (SELECT id FROM flight WHERE code = 'QN112'), 'FIRST'),
+       (gen_random_uuid(), '3A', (SELECT id FROM flight WHERE code = 'QN112'), 'BUSINESS'),
+       (gen_random_uuid(), '4A', (SELECT id FROM flight WHERE code = 'QN112'), 'BUSINESS'),
+       (gen_random_uuid(), '5A', (SELECT id FROM flight WHERE code = 'QN112'), 'ECONOMY'),
+       (gen_random_uuid(), '6A', (SELECT id FROM flight WHERE code = 'QN112'), 'ECONOMY'),
+       (gen_random_uuid(), '7A', (SELECT id FROM flight WHERE code = 'QN112'), 'ECONOMY');
 
-INSERT INTO seats(id, name, flightId, class)
-VALUES (gen_random_uuid(), "1A", (SELECT id FROM flight WHERE code = 'QN113'), 'FIRST'),
-       (gen_random_uuid(), "2A", (SELECT id FROM flight WHERE code = 'QN113'), 'FIRST'),
-       (gen_random_uuid(), "3A", (SELECT id FROM flight WHERE code = 'QN113'), 'BUSINESS'),
-       (gen_random_uuid(), "4A", (SELECT id FROM flight WHERE code = 'QN113'), 'BUSINESS'),
-       (gen_random_uuid(), "5A", (SELECT id FROM flight WHERE code = 'QN113'), 'ECONOMY'),
-       (gen_random_uuid(), "6A", (SELECT id FROM flight WHERE code = 'QN113'), 'ECONOMY'),
-       (gen_random_uuid(), "7A", (SELECT id FROM flight WHERE code = 'QN113'), 'ECONOMY');
+INSERT INTO seat(id, name, flightId, class)
+VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'QN113'), 'FIRST'),
+       (gen_random_uuid(), '2A', (SELECT id FROM flight WHERE code = 'QN113'), 'FIRST'),
+       (gen_random_uuid(), '3A', (SELECT id FROM flight WHERE code = 'QN113'), 'BUSINESS'),
+       (gen_random_uuid(), '4A', (SELECT id FROM flight WHERE code = 'QN113'), 'BUSINESS'),
+       (gen_random_uuid(), '5A', (SELECT id FROM flight WHERE code = 'QN113'), 'ECONOMY'),
+       (gen_random_uuid(), '6A', (SELECT id FROM flight WHERE code = 'QN113'), 'ECONOMY'),
+       (gen_random_uuid(), '7A', (SELECT id FROM flight WHERE code = 'QN113'), 'ECONOMY');
 
 -- Virgin Flights
 INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, firstClassCost,
@@ -137,32 +137,32 @@ VALUES (gen_random_uuid(),
         81.0,
         51.0);
 
-INSERT INTO seats(id, name, flightId, class)
-VALUES (gen_random_uuid(), "1A", (SELECT id FROM flight WHERE code = 'VA111'), 'FIRST'),
-       (gen_random_uuid(), "2A", (SELECT id FROM flight WHERE code = 'VA111'), 'FIRST'),
-       (gen_random_uuid(), "3A", (SELECT id FROM flight WHERE code = 'VA111'), 'BUSINESS'),
-       (gen_random_uuid(), "4A", (SELECT id FROM flight WHERE code = 'VA111'), 'BUSINESS'),
-       (gen_random_uuid(), "5A", (SELECT id FROM flight WHERE code = 'VA111'), 'ECONOMY'),
-       (gen_random_uuid(), "6A", (SELECT id FROM flight WHERE code = 'VA111'), 'ECONOMY'),
-       (gen_random_uuid(), "7A", (SELECT id FROM flight WHERE code = 'VA111'), 'ECONOMY');
+INSERT INTO seat(id, name, flightId, class)
+VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'VA111'), 'FIRST'),
+       (gen_random_uuid(), '2A', (SELECT id FROM flight WHERE code = 'VA111'), 'FIRST'),
+       (gen_random_uuid(), '3A', (SELECT id FROM flight WHERE code = 'VA111'), 'BUSINESS'),
+       (gen_random_uuid(), '4A', (SELECT id FROM flight WHERE code = 'VA111'), 'BUSINESS'),
+       (gen_random_uuid(), '5A', (SELECT id FROM flight WHERE code = 'VA111'), 'ECONOMY'),
+       (gen_random_uuid(), '6A', (SELECT id FROM flight WHERE code = 'VA111'), 'ECONOMY'),
+       (gen_random_uuid(), '7A', (SELECT id FROM flight WHERE code = 'VA111'), 'ECONOMY');
 
-INSERT INTO seats(id, name, flightId, class)
-VALUES (gen_random_uuid(), "1A", (SELECT id FROM flight WHERE code = 'VA112'), 'FIRST'),
-       (gen_random_uuid(), "2A", (SELECT id FROM flight WHERE code = 'VA112'), 'FIRST'),
-       (gen_random_uuid(), "3A", (SELECT id FROM flight WHERE code = 'VA112'), 'BUSINESS'),
-       (gen_random_uuid(), "4A", (SELECT id FROM flight WHERE code = 'VA112'), 'BUSINESS'),
-       (gen_random_uuid(), "5A", (SELECT id FROM flight WHERE code = 'VA112'), 'ECONOMY'),
-       (gen_random_uuid(), "6A", (SELECT id FROM flight WHERE code = 'VA112'), 'ECONOMY'),
-       (gen_random_uuid(), "7A", (SELECT id FROM flight WHERE code = 'VA112'), 'ECONOMY');
+INSERT INTO seat(id, name, flightId, class)
+VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'VA112'), 'FIRST'),
+       (gen_random_uuid(), '2A', (SELECT id FROM flight WHERE code = 'VA112'), 'FIRST'),
+       (gen_random_uuid(), '3A', (SELECT id FROM flight WHERE code = 'VA112'), 'BUSINESS'),
+       (gen_random_uuid(), '4A', (SELECT id FROM flight WHERE code = 'VA112'), 'BUSINESS'),
+       (gen_random_uuid(), '5A', (SELECT id FROM flight WHERE code = 'VA112'), 'ECONOMY'),
+       (gen_random_uuid(), '6A', (SELECT id FROM flight WHERE code = 'VA112'), 'ECONOMY'),
+       (gen_random_uuid(), '7A', (SELECT id FROM flight WHERE code = 'VA112'), 'ECONOMY');
 
-INSERT INTO seats(id, name, flightId, class)
-VALUES (gen_random_uuid(), "1A", (SELECT id FROM flight WHERE code = 'VA113'), 'FIRST'),
-       (gen_random_uuid(), "2A", (SELECT id FROM flight WHERE code = 'VA113'), 'FIRST'),
-       (gen_random_uuid(), "3A", (SELECT id FROM flight WHERE code = 'VA113'), 'BUSINESS'),
-       (gen_random_uuid(), "4A", (SELECT id FROM flight WHERE code = 'VA113'), 'BUSINESS'),
-       (gen_random_uuid(), "5A", (SELECT id FROM flight WHERE code = 'VA113'), 'ECONOMY'),
-       (gen_random_uuid(), "6A", (SELECT id FROM flight WHERE code = 'VA113'), 'ECONOMY'),
-       (gen_random_uuid(), "7A", (SELECT id FROM flight WHERE code = 'VA113'), 'ECONOMY');
+INSERT INTO seat(id, name, flightId, class)
+VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'VA113'), 'FIRST'),
+       (gen_random_uuid(), '2A', (SELECT id FROM flight WHERE code = 'VA113'), 'FIRST'),
+       (gen_random_uuid(), '3A', (SELECT id FROM flight WHERE code = 'VA113'), 'BUSINESS'),
+       (gen_random_uuid(), '4A', (SELECT id FROM flight WHERE code = 'VA113'), 'BUSINESS'),
+       (gen_random_uuid(), '5A', (SELECT id FROM flight WHERE code = 'VA113'), 'ECONOMY'),
+       (gen_random_uuid(), '6A', (SELECT id FROM flight WHERE code = 'VA113'), 'ECONOMY'),
+       (gen_random_uuid(), '7A', (SELECT id FROM flight WHERE code = 'VA113'), 'ECONOMY');
 
 -- Emirates Flights
 INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, firstClassCost,
@@ -195,32 +195,32 @@ VALUES (gen_random_uuid(),
         82.0,
         52.0);
 
-INSERT INTO seats(id, name, flightId, class)
-VALUES (gen_random_uuid(), "1A", (SELECT id FROM flight WHERE code = 'EM111'), 'FIRST'),
-       (gen_random_uuid(), "2A", (SELECT id FROM flight WHERE code = 'EM111'), 'FIRST'),
-       (gen_random_uuid(), "3A", (SELECT id FROM flight WHERE code = 'EM111'), 'BUSINESS'),
-       (gen_random_uuid(), "4A", (SELECT id FROM flight WHERE code = 'EM111'), 'BUSINESS'),
-       (gen_random_uuid(), "5A", (SELECT id FROM flight WHERE code = 'EM111'), 'ECONOMY'),
-       (gen_random_uuid(), "6A", (SELECT id FROM flight WHERE code = 'EM111'), 'ECONOMY'),
-       (gen_random_uuid(), "7A", (SELECT id FROM flight WHERE code = 'EM111'), 'ECONOMY');
+INSERT INTO seat(id, name, flightId, class)
+VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'EM111'), 'FIRST'),
+       (gen_random_uuid(), '2A', (SELECT id FROM flight WHERE code = 'EM111'), 'FIRST'),
+       (gen_random_uuid(), '3A', (SELECT id FROM flight WHERE code = 'EM111'), 'BUSINESS'),
+       (gen_random_uuid(), '4A', (SELECT id FROM flight WHERE code = 'EM111'), 'BUSINESS'),
+       (gen_random_uuid(), '5A', (SELECT id FROM flight WHERE code = 'EM111'), 'ECONOMY'),
+       (gen_random_uuid(), '6A', (SELECT id FROM flight WHERE code = 'EM111'), 'ECONOMY'),
+       (gen_random_uuid(), '7A', (SELECT id FROM flight WHERE code = 'EM111'), 'ECONOMY');
 
-INSERT INTO seats(id, name, flightId, class)
-VALUES (gen_random_uuid(), "1A", (SELECT id FROM flight WHERE code = 'EM112'), 'FIRST'),
-       (gen_random_uuid(), "2A", (SELECT id FROM flight WHERE code = 'EM112'), 'FIRST'),
-       (gen_random_uuid(), "3A", (SELECT id FROM flight WHERE code = 'EM112'), 'BUSINESS'),
-       (gen_random_uuid(), "4A", (SELECT id FROM flight WHERE code = 'EM112'), 'BUSINESS'),
-       (gen_random_uuid(), "5A", (SELECT id FROM flight WHERE code = 'EM112'), 'ECONOMY'),
-       (gen_random_uuid(), "6A", (SELECT id FROM flight WHERE code = 'EM112'), 'ECONOMY'),
-       (gen_random_uuid(), "7A", (SELECT id FROM flight WHERE code = 'EM112'), 'ECONOMY');
+INSERT INTO seat(id, name, flightId, class)
+VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'EM112'), 'FIRST'),
+       (gen_random_uuid(), '2A', (SELECT id FROM flight WHERE code = 'EM112'), 'FIRST'),
+       (gen_random_uuid(), '3A', (SELECT id FROM flight WHERE code = 'EM112'), 'BUSINESS'),
+       (gen_random_uuid(), '4A', (SELECT id FROM flight WHERE code = 'EM112'), 'BUSINESS'),
+       (gen_random_uuid(), '5A', (SELECT id FROM flight WHERE code = 'EM112'), 'ECONOMY'),
+       (gen_random_uuid(), '6A', (SELECT id FROM flight WHERE code = 'EM112'), 'ECONOMY'),
+       (gen_random_uuid(), '7A', (SELECT id FROM flight WHERE code = 'EM112'), 'ECONOMY');
 
-INSERT INTO seats(id, name, flightId, class)
-VALUES (gen_random_uuid(), "1A", (SELECT id FROM flight WHERE code = 'EM113'), 'FIRST'),
-       (gen_random_uuid(), "2A", (SELECT id FROM flight WHERE code = 'EM113'), 'FIRST'),
-       (gen_random_uuid(), "3A", (SELECT id FROM flight WHERE code = 'EM113'), 'BUSINESS'),
-       (gen_random_uuid(), "4A", (SELECT id FROM flight WHERE code = 'EM113'), 'BUSINESS'),
-       (gen_random_uuid(), "5A", (SELECT id FROM flight WHERE code = 'EM113'), 'ECONOMY'),
-       (gen_random_uuid(), "6A", (SELECT id FROM flight WHERE code = 'EM113'), 'ECONOMY'),
-       (gen_random_uuid(), "7A", (SELECT id FROM flight WHERE code = 'EM113'), 'ECONOMY');
+INSERT INTO seat(id, name, flightId, class)
+VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'EM113'), 'FIRST'),
+       (gen_random_uuid(), '2A', (SELECT id FROM flight WHERE code = 'EM113'), 'FIRST'),
+       (gen_random_uuid(), '3A', (SELECT id FROM flight WHERE code = 'EM113'), 'BUSINESS'),
+       (gen_random_uuid(), '4A', (SELECT id FROM flight WHERE code = 'EM113'), 'BUSINESS'),
+       (gen_random_uuid(), '5A', (SELECT id FROM flight WHERE code = 'EM113'), 'ECONOMY'),
+       (gen_random_uuid(), '6A', (SELECT id FROM flight WHERE code = 'EM113'), 'ECONOMY'),
+       (gen_random_uuid(), '7A', (SELECT id FROM flight WHERE code = 'EM113'), 'ECONOMY');
 
 -- Stopover Table
 -- Qantas
@@ -265,17 +265,6 @@ VALUES (gen_random_uuid(),
         '2020-12-12 11:20',
         (SELECT id FROM "user" WHERE username = 'customer_3'),
         (SELECT id FROM flight WHERE code = 'EM113'));
-
--- Seat Table
-INSERT INTO seat(id, name, flightId, class)
-VALUES (gen_random_uuid(),
-        '1A',
-        (SELECT id FROM flight WHERE code = 'QN111'),
-        'ECONOMY'),
-       (gen_random_uuid(),
-        '1B',
-        (SELECT id FROM flight WHERE code = 'QN111'),
-        'ECONOMY');
 
 -- Passenger Table
 INSERT INTO passenger(id, givenName, surname, dob, nationality, passportNumber)
