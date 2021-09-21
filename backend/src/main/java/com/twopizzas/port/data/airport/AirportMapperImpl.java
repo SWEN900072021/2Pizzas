@@ -2,7 +2,7 @@ package com.twopizzas.port.data.airport;
 
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
-import com.twopizzas.domain.Airport;
+import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;

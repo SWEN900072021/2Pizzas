@@ -4,20 +4,23 @@ import { AutoComplete } from 'antd'
 import { FaPlaneDeparture } from 'react-icons/fa'
 import { arrayOf, shape, string } from 'prop-types'
 import Search from '../components/Search'
-import { useStore } from '../hooks/Store'
+import { useFlightStore } from '../hooks/Store'
 
 const OriginSearch = ({ airports }) => {
   // Visibility state of dropdown
   const [open, setOpen] = useState(false)
 
   // Set the selected airport
-  const setOriginAirport = useStore((state) => state.setOriginAirport)
+  const originAirport = useFlightStore((state) => state.originAirport)
+  const setOriginAirport = useFlightStore(
+    (state) => state.setOriginAirport
+  )
 
   // Value of input element
-  const originAirportSearchValue = useStore(
+  const originAirportSearchValue = useFlightStore(
     (state) => state.originAirportSearchValue
   )
-  const setOriginAirportSearchValue = useStore(
+  const setOriginAirportSearchValue = useFlightStore(
     (state) => state.setOriginAirportSearchValue
   )
 
@@ -44,10 +47,15 @@ const OriginSearch = ({ airports }) => {
     e.target.select()
   }
 
-  useEffect(() => {}, [])
+  useEffect(() => {
+    if (originAirport.code)
+      setOriginAirportSearchValue(
+        `(${originAirport.code}) ${originAirport.name}`
+      )
+  }, [originAirport, setOriginAirportSearchValue])
 
   return (
-    <section>
+    <section className='text-black'>
       {/* MOBILE */}
       <section className='flex flex-grow sm:hidden sm:flex-none'>
         {/* Input Field */}
@@ -70,7 +78,7 @@ const OriginSearch = ({ airports }) => {
             <span className='font-bold'>From</span>
             <button
               type='button'
-              className='underline text-yellow-700'
+              className='text-yellow-700 underline'
               onClick={() => {
                 setOpen(false)
               }}
@@ -88,7 +96,7 @@ const OriginSearch = ({ airports }) => {
             handleKeyUp={handleKeyUp}
           />
           {/* Airport Search Results */}
-          <section className='h-5/6 divide-y divide-gray-100 overflow-y-auto'>
+          <section className='overflow-y-auto divide-y divide-gray-100 h-5/6'>
             {airports.map((airport) => (
               <button
                 key={uuid()}
@@ -96,7 +104,7 @@ const OriginSearch = ({ airports }) => {
                 onClick={() => {
                   updateOriginAirport(airport)
                 }}
-                className='group w-full flex flex-col align-top z-11 py-2 px-3 space-y-1 cursor-pointer hover:bg-gray-50 focus:bg-gray-50 focus:outline-none'
+                className='flex flex-col w-full px-3 py-2 space-y-1 align-top cursor-pointer group z-11 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none'
               >
                 <span className='self-start text-sm font-semibold cursor-pointer group-hover:text-yellow-600 group-focus:text-yellow-600'>
                   {airport.name} ({airport.code})
@@ -110,9 +118,10 @@ const OriginSearch = ({ airports }) => {
         </section>
       </section>
       {/* TABLET AND LARGER DISPLAYS */}
-      <section className='relative hidden sm:flex sm:flex-grow'>
+      <section className='relative hidden text-black sm:flex sm:flex-grow'>
         <AutoComplete
           // Need this width to fill the horizontal grid space completely
+          value={originAirportSearchValue}
           style={{ width: '100%' }}
           onFocus={selectAllOnFocus}
           onKeyDown={(e) => {
@@ -132,7 +141,7 @@ const OriginSearch = ({ airports }) => {
                 onClick={() => {
                   updateOriginAirport(airport)
                 }}
-                className='group w-full flex flex-col align-top z-11 py-2 px-3 space-y-1 cursor-pointer focus:outline-none'
+                className='flex flex-col w-full px-3 py-2 space-y-1 align-top cursor-pointer group z-11 focus:outline-none'
               >
                 <span className='self-start text-sm font-semibold cursor-pointer group-hover:text-yellow-600 group-focus:text-yellow-600'>
                   {airport.name} ({airport.code})
@@ -165,8 +174,8 @@ const OriginSearch = ({ airports }) => {
           name='icon'
           className='absolute inset-y-0 left-2.5 flex justify-center items-center pl-1 md:pl-2 pointer-events-none'
         >
-          <span className='focus:outline-none text-gray-400'>
-            <FaPlaneDeparture className='h-4 w-4' />
+          <span className='text-gray-400 focus:outline-none'>
+            <FaPlaneDeparture className='w-4 h-4' />
           </span>
         </div>
       </section>

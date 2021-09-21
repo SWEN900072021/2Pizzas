@@ -26,13 +26,13 @@ const Search = ({
   }
 
   return (
-    <form className='flex flex-grow relative text-left text-gray-400 transition-colors'>
+    <form className='relative flex flex-grow text-left text-gray-400 transition-colors'>
       <div
         name='start icon'
         className='absolute inset-y-0 left-2.5 flex justify-center items-center pl-1 md:pl-2 pointer-events-none'
       >
         <span className='focus:outline-none'>
-          {StartIcon || <StartIcon className='h-5 w-5' />}
+          {StartIcon || <StartIcon className='w-5 h-5' />}
         </span>
       </div>
       <input
@@ -60,7 +60,7 @@ const Search = ({
         className='absolute inset-y-0 right-2.5 flex justify-center items-center pr-1 md:pr-2 pointer-events-none'
       >
         <span className='focus:outline-none'>
-          {EndIcon || <EndIcon className='h-5 w-5' />}
+          {EndIcon || <EndIcon className='w-5 h-5' />}
         </span>
       </div>
     </form>
@@ -70,7 +70,7 @@ const Search = ({
 Search.defaultProps = {
   readOnly: false,
   className: '',
-  StartIcon: <HiSearch className='h-5 w-5' />,
+  StartIcon: <HiSearch className='w-5 h-5' />,
   EndIcon: <></>,
   handleChange: () => {},
   handleKeyUp: () => {},

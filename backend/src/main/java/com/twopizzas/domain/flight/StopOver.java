@@ -1,6 +1,6 @@
 package com.twopizzas.domain.flight;
 
-import com.twopizzas.domain.Airport;
+import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.util.AssertionConcern;
 import com.twopizzas.util.ValueViolation;
 import lombok.Getter;
