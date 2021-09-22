@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 // import { v4 as uuid } from 'uuid'
 
-import FlightCard from '../components/FlightCard'
-// import FlightFilter from '../components/FlightFilter'
-import FlightSearch from '../components/FlightSearch'
-import NavBar from '../components/NavBar'
+import FlightCard from '../components/flightSearch/FlightCard'
+// import FlightFilter from '../components/flightSearch/FlightFilter'
+import FlightSearchPanel from '../components/flightSearch/FlightSearchPanel'
+import NavBar from '../components/common/NavBar'
 import { useFlightStore, useTestDataStore } from '../hooks/Store'
 
-const FlightListings = () => {
+const FlightSearchResults = () => {
   const returnFlights = useTestDataStore(
     (state) => state.returnFlights
   )
@@ -32,7 +32,7 @@ const FlightListings = () => {
     <main className='flex flex-col items-start w-full h-screen'>
       <NavBar />
       <section className='flex flex-col self-center justify-start w-full h-full gap-10 mt-8 md:max-w-screen-md'>
-        <FlightSearch />
+        <FlightSearchPanel />
         {/* <FlightFilter /> */}
         <div className='grid justify-center grid-flow-row sm:justify-end auto-cols-min md:px-0'>
           <section className='flex flex-col items-center justify-center gap-5 sm:items-end sm:px-3 md:px-0'>
@@ -46,4 +46,4 @@ const FlightListings = () => {
   )
 }
 
-export default FlightListings
+export default FlightSearchResults

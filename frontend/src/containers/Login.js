@@ -7,9 +7,9 @@ import { useFormStore, useSessionStore } from '../hooks/Store'
 import { AuthenticationService } from '../api'
 
 // Containers and Components
-import TextField from '../components/TextField'
-import NavBar from '../components/NavBar'
-import Spinner from '../components/Spinner'
+import TextField from '../components/common/TextField'
+import NavBar from '../components/common/NavBar'
+import Spinner from '../components/common/Spinner'
 
 // Assets
 import thailandPicture from '../assets/thailand.png'

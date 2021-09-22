@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
-
 import React from 'react'
 import { Route, Switch } from 'react-router'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -8,6 +6,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import Login from './containers/Login'
 import Home from './containers/Home'
 import Signup from './containers/Signup'
+import FlightSearchResults from './containers/FlightSearchResults'
 import {
   DashboardSideNav,
   UserInfo,
@@ -17,7 +16,6 @@ import {
   ListAirports,
   ListFlights
 } from './containers/dashboard'
-import FlightListings from './containers/FlightListings'
 
 function App() {
   const queryClient = new QueryClient()
@@ -32,7 +30,7 @@ function App() {
           <Route
             exact
             path='/flight/results'
-            render={() => <FlightListings />}
+            render={() => <FlightSearchResults />}
           />
           <Route
             exact

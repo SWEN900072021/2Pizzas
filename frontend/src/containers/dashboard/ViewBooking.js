@@ -8,7 +8,7 @@ import {
   FaPlaneDeparture
 } from 'react-icons/fa'
 import { useHistory, useParams } from 'react-router'
-import Spinner from '../../components/Spinner'
+import Spinner from '../../components/common/Spinner'
 import { useSessionStore } from '../../hooks/Store'
 import useBookings from '../../hooks/useBookings'
 

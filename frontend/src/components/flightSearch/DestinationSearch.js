@@ -1,37 +1,41 @@
 import { React, useState, useEffect } from 'react'
 import { v4 as uuid } from 'uuid'
 import { AutoComplete } from 'antd'
-import { FaPlaneDeparture } from 'react-icons/fa'
+import { FaPlaneArrival } from 'react-icons/fa'
 import { arrayOf, shape, string } from 'prop-types'
-import Search from '../components/Search'
-import { useFlightStore } from '../hooks/Store'
+import Search from '../common/Search'
+import { useFlightStore } from '../../hooks/Store'
 
-const OriginSearch = ({ airports }) => {
+const DestinationSearch = ({ airports }) => {
   // Visibility state of dropdown
   const [open, setOpen] = useState(false)
 
   // Set the selected airport
-  const originAirport = useFlightStore((state) => state.originAirport)
-  const setOriginAirport = useFlightStore(
-    (state) => state.setOriginAirport
+  const destinationAirport = useFlightStore(
+    (state) => state.destinationAirport
+  )
+  const setDestinationAirport = useFlightStore(
+    (state) => state.setDestinationAirport
   )
 
   // Value of input element
-  const originAirportSearchValue = useFlightStore(
-    (state) => state.originAirportSearchValue
+  const destinationAirportSearchValue = useFlightStore(
+    (state) => state.destinationAirportSearchValue
   )
-  const setOriginAirportSearchValue = useFlightStore(
-    (state) => state.setOriginAirportSearchValue
+  const setDestinationAirportSearchValue = useFlightStore(
+    (state) => state.setDestinationAirportSearchValue
   )
 
-  const updateOriginAirport = (airport) => {
+  const updateDestinationAirport = (airport) => {
     if (airport !== null) {
-      setOriginAirportSearchValue(`(${airport.code}) ${airport.name}`)
-      setOriginAirport(airport)
+      setDestinationAirportSearchValue(
+        `(${airport.code}) ${airport.name}`
+      )
+      setDestinationAirport(airport)
       setOpen(false)
     } else {
-      setOriginAirportSearchValue('')
-      setOriginAirport({})
+      setDestinationAirportSearchValue('')
+      setDestinationAirport({})
     }
   }
 
@@ -48,11 +52,11 @@ const OriginSearch = ({ airports }) => {
   }
 
   useEffect(() => {
-    if (originAirport.code)
-      setOriginAirportSearchValue(
-        `(${originAirport.code}) ${originAirport.name}`
+    if (destinationAirport.code)
+      setDestinationAirportSearchValue(
+        `(${destinationAirport.code}) ${destinationAirport.name}`
       )
-  }, [originAirport, setOriginAirportSearchValue])
+  }, [destinationAirport, setDestinationAirportSearchValue])
 
   return (
     <section className='text-black'>
@@ -60,9 +64,9 @@ const OriginSearch = ({ airports }) => {
       <section className='flex flex-grow sm:hidden sm:flex-none'>
         {/* Input Field */}
         <Search
-          placeholder='Origin airport'
-          StartIcon={<FaPlaneDeparture />}
-          value={originAirportSearchValue}
+          placeholder='Destination airport'
+          StartIcon={<FaPlaneArrival />}
+          value={destinationAirportSearchValue}
           handleKeyUp={handleKeyUp}
           handleClick={() => setOpen(true)}
         />
@@ -87,11 +91,11 @@ const OriginSearch = ({ airports }) => {
             </button>
           </header>
           <Search
-            placeholder='Origin airport'
-            StartIcon={<FaPlaneDeparture />}
-            value={originAirportSearchValue}
+            placeholder='Destination airport'
+            StartIcon={<FaPlaneArrival />}
+            value={destinationAirportSearchValue}
             handleChange={(e) => {
-              setOriginAirportSearchValue(e.target.value)
+              setDestinationAirportSearchValue(e.target.value)
             }}
             handleKeyUp={handleKeyUp}
           />
@@ -102,7 +106,7 @@ const OriginSearch = ({ airports }) => {
                 key={uuid()}
                 type='button'
                 onClick={() => {
-                  updateOriginAirport(airport)
+                  updateDestinationAirport(airport)
                 }}
                 className='flex flex-col w-full px-3 py-2 space-y-1 align-top cursor-pointer group z-11 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none'
               >
@@ -121,12 +125,12 @@ const OriginSearch = ({ airports }) => {
       <section className='relative hidden text-black sm:flex sm:flex-grow'>
         <AutoComplete
           // Need this width to fill the horizontal grid space completely
-          value={originAirportSearchValue}
+          value={destinationAirportSearchValue}
           style={{ width: '100%' }}
           onFocus={selectAllOnFocus}
           onKeyDown={(e) => {
             if (e.key === 'Backspace') {
-              updateOriginAirport(null)
+              updateDestinationAirport(null)
             }
           }}
           dropdownMatchSelectWidth={350}
@@ -139,7 +143,7 @@ const OriginSearch = ({ airports }) => {
               <button
                 type='button'
                 onClick={() => {
-                  updateOriginAirport(airport)
+                  updateDestinationAirport(airport)
                 }}
                 className='flex flex-col w-full px-3 py-2 space-y-1 align-top cursor-pointer group z-11 focus:outline-none'
               >
@@ -155,7 +159,7 @@ const OriginSearch = ({ airports }) => {
         >
           {/* The anchor input element that the search results dropdown will anchor onto */}
           <input
-            placeholder='Origin airport'
+            placeholder='Destination airport'
             aria-label='search bar input'
             name='searchInput'
             type='text'
@@ -175,7 +179,7 @@ const OriginSearch = ({ airports }) => {
           className='absolute inset-y-0 left-2.5 flex justify-center items-center pl-1 md:pl-2 pointer-events-none'
         >
           <span className='text-gray-400 focus:outline-none'>
-            <FaPlaneDeparture className='w-4 h-4' />
+            <FaPlaneArrival className='w-4 h-4' />
           </span>
         </div>
       </section>
@@ -183,11 +187,11 @@ const OriginSearch = ({ airports }) => {
   )
 }
 
-OriginSearch.defaultProps = {
+DestinationSearch.defaultProps = {
   airports: []
 }
 
-OriginSearch.propTypes = {
+DestinationSearch.propTypes = {
   airports: arrayOf(
     shape({
       code: string.isRequired,
@@ -197,4 +201,4 @@ OriginSearch.propTypes = {
   )
 }
 
-export default OriginSearch
+export default DestinationSearch

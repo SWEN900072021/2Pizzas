@@ -3,7 +3,7 @@ import { element } from 'prop-types'
 import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router'
 
-import NavBar from '../../components/NavBar'
+import NavBar from '../../components/common/NavBar'
 import { useSessionStore } from '../../hooks/Store'
 
 const DashboardSideNav = ({ sectionOpened }) => {
@@ -63,7 +63,7 @@ const DashboardSideNav = ({ sectionOpened }) => {
   }, [token, history])
 
   return (
-    <section className='relative flex flex-col h-screen'>
+    <section className='relative flex flex-col w-screen h-screen'>
       <NavBar />
       {token && user && (
         <main className='flex flex-col w-full h-full md:flex-row'>

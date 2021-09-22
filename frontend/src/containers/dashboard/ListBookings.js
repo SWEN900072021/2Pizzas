@@ -9,7 +9,7 @@ import { FaSadTear } from 'react-icons/fa'
 import { useSessionStore } from '../../hooks/Store'
 
 // Containers and Components
-import Spinner from '../../components/Spinner'
+import Spinner from '../../components/common/Spinner'
 import useBookings from '../../hooks/useBookings'
 
 const ListBookings = ({ bookingsStatus }) => {
