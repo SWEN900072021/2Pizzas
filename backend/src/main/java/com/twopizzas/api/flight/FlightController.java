@@ -49,14 +49,17 @@ public class FlightController {
                 .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, String.format("airport %s not found", body.getOrigin())));
         Airport destination = airportRepository.find(EntityId.of(body.getDestination()))
                 .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, String.format("airport %s not found", body.getDestination())));
+
         List<StopOver> stopOvers = new ArrayList<>();
-        for (NewFlightDto.StopOver stopOver: body.getStopOvers()) {
-            stopOvers.add(new StopOver(
-                    airportRepository.find(EntityId.of(stopOver.getLocation()))
+        if (body.getStopOvers() != null) {
+            for (NewFlightDto.StopOver stopOver : body.getStopOvers()) {
+                stopOvers.add(new StopOver(
+                        airportRepository.find(EntityId.of(stopOver.getLocation()))
                                 .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, "airport %s not found")),
-                    stopOver.getArrival(),
-                    stopOver.getDeparture()
+                        stopOver.getArrival(),
+                        stopOver.getDeparture()
                 ));
+            }
         }
 
         Flight newFlight = repository.save(new Flight(
