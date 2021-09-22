@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom'
 import { FaSadTear } from 'react-icons/fa'
 
 // Hooks
-import { useSessionStore } from '../hooks/Store'
+import { useSessionStore } from '../../hooks/Store'
 
 // Containers and Components
-import Spinner from '../components/Spinner'
-import useBookings from '../hooks/useBookings'
+import Spinner from '../../components/Spinner'
+import useBookings from '../../hooks/useBookings'
 
 const ListBookings = ({ bookingsStatus }) => {
   const token = useSessionStore((state) => state.token)

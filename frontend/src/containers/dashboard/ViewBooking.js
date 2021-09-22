@@ -1,6 +1,6 @@
+import React, { useEffect, useState } from 'react'
 import { Steps } from 'antd'
 import moment from 'moment-timezone'
-import React, { useEffect, useState } from 'react'
 import {
   FaChevronLeft,
   FaPlane,
@@ -8,9 +8,9 @@ import {
   FaPlaneDeparture
 } from 'react-icons/fa'
 import { useHistory, useParams } from 'react-router'
-import Spinner from '../components/Spinner'
-import { useSessionStore } from '../hooks/Store'
-import useBookings from '../hooks/useBookings'
+import Spinner from '../../components/Spinner'
+import { useSessionStore } from '../../hooks/Store'
+import useBookings from '../../hooks/useBookings'
 
 const ViewBooking = () => {
   const { id } = useParams()

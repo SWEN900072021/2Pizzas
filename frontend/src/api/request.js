@@ -31,9 +31,9 @@ const request = async ({ options, onSuccess, onError }) => {
         )
 
         window.location.reload()
-      } else {
-        Promise.reject(error.response)
       }
+
+      Promise.reject(error.response)
     })
 
   return client(options).then(onSuccessFn).catch(onErrorFn)

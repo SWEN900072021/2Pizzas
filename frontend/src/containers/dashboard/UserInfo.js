@@ -1,16 +1,6 @@
 import React from 'react'
-// import { useHistory } from 'react-router'
-// import { Link } from 'react-router-dom'
-// import { NavLink } from 'react-router-dom'
 
-// Hooks
-// import Spinner from '../components/Spinner'
-import { useSessionStore } from '../hooks/Store'
-// import useUsers from '../hooks/useUsers'
-
-// Containers and Components
-// import NavBar from '../components/NavBar'
-// import Spinner from '../components/Spinner'
+import { useSessionStore } from '../../hooks/Store'
 
 const UserInfo = () => {
   const user = useSessionStore((state) => state.user)

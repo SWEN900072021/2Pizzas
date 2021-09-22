@@ -8,11 +8,16 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import Login from './containers/Login'
 import Home from './containers/Home'
 import Signup from './containers/Signup'
-import DashboardSideNav from './components/DashboardSideNav'
+import {
+  DashboardSideNav,
+  UserInfo,
+  ListBookings,
+  ViewBooking,
+  ListAirlines,
+  ListAirports,
+  ListFlights
+} from './containers/dashboard'
 import FlightListings from './containers/FlightListings'
-import ListBookings from './containers/ListBookings'
-import UserInfo from './containers/UserInfo'
-import ViewBooking from './containers/ViewBooking'
 
 function App() {
   const queryClient = new QueryClient()
@@ -24,6 +29,11 @@ function App() {
           <Route exact path='/' render={() => <Home />} />
           <Route exact path='/login' render={() => <Login />} />
           <Route exact path='/signup' render={() => <Signup />} />
+          <Route
+            exact
+            path='/flight/results'
+            render={() => <FlightListings />}
+          />
           <Route
             exact
             path='/dashboard'
@@ -62,8 +72,24 @@ function App() {
           />
           <Route
             exact
-            path='/flight/results'
-            render={() => <FlightListings />}
+            path='/dashboard/airlines'
+            render={() => (
+              <DashboardSideNav sectionOpened={<ListAirlines />} />
+            )}
+          />
+          <Route
+            exact
+            path='/dashboard/airports'
+            render={() => (
+              <DashboardSideNav sectionOpened={<ListAirports />} />
+            )}
+          />
+          <Route
+            exact
+            path='/dashboard/flights'
+            render={() => (
+              <DashboardSideNav sectionOpened={<ListFlights />} />
+            )}
           />
         </Switch>
       </main>

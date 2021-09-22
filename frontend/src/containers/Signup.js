@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
@@ -47,6 +47,14 @@ const Signup = () => {
       setPassword(e.target.value)
     }
   }
+
+  useEffect(() => {
+    setUsername('')
+    setGivenName('')
+    setSurname('')
+    setEmail('')
+    setPassword('')
+  }, [setUsername, setGivenName, setSurname, setEmail, setPassword])
 
   const handleSubmit = (e) => {
     e.preventDefault()

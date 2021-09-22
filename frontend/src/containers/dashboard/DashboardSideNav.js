@@ -3,8 +3,8 @@ import { element } from 'prop-types'
 import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router'
 
-import NavBar from './NavBar'
-import { useSessionStore } from '../hooks/Store'
+import NavBar from '../../components/NavBar'
+import { useSessionStore } from '../../hooks/Store'
 
 const DashboardSideNav = ({ sectionOpened }) => {
   const history = useHistory()
