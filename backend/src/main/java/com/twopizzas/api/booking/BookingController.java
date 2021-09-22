@@ -37,13 +37,13 @@ public class BookingController {
     }
 
     @RequestMapping(path = "/customer/booking", method = HttpMethod.GET)
-    @Authenticated({Customer.TYPE})
+    @Authenticated(Customer.TYPE)
     RestResponse<List<BookingDto>> getCustomerBookings(User authenticatedUser) {
         return RestResponse.ok(bookingRepository.findAllCustomerBookings(authenticatedUser.getId()).stream().map(MAPPER::map).collect(Collectors.toList()));
     }
 
     @RequestMapping(path = "/booking", method = HttpMethod.POST)
-    @Authenticated({Customer.TYPE})
+    @Authenticated(Customer.TYPE)
     RestResponse<BookingDto> createBooking(@RequestBody NewBookingDto body, User authenticatedUser) throws HttpException {
         List<String> errors = body.validate();
         if (!errors.isEmpty()) {
