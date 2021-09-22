@@ -16,7 +16,7 @@ import Button from '../components/Button'
 import Search from '../components/Search'
 import { useFlightStore } from '../hooks/Store'
 import useAirports from '../hooks/useAirports'
-import useFlights from '../hooks/useFlights'
+import useFlightSearch from '../hooks/useFlightSearch'
 
 const moment = require('moment-timezone')
 
@@ -160,7 +160,7 @@ const FlightForm = () => {
 
   /* -------------------------------------------------------------------------- */
 
-  const outboundFlights = useFlights({
+  const outboundFlights = useFlightSearch({
     origin: originAirport.id,
     destination: destinationAirport.id,
     departDate: moment
@@ -169,7 +169,7 @@ const FlightForm = () => {
     airline: null
   })
 
-  const returnFlights = useFlights({
+  const returnFlights = useFlightSearch({
     origin: destinationAirport.id,
     destination: originAirport.id,
     departDate: moment.tz(returnDate, originAirport.utcOffset).utc(),
