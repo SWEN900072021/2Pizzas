@@ -60,20 +60,21 @@ const NavBar = () => {
         </h1>
       </NavLink>
       {/* ----------------------------- LOGGED IN MENU ----------------------------- */}
-      <Dropdown
-        overlay={loggedInMenu}
-        trigger={['click']}
-        placement='bottomRight'
-        className={`${!token && 'hidden'}`}
-      >
-        <span className='flex gap-2'>
-          <span className='cursor-pointer select-none hover:underline'>
-            Welcome,{' '}
-            <span className='font-bold'>{user.username}</span>
+      {token && user && (
+        <Dropdown
+          overlay={loggedInMenu}
+          trigger={['click']}
+          placement='bottomRight'
+        >
+          <span className='flex gap-2'>
+            <span className='cursor-pointer select-none hover:underline'>
+              Welcome,{' '}
+              <span className='font-bold'>{user.username}</span>
+            </span>
+            <BsChevronDown className='w-5 h-5 text-gray-600' />
           </span>
-          <BsChevronDown className='w-5 h-5 text-gray-600' />
-        </span>
-      </Dropdown>
+        </Dropdown>
+      )}
       {/* ----------------------------- LOGGED OUT MENU ---------------------------- */}
       <span className={`${token && 'hidden'}`}>
         {history.location.pathname === '/login' ||
