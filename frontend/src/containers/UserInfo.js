@@ -1,4 +1,3 @@
-
 import React from 'react'
 // import { useHistory } from 'react-router'
 // import { Link } from 'react-router-dom'
@@ -14,15 +13,32 @@ import { useSessionStore } from '../hooks/Store'
 // import Spinner from '../components/Spinner'
 
 const UserInfo = () => {
-    const username = useSessionStore((state) => state.username)
+  const username = useSessionStore((state) => state.username)
 
-    const userDetails = <div>Your username is: {username}</div>
+  const heading = (
+    <header className='flex flex-col gap-3'>
+      <h2 className='text-3xl font-bold'>Your information</h2>
+    </header>
+  )
 
-    return (
-        <main>
-            {userDetails}
-        </main>
-    )
+  const userDetails = (
+    <section className='grid grid-flow-row'>
+      <span className='grid items-center justify-center grid-cols-2'>
+        <span className='font-semibold'>Username</span>
+        <span>{username}</span>
+      </span>
+    </section>
+  )
+
+  return (
+    <main className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'>
+      <section className='flex flex-col w-full h-full max-w-lg gap-4'>
+        {heading}
+        <hr />
+        {userDetails}
+      </section>
+    </main>
+  )
 }
 
 export default UserInfo

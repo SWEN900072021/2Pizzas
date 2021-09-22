@@ -9,7 +9,7 @@ const DashboardSideNav = ({ sectionOpened }) => (
     <NavBar />
     <main className='flex flex-col w-full h-full md:flex-row'>
       {/* Side Nav */}
-      <section className='flex flex-row items-center justify-center gap-2 bg-yellow-600 md:min-w-max md:flex-col '>
+      <section className='flex flex-row items-center justify-center gap-2 px-4 py-4 bg-yellow-600 md:min-w-max md:flex-col '>
         <Link
           to='/dashboard'
           className='text-center block py-2.5 px-4 rounded-lg transition duration-200 text-white hover:text-white hover:bg-yellow-500 font-bold shadow-sm'
