@@ -76,7 +76,7 @@ const Login = () => {
         <h1 className='z-10 text-4xl font-bold text-white'>Log In</h1>
         <form
           onSubmit={handleSubmit}
-          className='z-10 flex flex-col flex-wrap items-stretch justify-center p-5 mx-auto space-y-4 text-center rounded-xl bg-yellow-50'
+          className='z-10 flex flex-col flex-wrap p-5 mx-auto space-y-4 rounded-lg bg-yellow-50'
         >
           <TextField
             required
@@ -114,14 +114,11 @@ const Login = () => {
               <Spinner />
             </span>
           </button>
-          <Link to='/signup'>
-            <button
-              type='button'
-              onClick={() => {}}
-              className='self-center px-1 text-sm text-yellow-800 rounded-sm hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:underline'
-            >
-              Don&apos;t have an account?
-            </button>
+          <Link
+            to='/signup'
+            className='self-center px-1 text-sm text-center text-yellow-700 rounded-sm max-w-max hover:text-yellow-700 hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:underline'
+          >
+            Don&apos;t have an account?
           </Link>
         </form>
       </section>

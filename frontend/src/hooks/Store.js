@@ -212,12 +212,6 @@ const ONE_WAY_FLIGHTS = [
     cost: 500
   }
 ]
-// HELPER FUNCTIONS
-
-// const getLocalStorage = (key) =>
-//   JSON.parse(window.localStorage.getItem(key))
-// const setLocalStorage = (key, value) =>
-//   window.localStorage.setItem(key, JSON.stringify(value))
 
 // STORES
 
