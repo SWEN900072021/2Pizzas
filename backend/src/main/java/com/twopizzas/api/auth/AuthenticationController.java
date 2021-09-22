@@ -24,9 +24,8 @@ public class AuthenticationController {
         Customer user = new Customer(body.getUsername(), body.getPassword(), body.getGivenName(), body.getSurname(), body.getEmail());
         userRepository.save(user);
 
-        String token = authenticationProvider.login(body.getUsername(), body.getPassword()).orElseThrow(
-                () -> new HttpException(HttpStatus.UNAUTHORIZED)
-        );
+
+        String token = authenticationProvider.login(user);
 
         return RestResponse.ok(new SignupResponseDTO()
                 .setId(user.getId().toString())
@@ -43,7 +42,6 @@ public class AuthenticationController {
         );
 
         User user = userRepository.find(body.getUsername(), body.getPassword()).orElseThrow(() -> new HttpException((HttpStatus.NOT_FOUND)));
-        return RestResponse.ok(new LoginResponseDTO().setToken(token).setUser(user));
+        return RestResponse.ok(new LoginResponseDTO().setToken(token).setUsername(user.getUsername()).setUserType(user.getUserType()));
     }
-
 }
