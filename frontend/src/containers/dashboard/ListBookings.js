@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import { string } from 'prop-types'
 import { Link } from 'react-router-dom'
+import { useHistory } from 'react-router'
 import { FaSadTear } from 'react-icons/fa'
 
 // Hooks
@@ -13,6 +14,21 @@ import useBookings from '../../hooks/useBookings'
 
 const ListBookings = ({ bookingsStatus }) => {
   const token = useSessionStore((state) => state.token)
+
+  const user = useSessionStore((state) => state.user)
+  const history = useHistory()
+  const [validUser, setValidUser] = useState(false)
+
+  useEffect(() => {
+    if (!token || !user || user.userType !== 'customer') {
+      history.push('/')
+    } else {
+      setValidUser(true)
+    }
+  }, [token, user, history])
+
+  /* -------------------------------------------------------------------------- */
+
   const {
     data: customerBookings,
     isLoading,
@@ -89,12 +105,16 @@ const ListBookings = ({ bookingsStatus }) => {
 
   return (
     <main className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'>
-      <section className='flex flex-col w-full h-full max-w-lg gap-4'>
-        {heading}
-        <hr />
-        {isLoading && <Spinner size={6} />}
-        {isSuccess && renderBookings()}
-      </section>
+      {!validUser ? (
+        <Spinner size={6} />
+      ) : (
+        <section className='flex flex-col w-full h-full max-w-lg gap-4'>
+          {heading}
+          <hr />
+          {isLoading && <Spinner size={6} />}
+          {isSuccess && renderBookings()}
+        </section>
+      )}
     </main>
   )
 }

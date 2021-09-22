@@ -13,12 +13,26 @@ import { useSessionStore } from '../../hooks/Store'
 import useBookings from '../../hooks/useBookings'
 
 const ViewBooking = () => {
-  const { id } = useParams()
   const token = useSessionStore((state) => state.token)
+  const user = useSessionStore((state) => state.user)
+  const history = useHistory()
+  const [validUser, setValidUser] = useState(false)
+
+  useEffect(() => {
+    if (!token || !user || user.userType !== 'customer') {
+      setValidUser(false)
+      history.push('/')
+    } else {
+      setValidUser(true)
+    }
+  }, [token, user, history])
+
+  /* -------------------------------------------------------------------------- */
+
+  const { id } = useParams()
+  const resetSession = useSessionStore((state) => state.resetSession)
   const { data, isLoading, isSuccess, isError } = useBookings(token)
   const [booking, setBooking] = useState(null)
-  const history = useHistory()
-  const resetSession = useSessionStore((state) => state.resetSession)
 
   useEffect(() => {
     if (isError) {
@@ -38,7 +52,7 @@ const ViewBooking = () => {
 
   return (
     <main className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'>
-      {!isSuccess || !booking ? (
+      {!validUser || !isSuccess || !booking ? (
         <div>{isLoading && <Spinner size={6} />}</div>
       ) : (
         <section className='flex flex-col w-full max-w-lg gap-4'>

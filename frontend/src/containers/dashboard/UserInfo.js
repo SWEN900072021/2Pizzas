@@ -1,8 +1,23 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useHistory } from 'react-router'
+import Spinner from '../../components/Spinner'
 
 import { useSessionStore } from '../../hooks/Store'
 
 const UserInfo = () => {
+  const token = useSessionStore((state) => state.token)
+  const history = useHistory()
+  const [validUser, setValidUser] = useState(false)
+
+  useEffect(() => {
+    if (!token) {
+      setValidUser(false)
+      history.push('/')
+    } else {
+      setValidUser(true)
+    }
+  }, [history, token])
+
   const user = useSessionStore((state) => state.user)
 
   const heading = (
@@ -31,11 +46,15 @@ const UserInfo = () => {
 
   return (
     <main className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'>
-      <section className='flex flex-col w-full h-full max-w-lg gap-4'>
-        {heading}
-        <hr />
-        {userDetails}
-      </section>
+      {!validUser ? (
+        <Spinner size={6} />
+      ) : (
+        <section className='flex flex-col w-full h-full max-w-lg gap-4'>
+          {heading}
+          <hr />
+          {userDetails}
+        </section>
+      )}
     </main>
   )
 }
