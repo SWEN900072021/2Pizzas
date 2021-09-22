@@ -4,6 +4,7 @@ import com.twopizzas.auth.AuthenticationProvider;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Controller;
 import com.twopizzas.domain.user.Customer;
+import com.twopizzas.domain.user.User;
 import com.twopizzas.domain.user.UserRepository;
 import com.twopizzas.web.*;
 
@@ -19,14 +20,20 @@ public class AuthenticationController {
     }
 
     @RequestMapping(path = "/signup", method = HttpMethod.POST)
-    RestResponse<SignupResponseDTO> createUser(@RequestBody SignupRequestDTO body) {
+    RestResponse<SignupResponseDTO> createUser(@RequestBody SignupRequestDTO body) throws HttpException {
         Customer user = new Customer(body.getUsername(), body.getPassword(), body.getGivenName(), body.getSurname(), body.getEmail());
         userRepository.save(user);
+
+        String token = authenticationProvider.login(body.getUsername(), body.getPassword()).orElseThrow(
+                () -> new HttpException(HttpStatus.UNAUTHORIZED)
+        );
+
         return RestResponse.ok(new SignupResponseDTO()
                 .setId(user.getId().toString())
                 .setEmail(user.getEmail())
                 .setGivenName(user.getGivenName())
-                .setSurname(user.getLastName()));
+                .setSurname(user.getLastName())
+                .setToken(token));
     }
 
     @RequestMapping(path = "/login", method = HttpMethod.POST)
@@ -35,7 +42,8 @@ public class AuthenticationController {
                 () -> new HttpException(HttpStatus.UNAUTHORIZED)
         );
 
-        return RestResponse.ok(new LoginResponseDTO().setToken(token));
+        User user = userRepository.find(body.getUsername(), body.getPassword()).orElseThrow(() -> new HttpException((HttpStatus.NOT_FOUND)));
+        return RestResponse.ok(new LoginResponseDTO().setToken(token).setUser(user));
     }
 
 }
