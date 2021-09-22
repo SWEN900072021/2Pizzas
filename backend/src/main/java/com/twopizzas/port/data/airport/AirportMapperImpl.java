@@ -23,14 +23,15 @@ class AirportMapperImpl implements AirportMapper {
     static final String COLUMN_NAME = "name";
     static final String COLUMN_LOCATION = "location";
     static final String COLUMN_UTC_OFFSET = "utcOffset";
+    static final String COLUMN_STATUS = "status";
 
     private static final String INSERT_TEMPLATE =
-            "INSERT INTO " + TABLE_AIRPORT + "(" + COLUMN_ID + ", " + COLUMN_CODE + ", " + COLUMN_NAME + ", " + COLUMN_LOCATION + ", " + COLUMN_UTC_OFFSET + ")" +
-            " VALUES (?, ?, ?, ?, ?);";
+            "INSERT INTO " + TABLE_AIRPORT + "(" + COLUMN_ID + ", " + COLUMN_CODE + ", " + COLUMN_NAME + ", " + COLUMN_LOCATION + ", " + COLUMN_UTC_OFFSET + ", " + COLUMN_STATUS + ")" +
+            " VALUES (?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_AIRPORT +
-            " SET " + COLUMN_CODE + " = ?, " + COLUMN_NAME + " = ?, " + COLUMN_LOCATION + " = ?, " + COLUMN_UTC_OFFSET + " = ?" +
+            " SET " + COLUMN_CODE + " = ?, " + COLUMN_NAME + " = ?, " + COLUMN_LOCATION + " = ?, " + COLUMN_UTC_OFFSET + " = ?," + COLUMN_STATUS + " = ?" +
             " WHERE " + COLUMN_ID + " = ?;";
 
     private static final String DELETE_TEMPLATE =
@@ -55,7 +56,8 @@ class AirportMapperImpl implements AirportMapper {
                 entity.getCode(),
                 entity.getName(),
                 entity.getLocation(),
-                entity.getUtcOffset().getId()
+                entity.getUtcOffset().getId(),
+                entity.getStatus().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
     }
 
@@ -82,6 +84,7 @@ class AirportMapperImpl implements AirportMapper {
                 entity.getName(),
                 entity.getLocation(),
                 entity.getUtcOffset().getId(),
+                entity.getStatus().toString(),
                 entity.getId().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
     }
@@ -114,11 +117,12 @@ class AirportMapperImpl implements AirportMapper {
     public Airport mapOne(ResultSet resultSet) {
         try {
             return new Airport(
-                    EntityId.of(resultSet.getObject(AirportMapperImpl.COLUMN_ID, String.class)),
-                    resultSet.getObject(AirportMapperImpl.COLUMN_CODE, String.class),
-                    resultSet.getObject(AirportMapperImpl.COLUMN_NAME, String.class),
-                    resultSet.getObject(AirportMapperImpl.COLUMN_LOCATION, String.class),
-                    ZoneId.of(resultSet.getObject(AirportMapperImpl.COLUMN_UTC_OFFSET, String.class))
+                    EntityId.of(resultSet.getObject(COLUMN_ID, String.class)),
+                    resultSet.getObject(COLUMN_CODE, String.class),
+                    resultSet.getObject(COLUMN_NAME, String.class),
+                    resultSet.getObject(COLUMN_LOCATION, String.class),
+                    ZoneId.of(resultSet.getObject(COLUMN_UTC_OFFSET, String.class)),
+                    Airport.Status.valueOf(resultSet.getObject(COLUMN_STATUS, String.class))
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

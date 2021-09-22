@@ -4,6 +4,7 @@ import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.user.Administrator;
+import com.twopizzas.domain.user.User;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
@@ -93,7 +94,8 @@ public class AdministratorMapperImpl extends AbstractUserMapper<Administrator> i
             return new Administrator(
                     EntityId.of(resultSet.getObject(AdministratorMapperImpl.COLUMN_ID, String.class)),
                     resultSet.getObject(AbstractUserMapper.COLUMN_USERNAME, String.class),
-                    resultSet.getObject(AbstractUserMapper.COLUMN_PASSWORD, String.class)
+                    resultSet.getObject(AbstractUserMapper.COLUMN_PASSWORD, String.class),
+                    User.Status.valueOf(resultSet.getObject(AbstractUserMapper.COLUMN_STATUS, String.class))
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

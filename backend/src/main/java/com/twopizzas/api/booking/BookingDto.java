@@ -49,7 +49,6 @@ public class BookingDto {
         String email;
     }
 
-
     @Data
     public static class AirplaneProfile {
         private String code;

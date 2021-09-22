@@ -4,6 +4,7 @@ import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.user.Airline;
 import com.twopizzas.domain.EntityId;
+import com.twopizzas.domain.user.User;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
@@ -111,7 +112,8 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
                     resultSet.getObject(AbstractUserMapper.COLUMN_USERNAME, String.class),
                     resultSet.getObject(AbstractUserMapper.COLUMN_PASSWORD, String.class),
                     resultSet.getObject(AirlineMapperImpl.COLUMN_CODE, String.class),
-                    resultSet.getObject(AirlineMapperImpl.COLUMN_NAME, String.class)
+                    resultSet.getObject(AirlineMapperImpl.COLUMN_NAME, String.class),
+                    User.Status.valueOf(resultSet.getObject(AbstractUserMapper.COLUMN_STATUS, String.class))
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

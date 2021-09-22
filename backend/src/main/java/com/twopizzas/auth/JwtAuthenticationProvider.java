@@ -73,12 +73,22 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     public Optional<String> login(String username, String password) {
 
         Optional<User> maybeUser = userRepository.find(username, password);
-        return maybeUser.map(this::login);
+        if (maybeUser.isPresent()) {
+            if (User.Status.ACTIVE.equals(maybeUser.get().getStatus())) {
+                return Optional.of(login(maybeUser.get()));
+            }
+        }
 
+        return Optional.empty();
     }
 
     @Override
     public String login(User user) {
+
+        if (!User.Status.ACTIVE.equals(user.getStatus())) {
+            return null;
+        }
+
         Date now = new Date();
         Calendar gcal = new GregorianCalendar();
         gcal.setTime(now);

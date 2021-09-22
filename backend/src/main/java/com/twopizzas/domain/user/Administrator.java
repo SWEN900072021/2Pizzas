@@ -8,8 +8,8 @@ public class Administrator extends User {
 
     public static final String TYPE = "administrator";
 
-    public Administrator(EntityId id, String username, String password) {
-        super(id, username, password);
+    public Administrator(EntityId id, String username, String password, Status status) {
+        super(id, username, password, status);
     }
 
     @Override
@@ -18,6 +18,6 @@ public class Administrator extends User {
     }
 
     public Administrator(String username, String password) {
-        super(EntityId.nextId(), username, password);
+        super(EntityId.nextId(), username, password, Status.ACTIVE);
     }
 }

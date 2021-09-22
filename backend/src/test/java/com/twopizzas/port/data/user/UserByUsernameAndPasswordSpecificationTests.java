@@ -1,6 +1,5 @@
 package com.twopizzas.port.data.user;
 
-import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.user.Customer;
 import com.twopizzas.domain.user.User;
 import com.twopizzas.port.data.DataTestConfig;
@@ -41,7 +40,7 @@ public class UserByUsernameAndPasswordSpecificationTests {
     @DisplayName("GIVEN user in database with username and password WHEN find THEN return that user")
     void test() {
         // GIVEN
-        User customerEntity = new Customer(EntityId.nextId(),
+        User customerEntity = new Customer(
                 "username", "password", "John", "Smith", "johnsmith@gmail.com");
 
         mapper.create(customerEntity);
@@ -60,7 +59,7 @@ public class UserByUsernameAndPasswordSpecificationTests {
     @DisplayName("GIVEN user in database with username and password WHEN find with incorrect password THEN return empty")
     void test2() {
         // GIVEN
-        User customerEntity = new Customer(EntityId.nextId(),
+        User customerEntity = new Customer(
                 "username", "password", "John", "Smith", "johnsmith@gmail.com");
 
         mapper.create(customerEntity);

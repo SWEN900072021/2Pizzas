@@ -223,6 +223,31 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Airport"
+  /airport/{id}:
+    patch:
+      operationId: updateAirport
+      parameters:
+        - in: path
+          required: true
+          name: Id
+          schema:
+            $ref: "#/components/schemas/Id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAirport"
+      responses:
+        "201":
+          description: Airport updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Airport"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorisedError"
   /airplane-profile:
     post:
       operationId: createAirplaneProfile
@@ -265,6 +290,29 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/UnauthorisedError"
+  /user/{id}:
+    patch:
+      operationId: getAllUsers
+      parameters:
+        - in: path
+          required: true
+          name: Id
+          schema:
+            $ref: "#/components/schemas/Id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAirplaneProfile"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateUser"
         "401":
           $ref: "#/components/responses/UnauthorisedError"
   /airline:
@@ -357,6 +405,11 @@ components:
     Id:
       type: string
       format: uuid
+    UpdateUser:
+      type: object
+      properties:
+        status: 
+          $ref: "#/components/schemas/UserStatus"
     User:
       type: object
       properties:
@@ -366,6 +419,8 @@ components:
           type: string
         id:
           $ref: "#/components/schemas/Id"
+        status: 
+          $ref: "#/components/schemas/UserStatus"
     Passenger:
       type: object
       properties:
@@ -594,8 +649,12 @@ components:
       properties:
         status:
           $ref: "#/components/schemas/FlightStatus"
-      required:
-        - status
+        departure:
+          type: string
+          format: date-time
+        arrival:
+          type: string
+          format: date-time
     NewFlight:
       type: object
       properties:
@@ -737,6 +796,16 @@ components:
         - code
         - location
         - zoneId
+    AirportStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+    UpdateAirport:
+      type: object
+      properties:
+        status: 
+          $ref: "#/components/schemas/AirportStatus"
     Airport:
       type: object
       properties:
@@ -751,6 +820,8 @@ components:
         zoneId:
           type: string
           format: timezoneId
+        status: 
+          $ref: "#/components/schemas/AirportStatus"
     NewAdmin:
       type: object
       required:
@@ -777,6 +848,11 @@ components:
           type: string
         name:
           type: string
+    UserStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
     Airline:
       type: object
       properties:
@@ -786,6 +862,8 @@ components:
           type: string
         name:
           type: string
+        status: 
+          $ref: "#/components/schemas/UserStatus"
     SignUp:
       type: object
       required:
