@@ -17,9 +17,9 @@ public class NewFlightDto {
     private List<StopOver> stopOvers;
     private String code;
     private String profile;
-    private final BigDecimal firstClassCost;
-    private final BigDecimal businessClassCost;
-    private final BigDecimal economyClassCost;
+    private BigDecimal firstClassCost;
+    private BigDecimal businessClassCost;
+    private BigDecimal economyClassCost;
 
     public List<String> validate() {
         List<String> errors = new ArrayList<>();
@@ -52,15 +52,15 @@ public class NewFlightDto {
         }
 
         if (firstClassCost == null || firstClassCost.compareTo(BigDecimal.ZERO) < 0) {
-            errors.add("first class cost must be a positive numeric value");
+            errors.add("firstClassCost must be greater than 0");
         }
 
         if (businessClassCost == null || businessClassCost.compareTo(BigDecimal.ZERO) < 0) {
-            errors.add("first class cost must be a positive numeric value");
+            errors.add("businessClassCost must be greater than 0");
         }
 
         if (economyClassCost == null || economyClassCost.compareTo(BigDecimal.ZERO) < 0) {
-            errors.add("first class cost must be a positive numeric value");
+            errors.add("economyClassCost must be greater than 0");
         }
 
         if (stopOvers != null ) {
