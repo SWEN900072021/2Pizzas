@@ -41,7 +41,7 @@ public class AirplaneProfile extends DomainEntity {
         List<SeatProfile> allSeats = new ArrayList<>();
         allSeats.addAll(getSeatProfilesForClass(0, firstClassRows, firstClassColumns, SeatClass.FIRST));
         allSeats.addAll(getSeatProfilesForClass(firstClassRows, businessClassRows, businessClassColumns, SeatClass.BUSINESS));
-        allSeats.addAll(getSeatProfilesForClass(businessClassRows, economyClassRows, economyClassColumns, SeatClass.ECONOMY));
+        allSeats.addAll(getSeatProfilesForClass(businessClassRows + firstClassRows, economyClassRows, economyClassColumns, SeatClass.ECONOMY));
         return  allSeats;
     }
 
