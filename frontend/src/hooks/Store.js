@@ -250,6 +250,13 @@ const useSessionStore = create(
   )
 )
 
+const useBookingStore = create(
+  immer((set) => ({
+    bookingId: null,
+    setBookingId: (bookingId) => set({ bookingId })
+  }))
+)
+
 const useFormStore = create(
   immer((set) => ({
     username: '',
@@ -351,5 +358,6 @@ export {
   useFlightStore,
   useSessionStore,
   useFormStore,
-  useTestDataStore
+  useTestDataStore,
+  useBookingStore
 }

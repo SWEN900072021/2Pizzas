@@ -33,7 +33,7 @@ function App() {
           />
           <Route
             exact
-            path='/dashboard/currentBookings'
+            path='/dashboard/current-bookings'
             render={() => (
               <DashboardSideNav
                 sectionOpened={
@@ -44,7 +44,7 @@ function App() {
           />
           <Route
             exact
-            path='/dashboard/previousBookings'
+            path='/dashboard/previous-bookings'
             render={() => (
               <DashboardSideNav
                 sectionOpened={
@@ -56,10 +56,8 @@ function App() {
           <Route
             exact
             path='/dashboard/bookings/:id'
-            render={(routeProps) => (
-              <DashboardSideNav
-                sectionOpened={<ViewBooking {...routeProps} />}
-              />
+            render={() => (
+              <DashboardSideNav sectionOpened={<ViewBooking />} />
             )}
           />
           <Route

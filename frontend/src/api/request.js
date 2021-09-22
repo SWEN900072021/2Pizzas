@@ -18,7 +18,10 @@ const request = async ({ options, onSuccess, onError }) => {
     })
 
   const onErrorFn =
-    onError || ((error) => Promise.reject(error.response))
+    onError ||
+    ((error) => {
+      Promise.reject(error.response)
+    })
 
   return client(options).then(onSuccessFn).catch(onErrorFn)
 }
