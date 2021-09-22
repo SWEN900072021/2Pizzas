@@ -234,13 +234,13 @@ const useSessionStore = create(
     immer((set) => ({
       token: null,
       setToken: (token) => set({ token }),
-      username: null,
-      setUsername: (username) => set({ username }),
+      user: null,
+      setUser: (user) => set({ user }),
       resetSession: () =>
         set((state) => {
           state.setToken(null)
-          state.setUsername(null)
-          return { token: null, username: null }
+          state.setUser(null)
+          return { token: null, user: null }
         })
     })),
     {

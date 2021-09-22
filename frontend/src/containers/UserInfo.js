@@ -13,11 +13,21 @@ import { useSessionStore } from '../hooks/Store'
 // import Spinner from '../components/Spinner'
 
 const UserInfo = () => {
-  const username = useSessionStore((state) => state.username)
+  const userType = 'customer'
+  const user = useSessionStore((state) => state.user)
 
   const heading = (
     <header className='flex flex-col gap-3'>
       <h2 className='text-3xl font-bold'>Your information</h2>
+      {userType === 'customer' && (
+        <span className='text-gray-500'>Customer</span>
+      )}
+      {userType === 'administrator' && (
+        <span className='text-gray-500'>Administrator</span>
+      )}
+      {userType === 'airline' && (
+        <span className='text-gray-500'>Airline</span>
+      )}
     </header>
   )
 
@@ -25,7 +35,7 @@ const UserInfo = () => {
     <section className='grid grid-flow-row'>
       <span className='grid items-center justify-center grid-cols-2'>
         <span className='font-semibold'>Username</span>
-        <span>{username}</span>
+        <span>{user.username}</span>
       </span>
     </section>
   )

@@ -17,9 +17,7 @@ import pisaPicture from '../assets/pisa.jpg'
 const Signup = () => {
   const history = useHistory()
   const setToken = useSessionStore((state) => state.setToken)
-  const setSessionUsername = useSessionStore(
-    (state) => state.setUsername
-  )
+  const setUser = useSessionStore((state) => state.setUser)
 
   const username = useFormStore((state) => state.username)
   const givenName = useFormStore((state) => state.givenName)
@@ -67,7 +65,10 @@ const Signup = () => {
       onSuccess: (res) => {
         if (res.status === 200) {
           setToken(res.data.token)
-          setSessionUsername(user.username)
+          setUser({
+            username: res.data.username,
+            userType: res.data.userTYpe
+          })
           setLoading(false)
           history.push('/')
         }

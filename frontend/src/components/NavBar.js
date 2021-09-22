@@ -15,7 +15,7 @@ import { useSessionStore } from '../hooks/Store'
 const NavBar = () => {
   const history = useHistory()
   const token = useSessionStore((state) => state.token)
-  const username = useSessionStore((state) => state.username)
+  const user = useSessionStore((state) => state.user)
   const resetSession = useSessionStore((state) => state.resetSession)
 
   const handleLogout = (e) => {
@@ -68,8 +68,8 @@ const NavBar = () => {
       >
         <span className='flex gap-2'>
           <span className='cursor-pointer select-none hover:underline'>
-            <span className='hidden sm:inline'>Welcome, </span>
-            <span className='font-bold'>{username}</span>
+            Welcome,{' '}
+            <span className='font-bold'>{user.username}</span>
           </span>
           <BsChevronDown className='w-5 h-5 text-gray-600' />
         </span>
