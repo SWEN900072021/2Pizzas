@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 
 // Containers and Components
 // import Button from '../components/Button'
@@ -12,7 +13,7 @@ import { useFormStore, useSessionStore } from '../hooks/Store'
 import { AuthenticationService } from '../api'
 
 // Assets
-import pisaPicture from '../assets/pisa.jpg'
+import italyPicture from '../assets/positano.png'
 
 const Signup = () => {
   const history = useHistory()
@@ -87,7 +88,7 @@ const Signup = () => {
       <section className='flex flex-col items-center justify-center flex-grow h-full gap-5'>
         <img
           draggable={false}
-          src={pisaPicture}
+          src={italyPicture}
           alt='Leaning Tower of Pisa in Italy'
           className='fixed object-cover object-center w-screen h-screen'
         />
@@ -96,19 +97,11 @@ const Signup = () => {
         </h1>
         <form
           onSubmit={handleSubmit}
-          className='z-10 flex flex-col flex-wrap p-5 mx-auto space-y-4 bg-blue-50 rounded-xl'
+          className='z-10 flex flex-col flex-wrap p-5 mx-auto space-y-4 rounded-lg bg-yellow-50'
         >
           <TextField
             required
-            className='focus:ring-blue-500'
-            value={username}
-            name='Username'
-            onChange={handleChange}
-            placeholder='Username'
-          />
-          <TextField
-            required
-            className='focus:ring-blue-500'
+            className='focus:ring-yellow-500'
             value={givenName}
             name='Given Name'
             onChange={handleChange}
@@ -116,7 +109,7 @@ const Signup = () => {
           />
           <TextField
             required
-            className='focus:ring-blue-500'
+            className='focus:ring-yellow-500'
             value={surname}
             name='Surname'
             onChange={handleChange}
@@ -124,7 +117,7 @@ const Signup = () => {
           />
           <TextField
             required
-            className='focus:ring-blue-500'
+            className='focus:ring-yellow-500'
             value={email}
             name='Email'
             onChange={handleChange}
@@ -132,7 +125,15 @@ const Signup = () => {
           />
           <TextField
             required
-            className='focus:ring-blue-500'
+            className='focus:ring-yellow-500'
+            value={username}
+            name='Username'
+            onChange={handleChange}
+            placeholder='Username'
+          />
+          <TextField
+            required
+            className='focus:ring-yellow-500'
             value={password}
             name='Password'
             onChange={handleChange}
@@ -150,7 +151,7 @@ const Signup = () => {
           </div>
           <button
             type='submit'
-            className='p-3 font-bold text-white transition-colors bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400'
+            className='p-3 font-bold text-white transition-colors bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400'
           >
             <span className={`${loading && 'hidden'}`}>Sign Up</span>
             <span
@@ -162,6 +163,12 @@ const Signup = () => {
               <Spinner />
             </span>
           </button>
+          <Link
+            to='/login'
+            className='self-center px-1 text-sm text-center text-yellow-700 rounded-sm max-w-max hover:text-yellow-700 hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:underline'
+          >
+            Already have an account?
+          </Link>
         </form>
       </section>
     </main>
