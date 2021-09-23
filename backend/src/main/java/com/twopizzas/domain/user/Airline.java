@@ -12,14 +12,14 @@ public class Airline extends User {
     private final String name;
     private final String code;
 
-    public Airline(EntityId id, String username, String password, String name, String code) {
-        super(id, username, password);
+    public Airline(EntityId id, String username, String password, String name, String code, Status status) {
+        super(id, username, password, status);
         this.name = name;
         this.code = code;
     }
 
     public Airline(String username, String password, String name, String code) {
-        this(EntityId.nextId(), username, password, name, code);
+        this(EntityId.nextId(), username, password, name, code, Status.ACTIVE);
     }
 
     @Override

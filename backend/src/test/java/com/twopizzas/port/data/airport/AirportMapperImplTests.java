@@ -1,5 +1,6 @@
 package com.twopizzas.port.data.airport;
 
+import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.port.data.DataTestConfig;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
@@ -46,6 +47,7 @@ public class AirportMapperImplTests {
         Assertions.assertEquals(entity.getName(), persisted.getName());
         Assertions.assertEquals(entity.getLocation(), persisted.getLocation());
         Assertions.assertEquals(entity.getUtcOffset(), persisted.getUtcOffset());
+        Assertions.assertEquals(entity.getStatus(), persisted.getStatus());
     }
 
     @Test
@@ -70,12 +72,12 @@ public class AirportMapperImplTests {
     void test3() {
         // GIVEN
         Airport entity = new Airport(
-                "COD",  "New Test Airport", "Berlin", ZoneId.of("Asia/Calcutta")
+                EntityId.nextId(), "COD",  "New Test Airport", "Berlin", ZoneId.of("Asia/Calcutta"), Airport.Status.ACTIVE
         );
         mapper.create(entity);
 
         Airport update = new Airport(
-                entity.getId(), "CED", "Updated Test Airport", "France", ZoneId.of("Europe/Berlin")
+                entity.getId(), "CED", "Updated Test Airport", "France", ZoneId.of("Europe/Berlin"), Airport.Status.INACTIVE
         );
 
         // WHEN
@@ -89,6 +91,7 @@ public class AirportMapperImplTests {
         Assertions.assertEquals(update.getName(), updated.getName());
         Assertions.assertEquals(update.getLocation(), updated.getLocation());
         Assertions.assertEquals(update.getUtcOffset(), updated.getUtcOffset());
+        Assertions.assertEquals(update.getStatus(), updated.getStatus());
     }
 
     @Test

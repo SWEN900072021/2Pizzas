@@ -40,11 +40,9 @@ public class UserMapperImplTests {
     @DisplayName("GIVEN valid user object WHEN created invoked THEN user persisted in database")
     void testCreate() {
         // GIVEN
-        User customerEntity = new Customer(EntityId.nextId(),
-                "username", "password", "John", "Smith", "johnsmith@gmail.com");
-        User airlineEntity = new Airline(EntityId.nextId(),
-                 "airline", "password", "qantas", "QN");
-        User adminEntity = new Administrator(EntityId.nextId(), "admin", "password");
+        User customerEntity = new Customer("username", "password", "John", "Smith", "johnsmith@gmail.com");
+        User airlineEntity = new Airline("airline", "password", "qantas", "QN");
+        User adminEntity = new Administrator( "admin", "password");
 
         // WHEN
         mapper.create(customerEntity);
@@ -67,38 +65,34 @@ public class UserMapperImplTests {
         Assertions.assertNotNull(customerPersisted.getPassword());
         Assertions.assertNotNull(airlinePersisted.getPassword());
         Assertions.assertNotNull(adminPersisted.getPassword());
+        Assertions.assertEquals(customerPersisted.getStatus(), customerEntity.getStatus());
+        Assertions.assertEquals(airlinePersisted.getStatus(), airlineEntity.getStatus());
+        Assertions.assertEquals(adminPersisted.getStatus(), adminEntity.getStatus());
     }
 
     @Test
     @DisplayName("GIVEN user object in db WHEN update invoked THEN customer object updated in db")
     void testValidUpdate() {
         // GIVEN
-        EntityId id1 = EntityId.nextId();
-        EntityId id2 = EntityId.nextId();
-        EntityId id3 = EntityId.nextId();
-        User customerEntity = new Customer(id1,
-                "username", "password", "John", "Smith", "johnsmith@gmail.com");
-        User airlineEntity = new Airline(id2,
-                "airline", "password", "qantas", "QN");
-        User adminEntity = new Administrator(id3, "admin", "password");
+        User customerEntity = new Customer(EntityId.nextId(), "username", "password", "John", "Smith", "johnsmith@gmail.com", User.Status.ACTIVE);
+        User airlineEntity = new Airline(EntityId.nextId(), "airline", "password", "qantas", "QN", User.Status.ACTIVE);
+        User adminEntity = new Administrator(EntityId.nextId(), "admin", "password", User.Status.ACTIVE);
         mapper.create(customerEntity);
         mapper.create(airlineEntity);
         mapper.create(adminEntity);
 
         // WHEN
-        User updatedCustomerEntity = new Customer(id1,
-                "username", "newPassword", "John", "Smith", "johnsmith@gmail.com");
-        User updatedAirlineEntity = new Airline(id2,
-                "airline", "newPassword", "qantas", "QN");
-        User updatedAdminEntity = new Administrator(id3, "admin", "newPassword");
+        User updatedCustomerEntity = new Customer(customerEntity.getId(), "username", "newPassword", "John", "Smith", "johnsmith@gmail.com", User.Status.INACTIVE);
+        User updatedAirlineEntity = new Airline(airlineEntity.getId(), "airline", "newPassword", "qantas", "QN", User.Status.INACTIVE);
+        User updatedAdminEntity = new Administrator(adminEntity.getId(), "admin", "newPassword", User.Status.INACTIVE);
         mapper.update(updatedCustomerEntity);
         mapper.update(updatedAirlineEntity);
         mapper.update(updatedAdminEntity);
 
         // THEN
-        User customerPersisted = mapper.read(id1);
-        User airlinePersisted = mapper.read(id2);
-        User adminPersisted = mapper.read(id3);
+        User customerPersisted = mapper.read(customerEntity.getId());
+        User airlinePersisted = mapper.read(airlineEntity.getId());
+        User adminPersisted = mapper.read(adminEntity.getId());
         Assertions.assertNotNull(customerPersisted);
         Assertions.assertNotNull(airlinePersisted);
         Assertions.assertNotNull(adminPersisted);
@@ -117,14 +111,9 @@ public class UserMapperImplTests {
     @DisplayName("GIVEN user object in db WHEN delete invoked THEN object removed from db")
     void testValidDelete() {
         // GIVEN
-        EntityId id1 = EntityId.nextId();
-        EntityId id2 = EntityId.nextId();
-        EntityId id3 = EntityId.nextId();
-        User customerEntity = new Customer(id1,
-                "username", "password", "John", "Smith", "johnsmith@gmail.com");
-        User airlineEntity = new Airline(id2,
-                "airline", "password", "qantas", "QN");
-        User adminEntity = new Administrator(id3, "admin", "password");
+        User customerEntity = new Customer("username", "password", "John", "Smith", "johnsmith@gmail.com");
+        User airlineEntity = new Airline("airline", "password", "qantas", "QN");
+        User adminEntity = new Administrator( "admin", "password");
         mapper.create(customerEntity);
         mapper.create(airlineEntity);
         mapper.create(adminEntity);
@@ -135,9 +124,9 @@ public class UserMapperImplTests {
         mapper.delete(adminEntity);
 
         // THEN
-        User customerPersisted = mapper.read(id1);
-        User airlinePersisted = mapper.read(id2);
-        User adminPersisted = mapper.read(id3);
+        User customerPersisted = mapper.read(customerEntity.getId());
+        User airlinePersisted = mapper.read(airlineEntity.getId());
+        User adminPersisted = mapper.read(adminEntity.getId());
         Assertions.assertNull(customerPersisted);
         Assertions.assertNull(airlinePersisted);
         Assertions.assertNull(adminPersisted);
@@ -147,23 +136,21 @@ public class UserMapperImplTests {
     @DisplayName("GIVEN user object in db WHEN update invoked THEN customer object updated in db")
     void testValidUpdateNoPasswordChange() {
         // GIVEN
-        EntityId id = EntityId.nextId();
 
-        User customerEntity = new Customer(id,
-                "username", "password", "John", "Smith", "johnsmith@gmail.com");
+        User customerEntity = new Customer("username", "password", "John", "Smith", "johnsmith@gmail.com");
         mapper.create(customerEntity);
 
-        User readCustomer = mapper.read(id);
+        User readCustomer = mapper.read(customerEntity.getId());
 
         // WHEN
-        User updatedCustomerEntity = new Customer(id,
-                "username", readCustomer.getPassword(), "John", "Smith", "johnsmith@gmail.com");
+        User updatedCustomerEntity = new Customer(customerEntity.getId(),
+                "username", readCustomer.getPassword(), "John", "Smith", "johnsmith@gmail.com", customerEntity.getStatus());
 
         mapper.update(updatedCustomerEntity);
 
 
         // THEN
-        User customerPersisted = mapper.read(id);
+        User customerPersisted = mapper.read(customerEntity.getId());
         Assertions.assertNotNull(customerPersisted);
         Assertions.assertEquals(updatedCustomerEntity.getUsername(), customerPersisted.getUsername());
         Assertions.assertEquals(updatedCustomerEntity.getUserType(), customerPersisted.getUserType());
@@ -174,22 +161,20 @@ public class UserMapperImplTests {
     @DisplayName("GIVEN user object in db WHEN update invoked THEN customer object updated in db")
     void testValidUpdateWithPasswordChange() {
         // GIVEN
-        EntityId id = EntityId.nextId();
-
-        User customerEntity = new Customer(id,
+        User customerEntity = new Customer(
                 "username", "password", "John", "Smith", "johnsmith@gmail.com");
         mapper.create(customerEntity);
 
-        User readCustomer = mapper.read(id);
+        User readCustomer = mapper.read(customerEntity.getId());
 
         // WHEN
-        User updatedCustomerEntity = new Customer(id,
-                "username", "newPassword", "John", "Smith", "johnsmith@gmail.com");
+        User updatedCustomerEntity = new Customer(customerEntity.getId(),
+                "username", "newPassword", "John", "Smith", "johnsmith@gmail.com", customerEntity.getStatus());
 
         mapper.update(updatedCustomerEntity);
 
         // THEN
-        User customerPersisted = mapper.read(id);
+        User customerPersisted = mapper.read(customerEntity.getId());
         Assertions.assertNotNull(customerPersisted);
         Assertions.assertEquals(updatedCustomerEntity.getUsername(), customerPersisted.getUsername());
         Assertions.assertEquals(updatedCustomerEntity.getUserType(), customerPersisted.getUserType());

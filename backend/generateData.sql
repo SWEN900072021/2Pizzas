@@ -1,20 +1,20 @@
 
 
 -- User Table
-INSERT INTO "user"(id, username, password, userType)
-VALUES (gen_random_uuid(), 'customer_1', crypt('password_1', gen_salt('bf')), 'customer'),
-       (gen_random_uuid(), 'customer_2', crypt('password_2', gen_salt('bf')), 'customer'),
-       (gen_random_uuid(), 'customer_3', crypt('password_3', gen_salt('bf')), 'customer');
+INSERT INTO "user"(id, username, password, userType, status)
+VALUES (gen_random_uuid(), 'customer_1', crypt('password_1', gen_salt('bf')), 'customer', 'ACTIVE'),
+       (gen_random_uuid(), 'customer_2', crypt('password_2', gen_salt('bf')), 'customer', 'ACTIVE'),
+       (gen_random_uuid(), 'customer_3', crypt('password_3', gen_salt('bf')), 'customer', 'ACTIVE');
 
-INSERT INTO "user"(id, username, password, userType)
-VALUES (gen_random_uuid(), 'airline_1', crypt('password_1', gen_salt('bf')), 'airline'),
-       (gen_random_uuid(), 'airline_2', crypt('password_2', gen_salt('bf')), 'airline'),
-       (gen_random_uuid(), 'airline_3', crypt('password_3', gen_salt('bf')), 'airline');
+INSERT INTO "user"(id, username, password, userType, status)
+VALUES (gen_random_uuid(), 'airline_1', crypt('password_1', gen_salt('bf')), 'airline', 'ACTIVE'),
+       (gen_random_uuid(), 'airline_2', crypt('password_2', gen_salt('bf')), 'airline', 'ACTIVE'),
+       (gen_random_uuid(), 'airline_3', crypt('password_3', gen_salt('bf')), 'airline', 'ACTIVE');
 
-INSERT INTO "user"(id, username, password, userType)
-VALUES (gen_random_uuid(), 'admin_1', crypt('password_1', gen_salt('bf')), 'administrator'),
-       (gen_random_uuid(), 'admin_2', crypt('password_2', gen_salt('bf')), 'administrator'),
-       (gen_random_uuid(), 'admin_3', crypt('password_3', gen_salt('bf')), 'administrator');
+INSERT INTO "user"(id, username, password, userType, status)
+VALUES (gen_random_uuid(), 'admin_1', crypt('password_1', gen_salt('bf')), 'administrator', 'ACTIVE'),
+       (gen_random_uuid(), 'admin_2', crypt('password_2', gen_salt('bf')), 'administrator', 'ACTIVE'),
+       (gen_random_uuid(), 'admin_3', crypt('password_3', gen_salt('bf')), 'administrator', 'ACTIVE');
 
 -- Customer Table
 INSERT INTO customer(id, givenName, surname, email)
@@ -35,10 +35,10 @@ VALUES ((SELECT id FROM "user" WHERE username = 'admin_1')),
        ((SELECT id FROM "user" WHERE username = 'admin_3'));
 
 -- Airport Table
-INSERT INTO airport(id, code, name, location, utcOffset)
-VALUES (gen_random_uuid(), 'MEL', 'Tullamarine Airport', 'Melbourne', 'Australia/Melbourne'),
-       (gen_random_uuid(), 'AVV', 'Avalon Airport', 'Geelong', 'Australia/Melbourne'),
-       (gen_random_uuid(), 'SYD', 'Sydney Airport', 'Sydney', 'Australia/Sydney');
+INSERT INTO airport(id, code, name, location, utcOffset, status)
+VALUES (gen_random_uuid(), 'MEL', 'Tullamarine Airport', 'Melbourne', 'Australia/Melbourne', 'ACTIVE'),
+       (gen_random_uuid(), 'AVV', 'Avalon Airport', 'Geelong', 'Australia/Melbourne', 'ACTIVE'),
+       (gen_random_uuid(), 'SYD', 'Sydney Airport', 'Sydney', 'Australia/Sydney', 'ACTIVE');
 
 -- Airplane Table
 -- Qantas Planes

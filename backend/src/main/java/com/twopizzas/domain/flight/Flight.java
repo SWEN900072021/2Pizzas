@@ -28,8 +28,13 @@ public class Flight extends DomainEntity {
     private final ValueHolder<List<FlightSeatAllocation>> allocatedSeats;
     private final Airport origin;
     private final Airport destination;
-    private final OffsetDateTime departure;
-    private final OffsetDateTime arrival;
+
+    @Setter
+    private OffsetDateTime departure;
+
+    @Setter
+    private OffsetDateTime arrival;
+
     private final List<StopOver> stopOvers;
     private final String code;
     private final BigDecimal firstClassCost;

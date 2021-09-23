@@ -50,12 +50,15 @@ public class FlightController {
         Airport destination = airportRepository.find(EntityId.of(body.getDestination()))
                 .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, String.format("airport %s not found", body.getDestination())));
 
+        assertAirport(origin);
+        assertAirport(destination);
+
         List<StopOver> stopOvers = new ArrayList<>();
         if (body.getStopOvers() != null) {
             for (NewFlightDto.StopOver stopOver : body.getStopOvers()) {
                 stopOvers.add(new StopOver(
-                        airportRepository.find(EntityId.of(stopOver.getLocation()))
-                                .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, "airport %s not found")),
+                        assertAirport(airportRepository.find(EntityId.of(stopOver.getLocation()))
+                                .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, "airport %s not found"))),
                         stopOver.getArrival(),
                         stopOver.getDeparture()
                 ));
@@ -131,7 +134,22 @@ public class FlightController {
             throw new HttpException(HttpStatus.FORBIDDEN);
         }
 
-        flight.setStatus(body.getStatus());
+        if (body.getStatus() != null) {
+            flight.setStatus(body.getStatus());
+        }
+
+        if (body.getArrival() != null) {
+            flight.setArrival(body.getArrival());
+        }
+
+        if (body.getDeparture() != null) {
+            flight.setDeparture(body.getDeparture());
+        }
+
+        if (flight.getDeparture().isAfter(flight.getArrival())) {
+            throw new HttpException(HttpStatus.CONFLICT, "arrival must occur after departure");
+        }
+
         repository.save(flight);
 
         return RestResponse.ok(MAPPER.map(flight));
@@ -155,5 +173,20 @@ public class FlightController {
         }
 
         return RestResponse.ok(flight.getAllocatedSeats().stream().map(MAPPER::map).collect(Collectors.toList()));
+    }
+
+    private Airport assertAirport(Airport airport) throws HttpException {
+        if (airport.getStatus().equals(Airport.Status.INACTIVE)) {
+            throw new HttpException(HttpStatus.FORBIDDEN, String.format("airport %s is in %s state", airport.getId(), airport.getStatus()));
+        }
+        return airport;
+    }
+
+    private StopOver assertStopover(StopOver stopOver, Flight flight) throws HttpException {
+        if (flight.getDeparture().isAfter(stopOver.getDeparture()) || flight.getArrival().isBefore(stopOver.getDeparture()) ||
+                flight.getDeparture().isAfter(stopOver.getArrival()) || flight.getArrival().isBefore(stopOver.getArrival())) {
+            throw new HttpException(HttpStatus.CONFLICT, "invalid stopover for flight");
+        }
+        return stopOver;
     }
 }

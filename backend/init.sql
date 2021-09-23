@@ -8,7 +8,8 @@ CREATE TABLE "user"
     id       varchar(36) PRIMARY KEY,
     username varchar(255),
     password varchar(255),
-    userType varchar(255)
+    userType varchar(255),
+    status varchar(255)
 );
 
 CREATE TABLE customer
@@ -46,7 +47,8 @@ CREATE TABLE airport
     code      char(3),
     name      varchar(255),
     location  varchar(255),
-    utcOffset varchar(255)
+    utcOffset varchar(255),
+    status varchar(255)
 );
 
 CREATE TABLE airplaneProfile

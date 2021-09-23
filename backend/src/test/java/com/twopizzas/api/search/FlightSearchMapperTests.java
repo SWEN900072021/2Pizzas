@@ -75,6 +75,11 @@ public class FlightSearchMapperTests {
         Assertions.assertEquals(source.getStopOvers().get(0).getDeparture(), target.getStopOvers().get(0).getDeparture());
         Assertions.assertEquals(source.getStopOvers().get(0).getArrival(), target.getStopOvers().get(0).getArrival());
         Assertions.assertNotNull(target.getStopOvers().get(0).getLocation());
+        Assertions.assertNotNull(target.getSeatAvailabilities());
+        Assertions.assertEquals(3, target.getSeatAvailabilities().size());
+        Assertions.assertNotNull(target.getSeatAvailabilities().get(0).getSeatClass());
+        Assertions.assertNotNull(target.getSeatAvailabilities().get(0).getSeats());
+        Assertions.assertEquals(source.getSeats().size() - source.getAllocatedSeats().size(), target.getSeatAvailabilities().stream().map(s -> s.getSeats().size()).reduce(Integer::sum).get());
         Assertions.assertNotNull(target.getSeats());
 
         Optional<FlightSearchResultDto.Seat> targetSeat = target.getSeats().stream().filter(s -> seat.getName().equals(s.getName())).findFirst();

@@ -2,14 +2,20 @@
 
 node "Presentation Layer" {
 
+
 }
 
 node "Application Layer" {
 
+  HTTP - [API]
+  [Domain]
+  [Data] - JDBC
+  [Authentication]
+
 }
 
 database "PostreSQL" {
-  
+
 }
 
 @enduml
