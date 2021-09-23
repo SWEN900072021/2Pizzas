@@ -792,6 +792,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/StopOver"
+        seatAvailabilities:
+          type: array
+          items: 
+            $ref: "#/components/schemas/SeatAvailability"
     NewAirport:
       type: object
       properties:
