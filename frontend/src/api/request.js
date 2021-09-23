@@ -20,20 +20,12 @@ const request = async ({ options, onSuccess, onError }) => {
   const onErrorFn =
     onError ||
     ((error) => {
-      if (error.status === 401) {
-        const session = {
-          ...JSON.parse(sessionStorage.getItem('session-store')),
-          token: null
-        }
-        sessionStorage.setItem(
-          'session-store',
-          JSON.stringify(session)
-        )
-
-        window.location.reload()
+      const { response } = error
+      if (response) {
+        const { data } = response
+        return Promise.reject(data)
       }
-
-      Promise.reject(error.response)
+      return Promise.reject(error)
     })
 
   return client(options).then(onSuccessFn).catch(onErrorFn)
