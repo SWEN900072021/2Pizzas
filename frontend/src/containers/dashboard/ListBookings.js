@@ -10,11 +10,11 @@ import { Link } from 'react-router-dom'
 // import { NavLink } from 'react-router-dom'
 
 // Hooks
-import { useSessionStore } from '../hooks/Store'
+import { useSessionStore } from '../../hooks/Store'
 
 // Containers and Components
-import Spinner from '../components/Spinner'
-import useBookings from '../hooks/useBookings'
+import Spinner from '../../components/Spinner'
+import useBookings from '../../hooks/useBookings'
 
 const ListBookings = ({ bookingsStatus }) => {
   const selectBooking = (id) => {

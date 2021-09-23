@@ -1,4 +1,3 @@
-
 import React from 'react'
 // import { useHistory } from 'react-router'
 // import { Link } from 'react-router-dom'
@@ -6,7 +5,7 @@ import React from 'react'
 
 // Hooks
 // import Spinner from '../components/Spinner'
-import { useSessionStore } from '../hooks/Store'
+import { useSessionStore } from '../../hooks/Store'
 // import useUsers from '../hooks/useUsers'
 
 // Containers and Components
@@ -14,15 +13,11 @@ import { useSessionStore } from '../hooks/Store'
 // import Spinner from '../components/Spinner'
 
 const UserInfo = () => {
-    const username = useSessionStore((state) => state.username)
+  const username = useSessionStore((state) => state.username)
 
-    const userDetails = <div>Your username is: {username}</div>
+  const userDetails = <div>Your username is: {username}</div>
 
-    return (
-        <main>
-            {userDetails}
-        </main>
-    )
+  return <main>{userDetails}</main>
 }
 
 export default UserInfo
