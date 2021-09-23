@@ -24,7 +24,7 @@ const { RangePicker } = DatePicker
 
 const FlightSearchForm = () => {
   const history = useHistory()
-  const airports = useAirports()
+  const { isSuccess, data: airports } = useAirports()
 
   /* -------------------------------------------------------------------------- */
 
@@ -216,8 +216,8 @@ const FlightSearchForm = () => {
         }`}
       >
         {/* Airport Search */}
-        <OriginSearch airports={airports.data} />
-        <DestinationSearch airports={airports.data} />
+        <OriginSearch airports={isSuccess ? airports : []} />
+        <DestinationSearch airports={isSuccess ? airports : []} />
 
         {/* (Date Pickers) Visible only for Mobile Devices or One-Way Flights */}
         <span

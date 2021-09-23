@@ -92,7 +92,7 @@ const ListBookings = ({ bookingsStatus }) => {
                   </span>
                   <span>
                     Booked on{' '}
-                    {moment(booking.dateTime).format('YYYY/MM/DD')}
+                    {moment(booking.dateTime).format('YYYY-MM-DD')}
                   </span>
                 </span>
               </article>

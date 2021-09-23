@@ -6,6 +6,7 @@ import {
   useTestDataStore
 } from './Store'
 import useAirports from './useAirports'
+import useAirplaneProfiles from './useAirplaneProfiles'
 import useBookings from './useBookings'
 import useFlights from './useFlights'
 import useFlightSearch from './useFlightSearch'
@@ -18,6 +19,7 @@ export default {
   useSessionStore,
   useTestDataStore,
   useAirports,
+  useAirplaneProfiles,
   useBookings,
   useFlights,
   useFlightSearch,

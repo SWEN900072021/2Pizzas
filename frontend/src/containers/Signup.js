@@ -82,10 +82,11 @@ const Signup = () => {
           history.push('/')
         }
       },
-      onError: () => {
+      onError: (err) => {
         // console.log(err)
         setLoading(false)
         setErrorMessage('Cannot create user.')
+        Promise.reject(err)
       }
     })
   }

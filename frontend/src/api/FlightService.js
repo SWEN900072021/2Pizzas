@@ -1,7 +1,11 @@
 import request from './request'
 
 export default class FlightService {
-  static createFlight(token, flight) {
+  static createFlight({
+    data: { token, flight },
+    onSuccess,
+    onError
+  }) {
     return request({
       options: {
         url: '/flight',
@@ -10,7 +14,9 @@ export default class FlightService {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      }
+      },
+      onSuccess,
+      onError
     })
   }
 

@@ -16,6 +16,7 @@ import {
   ListAirports,
   ListFlights
 } from './containers/dashboard'
+import CreateFlight from './containers/dashboard/CreateFlight'
 
 function App() {
   const queryClient = new QueryClient()
@@ -87,6 +88,13 @@ function App() {
             path='/dashboard/flights'
             render={() => (
               <DashboardSideNav sectionOpened={<ListFlights />} />
+            )}
+          />
+          <Route
+            exact
+            path='/dashboard/create-flight'
+            render={() => (
+              <DashboardSideNav sectionOpened={<CreateFlight />} />
             )}
           />
         </Switch>

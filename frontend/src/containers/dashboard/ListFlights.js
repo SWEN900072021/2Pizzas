@@ -29,7 +29,17 @@ const ListFlights = () => {
 
   /* -------------------------------------------------------------------------- */
 
-  const { data: flights, isLoading, isSuccess } = useFlights(token)
+  const {
+    data: flights,
+    isLoading,
+    isSuccess,
+    isError,
+    refetch: refetchFlights
+  } = useFlights(token)
+
+  useEffect(() => {
+    refetchFlights()
+  }, [refetchFlights])
 
   const heading = (
     <header className='flex items-center justify-between'>
@@ -69,13 +79,13 @@ const ListFlights = () => {
         departure: flight.departureLocal
           ? moment(flight.departureLocal)
               .utc()
-              .format('YYYY/MM/DD HH:mm')
-          : moment(flight.departure).utc().format('YYYY/MM/DD HH:mm'),
+              .format('YYYY-MM-DD HH:mm')
+          : moment(flight.departure).utc().format('YYYY-MM-DD HH:mm'),
         arrival: flight.arrivalLocal
           ? moment(flight.arrivalLocal)
               .utc()
-              .format('YYYY/MM/DD HH:mm')
-          : moment(flight.arrival).utc().format('YYYY/MM/DD HH:mm'),
+              .format('YYYY-MM-DD HH:mm')
+          : moment(flight.arrival).utc().format('YYYY-MM-DD HH:mm'),
         departureMoment: flight.departureLocal
           ? moment(flight.departureLocal).utc()
           : moment(flight.departure).utc(),
@@ -202,7 +212,11 @@ const ListFlights = () => {
       )
     }
 
-    return <p>Something went wrong</p>
+    if (isError) {
+      return <p>Something went wrong</p>
+    }
+
+    return <Spinner size={6} />
   }
 
   return (
