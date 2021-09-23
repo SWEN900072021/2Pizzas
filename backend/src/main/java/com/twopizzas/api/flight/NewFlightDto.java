@@ -66,21 +66,21 @@ public class NewFlightDto {
         if (stopOvers != null ) {
             for (int i = 0; i < stopOvers.size(); i++) {
                 StopOver stopOver = stopOvers.get(i);
-                String path = String.format("stopOvers[%s].", i);
+                String path = String.format("stopOvers[%s]", i);
                 if (stopOver.getDeparture() == null) {
-                    errors.add(path + "departure is required");
+                    errors.add(path + ".departure is required");
                 }
 
                 if (stopOver.getArrival() == null) {
-                    errors.add(path + "arrival is required");
+                    errors.add(path + ".arrival is required");
                 }
 
-                if (stopOver.getDeparture() != null && stopOver.getArrival() != null && stopOver.getDeparture().isAfter(stopOver.getArrival())) {
-                    errors.add(path + "arrival must occur after " + path + "departure");
+                if (stopOver.getDeparture() != null && stopOver.getArrival() != null && stopOver.getDeparture().isBefore(stopOver.getArrival())) {
+                    errors.add(path + ".departure must occur after " + path + ".arrival");
                 }
 
                 if (!ValidationUtils.isUUID(stopOver.getLocation())) {
-                    errors.add(path + "location must be a uuid");
+                    errors.add(path + ".location must be a uuid");
                 }
             }
         }
