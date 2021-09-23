@@ -655,6 +655,10 @@ components:
         arrival:
           type: string
           format: date-time
+        stopOvers:
+          type: array
+          items:
+            $ref: "#/components/schemas/NewStopOver"
     NewFlight:
       type: object
       properties:
@@ -748,6 +752,15 @@ components:
           $ref: "#/components/schemas/SeatClass"
         booked:
           type: boolean
+    SeatAvailability:
+      type: object
+      properties:
+        seats:
+          type: array
+          items:
+            type: string
+        seatClass:
+          $ref: "#/components/schemas/SeatClass"
     FlightSearchResult:
       type: object
       properties:

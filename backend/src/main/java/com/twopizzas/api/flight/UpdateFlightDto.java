@@ -20,7 +20,7 @@ public class UpdateFlightDto {
         if (arrival != null && departure != null && arrival.isBefore(departure)) {
             errors.add("arrival must occur after departure");
         }
-        
+
         return errors;
     }
 }
