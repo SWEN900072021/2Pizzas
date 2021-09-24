@@ -8,6 +8,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import Login from './containers/Login'
 import Home from './containers/Home'
 import Signup from './containers/Signup'
+import CreateBooking from './containers/CreateBooking'
 import {
   DashboardSideNav,
   UserInfo,
@@ -90,6 +91,11 @@ function App() {
             render={() => (
               <DashboardSideNav sectionOpened={<ListFlights />} />
             )}
+          />
+          <Route
+            exact
+            path='/booking/create'
+            render={() => <CreateBooking />}
           />
         </Switch>
       </main>
