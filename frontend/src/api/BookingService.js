@@ -17,7 +17,7 @@ export default class BookingService {
     })
   }
 
-  static createBooking(token, booking) {
+  static createBooking(token, booking, onSuccess, onError) {
     return request({
       options: {
         url: '/booking',
@@ -26,7 +26,9 @@ export default class BookingService {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      }
+      },
+      onSuccess,
+      onError
     })
   }
 }

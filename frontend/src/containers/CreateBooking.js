@@ -70,7 +70,7 @@ const CreateBooking = () => {
     }
   }, [])
 
-  const invalidDOB = (current) => current >= moment()
+  const invalidDOB = (current) => current > moment()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -95,17 +95,18 @@ const CreateBooking = () => {
       returnFlightId: selectedReturnFlight
         ? selectedReturnFlight.id
         : null,
-      passengers: state.map((passenger) => ({
+      passengerBookings: state.map((passenger) => ({
         ...passenger,
         dateOfBirth: passenger.dateOfBirth.format('YYYY-MM-DD'),
         seatAllocations
       }))
     }
-    BookingService.createBooking({
-      data: { token, booking },
-      onSuccess: (res) => history.push('/dashboard/current-booking'),
-      onError: (err) => console.log(err)
-    })
+    BookingService.createBooking(
+      token,
+      booking,
+      (res) => history.push('/dashboard/current-booking'),
+      (err) => console.log(err)
+    )
     console.log(state)
   }
 
@@ -137,31 +138,6 @@ const CreateBooking = () => {
 
   const [finalCost, setFinalCost] = useState(0)
 
-  const calculateTotalCost = () => {
-    let totalCost = 0
-    for (let i = 0; i < numberOfPassengers; i += 1) {
-      state[i].outboundClass === 'economy'
-        ? (totalCost += selectedOutboundFlight.economyClassCost)
-        : null
-      state[i].returnClass === 'economy'
-        ? (totalCost += selectedReturnFlight.economyClassCost)
-        : null
-      state[i].outboundClass === 'business'
-        ? (totalCost += selectedOutboundFlight.businessClassCost)
-        : null
-      state[i].returnClass === 'business'
-        ? (totalCost += selectedReturnFlight.businessClassCost)
-        : null
-      state[i].outboundClass === 'first'
-        ? (totalCost += selectedOutboundFlight.firstClassCost)
-        : null
-      state[i].returnClass === 'first'
-        ? (totalCost += selectedReturnFlight.firstClassCost)
-        : null
-    }
-    setFinalCost(totalCost)
-  }
-
   const handleClassSeatChange = (value, index, type) => {
     let i = 0
     const updatedState = state.map((passengerObj) => {
@@ -176,22 +152,22 @@ const CreateBooking = () => {
     if (type === 'outboundClass' || type === 'returnClass') {
       const prevClassCost = state[index][type]
       let currClassCost = 0
-      value === 'economy'
+      value === 'ECONOMY'
         ? (currClassCost = selectedOutboundFlight.economyClassCost)
         : null
-      value === 'economy'
+      value === 'ECONOMY'
         ? (currClassCost += selectedReturnFlight.economyClassCost)
         : null
-      value === 'business'
+      value === 'BUSINESS'
         ? (currClassCost += selectedOutboundFlight.businessClassCost)
         : null
-      value === 'business'
+      value === 'BUSINESS'
         ? (currClassCost += selectedReturnFlight.businessClassCost)
         : null
-      value === 'first'
+      value === 'FIRST'
         ? (currClassCost += selectedOutboundFlight.firstClassCost)
         : null
-      value === 'first'
+      value === 'FIRST'
         ? (currClassCost += selectedReturnFlight.firstClassCost)
         : null
       setFinalCost(
@@ -273,75 +249,97 @@ const CreateBooking = () => {
           <p>Outbound flight class</p>
           <Select
             required
-            defaultValue='economy'
+            defaultValue='ECONOMY'
             id='outboundClass'
             className='col-span-3'
             onChange={(value) =>
               handleClassSeatChange(value, passenger, 'outboundClass')
             }
           >
-            <Option id='economy' value='economy'>
+            <Option id='economy' value='ECONOMY'>
               Economy Class ($
               {selectedOutboundFlight.economyClassCost})
             </Option>
-            <Option id='business' value='business'>
+            <Option id='business' value='BUSINESS'>
               Business Class ($
               {selectedOutboundFlight.businessClassCost})
             </Option>
-            <Option id='first' value='first'>
+            <Option id='first' value='FIRST'>
               First Class (${selectedOutboundFlight.firstClassCost})
             </Option>
           </Select>
-          {/* <p>Outbound flight seat</p>
+          <p>Outbound flight seat</p>
           <Select
             required
-            defaultValue='economy'
+            // defaultValue='economy'
             id='outboundSeat'
             className='col-span-3'
             onChange={(value) =>
               handleClassSeatChange(value, passenger, 'outboundSeat')
             }
           >
-            {selectedOutboundFlight.}
-            <Option id='economy' value='economy'>
-              Economy Class ($
-              {selectedOutboundFlight.economyClassCost})
-            </Option>
-          </Select> */}
+            {selectedOutboundFlight.seatAvailabilities.map(
+              (seatsPerClass) => {
+                if (
+                  seatsPerClass.seatClass ===
+                  state[passenger].outboundClass
+                )
+                  return seatsPerClass.seats.map((seat) => (
+                    <Option id={seat} value={seat}>
+                      {seat}
+                    </Option>
+                  ))
+                return null
+              }
+            )}
+          </Select>
           <p>Return flight class</p>
           <Select
             required
-            defaultValue='economy'
+            defaultValue='ECONOMY'
             id='returnClass'
             className='col-span-3'
             onChange={(value) =>
               handleClassSeatChange(value, passenger, 'returnClass')
             }
           >
-            <Option id='economy' value='economy'>
+            <Option id='economy' value='ECONOMY'>
               Economy Class ($
               {selectedReturnFlight.economyClassCost})
             </Option>
-            <Option id='business' value='business'>
+            <Option id='business' value='BUSINESS'>
               Business Class ($
               {selectedReturnFlight.businessClassCost})
             </Option>
-            <Option id='first' value='first'>
+            <Option id='first' value='FIRST'>
               First Class (${selectedReturnFlight.firstClassCost})
             </Option>
           </Select>
-          {/* <p>Return flight seat</p>
+          <p>Return flight seat</p>
           <Select
             required
-            defaultValue='economy'
+            defaultValue='ECONOMY'
             id='returnSeat'
             className='col-span-3'
             onChange={(value) =>
               handleClassSeatChange(value, passenger, 'returnSeat')
             }
           >
-            {selectedReturnFlight.}
-          </Select> */}
+            {selectedReturnFlight.seatAvailabilities.map(
+              (seatsPerClass) => {
+                if (
+                  seatsPerClass.seatClass ===
+                  state[passenger].outboundClass
+                )
+                  return seatsPerClass.seats.map((seat) => (
+                    <Option id={seat} value={seat}>
+                      {seat}
+                    </Option>
+                  ))
+                return null
+              }
+            )}
+          </Select>
         </Panel>
       )
     })
