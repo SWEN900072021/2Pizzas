@@ -16,7 +16,6 @@ import Button from '../components/Button'
 import Search from '../components/Search'
 import { useFlightStore } from '../hooks/Store'
 import useAirports from '../hooks/useAirports'
-import useFlightSearch from '../hooks/useFlightSearch'
 
 const moment = require('moment-timezone')
 
@@ -71,19 +70,6 @@ const FlightForm = () => {
 
   /* -------------------------------------------------------------------------- */
 
-  const ECONOMY = useFlightStore((state) => state.economyClass)
-  const BUSINESS = useFlightStore((state) => state.businessClass)
-  const FIRST = useFlightStore((state) => state.firstClass)
-
-  const cabinClass = useFlightStore((state) => state.cabinClass)
-  const setEconomyClass = useFlightStore(
-    (state) => state.setEconomyClass
-  )
-  const setBusinessClass = useFlightStore(
-    (state) => state.setBusinessClass
-  )
-  const setFirstClass = useFlightStore((state) => state.setFirstClass)
-
   const passengerCount = useFlightStore(
     (state) => state.passengerCount
   )
@@ -92,48 +78,8 @@ const FlightForm = () => {
     (state) => state.removePassenger
   )
 
-  const cabinClassPassengersPopover = (
+  const passengersPopover = (
     <section className='flex flex-col items-start justify-center gap-3 font-semibold'>
-      {/* --------------------------- Cabin Class Buttons -------------------------- */}
-      <span>
-        <h4>Cabin Class</h4>
-      </span>
-      <section className='grid grid-cols-3 gap-0.5'>
-        <button
-          type='button'
-          onClick={setEconomyClass}
-          className={`${
-            cabinClass === ECONOMY
-              ? 'w-20 bg-yellow-600 text-xs font-medium text-white p-2 ring-1 ring-yellow-400'
-              : 'w-20 bg-white text-xs font-medium p-2 border-2'
-          } focus:outline-none focus:ring-2 focus:ring-yellow-400`}
-        >
-          Economy
-        </button>
-        <button
-          type='button'
-          onClick={setBusinessClass}
-          className={`${
-            cabinClass === BUSINESS
-              ? 'w-20 bg-yellow-600 text-xs font-medium text-white p-2 ring-1 ring-yellow-400'
-              : 'w-20 bg-white text-xs font-medium p-2 border-2'
-          } focus:outline-none focus:ring-2 focus:ring-yellow-400`}
-        >
-          Business
-        </button>
-        <button
-          type='button'
-          onClick={setFirstClass}
-          className={`${
-            cabinClass === FIRST
-              ? 'w-20 bg-yellow-600 text-xs font-medium text-white p-2 ring-1 ring-yellow-400'
-              : 'w-20 bg-white text-xs font-medium p-2 border-2'
-          } focus:outline-none focus:ring-2 focus:ring-yellow-400`}
-        >
-          First
-        </button>
-      </section>
-
       {/* ----------------------------- Passenger Count ---------------------------- */}
       <span>
         <h4>Number of Passengers</h4>
@@ -160,22 +106,6 @@ const FlightForm = () => {
 
   /* -------------------------------------------------------------------------- */
 
-  const outboundFlights = useFlightSearch({
-    origin: originAirport.id,
-    destination: destinationAirport.id,
-    departDate: moment
-      .tz(departDate, destinationAirport.utcOffset)
-      .utc(),
-    airline: null
-  })
-
-  const returnFlights = useFlightSearch({
-    origin: destinationAirport.id,
-    destination: originAirport.id,
-    departDate: moment.tz(returnDate, originAirport.utcOffset).utc(),
-    airline: null
-  })
-
   const handleSubmit = (e) => {
     e.preventDefault()
     // Search for flights here, requery flight data
@@ -185,16 +115,6 @@ const FlightForm = () => {
           'Must choose different origin and destination airports.'
         )
         return
-      }
-
-      // search for outbound flight
-      // origin to destination flying on depart date
-      outboundFlights.refetch()
-
-      // if return flight, search for return flight
-      // destination to origin flying on return date
-      if (isReturn) {
-        returnFlights.refetch()
       }
 
       history.push('/flight/results')
@@ -245,6 +165,7 @@ const FlightForm = () => {
                 // set return date to same date as new departure date
 
                 setDepartDate(date)
+
                 if (date > oldReturnDate.startOf('day')) {
                   setReturnDate(date)
                 } else {
@@ -270,6 +191,7 @@ const FlightForm = () => {
               setDates((oldDates) => {
                 const oldDepartDate = oldDates[0]
                 setReturnDate(date)
+
                 return [oldDepartDate, date]
               })
             }}
@@ -295,6 +217,8 @@ const FlightForm = () => {
             disabled={[false, !isReturn]}
             placeholder={['Departure date', 'Return date']}
             onChange={(newDates) => {
+              setDepartDate(newDates[0])
+              setReturnDate(newDates[1])
               setDates(newDates)
             }}
           />
@@ -346,7 +270,7 @@ const FlightForm = () => {
           <span>
             <Popover
               // Will show the popover defined when user clicks on Passenger Input field
-              content={cabinClassPassengersPopover}
+              content={passengersPopover}
               trigger='click'
               visible={visible}
               onVisibleChange={handleVisibleChange}
@@ -360,10 +284,7 @@ const FlightForm = () => {
                   className='cursor-default'
                   StartIcon={<IoIosPerson />}
                   EndIcon={<FiChevronDown />}
-                  value={`${
-                    cabinClass.charAt(0).toUpperCase() +
-                    cabinClass.slice(1)
-                  }, ${passengerCount} passenger(s)`}
+                  value={`${passengerCount} passenger(s)`}
                 />
               </div>
             </Popover>
