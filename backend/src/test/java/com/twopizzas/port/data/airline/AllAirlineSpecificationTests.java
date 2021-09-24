@@ -1,12 +1,9 @@
 package com.twopizzas.port.data.airline;
 
-import com.twopizzas.api.airline.AirlineDto;
-import com.twopizzas.api.airline.AirlineMapper;
 import com.twopizzas.domain.user.Airline;
 import com.twopizzas.port.data.DataTestConfig;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import org.junit.jupiter.api.*;
-import org.mapstruct.factory.Mappers;
 
 import java.sql.SQLException;
 import java.util.List;
