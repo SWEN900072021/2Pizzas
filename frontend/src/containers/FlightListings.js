@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import moment from 'moment-timezone'
 import { useHistory } from 'react-router'
 import shallow from 'zustand/shallow'
+import { v4 as uuid } from 'uuid'
+import { Listbox, Transition } from '@headlessui/react'
+import { BiCheck, BiChevronDown } from 'react-icons/bi'
 
 import Button from '../components/Button'
 import FlightCard from '../components/FlightCard'
@@ -52,7 +55,7 @@ const FlightListings = () => {
     useFlightStore(flightSearchDetails, shallow)
 
   const outboundFlights = useFlightStore(
-    (state) => state.oneWayFlights
+    (state) => state.outboundFlights
   )
   const returnFlights = useFlightStore((state) => state.returnFlights)
 
@@ -64,30 +67,36 @@ const FlightListings = () => {
   )
 
   useEffect(() => {
+    console.log(moment(departDate).startOf('day').utc(true))
+
     const outboundFlightSearchCriteria = {
       origin: originAirport.id,
       destination: destinationAirport.id,
-      departingAfter: moment
-        .tz(departDate, originAirport.utcOffset)
+      departingAfter: moment(departDate)
         .startOf('day')
+        // .tz(departDate, originAirport.utcOffset)
         .utc()
         .format(),
-      departingBefore: moment
-        .tz(departDate, originAirport.utcOffset)
+      departingBefore: moment(departDate)
         .endOf('day')
+        // .tz(departDate, originAirport.utcOffset)
         .utc()
         .format(),
       airline: null
     }
 
+    console.log('Outbound flight dates:', {
+      departingAfter: outboundFlightSearchCriteria.departingAfter,
+      departingBefore: outboundFlightSearchCriteria.departingBefore
+    })
+
     FlightSearchService.searchFlights({
       data: outboundFlightSearchCriteria,
       onSuccess: (res) => {
-        console.log('Outbound flights response:', res)
-        setOutboundFlights([])
+        setOutboundFlights(res.data)
       },
       onError: (err) => {
-        console.log('Outbound flights error:', err)
+        console.log(err)
       }
     })
 
@@ -96,14 +105,14 @@ const FlightListings = () => {
       const returnFlightSearchCriteria = {
         origin: destinationAirport.id,
         destination: originAirport.id,
-        departingAfter: moment
-          .tz(returnDate, destinationAirport.utcOffset)
-          // .startOf('day')
+        departingAfter: moment(returnDate)
+          .startOf('day')
+          // .tz(returnDate, destinationAirport.utcOffset)
           .utc()
           .format(),
-        departingBefore: moment
-          .tz(returnDate, destinationAirport.utcOffset)
-          // .endOf('day')
+        departingBefore: moment(returnDate)
+          .endOf('day')
+          // .tz(returnDate, destinationAirport.utcOffset)
           .utc()
           .format(),
         airline: null
@@ -112,11 +121,10 @@ const FlightListings = () => {
       FlightSearchService.searchFlights({
         data: returnFlightSearchCriteria,
         onSuccess: (res) => {
-          console.log('Return flights response:', res)
-          setReturnFlights([])
+          setReturnFlights(res.data)
         },
         onError: (err) => {
-          console.log('Return flights error:', err)
+          console.log(err)
         }
       })
     }
@@ -131,6 +139,56 @@ const FlightListings = () => {
     setReturnFlight,
     setReturnFlights
   ])
+
+  /* -------------------------------------------------------------------------- */
+
+  const flightToggleListbox = isReturn && (
+    <div className='flex items-center justify-center gap-2 md:hidden'>
+      <span>Showing </span>
+      <div className='relative'>
+        <Listbox value={flightToggle} onChange={setFlightToggle}>
+          <Listbox.Button className='grid items-center w-full grid-flow-col py-2 pl-3 pr-10 font-medium text-left text-yellow-900 rounded-lg shadow-md cursor-default bg-yellow-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm'>
+            {flightToggle.name}
+            <BiChevronDown className='w-5 h-5' />
+          </Listbox.Button>
+          <Transition
+            as={Fragment}
+            leave='transition ease-in duration-100'
+            leaveFrom='opacity-100'
+            leaveTo='opacity-0'
+          >
+            <Listbox.Options className='absolute py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg min-w-max max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+              {flightType.map((type) => (
+                <Listbox.Option
+                  key={uuid()}
+                  value={type}
+                  className='relative grid items-center justify-start grid-cols-3 gap-2 px-4 py-2 text-gray-900 cursor-default select-none min-w-max hover:text-yellow-900 hover:bg-yellow-50'
+                >
+                  <span className='col-span-1'>
+                    <BiCheck
+                      className={`${
+                        type.name !== flightToggle.name && 'hidden'
+                      } w-5 h-5`}
+                    />
+                  </span>
+                  <span
+                    className={`${
+                      type.name === flightToggle.name
+                        ? 'font-medium'
+                        : 'font-normal'
+                    } col-span-2`}
+                  >
+                    {type.name}
+                  </span>
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </Transition>
+        </Listbox>
+      </div>
+      <span>flights</span>
+    </div>
+  )
 
   /* -------------------------------------------------------------------------- */
 
@@ -149,26 +207,7 @@ const FlightListings = () => {
         {/* <FlightFilter /> */}
         <div className='flex flex-col items-center w-full gap-3'>
           {/* <FlightSidebar /> */}
-          {isReturn && (
-            <div className='flex items-center justify-center gap-2 md:hidden'>
-              <Button
-                className={
-                  flightToggle.name === flightType[0].name &&
-                  'bg-yellow-600 border-2 border-yellow-900'
-                }
-                label={flightType[0].name}
-                onClick={() => setFlightToggle(flightType[0])}
-              />
-              <Button
-                className={
-                  flightToggle.name === flightType[1].name &&
-                  'bg-yellow-600 border-2 border-yellow-900'
-                }
-                label={flightType[1].name}
-                onClick={() => setFlightToggle(flightType[1])}
-              />
-            </div>
-          )}
+          {flightToggleListbox}
           <div className='grid items-start self-center justify-center grid-flow-col gap-4 md:justify-end auto-cols-min'>
             <section
               className={`${

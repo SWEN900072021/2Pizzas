@@ -165,6 +165,7 @@ const FlightForm = () => {
                 // set return date to same date as new departure date
 
                 setDepartDate(date)
+
                 if (date > oldReturnDate.startOf('day')) {
                   setReturnDate(date)
                 } else {
@@ -190,6 +191,7 @@ const FlightForm = () => {
               setDates((oldDates) => {
                 const oldDepartDate = oldDates[0]
                 setReturnDate(date)
+
                 return [oldDepartDate, date]
               })
             }}
@@ -215,6 +217,8 @@ const FlightForm = () => {
             disabled={[false, !isReturn]}
             placeholder={['Departure date', 'Return date']}
             onChange={(newDates) => {
+              setDepartDate(newDates[0])
+              setReturnDate(newDates[1])
               setDates(newDates)
             }}
           />

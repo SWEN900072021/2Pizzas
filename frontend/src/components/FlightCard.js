@@ -31,43 +31,48 @@ const FlightCard = ({ flight, selected, selectFlight }) => {
       /*                               Flight Details                               */
       /* -------------------------------------------------------------------------- */}
       <section className='flex flex-row items-center justify-center flex-grow gap-3 p-4 shadow-md rounded-t-xl sm:rounded-l-xl sm:rounded-r-none'>
-        {/* Flight 1 */}
-        {/* Airline Code */}
-        <div className='p-1 font-light text-white bg-yellow-500 rounded-3xl'>
-          {flight.airlineCode}
+        {/* Flight Code */}
+        <div className='p-1 px-2 font-semibold text-white bg-yellow-500 rounded-3xl'>
+          {flight.code}
         </div>
-
         <section className='grid items-center justify-center grid-flow-col gap-3 min-w-max'>
           {/* Origin Airport and Departure Time */}
           <section className='flex flex-col items-end'>
+            <div className='text-sm font-light'>
+              {moment(flight.departureLocal).format('DD/MM/YYYY')}
+            </div>
             <div className='text-xl font-medium'>
-              {moment(flight.departure).format('HH:mm')}
+              {moment(flight.departureLocal).format('hh:mmA')}
             </div>
             <div className='font-medium text-yellow-700'>
-              {flight.origin}
+              {flight.origin.code}
             </div>
           </section>
 
           {/* Stopovers */}
           <section className='flex flex-col'>
             <div className='flex justify-center gap-2 px-2'>
-              {flight.stopovers.map((stopover) => (
-                <div className='relative'>
-                  <header>{stopover}</header>
-                  <span className='absolute w-2 h-2 bg-red-400 top-full left-1/2 rounded-xl' />
-                </div>
-              ))}
+              {flight.stopovers &&
+                flight.stopovers.map((stopover) => (
+                  <div className='relative'>
+                    <header>{stopover.name}</header>
+                    <span className='absolute w-2 h-2 bg-red-400 top-full left-1/2 rounded-xl' />
+                  </div>
+                ))}
             </div>
             <div className='self-center w-5/6 h-px mt-1 bg-black bg-opacity-30' />
           </section>
 
           {/* Destination Airport and Arrival Time */}
           <section className='flex flex-col items-start'>
+            <div className='text-sm font-light'>
+              {moment(flight.arrivalLocal).format('DD/MM/YYYY')}
+            </div>
             <div className='text-xl font-medium'>
-              {moment(flight.arrival).format('HH:mm')}
+              {moment(flight.arrivalLocal).format('hh:mmA')}
             </div>
             <div className='font-medium text-yellow-700'>
-              {flight.destination}
+              {flight.destination.code}
             </div>
           </section>
         </section>
