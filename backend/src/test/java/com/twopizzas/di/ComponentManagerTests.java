@@ -28,7 +28,7 @@ public class ComponentManagerTests {
     void setup() {
         MockitoAnnotations.initMocks(this);
         componentManager = new ComponentManager(beanResolver, beanLoader);
-        componentManager.setApplicationContext(new ApplicationContextComponent(null, componentManager));
+        componentManager.setApplicationContext(new ApplicationContextImpl().root("someRoot").componentManager(componentManager));
     }
 
     @Test

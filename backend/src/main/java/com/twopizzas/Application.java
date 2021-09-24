@@ -14,15 +14,15 @@ public class Application implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        ApplicationContext applicationContext = ApplicationContextImpl.getInstance()
+        ApplicationContextImpl applicationContext = new ApplicationContextImpl()
                 .root("com.twopizzas");
 
         String profile = System.getProperty("profile");
         if (profile != null) {
-            ApplicationContextImpl.getInstance().profile(profile);
+            applicationContext.profile(profile);
         }
 
-        ApplicationContextImpl.getInstance().init();
+        applicationContext.init();
 
         ServletContext servletContext = sce.getServletContext();
         DispatcherServlet dispatcherServlet = applicationContext.getComponent(DispatcherServlet.class);

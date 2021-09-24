@@ -10,7 +10,8 @@ import java.util.List;
 public class AllCustomersSpecification implements CustomerSpecification {
 
     private static final String TEMPLATE =
-            "SELECT * FROM customer;";
+            "SELECT * FROM \"user\"" +
+            " LEFT JOIN customer ON \"user\".id = customer.id;";
 
     private final CustomerMapper mapper;
 

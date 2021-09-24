@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class ApplicationContextTests {
 
-    private static final String ROOT = "com.twopizzas";
+    private static final String ROOT = "com.twopizzas.testroot";
 
     @Mock
     private ComponentManager componentManager;
@@ -24,7 +24,7 @@ public class ApplicationContextTests {
     @BeforeEach
     void setup() {
         MockitoAnnotations.initMocks(this);
-        applicationContext = ApplicationContextImpl.getInstance()
+        applicationContext = new ApplicationContextImpl()
                 .root(ROOT)
                 .componentManager(componentManager);
     }
@@ -33,24 +33,25 @@ public class ApplicationContextTests {
     @DisplayName("GIVEN no root set WHEN init invoked THEN throws")
     void test() {
         // GIVEN
-        ApplicationContextImpl.reset();
+        applicationContext = new ApplicationContextImpl()
+                .componentManager(componentManager);
 
         // WHEN + THEN
-        Assertions.assertThrows(ApplicationContextException.class, () -> ApplicationContextImpl.getInstance().init());
+        Assertions.assertThrows(ApplicationContextException.class, () -> applicationContext.init());
     }
 
     @Test
     @DisplayName("GIVEN root set WHEN init invoked THEN then create component manager")
     void test2() {
         // GIVEN
-        ApplicationContextImpl.reset();
-        ApplicationContextImpl.getInstance().root("someRoot");
+        applicationContext = new ApplicationContextImpl()
+                .root(ROOT);
 
         // WHEN
-        ApplicationContextImpl.getInstance().init();
+        applicationContext.init();
 
         // THEN
-        Assertions.assertNotNull(ApplicationContextImpl.getInstance().getComponentManager());
+        Assertions.assertNotNull(applicationContext.getComponentManager());
     }
 
     @Test
@@ -109,19 +110,18 @@ public class ApplicationContextTests {
     @DisplayName("GIVEN profile set WHEN init invoked THEN then profile resolver built")
     void test6() {
         // GIVEN
-        ApplicationContextImpl.reset();
-        ApplicationContextImpl.getInstance()
+        applicationContext = new ApplicationContextImpl()
                 .profile("test")
                 .root("someRoot");
 
 
         // WHEN
-        ApplicationContextImpl.getInstance().init();
+        applicationContext.init();
 
         // THEN
-        Assertions.assertNotNull(ApplicationContextImpl.getInstance().getComponentManager());
-        Assertions.assertTrue(ApplicationContextImpl.getInstance().getComponentManager().getBeanResolver() instanceof PrimaryBeanResolver);
-        Assertions.assertTrue(((PrimaryBeanResolver) ApplicationContextImpl.getInstance().getComponentManager().getBeanResolver()).getWrapped() instanceof ProfileBeanResolver);
-        Assertions.assertEquals("test", (((ProfileBeanResolver) ((PrimaryBeanResolver) ApplicationContextImpl.getInstance().getComponentManager().getBeanResolver()).getWrapped()).getProfile()));
+        Assertions.assertNotNull(applicationContext.getComponentManager());
+        Assertions.assertTrue(applicationContext.getComponentManager().getBeanResolver() instanceof PrimaryBeanResolver);
+        Assertions.assertTrue(((PrimaryBeanResolver) applicationContext.getComponentManager().getBeanResolver()).getWrapped() instanceof ProfileBeanResolver);
+        Assertions.assertEquals("test", (((ProfileBeanResolver) ((PrimaryBeanResolver) applicationContext.getComponentManager().getBeanResolver()).getWrapped()).getProfile()));
     }
 }
