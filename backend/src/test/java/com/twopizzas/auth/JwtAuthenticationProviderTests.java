@@ -3,6 +3,7 @@ package com.twopizzas.auth;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.user.User;
 import com.twopizzas.domain.user.UserRepository;
+import com.twopizzas.web.AuthenticationProvider;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.Assertions;

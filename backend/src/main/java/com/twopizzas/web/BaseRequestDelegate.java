@@ -2,7 +2,6 @@ package com.twopizzas.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twopizzas.auth.AuthenticationProvider;
 import com.twopizzas.domain.user.User;
 
 import java.lang.reflect.InvocationTargetException;

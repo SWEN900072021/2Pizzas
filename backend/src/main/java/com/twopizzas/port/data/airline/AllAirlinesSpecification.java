@@ -11,7 +11,9 @@ public class AllAirlinesSpecification implements AirlineSpecification {
 
     private static final String TEMPLATE =
             "SELECT * FROM \"user\"" +
-            " LEFT JOIN airline ON \"user\".id = airline.id;";
+            " LEFT JOIN airline ON \"user\".id = airline.id" +
+            " WHERE userType = '" + Airline.TYPE + "';";
+
 
     private final AirlineMapper mapper;
 

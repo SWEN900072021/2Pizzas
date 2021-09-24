@@ -7,6 +7,7 @@ import com.twopizzas.di.Component;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.user.User;
 import com.twopizzas.domain.user.UserRepository;
+import com.twopizzas.web.AuthenticationProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;

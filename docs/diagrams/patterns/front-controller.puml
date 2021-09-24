@@ -1,0 +1,72 @@
+@startuml
+
+participant "DispatcherServlet" as diss
+participant "httpRequest:HttpRequest" as req
+participant "HttpRequestDispatcher" as dispatcher
+participant "delegate:HttpRequestDelegate" as delegate
+participant "WebApplicationContext" as webCtx
+participant "httpResponse:HttpResponse" as res
+participant "AuthenticationProvider" as auth
+participant "UnitOfWork" as uow
+participant "IdentityMapper" as imap
+participant "restResponse:RestResponse" as restres
+participant "objectMapper:ObjectMapper" as objmap
+
+
+[-> diss: service(request, response)
+activate diss
+note over req: constructor simplified here for brevity
+diss -> req **: new HttpRequest(request)
+diss -> dispatcher: dispatch(request)
+activate dispatcher
+dispatcher -> dispatcher: doDispatch(request)
+activate dispatcher
+dispatcher -> req: path =  getPath()
+activate req
+deactivate req 
+dispatcher -> webCtx: delegates = getDelgatesForPath(request.getPath())
+activate webCtx
+deactivate webCtx
+alt delagates is empty
+  note over res: constructor call simplified for brevity
+  dispatcher -> res **: new HttpResponse(NotFound, errorBody, headers)
+  dispatcher --> diss: httpResponse
+else
+  alt is prefight request
+    dispatcher -> res **: new HttpResponse(NoContent, null, preflightHeaders)
+    dispatcher --> diss: httpResponse
+  else
+    loop for delegate in delegates
+      dispatcher -> delegate: methods = getMethods()
+      activate delegate
+      deactivate delegate
+      dispatcher -> req: method = getMethod()
+      activate req
+      deactivate req
+      opt methods contains method
+        dispatcher -> dispatcher: handle(httpRequest)
+        activate dispatcher
+        dispatcher -> imap: reset()
+        activate imap
+        deactivate imap
+        dispatcher -> uow: start() 
+        activate uow
+        deactivate uow
+        dispatcher -> delegate: handle(request)
+        activate delegate
+        delegate -> restres **: new RestResponse(status, body, headers)
+        delegate -> dispatcher: restResponse
+        deactivate delegate
+        delegate -> restres: body = getBody()
+        opt body exists
+        delegate -> objmap: bodyStr = 
+
+      end
+    end
+  end
+end
+
+
+
+diss -> httpResponse: send(response)
+@enduml

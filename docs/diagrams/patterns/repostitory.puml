@@ -1,0 +1,53 @@
+@startuml repository
+
+participant "AbstractRepository" as repo
+participant "DataMapper" as mapper
+participant "entity:DomainEntity" as entity
+
+[-> repo: save(entity)
+activate repo
+repo -> entity: new = isNew()
+activate entity
+deactivate entity
+alt new == true
+repo -> mapper: create(entity)
+activate mapper
+deactivate mapper
+repo -> entity: setNew(false)
+activate entity
+deactivate entity
+else 
+repo -> mapper: update(entity)
+activate mapper
+deactivate mapper
+end
+[<-- repo: entity
+deactivate repo
+
+...
+
+[-> repo: find(id)
+activate repo
+repo -> mapper: entity find(id)
+activate mapper
+deactivate mapper
+alt entity != null
+repo -> entity: setNew(false)
+activate entity
+deactivate entity
+[<-- repo: Optional.of(entity)
+else
+[<-- repo: Optional.empty()
+end
+deactivate repo
+
+...
+
+[-> repo: remove(id)
+activate repo
+repo -> mapper: delete(entity)
+activate mapper
+deactivate mapper
+deactivate repo
+
+@enduml

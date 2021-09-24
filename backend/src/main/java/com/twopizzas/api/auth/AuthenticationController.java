@@ -1,6 +1,6 @@
 package com.twopizzas.api.auth;
 
-import com.twopizzas.auth.AuthenticationProvider;
+import com.twopizzas.web.AuthenticationProvider;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Controller;
 import com.twopizzas.domain.user.Customer;

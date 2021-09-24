@@ -1,4 +1,4 @@
-package com.twopizzas.auth;
+package com.twopizzas.web;
 
 import com.twopizzas.domain.user.User;
 
