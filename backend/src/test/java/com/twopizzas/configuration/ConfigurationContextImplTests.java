@@ -114,7 +114,7 @@ public class ConfigurationContextImplTests {
         configurationManager.init();
 
         // THEN
-        Assertions.assertEquals("testUrlValue", configurationManager.getConfigurationProperty("datasource.url"));
+        Assertions.assertNotNull(configurationManager.getConfigurationProperty("datasource.url"));
         Assertions.assertEquals("testUsernameValue", configurationManager.getConfigurationProperty("datasource.username"));
         Assertions.assertEquals("testPasswordValue", configurationManager.getConfigurationProperty("datasource.password"));
     }
