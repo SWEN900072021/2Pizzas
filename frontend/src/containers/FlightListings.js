@@ -13,7 +13,11 @@ import FlightSearch from '../components/FlightSearch'
 import NavBar from '../components/NavBar'
 
 import FlightSearchService from '../api/FlightSearchService'
-import { useFlightStore, useBookingStore } from '../hooks/Store'
+import {
+  useFlightStore,
+  useBookingStore,
+  useSessionStore
+} from '../hooks/Store'
 
 const flightSearchDetails = (state) => [
   state.originAirport,
@@ -25,13 +29,14 @@ const flightSearchDetails = (state) => [
 const FlightListings = () => {
   const isReturn = useFlightStore((state) => state.isReturn)
 
-  const outboundFlight = useBookingStore(
-    (state) => state.selectedOutboundFlight
   const history = useHistory()
   const token = useSessionStore((state) => state.token)
   const setCreatingBooking = useBookingStore(
     (state) => state.setCreatingBooking
   )
+
+  const outboundFlight = useBookingStore(
+    (state) => state.selectedOutboundFlight
   )
   const returnFlight = useBookingStore(
     (state) => state.selectedReturnFlight
@@ -197,11 +202,14 @@ const FlightListings = () => {
 
   /* -------------------------------------------------------------------------- */
 
-  const history = useHistory()
-
   const handleSubmit = (e) => {
     e.preventDefault()
-    history.push('/booking/create')
+
+    if (token) history.push('/booking/create')
+    else {
+      setCreatingBooking(true)
+      history.push('/login')
+    }
   }
 
   return (
@@ -210,7 +218,6 @@ const FlightListings = () => {
       <section className='flex flex-col self-center justify-start w-full h-full gap-10 mt-8 md:max-w-screen-md'>
         <FlightSearch />
         {/* <FlightFilter /> */}
-            onClick={submitHandler}
         <div className='flex flex-col items-center w-full gap-3'>
           {/* <FlightSidebar /> */}
           {flightToggleListbox}
