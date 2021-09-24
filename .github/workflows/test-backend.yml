@@ -15,4 +15,7 @@ jobs:
     - name: Run tests
       working-directory: ./backend
       run: mvn -Dprofile=test -Denv.DATABASE_USERNAME=${{ secrets.DB_USER }} -Denv.DATABASE_PASSWORD=${{ secrets.DB_PASSWORD }} clean test 
-    
+    env:
+      DATABASE_USERNAME: ${{ secrets.DB_USER }}
+      DATABASE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+         
