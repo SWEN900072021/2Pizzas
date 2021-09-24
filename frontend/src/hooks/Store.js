@@ -237,19 +237,25 @@ const useSessionStore = create(
 )
 
 const useBookingStore = create(
-  immer((set) => ({
-    bookingId: null,
-    setBookingId: (bookingId) => set({ bookingId }),
-    isCreatingBooking: false,
-    selectedOutboundFlight: null,
-    selectedReturnFlight: null,
-    setCreatingBooking: (isCreatingBooking) =>
-      set({ isCreatingBooking }),
-    setSelectedOutboundFlight: (selectedOutboundFlight) =>
-      set({ selectedOutboundFlight }),
-    setSelectedReturnFlight: (selectedReturnFlight) =>
-      set({ selectedReturnFlight })
-  }))
+  persist(
+    immer((set) => ({
+      bookingId: null,
+      setBookingId: (bookingId) => set({ bookingId }),
+      isCreatingBooking: false,
+      selectedOutboundFlight: null,
+      selectedReturnFlight: null,
+      setCreatingBooking: (isCreatingBooking) =>
+        set({ isCreatingBooking }),
+      setSelectedOutboundFlight: (selectedOutboundFlight) =>
+        set({ selectedOutboundFlight }),
+      setSelectedReturnFlight: (selectedReturnFlight) =>
+        set({ selectedReturnFlight })
+    })),
+    {
+      name: 'booking-store',
+      getStorage: () => localStorage
+    }
+  )
 )
 
 const useFormStore = create(
