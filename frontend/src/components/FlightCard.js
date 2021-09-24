@@ -25,52 +25,50 @@ const FlightCard = ({ flight, selected, selectFlight }) => {
         selected
           ? 'bg-yellow-100 border-2 border-yellow-600'
           : 'bg-yellow-50 '
-      } flex flex-col w-full sm:flex-row rounded-xl`}
+      } flex flex-col w-full max-w-lg sm:flex-row rounded-xl`}
     >
       {/* -------------------------------------------------------------------------- */
       /*                               Flight Details                               */
       /* -------------------------------------------------------------------------- */}
-      <section className='flex flex-col justify-center flex-grow gap-3 p-4 shadow-md  rounded-t-xl sm:rounded-l-xl sm:rounded-r-none'>
+      <section className='flex flex-row items-center justify-center flex-grow gap-3 p-4 shadow-md rounded-t-xl sm:rounded-l-xl sm:rounded-r-none'>
         {/* Flight 1 */}
-        <section className='flex items-center justify-between flex-grow w-full gap-5'>
-          {/* Airline Code */}
-          <div className='p-1 font-light text-white bg-yellow-500 rounded-3xl'>
-            {flight.airlineCode}
-          </div>
+        {/* Airline Code */}
+        <div className='p-1 font-light text-white bg-yellow-500 rounded-3xl'>
+          {flight.airlineCode}
+        </div>
 
-          <section className='grid items-center justify-center grid-cols-3 gap-3 min-w-max'>
-            {/* Origin Airport and Departure Time */}
-            <section className='flex flex-col items-end'>
-              <div className='text-xl font-medium'>
-                {moment(flight.departure).format('HH:mm')}
-              </div>
-              <div className='font-medium text-yellow-700'>
-                {flight.origin}
-              </div>
-            </section>
+        <section className='grid items-center justify-center grid-flow-col gap-3 min-w-max'>
+          {/* Origin Airport and Departure Time */}
+          <section className='flex flex-col items-end'>
+            <div className='text-xl font-medium'>
+              {moment(flight.departure).format('HH:mm')}
+            </div>
+            <div className='font-medium text-yellow-700'>
+              {flight.origin}
+            </div>
+          </section>
 
-            {/* Stopovers */}
-            <section className='flex flex-col'>
-              <div className='flex justify-center gap-2 px-2'>
-                {flight.stopovers.map((stopover) => (
-                  <div className='relative'>
-                    <header>{stopover}</header>
-                    <span className='absolute w-2 h-2 bg-red-400 top-full left-1/2 rounded-xl' />
-                  </div>
-                ))}
-              </div>
-              <div className='self-center w-5/6 h-px mt-1 bg-black bg-opacity-30' />
-            </section>
+          {/* Stopovers */}
+          <section className='flex flex-col'>
+            <div className='flex justify-center gap-2 px-2'>
+              {flight.stopovers.map((stopover) => (
+                <div className='relative'>
+                  <header>{stopover}</header>
+                  <span className='absolute w-2 h-2 bg-red-400 top-full left-1/2 rounded-xl' />
+                </div>
+              ))}
+            </div>
+            <div className='self-center w-5/6 h-px mt-1 bg-black bg-opacity-30' />
+          </section>
 
-            {/* Destination Airport and Arrival Time */}
-            <section className='flex flex-col items-start'>
-              <div className='text-xl font-medium'>
-                {moment(flight.arrival).format('HH:mm')}
-              </div>
-              <div className='font-medium text-yellow-700'>
-                {flight.destination}
-              </div>
-            </section>
+          {/* Destination Airport and Arrival Time */}
+          <section className='flex flex-col items-start'>
+            <div className='text-xl font-medium'>
+              {moment(flight.arrival).format('HH:mm')}
+            </div>
+            <div className='font-medium text-yellow-700'>
+              {flight.destination}
+            </div>
           </section>
         </section>
       </section>
@@ -90,7 +88,7 @@ const FlightCard = ({ flight, selected, selectFlight }) => {
           !selected && 'shadow-md'
         } flex items-center justify-between gap-4 p-4 sm:flex-col bg-yellow-50 rounded-b-xl sm:rounded-r-xl sm:rounded-l-none`}
       >
-        <div className='text-med font-medium'>
+        <div className='font-medium text-med'>
           Starting from ${flight.economyClassCost} per passenger
         </div>
       </section>

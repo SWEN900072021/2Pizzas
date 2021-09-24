@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { useHistory } from 'react-router'
 import Button from '../components/Button'
 
 import FlightCard from '../components/FlightCard'
@@ -19,38 +20,42 @@ const FlightListings = () => {
     (state) => state.oneWayFlights
   )
 
+  /* -------------------------------------------------------------------------- */
+
   const isReturn = useFlightStore((state) => state.isReturn)
-  const setReturn = useFlightStore((state) => state.setReturn)
-  const [flights, setFlights] = useState(
-    isReturn ? returnFlights : oneWayFlights
-  )
 
   const outboundFlight = useBookingStore(
     (state) => state.selectedOutboundFlight
   )
-  // const returnFlight = useBookingStore(
-  //   (state) => state.selectedReturnFlight
-  // )
+  const returnFlight = useBookingStore(
+    (state) => state.selectedReturnFlight
+  )
   const setOutboundFlight = useBookingStore(
     (state) => state.setSelectedOutboundFlight
   )
-  // const setReturnFlight = useBookingStore(
-  //   (state) => state.setSelectedReturnFlight
-  // )
+  const setReturnFlight = useBookingStore(
+    (state) => state.setSelectedReturnFlight
+  )
 
   const flightType = [{ name: 'Outbound' }, { name: 'Return' }]
+  const [flightToggle, setFlightToggle] = useState(flightType[0])
 
   const handleSelectOutboundFlight = (flight) => {
     setOutboundFlight(flight)
   }
 
-  useEffect(() => {
-    if (isReturn) {
-      setFlights(returnFlights)
-    } else {
-      setFlights(oneWayFlights)
-    }
-  }, [isReturn, returnFlights, oneWayFlights])
+  const handleSelectReturnFlight = (flight) => {
+    setReturnFlight(flight)
+  }
+
+  /* -------------------------------------------------------------------------- */
+
+  const history = useHistory()
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    history.push('/booking/create')
+  }
 
   return (
     <main className='flex flex-col items-start w-full h-screen'>
@@ -58,33 +63,38 @@ const FlightListings = () => {
       <section className='flex flex-col self-center justify-start w-full h-full gap-10 mt-8 md:max-w-screen-md'>
         <FlightSearch />
         {/* <FlightFilter /> */}
-        <div className='flex flex-col w-full items-center gap-3'>
+        <div className='flex flex-col items-center w-full gap-3'>
           {/* <FlightSidebar /> */}
-          <div className='flex justify-center items-center gap-2 sm:hidden'>
-            <Button
-              className={
-                !isReturn &&
-                'bg-yellow-600 border-2 border-yellow-900'
-              }
-              label={flightType[0].name}
-              onClick={() => setReturn(false)}
-            />
-            <Button
-              className={
-                isReturn && 'bg-yellow-600 border-2 border-yellow-900'
-              }
-              label={flightType[1].name}
-              onClick={() => setReturn(true)}
-            />
-          </div>
-          <div className='grid self-center justify-center grid-flow-col sm:justify-end auto-cols-min '>
+          {isReturn && (
+            <div className='flex items-center justify-center gap-2 md:hidden'>
+              <Button
+                className={
+                  flightToggle.name === flightType[0].name &&
+                  'bg-yellow-600 border-2 border-yellow-900'
+                }
+                label={flightType[0].name}
+                onClick={() => setFlightToggle(flightType[0])}
+              />
+              <Button
+                className={
+                  flightToggle.name === flightType[1].name &&
+                  'bg-yellow-600 border-2 border-yellow-900'
+                }
+                label={flightType[1].name}
+                onClick={() => setFlightToggle(flightType[1])}
+              />
+            </div>
+          )}
+          <div className='grid items-start self-center justify-center grid-flow-col gap-4 md:justify-end auto-cols-min'>
             <section
               className={`${
-                !isReturn ? 'flex' : 'hidden'
-              } sm:flex flex-col items-center justify-center gap-5 sm:items-end`}
+                flightToggle.name === flightType[0].name
+                  ? 'flex'
+                  : 'hidden'
+              } md:flex flex-col items-center justify-center gap-5 md:items-end`}
             >
-              {flights.map((flight) => (
-                <div className='flex items-center justify-center gap-5 sm:items-end'>
+              {oneWayFlights.map((flight) => (
+                <div className='flex items-center justify-center gap-5 md:items-end'>
                   <FlightCard
                     flight={flight}
                     selected={
@@ -97,26 +107,42 @@ const FlightListings = () => {
                 </div>
               ))}
             </section>
-            <section
-              className={`${
-                isReturn ? 'flex' : 'hidden'
-              } sm:flexflex flex-col items-center justify-center gap-5 sm:items-end`}
-            >
-              {flights.map((flight) => (
-                <div className='flex items-center justify-center gap-5 sm:items-end'>
-                  <FlightCard
-                    flight={flight}
-                    selected={
-                      outboundFlight
-                        ? flight.id === outboundFlight.id
-                        : false
-                    }
-                    selectFlight={handleSelectOutboundFlight}
-                  />
-                </div>
-              ))}
-            </section>
+            {isReturn && (
+              <span className='hidden w-px h-full bg-black bg-opacity-60 md:block' />
+            )}
+            {isReturn && (
+              <section
+                className={`${
+                  flightToggle.name === flightType[1].name
+                    ? 'flex'
+                    : 'hidden'
+                } md:flex flex-col items-center justify-center gap-5 md:items-end`}
+              >
+                {returnFlights.map((flight) => (
+                  <div className='flex items-center justify-center gap-5 md:items-end'>
+                    <FlightCard
+                      flight={flight}
+                      selected={
+                        returnFlight
+                          ? flight.id === returnFlight.id
+                          : false
+                      }
+                      selectFlight={handleSelectReturnFlight}
+                    />
+                  </div>
+                ))}
+              </section>
+            )}
           </div>
+          <Button
+            label='Submit'
+            onClick={handleSubmit}
+            disabled={
+              isReturn
+                ? !(outboundFlight && returnFlight)
+                : !outboundFlight
+            }
+          />
         </div>
       </section>
     </main>
