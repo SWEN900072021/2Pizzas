@@ -1,27 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import moment from 'moment-timezone'
 import { useHistory } from 'react-router'
-import Button from '../components/Button'
+import shallow from 'zustand/shallow'
 
+import Button from '../components/Button'
 import FlightCard from '../components/FlightCard'
 // import FlightFilter from '../components/FlightFilter'
 import FlightSearch from '../components/FlightSearch'
 import NavBar from '../components/NavBar'
-import {
-  useFlightStore,
-  useTestDataStore,
-  useBookingStore
-} from '../hooks/Store'
+
+import FlightSearchService from '../api/FlightSearchService'
+import { useFlightStore, useBookingStore } from '../hooks/Store'
+
+const flightSearchDetails = (state) => [
+  state.originAirport,
+  state.destinationAirport,
+  state.departDate,
+  state.returnDate
+]
 
 const FlightListings = () => {
-  const returnFlights = useTestDataStore(
-    (state) => state.returnFlights
-  )
-  const oneWayFlights = useTestDataStore(
-    (state) => state.oneWayFlights
-  )
-
-  /* -------------------------------------------------------------------------- */
-
   const isReturn = useFlightStore((state) => state.isReturn)
 
   const outboundFlight = useBookingStore(
@@ -47,6 +45,92 @@ const FlightListings = () => {
   const handleSelectReturnFlight = (flight) => {
     setReturnFlight(flight)
   }
+
+  /* -------------------------------------------------------------------------- */
+
+  const [originAirport, destinationAirport, departDate, returnDate] =
+    useFlightStore(flightSearchDetails, shallow)
+
+  const outboundFlights = useFlightStore(
+    (state) => state.oneWayFlights
+  )
+  const returnFlights = useFlightStore((state) => state.returnFlights)
+
+  const setOutboundFlights = useFlightStore(
+    (state) => state.setOutboundFlights
+  )
+  const setReturnFlights = useFlightStore(
+    (state) => state.setReturnFlights
+  )
+
+  useEffect(() => {
+    const outboundFlightSearchCriteria = {
+      origin: originAirport.id,
+      destination: destinationAirport.id,
+      departingAfter: moment
+        .tz(departDate, originAirport.utcOffset)
+        .startOf('day')
+        .utc()
+        .format(),
+      departingBefore: moment
+        .tz(departDate, originAirport.utcOffset)
+        .endOf('day')
+        .utc()
+        .format(),
+      airline: null
+    }
+
+    FlightSearchService.searchFlights({
+      data: outboundFlightSearchCriteria,
+      onSuccess: (res) => {
+        console.log('Outbound flights response:', res)
+        setOutboundFlights([])
+      },
+      onError: (err) => {
+        console.log('Outbound flights error:', err)
+      }
+    })
+
+    if (isReturn) {
+      // fetch return flights
+      const returnFlightSearchCriteria = {
+        origin: destinationAirport.id,
+        destination: originAirport.id,
+        departingAfter: moment
+          .tz(returnDate, destinationAirport.utcOffset)
+          // .startOf('day')
+          .utc()
+          .format(),
+        departingBefore: moment
+          .tz(returnDate, destinationAirport.utcOffset)
+          // .endOf('day')
+          .utc()
+          .format(),
+        airline: null
+      }
+
+      FlightSearchService.searchFlights({
+        data: returnFlightSearchCriteria,
+        onSuccess: (res) => {
+          console.log('Return flights response:', res)
+          setReturnFlights([])
+        },
+        onError: (err) => {
+          console.log('Return flights error:', err)
+        }
+      })
+    }
+  }, [
+    departDate,
+    destinationAirport,
+    isReturn,
+    originAirport,
+    returnDate,
+    setOutboundFlight,
+    setOutboundFlights,
+    setReturnFlight,
+    setReturnFlights
+  ])
 
   /* -------------------------------------------------------------------------- */
 
@@ -93,19 +177,20 @@ const FlightListings = () => {
                   : 'hidden'
               } md:flex flex-col items-center justify-center gap-5 md:items-end`}
             >
-              {oneWayFlights.map((flight) => (
-                <div className='flex items-center justify-center gap-5 md:items-end'>
-                  <FlightCard
-                    flight={flight}
-                    selected={
-                      outboundFlight
-                        ? flight.id === outboundFlight.id
-                        : false
-                    }
-                    selectFlight={handleSelectOutboundFlight}
-                  />
-                </div>
-              ))}
+              {outboundFlights &&
+                outboundFlights.map((flight) => (
+                  <div className='flex items-center justify-center gap-5 md:items-end'>
+                    <FlightCard
+                      flight={flight}
+                      selected={
+                        outboundFlight
+                          ? flight.id === outboundFlight.id
+                          : false
+                      }
+                      selectFlight={handleSelectOutboundFlight}
+                    />
+                  </div>
+                ))}
             </section>
             {isReturn && (
               <span className='hidden w-px h-full bg-black bg-opacity-60 md:block' />
@@ -118,19 +203,20 @@ const FlightListings = () => {
                     : 'hidden'
                 } md:flex flex-col items-center justify-center gap-5 md:items-end`}
               >
-                {returnFlights.map((flight) => (
-                  <div className='flex items-center justify-center gap-5 md:items-end'>
-                    <FlightCard
-                      flight={flight}
-                      selected={
-                        returnFlight
-                          ? flight.id === returnFlight.id
-                          : false
-                      }
-                      selectFlight={handleSelectReturnFlight}
-                    />
-                  </div>
-                ))}
+                {returnFlights &&
+                  returnFlights.map((flight) => (
+                    <div className='flex items-center justify-center gap-5 md:items-end'>
+                      <FlightCard
+                        flight={flight}
+                        selected={
+                          returnFlight
+                            ? flight.id === returnFlight.id
+                            : false
+                        }
+                        selectFlight={handleSelectReturnFlight}
+                      />
+                    </div>
+                  ))}
               </section>
             )}
           </div>

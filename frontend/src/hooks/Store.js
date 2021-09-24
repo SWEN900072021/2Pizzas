@@ -337,6 +337,14 @@ const useFlightStore = create(
         set(() => ({
           returnDate: date
         }))
+      },
+      outboundFlights: [],
+      returnFlights: [],
+      setOutboundFlights: (flights) => {
+        set({ outboundFlights: flights })
+      },
+      setReturnFlights: (flights) => {
+        set({ returnFlights: flights })
       }
     })),
     {

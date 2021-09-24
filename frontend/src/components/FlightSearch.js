@@ -20,7 +20,6 @@ const FlightSearch = () => {
   const passengerCount = useFlightStore(
     (state) => state.passengerCount
   )
-  const cabinClass = useFlightStore((state) => state.cabinClass)
 
   const isReturn = useFlightStore((state) => state.isReturn)
 
@@ -196,13 +195,8 @@ const FlightSearch = () => {
           </div>
 
           {/* ----------------------------- Passenger Count ---------------------------- */}
-          <div className='flex self-center gap-2 font-medium sm:self-start'>
-            <div>{passengerCount} passenger(s)</div>
-            <div>•</div>
-            <div>
-              {cabinClass.charAt(0).toUpperCase() +
-                cabinClass.slice(1)}
-            </div>
+          <div className='flex self-center font-medium sm:self-start'>
+            {passengerCount} passenger(s)
           </div>
         </section>
 
