@@ -28,6 +28,7 @@ function App() {
           <Route exact path='/' render={() => <Home />} />
           <Route exact path='/login' render={() => <Login />} />
           <Route exact path='/signup' render={() => <Signup />} />
+          {/* User Dashboard */}
           <Route
             exact
             path='/flight/results'
@@ -69,6 +70,7 @@ function App() {
               <DashboardSideNav sectionOpened={<ViewBooking />} />
             )}
           />
+          {/* Admin Dashboard */}
           <Route
             exact
             path='/dashboard/airlines'
