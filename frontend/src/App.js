@@ -15,7 +15,9 @@ import {
   ViewBooking,
   ListAirlines,
   ListAirports,
-  ListFlights
+  ListFlights,
+  CreateAirline,
+  CreateAirport
 } from './containers/dashboard'
 import FlightListings from './containers/FlightListings'
 import CreateAirline from './containers/dashboard/CreateAirline'
@@ -76,35 +78,42 @@ function App() {
           {/* Admin Dashboard */}
           <Route
             exact
-            path='/dashboard/airlines'
+            path='/dashboard/manage/airlines'
             render={() => (
               <DashboardSideNav sectionOpened={<ListAirlines />} />
             )}
           />
           <Route
             exact
-            path='/dashboard/airports'
+            path='/dashboard/manage/airports'
             render={() => (
               <DashboardSideNav sectionOpened={<ListAirports />} />
             )}
           />
           <Route
             exact
-            path='/dashboard/create-airport'
-            render={() => (
-              <DashboardSideNav sectionOpened={<CreateAirport />} />
-            )}
-          />
-          <Route
-            exact
-            path='/dashboard/flights'
+            path='/dashboard/manage/flights'
             render={() => (
               <DashboardSideNav sectionOpened={<ListFlights />} />
             )}
           />
           <Route
             exact
-            path='/dashboard/create-airline'
+            path='/dashboard/manage/airports/create'
+            render={() => (
+              <DashboardSideNav sectionOpened={<CreateAirport />} />
+            )}
+          />
+          <Route
+            exact
+            path='/dashboard/manage/flights/create'
+            render={() => (
+              <DashboardSideNav sectionOpened={<CreateFlight />} />
+            )}
+          />
+          <Route
+            exact
+            path='/dashboard/manage/airlines/create'
             render={() => (
               <DashboardSideNav sectionOpened={<CreateAirline />} />
             )}
