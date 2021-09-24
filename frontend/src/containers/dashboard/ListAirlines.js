@@ -7,6 +7,7 @@ import { FaPlus } from 'react-icons/fa'
 import Spinner from '../../components/Spinner'
 import { useSessionStore } from '../../hooks/Store'
 import useAirlines from '../../hooks/useAirlines'
+import UserService from '../../api/UserService'
 
 const { Column } = Table
 
@@ -46,7 +47,7 @@ const ListAirlines = () => {
   const heading = (
     <header className='flex items-center justify-between'>
       <h2 className='text-3xl font-bold'>Your airlines</h2>
-      <Link to='/dashboard/create-airline'>
+      <Link to='/dashboard/manage/airlines/create'>
         <button
           type='button'
           className='flex items-center justify-center gap-2 p-2 font-bold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
@@ -64,6 +65,30 @@ const ListAirlines = () => {
     return 0
   }
 
+  const [isUpdating, setIsUpdating] = useState(null)
+
+  const updateAirline = (id, status) => {
+    setIsUpdating(id)
+
+    UserService.updateUser({
+      data: { token, id, status },
+      onSuccess: () => {
+        refetchAirlines()
+          .then(() => {
+            setIsUpdating(null)
+          })
+          .catch((err) => {
+            console.log(err)
+            setIsUpdating(null)
+          })
+      },
+      onError: (err) => {
+        setIsUpdating(null)
+        console.log(err)
+      }
+    })
+  }
+
   const renderAirlines = () => {
     if (isLoading) {
       return <Spinner size={6} />
@@ -74,7 +99,8 @@ const ListAirlines = () => {
         key: `${idx}`,
         id: airline.id,
         name: airline.name,
-        code: airline.code
+        code: airline.code,
+        status: airline.status
       }))
 
       return (
@@ -82,17 +108,9 @@ const ListAirlines = () => {
           dataSource={dataSource}
           bordered
           size='middle'
-          scroll={{ x: 1200, y: 400 }}
+          scroll={{ x: 400, y: 400 }}
           pagination={false}
         >
-          <Column
-            title='ID'
-            dataIndex='id'
-            width={80}
-            sorter={{
-              compare: (a, b) => sort(a.id, b.id)
-            }}
-          />
           <Column
             title='Name'
             dataIndex='name'
@@ -114,17 +132,37 @@ const ListAirlines = () => {
             title='Actions'
             key='actions'
             fixed='right'
-            render={() => (
+            width={50}
+            render={(value, record) => (
               <Space size='middle'>
-                {/* <Link
-                  to={`/dashboard/airlines/${record.id}`}
-                  className='underline'
-                >
-                  View
-                </Link> */}
+                {record.id !== isUpdating && (
+                  <>
+                    {record.status === 'ACTIVE' ? (
+                      <button
+                        type='button'
+                        onClick={() =>
+                          updateAirline(record.id, 'INACTIVE')
+                        }
+                        className='text-blue-400 underline transition-colors active:text-red-600 hover:text-red-400'
+                      >
+                        Disable
+                      </button>
+                    ) : (
+                      <button
+                        type='button'
+                        onClick={() =>
+                          updateAirline(record.id, 'ACTIVE')
+                        }
+                        className='text-blue-400 underline transition-colors active:text-green-600 hover:text-green-300'
+                      >
+                        Enable
+                      </button>
+                    )}
+                  </>
+                )}
+                {record.id === isUpdating && <Spinner size={6} />}
               </Space>
             )}
-            width={80}
           />
         </Table>
       )
@@ -138,7 +176,10 @@ const ListAirlines = () => {
   }
 
   return (
-    <main className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'>
+    <main
+      in
+      className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'
+    >
       {!validUser ? (
         <Spinner size={6} />
       ) : (
@@ -150,5 +191,4 @@ const ListAirlines = () => {
     </main>
   )
 }
-
 export default ListAirlines

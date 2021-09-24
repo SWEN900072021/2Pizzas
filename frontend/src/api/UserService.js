@@ -25,4 +25,23 @@ export default class UserService {
       }
     })
   }
+
+  static updateUser({
+    data: { token, id, status },
+    onSuccess,
+    onError
+  }) {
+    return request({
+      options: {
+        url: `/user/${id}`,
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        data: { status }
+      },
+      onSuccess,
+      onError
+    })
+  }
 }

@@ -10,6 +10,25 @@ export default class AirportService {
     })
   }
 
+  static updateAirport({
+    data: { token, id, status },
+    onSuccess,
+    onError
+  }) {
+    return request({
+      options: {
+        url: `/airport/${id}`,
+        method: 'PATCH',
+        data: { status },
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      },
+      onSuccess,
+      onError
+    })
+  }
+
   static createAirport({
     data: { token, airport },
     onSuccess,

@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
-
 import React from 'react'
 import { Route, Switch } from 'react-router'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -17,11 +15,11 @@ import {
   ListAirports,
   ListFlights,
   CreateAirline,
-  CreateAirport
+  CreateAirport,
+  CreateFlight
 } from './containers/dashboard'
+
 import FlightListings from './containers/FlightListings'
-import CreateAirline from './containers/dashboard/CreateAirline'
-import CreateAirport from './containers/dashboard/CreateAirport'
 
 function App() {
   const queryClient = new QueryClient()

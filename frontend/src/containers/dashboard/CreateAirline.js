@@ -40,7 +40,7 @@ const CreateAirline = () => {
       data: { token, airline },
       onSuccess: () => {
         setLoading(false)
-        history.push('/dashboard/airlines')
+        history.push('/dashboard/manage/airlines')
       },
       onError: (error) => {
         console.log(error)
