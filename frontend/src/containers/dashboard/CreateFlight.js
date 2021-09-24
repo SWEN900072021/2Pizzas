@@ -100,7 +100,7 @@ const CreateFlight = () => {
     FlightService.createFlight({
       data: { token, flight },
       onSuccess: () => {
-        history.push('/dashboard/flights')
+        history.push('/dashboard/manage/flights')
       },
       onError: (error) => {
         console.log(error)
