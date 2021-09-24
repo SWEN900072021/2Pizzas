@@ -19,8 +19,7 @@ public class ApplicationContextIntegrationTests {
     @Test
     @DisplayName("GIVEN valid project structure WHEN init THEN application context spun up")
     void test() {
-        ApplicationContextImpl.reset();
-        ApplicationContext applicationContext = ApplicationContextImpl.getInstance()
+        ApplicationContext applicationContext = new ApplicationContextImpl()
                 .root("com.twopizzas.di.testroot")
                 .init();
 

@@ -7,20 +7,12 @@ import java.util.Collection;
 
 public class ApplicationContextImpl extends AssertionConcern implements ApplicationContext {
 
-    private static ApplicationContextImpl instance;
     private String root;
     private String profile;
 
     private ComponentManager componentManager;
 
-    private ApplicationContextImpl() {}
-
-    public static ApplicationContextImpl getInstance() {
-        if (instance == null) {
-            instance = new ApplicationContextImpl();
-        }
-        return instance;
-    }
+    public ApplicationContextImpl() {}
 
     public ApplicationContextImpl root(String root) {
         notNullAndNotBlank(root, "root");
@@ -37,7 +29,7 @@ public class ApplicationContextImpl extends AssertionConcern implements Applicat
     // for testing only
     ApplicationContextImpl componentManager(ComponentManager componentManager) {
         this.componentManager = componentManager;
-        return instance;
+        return this;
     }
 
     // for testing only
@@ -56,7 +48,7 @@ public class ApplicationContextImpl extends AssertionConcern implements Applicat
                     getBeanResolver(),
                     new ComponentLoader(root)
             );
-            componentManager.setApplicationContext(new ApplicationContextComponent(profile, componentManager));
+            componentManager.setApplicationContext(this);
         }
         componentManager.init();
         return this;
@@ -94,10 +86,5 @@ public class ApplicationContextImpl extends AssertionConcern implements Applicat
             beanResolver = new ProfileBeanResolver(beanResolver, profile);
         }
         return new PrimaryBeanResolver(beanResolver);
-    }
-
-    // for testing only
-    static void reset() {
-        instance = null;
     }
 }
