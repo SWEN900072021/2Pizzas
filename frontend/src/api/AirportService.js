@@ -10,7 +10,11 @@ export default class AirportService {
     })
   }
 
-  static createAirport(token, airport) {
+  static createAirport({
+    data: { token, airport },
+    onSuccess,
+    onError
+  }) {
     return request({
       options: {
         url: '/airport',
@@ -19,7 +23,9 @@ export default class AirportService {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      }
+      },
+      onSuccess,
+      onError
     })
   }
 }
