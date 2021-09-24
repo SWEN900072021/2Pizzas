@@ -1,17 +1,15 @@
-@startuml
+@startuml front controller
 
 participant "DispatcherServlet" as diss
 participant "httpRequest:HttpRequest" as req
 participant "HttpRequestDispatcher" as dispatcher
-participant "delegate:HttpRequestDelegate" as delegate
 participant "WebApplicationContext" as webCtx
+participant "delegate:HttpRequestDelegate" as delegate
 participant "httpResponse:HttpResponse" as res
-participant "AuthenticationProvider" as auth
-participant "UnitOfWork" as uow
 participant "IdentityMapper" as imap
+participant "UnitOfWork" as uow
 participant "restResponse:RestResponse" as restres
 participant "objectMapper:ObjectMapper" as objmap
-
 
 [-> diss: service(request, response)
 activate diss
@@ -23,7 +21,7 @@ dispatcher -> dispatcher: doDispatch(request)
 activate dispatcher
 dispatcher -> req: path =  getPath()
 activate req
-deactivate req 
+deactivate req
 dispatcher -> webCtx: delegates = getDelgatesForPath(request.getPath())
 activate webCtx
 deactivate webCtx
@@ -49,24 +47,50 @@ else
         dispatcher -> imap: reset()
         activate imap
         deactivate imap
-        dispatcher -> uow: start() 
+        dispatcher -> uow: start()
         activate uow
         deactivate uow
         dispatcher -> delegate: handle(request)
         activate delegate
         delegate -> restres **: new RestResponse(status, body, headers)
-        delegate -> dispatcher: restResponse
-        deactivate delegate
-        delegate -> restres: body = getBody()
-        opt body exists
-        delegate -> objmap: bodyStr = 
-
+        ref over delegate: see delegate flow
+        alt
+          delegate --> dispatcher: restResponse
+          dispatcher -> restres: body = getBody()
+          activate restres
+          deactivate restres
+          opt body exists
+            dispatcher -> webCtx: objectMapper = getObjectMapper()
+            activate webCtx
+            deactivate webCtx
+            dispatcher -> objmap: bodyStr = writeValueAsString(body)
+            activate objmap
+            deactivate objmap
+          end
+          dispatcher -> restres: status = getStatus()
+          activate restres
+          deactivate restres
+          dispatcher -> uow: commit()
+          activate uow
+          deactivate uow
+          dispatcher -> res **: new HttpResponse(status, bodyStr, headers)
+          dispatcher --> diss: httpResponse
+        else exception thrown from delegate
+          dispatcher -> uow: rollback()
+          activate uow
+          deactivate uow
+          dispatcher -> res **: new HttpResponse(InternalServerError, errorBody, headers)
+          dispatcher --> diss: httpResponse
+          deactivate delegate
+        end
       end
+      dispatcher -> res **: new HttpResponse(MethodNotAllowed, errorBody, headers)
+      dispatcher --> diss: httpResponse
+      deactivate dispatcher
+      deactivate dispatcher
+      deactivate dispatcher
     end
   end
 end
-
-
-
-diss -> httpResponse: send(response)
+diss -> res: send(response)
 @enduml

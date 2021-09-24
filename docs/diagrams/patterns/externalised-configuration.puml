@@ -1,7 +1,7 @@
-@startuml
+@startuml extenalized configuration
 
 participant compMan as "manager:ComponentManager"
-participant BeanLoader as loader 
+participant BeanLoader as loader
 participant bean as "bean:Bean"
 participant ConfigurationConstructionInterceptor as configInter
 participant "configurationContext:ConfigurationContext" as configCtx
@@ -11,27 +11,27 @@ participant field as "field:Field"
 activate compMan
 compMan -> loader: loaded = load()
 loop for bean in loaded
-compMan -> bean: construct(manager)
-activate bean
-bean -> bean: component = build(manager)
-activate bean
-bean -> configInter: intercept(component, manager)
-activate configInter
-opt component is annotated with @Configuration
-configInter -> compMan: configurationContext = getComponent(ConfigurationContext.class)
-activate compMan
-deactivate compMan
-loop for field of component annotated with @Value
-configInter -> field: valueAnnotation = field.getAnnotation(Value.class)
-configInter -> configCtx: value = getConfigurationProperty(valueAnnotation.value())
-configInter -> field: set(component, value)
-configInter --> bean: component 
-deactivate configInter
-bean --> compMan: component
-deactivate bean
-deactivate bean
-end 
-end
+  compMan -> bean: construct(manager)
+  activate bean
+  bean -> bean: component = build(manager)
+  activate bean
+  bean -> configInter: intercept(component, manager)
+  activate configInter
+  opt component is annotated with @Configuration
+    configInter -> compMan: configurationContext = getComponent(ConfigurationContext.class)
+    activate compMan
+    deactivate compMan
+    loop for field of component annotated with @Value
+      configInter -> field: valueAnnotation = field.getAnnotation(Value.class)
+      configInter -> configCtx: value = getConfigurationProperty(valueAnnotation.value())
+      configInter -> field: set(component, value)
+      configInter --> bean: component
+      deactivate configInter
+      bean --> compMan: component
+      deactivate bean
+      deactivate bean
+    end
+  end
 end
 
 @enduml

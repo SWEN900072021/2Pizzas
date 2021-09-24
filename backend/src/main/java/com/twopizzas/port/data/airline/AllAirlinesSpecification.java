@@ -14,7 +14,6 @@ public class AllAirlinesSpecification implements AirlineSpecification {
             " LEFT JOIN airline ON \"user\".id = airline.id" +
             " WHERE userType = '" + Airline.TYPE + "';";
 
-
     private final AirlineMapper mapper;
 
     @Autowired

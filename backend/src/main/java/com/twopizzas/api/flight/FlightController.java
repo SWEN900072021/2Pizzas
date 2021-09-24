@@ -23,12 +23,14 @@ public class FlightController {
     private final FlightRepository repository;
     private final AirportRepository airportRepository;
     private final AirplaneProfileRepository airplaneProfileRepository;
+    private final FlightSeatRepository flightSeatRepository;
 
     @Autowired
-    public FlightController(FlightRepository repository, AirportRepository airportRepository, AirplaneProfileRepository airplaneProfileRepository) {
+    public FlightController(FlightRepository repository, AirportRepository airportRepository, AirplaneProfileRepository airplaneProfileRepository, FlightSeatRepository flightSeatRepository) {
         this.repository = repository;
         this.airportRepository = airportRepository;
         this.airplaneProfileRepository = airplaneProfileRepository;
+        this.flightSeatRepository = flightSeatRepository;
     }
 
     @RequestMapping(
@@ -78,6 +80,8 @@ public class FlightController {
                 body.getBusinessClassCost(),
                 body.getEconomyClassCost()
         ));
+
+        newFlight.getSeats().forEach(flightSeatRepository::save);
 
         return RestResponse.ok(MAPPER.map(newFlight));
     }

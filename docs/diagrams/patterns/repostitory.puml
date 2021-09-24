@@ -10,16 +10,16 @@ repo -> entity: new = isNew()
 activate entity
 deactivate entity
 alt new == true
-repo -> mapper: create(entity)
-activate mapper
-deactivate mapper
-repo -> entity: setNew(false)
-activate entity
-deactivate entity
-else 
-repo -> mapper: update(entity)
-activate mapper
-deactivate mapper
+  repo -> mapper: create(entity)
+  activate mapper
+  deactivate mapper
+  repo -> entity: setNew(false)
+  activate entity
+  deactivate entity
+else
+  repo -> mapper: update(entity)
+  activate mapper
+  deactivate mapper
 end
 [<-- repo: entity
 deactivate repo
@@ -32,12 +32,12 @@ repo -> mapper: entity find(id)
 activate mapper
 deactivate mapper
 alt entity != null
-repo -> entity: setNew(false)
-activate entity
-deactivate entity
-[<-- repo: Optional.of(entity)
+  repo -> entity: setNew(false)
+  activate entity
+  deactivate entity
+  [<-- repo: Optional.of(entity)
 else
-[<-- repo: Optional.empty()
+  [<-- repo: Optional.empty()
 end
 deactivate repo
 
