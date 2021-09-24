@@ -55,8 +55,8 @@ const Login = () => {
         }
       },
       onError: (err) => {
-        if (err.response.status === 401) {
-          setLoading(false)
+        setLoading(false)
+        if (err.response && err.response.status === 401) {
           setErrorMessage('Invalid username or password.')
         }
       }
