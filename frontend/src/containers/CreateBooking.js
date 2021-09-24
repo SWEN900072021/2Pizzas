@@ -59,7 +59,7 @@ const CreateBooking = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(state)
+    // console.log(state)
   }
 
   const handleChange = (e, index) =>
