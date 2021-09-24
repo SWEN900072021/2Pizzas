@@ -1,7 +1,7 @@
 @startuml
 
 participant compMan as "manager:ComponentManager"
-participant ComponentLoader as loader 
+participant BeanLoader as loader 
 participant bean as "bean:Bean"
 participant ConfigurationConstructionInterceptor as configInter
 participant "configurationContext:ConfigurationContext" as configCtx

@@ -1,0 +1,115 @@
+@startuml
+
+participant Application as app
+participant "applicationContext:ApplicationContext" as appCtx
+participant "loader:BeanLoader" as loader 
+participant "resolver:BeanResolver" as resolver 
+participant compMan as "manager:ComponentManager"
+participant bean as "bean:Bean"
+participant "constructor:Constructor" as constru
+participant "dependency:TypedComponentSpecification" as dep
+participant "interceptor:ComponentConstructionInterceptor" as interceptor
+participant "specification:TypedComponentSpecification" as spec
+
+[-> app: contextInitialized(sce)
+activate app
+app -> appCtx **: new ApplicationContextImpl()
+app -> appCtx: profile(profile)
+activate appCtx
+deactivate appCtx
+app -> appCtx: root(root)
+activate appCtx
+deactivate appCtx
+app -> appCtx: init()
+activate appCtx
+appCtx -> loader **: new ComponentLoader(root)
+note over resolver: the type of BeanLoader is dependent on\nsome specific configuration and ommited here for brevity
+appCtx -> resolver **: new BeanResolver()
+appCtx -> compMan **: new ComponentManager(resolver, loader)
+appCtx -> compMan: setApplicationContext(app)
+activate compMan
+deactivate compMan
+appCtx -> compMan: init()
+activate compMan
+compMan -> loader: load()
+activate loader
+loader -> loader: interceptors = discoverInterceptors()
+activate loader
+deactivate loader
+loader -> loader: componentClasses = scanAllComponents()
+activate loader
+deactivate loader
+loop for componentClass in componentClasses
+loader -> loader: bean = loadBean(componentClass)
+activate loader
+loader -> loader: constructor = getAutowiredConstructor(componentClass)
+activate loader
+deactivate loader
+loader -> loader: dependencies = getDependencies(constructor)
+activate loader
+loop for parameter in constructor.getParameters()
+loader -> loader: dependancy = scanParameter(parameter) 
+activate loader
+loader -> dep **: new TypedComponentSpecification(parameter.getType())
+deactivate loader
+loader -> loader: dependencies.add(dependency)
+end
+deactivate loader
+
+note over bean: this call to new simplified for brevity
+loader -> bean **: new BaseBean(componentClass, constuctor, interceptors)
+deactivate loader
+loader -> loader: beans.add(bean)
+end
+loader --> compMan: beans
+deactivate loader
+loop for bean in beans
+compMan -> bean: construct(manager)
+activate bean
+loop for dependency in dependencies
+bean -> compMan: getBean(dependency)
+activate compMan
+compMan -> resolver: dependencyBean = resolve(dependency, beans)
+activate resolver
+deactivate resolver
+compMan --> bean: depencencyBean
+deactivate compMan
+bean -> bean: dependencyBeans.add(dependencyBean)
+end
+bean -> bean: component = build(dependencBeans, manager)
+activate bean
+bean -> constru: component = newInstance(dependencyBeans)
+activate constru
+deactivate constru
+loop for interceptor in interceptors
+bean -> interceptor: component = intercept(component, manager)
+activate interceptor
+deactivate interceptor
+deactivate bean
+bean --> compMan: component
+deactivate bean
+end
+end
+compMan --> appCtx: void 
+deactivate compMan
+appCtx --> app: void
+deactivate appCtx
+[<-- app: void
+deactivate app
+...
+note over app: some time later in the application execution a component is requested
+[--> appCtx: getComponent(class)
+activate appCtx
+appCtx -> spec **: new TypedComponentSpecification(class)
+appCtx -> compMan: getComponent(specification)
+activate compMan
+compMan -> resolver: bean = resolve(specification, beans)
+activate resolver
+deactivate resolver
+compMan -> bean: component = construct(manager)
+activate bean
+deactivate bean
+compMan --> appCtx: component
+deactivate compMan
+[<-- appCtx: component
+@enduml

@@ -60,8 +60,8 @@ public class FlightSearchController {
         }
 
         if (departingAfterOffset != null && departingBeforeOffset != null) {
-            if (departingAfterOffset.isBefore(departingBeforeOffset)) {
-                errors.add("departingAfter must not be before departingBefore");
+            if (departingAfterOffset.isAfter(departingBeforeOffset)) {
+                errors.add("departingAfter must not be after departingBefore");
             } else {
                 builder.departing(new TimePeriod(departingAfterOffset, departingBeforeOffset));
             }
