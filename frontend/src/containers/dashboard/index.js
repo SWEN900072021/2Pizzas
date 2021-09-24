@@ -5,6 +5,8 @@ import ListAirports from './ListAirports'
 import ListBookings from './ListBookings'
 import ListFlights from './ListFlights'
 import ViewBooking from './ViewBooking'
+import CreateAirline from './CreateAirline'
+import CreateAirport from './CreateAirport'
 
 export {
   DashboardSideNav,
@@ -13,5 +15,7 @@ export {
   ListAirports,
   ListBookings,
   ListFlights,
-  ViewBooking
+  ViewBooking,
+  CreateAirport,
+  CreateAirline
 }
