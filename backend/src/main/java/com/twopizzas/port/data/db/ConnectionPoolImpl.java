@@ -39,7 +39,7 @@ public class ConnectionPoolImpl implements DataSource, ConnectionPool {
         this.url = url;
     }
 
-    private static Connection currentTransaction = null;
+    private Connection currentTransaction = null;
 
     public Connection getCurrentTransaction() {
         if (currentTransaction == null) {
