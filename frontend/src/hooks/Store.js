@@ -117,7 +117,10 @@ const RETURN_FLIGHTS = [
       destination: 'Sydney',
       departure: '2020/10/10 09:00',
       arrival: '2020/10/10 15:00',
-      stopovers: ['Perth', 'Darwin']
+      stopovers: ['Perth', 'Darwin'],
+      firstClassCost: 1000,
+      businessClassCost: 500,
+      economyClassCost: 100
     },
     returnFlight: {
       airlineName: 'QANTAS',
@@ -126,9 +129,11 @@ const RETURN_FLIGHTS = [
       destination: 'Melbourne',
       departure: '2020/10/10 21:00',
       arrival: '2020/10/11 00:00',
-      stopovers: ['Perth', 'Darwin']
-    },
-    cost: 500
+      stopovers: ['Perth', 'Darwin'],      
+      firstClassCost: 1000,
+      businessClassCost: 500,
+      economyClassCost: 100
+    }
   },
   {
     flight: {
@@ -138,7 +143,10 @@ const RETURN_FLIGHTS = [
       destination: 'Sydney',
       departure: '2020/10/10 09:00',
       arrival: '2020/10/10 15:00',
-      stopovers: ['Perth', 'Darwin']
+      stopovers: ['Perth', 'Darwin'],
+      firstClassCost: 1000,
+      businessClassCost: 500,
+      economyClassCost: 100
     },
     returnFlight: {
       airlineName: 'QANTAS',
@@ -147,9 +155,11 @@ const RETURN_FLIGHTS = [
       destination: 'Melbourne',
       departure: '2020/10/10 21:00',
       arrival: '2020/10/11 00:00',
-      stopovers: ['Perth', 'Darwin']
-    },
-    cost: 500
+      stopovers: ['Perth', 'Darwin'],
+      firstClassCost: 1000,
+      businessClassCost: 500,
+      economyClassCost: 100
+    }
   },
   {
     flight: {
@@ -159,7 +169,10 @@ const RETURN_FLIGHTS = [
       destination: 'Sydney',
       departure: '2020/10/10 09:00',
       arrival: '2020/10/10 15:00',
-      stopovers: ['Perth', 'Darwin']
+      stopovers: ['Perth', 'Darwin'],
+      firstClassCost: 1000,
+      businessClassCost: 500,
+      economyClassCost: 100
     },
     returnFlight: {
       airlineName: 'QANTAS',
@@ -168,9 +181,11 @@ const RETURN_FLIGHTS = [
       destination: 'Melbourne',
       departure: '2020/10/10 21:00',
       arrival: '2020/10/11 00:00',
-      stopovers: ['Perth', 'Darwin']
-    },
-    cost: 500
+      stopovers: ['Perth', 'Darwin'],
+      firstClassCost: 1000,
+      businessClassCost: 500,
+      economyClassCost: 100
+    }
   }
 ]
 
@@ -183,9 +198,11 @@ const ONE_WAY_FLIGHTS = [
       destination: 'Sydney',
       departure: '2020/10/10 09:00',
       arrival: '2020/10/10 15:00',
-      stopovers: ['Perth', 'Darwin']
-    },
-    cost: 500
+      stopovers: ['Perth', 'Darwin'],
+      firstClassCost: 1000,
+      businessClassCost: 500,
+      economyClassCost: 100
+    }
   },
   {
     flight: {
@@ -195,9 +212,11 @@ const ONE_WAY_FLIGHTS = [
       destination: 'Sydney',
       departure: '2020/10/10 09:00',
       arrival: '2020/10/10 15:00',
-      stopovers: ['Perth', 'Darwin', 'Brisbane']
-    },
-    cost: 500
+      stopovers: ['Perth', 'Darwin', 'Brisbane'],
+      firstClassCost: 1000,
+      businessClassCost: 500,
+      economyClassCost: 100
+    }
   },
   {
     flight: {
@@ -207,9 +226,11 @@ const ONE_WAY_FLIGHTS = [
       destination: 'Sydney',
       departure: '2020/10/10 09:00',
       arrival: '2020/10/10 15:00',
-      stopovers: ['Perth', 'Darwin']
-    },
-    cost: 500
+      stopovers: ['Perth', 'Darwin'],
+      firstClassCost: 1000,
+      businessClassCost: 500,
+      economyClassCost: 100
+    }
   }
 ]
 

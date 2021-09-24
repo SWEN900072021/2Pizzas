@@ -37,7 +37,10 @@ const FlightListings = () => {
         <div className='grid justify-center grid-flow-row sm:justify-end auto-cols-min md:px-0'>
           <section className='flex flex-col items-center justify-center gap-5 sm:items-end sm:px-3 md:px-0'>
             {flights.map((flight) => (
-              <FlightCard flight={flight} />
+              <div className='flex items-center justify-center gap-5 sm:items-end sm:px-3 md:px-0'>
+                <FlightCard flight={flight.flight} />
+                {isReturn && <FlightCard flight={flight.returnFlight}/>}
+              </div>
             ))}
           </section>
         </div>
