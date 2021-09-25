@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 import axios from 'axios'
 
 const API_URL = process.env.REACT_APP_API_URL
@@ -12,24 +11,17 @@ const client = (() =>
 // options format: https://axios-http.com/docs/req_config
 const request = async ({ options, onSuccess, onError }) => {
   const onSuccessFn =
-    onSuccess ||
-    ((response) => {
-      const { data } = response
-      return data
-    })
+    onSuccess !== undefined
+      ? onSuccess
+      : (response) => {
+          const { data } = response
+          return data
+        }
 
   const onErrorFn =
-    onError ||
-    ((error) => {
-      console.log('Error:', error.response)
-
-      if (error.response.status === 401) {
-        sessionStorage.clear()
-        window.location.href = '/'
-        return
-      }
-      return Promise.reject(error.response)
-    })
+    onError !== undefined
+      ? onError
+      : (error) => Promise.reject(error.response)
 
   return client(options).then(onSuccessFn).catch(onErrorFn)
 }

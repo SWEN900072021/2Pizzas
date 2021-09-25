@@ -58,7 +58,7 @@ const DestinationSearch = ({ airports }) => {
       )
   }, [destinationAirport, setDestinationAirportSearchValue])
 
-  return (
+  const searchBar = (
     <section className='text-black'>
       {/* MOBILE */}
       <section className='flex flex-grow sm:hidden sm:flex-none'>
@@ -165,12 +165,12 @@ const DestinationSearch = ({ airports }) => {
             type='text'
             autoComplete='off'
             className={`flex-grow
-                border border-bg-gray rounded-lg 
-                py-2 pl-9 pr:2
-                md:py-3 md:pl-12 md:pr-3
-                font-light tracking-wide text-gray-800 
-                placeholder-gray-500 focus:placeholder-gray-400
-                focus:outline-none focus:ring-2 focus:ring-yellow-400`}
+            border border-bg-gray rounded-lg 
+            py-2 pl-9 pr:2
+            md:py-3 md:pl-12 md:pr-3
+            font-light tracking-wide text-gray-800 
+            placeholder-gray-500 focus:placeholder-gray-400
+            focus:outline-none focus:ring-2 focus:ring-yellow-400`}
           />
         </AutoComplete>
         {/* Search input icon, adorning the left-hand side of searchbar */}
@@ -185,6 +185,8 @@ const DestinationSearch = ({ airports }) => {
       </section>
     </section>
   )
+
+  return airports ? searchBar : null
 }
 
 DestinationSearch.defaultProps = {

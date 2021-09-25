@@ -19,6 +19,9 @@ export default class FlightSearchService {
           departingBefore,
           airline
         }
+      },
+      onError: (err) => {
+        console.log('Error searching flights:', err.response)
       }
     })
   }

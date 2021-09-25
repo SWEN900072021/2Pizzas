@@ -10,9 +10,8 @@ export default class BookingService {
           Authorization: `Bearer ${token}`
         }
       },
-      onError: (error) => {
-        // eslint-disable-next-line no-console
-        console.log(error)
+      onError: (err) => {
+        console.log('Error getting customer booking:', err.response)
       }
     })
   }
@@ -26,6 +25,9 @@ export default class BookingService {
         headers: {
           Authorization: `Bearer ${token}`
         }
+      },
+      onError: (err) => {
+        console.log('Error creating booking:', err.response)
       }
     })
   }
