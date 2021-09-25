@@ -8,7 +8,7 @@ import NavBar from '../components/common/NavBar'
 
 // Assets
 import landscapePicture from '../assets/home-landscape.png'
-import FlightSearchForm from '../components/flightSearch/FlightSearchForm'
+import FlightForm from '../components/flightSearch/FlightForm'
 import { useFlightStore } from '../hooks/Store'
 
 const Home = () => {
@@ -60,7 +60,7 @@ const Home = () => {
         /*                           Main Flight Search Form                          */
         /* -------------------------------------------------------------------------- */}
         <section className='absolute flex flex-col flex-wrap items-center justify-center flex-grow p-5 bg-yellow-50 mt-52 max-w-max'>
-          <FlightSearchForm />
+          <FlightForm showButton />
         </section>
       </section>
     </main>

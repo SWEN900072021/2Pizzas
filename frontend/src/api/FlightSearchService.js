@@ -2,11 +2,15 @@ import request from './request'
 
 export default class FlightSearchService {
   static searchFlights({
-    destination,
-    origin,
-    departingAfter,
-    departingBefore,
-    airline
+    data: {
+      destination,
+      origin,
+      departingAfter,
+      departingBefore,
+      airline
+    },
+    onSuccess,
+    onError
   }) {
     return request({
       options: {
@@ -20,9 +24,8 @@ export default class FlightSearchService {
           airline
         }
       },
-      onError: (err) => {
-        console.log('Error searching flights:', err.response)
-      }
+      onSuccess,
+      onError
     })
   }
 }

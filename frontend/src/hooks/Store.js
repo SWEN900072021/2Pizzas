@@ -110,106 +110,98 @@ const AIRPORTS = [
 
 const RETURN_FLIGHTS = [
   {
-    flight: {
-      airlineName: 'QANTAS',
-      airlineCode: 'QA',
-      origin: 'Melbourne',
-      destination: 'Sydney',
-      departure: '2020/10/10 09:00',
-      arrival: '2020/10/10 15:00',
-      stopovers: ['Perth', 'Darwin']
-    },
-    returnFlight: {
-      airlineName: 'QANTAS',
-      airlineCode: 'QA',
-      origin: 'Sydney',
-      destination: 'Melbourne',
-      departure: '2020/10/10 21:00',
-      arrival: '2020/10/11 00:00',
-      stopovers: ['Perth', 'Darwin']
-    },
-    cost: 500
+    id: 5,
+    airlineName: 'QANTAS',
+    airlineCode: 'QA',
+    origin: 'Townsville',
+    destination: 'Melbourne',
+    departure: '2020/10/10 21:00',
+    arrival: '2020/10/11 00:00',
+    stopovers: ['Perth', 'Darwin'],
+    firstClassCost: 1000,
+    businessClassCost: 500,
+    economyClassCost: 100
   },
   {
-    flight: {
-      airlineName: 'QANTAS',
-      airlineCode: 'QA',
-      origin: 'Melbourne',
-      destination: 'Sydney',
-      departure: '2020/10/10 09:00',
-      arrival: '2020/10/10 15:00',
-      stopovers: ['Perth', 'Darwin']
-    },
-    returnFlight: {
-      airlineName: 'QANTAS',
-      airlineCode: 'QA',
-      origin: 'Sydney',
-      destination: 'Melbourne',
-      departure: '2020/10/10 21:00',
-      arrival: '2020/10/11 00:00',
-      stopovers: ['Perth', 'Darwin']
-    },
-    cost: 500
+    id: 6,
+    airlineName: 'QANTAS',
+    airlineCode: 'QA',
+    origin: 'Sydney',
+    destination: 'Melbourne',
+    departure: '2020/10/10 21:00',
+    arrival: '2020/10/11 00:00',
+    stopovers: ['Perth', 'Darwin'],
+    firstClassCost: 1000,
+    businessClassCost: 500,
+    economyClassCost: 100
   },
   {
-    flight: {
-      airlineName: 'QANTAS',
-      airlineCode: 'QA',
-      origin: 'Melbourne',
-      destination: 'Sydney',
-      departure: '2020/10/10 09:00',
-      arrival: '2020/10/10 15:00',
-      stopovers: ['Perth', 'Darwin']
-    },
-    returnFlight: {
-      airlineName: 'QANTAS',
-      airlineCode: 'QA',
-      origin: 'Sydney',
-      destination: 'Melbourne',
-      departure: '2020/10/10 21:00',
-      arrival: '2020/10/11 00:00',
-      stopovers: ['Perth', 'Darwin']
-    },
-    cost: 500
+    id: 7,
+    airlineName: 'QANTAS',
+    airlineCode: 'QA',
+    origin: 'Sydney',
+    destination: 'Melbourne',
+    departure: '2020/10/10 21:00',
+    arrival: '2020/10/11 00:00',
+    stopovers: ['Perth', 'Darwin'],
+    firstClassCost: 1000,
+    businessClassCost: 500,
+    economyClassCost: 100
   }
 ]
 
 const ONE_WAY_FLIGHTS = [
   {
-    flight: {
-      airlineName: 'QANTAS',
-      airlineCode: 'QA',
-      origin: 'Melbourne',
-      destination: 'Sydney',
-      departure: '2020/10/10 09:00',
-      arrival: '2020/10/10 15:00',
-      stopovers: ['Perth', 'Darwin']
-    },
-    cost: 500
+    id: 1,
+    airlineName: 'QANTAS',
+    airlineCode: 'QA',
+    origin: 'Melbourne',
+    destination: 'Sydney',
+    departure: '2020/10/10 09:00',
+    arrival: '2020/10/10 15:00',
+    stopovers: ['Perth', 'Darwin'],
+    firstClassCost: 1000,
+    businessClassCost: 500,
+    economyClassCost: 100
   },
   {
-    flight: {
-      airlineName: 'QANTAS',
-      airlineCode: 'QA',
-      origin: 'Melbourne',
-      destination: 'Sydney',
-      departure: '2020/10/10 09:00',
-      arrival: '2020/10/10 15:00',
-      stopovers: ['Perth', 'Darwin', 'Brisbane']
-    },
-    cost: 500
+    id: 2,
+    airlineName: 'QANTAS',
+    airlineCode: 'QA',
+    origin: 'Melbourne',
+    destination: 'Sydney',
+    departure: '2020/10/10 09:00',
+    arrival: '2020/10/10 15:00',
+    stopovers: ['Perth', 'Darwin', 'Brisbane'],
+    firstClassCost: 1000,
+    businessClassCost: 500,
+    economyClassCost: 100
   },
   {
-    flight: {
-      airlineName: 'QANTAS',
-      airlineCode: 'QA',
-      origin: 'Melbourne',
-      destination: 'Sydney',
-      departure: '2020/10/10 09:00',
-      arrival: '2020/10/10 15:00',
-      stopovers: ['Perth', 'Darwin']
-    },
-    cost: 500
+    id: 3,
+    airlineName: 'QANTAS',
+    airlineCode: 'QA',
+    origin: 'Melbourne',
+    destination: 'Sydney',
+    departure: '2020/10/10 09:00',
+    arrival: '2020/10/10 15:00',
+    stopovers: ['Perth', 'Darwin'],
+    firstClassCost: 1000,
+    businessClassCost: 500,
+    economyClassCost: 100
+  },
+  {
+    id: 4,
+    airlineName: 'QANTAS',
+    airlineCode: 'QA',
+    origin: 'Melbourne',
+    destination: 'Sydney',
+    departure: '2020/10/10 09:00',
+    arrival: '2020/10/10 15:00',
+    stopovers: ['Perth', 'Darwin'],
+    firstClassCost: 1000,
+    businessClassCost: 500,
+    economyClassCost: 100
   }
 ]
 
@@ -245,19 +237,25 @@ const useSessionStore = create(
 )
 
 const useBookingStore = create(
-  immer((set) => ({
-    bookingId: null,
-    setBookingId: (bookingId) => set({ bookingId }),
-    isCreatingBooking: false,
-    selectedOutboundFlight: null,
-    selectedReturnFlight: null,
-    setCreatingBooking: (isCreatingBooking) =>
-      set({ isCreatingBooking }),
-    setSelectedOutboundFlight: (selectedOutboundFlight) =>
-      set({ selectedOutboundFlight }),
-    setSelectedReturnFlight: (selectedReturnFlight) =>
-      set({ selectedReturnFlight })
-  }))
+  persist(
+    immer((set) => ({
+      bookingId: null,
+      setBookingId: (bookingId) => set({ bookingId }),
+      isCreatingBooking: false,
+      selectedOutboundFlight: null,
+      selectedReturnFlight: null,
+      setCreatingBooking: (isCreatingBooking) =>
+        set({ isCreatingBooking }),
+      setSelectedOutboundFlight: (selectedOutboundFlight) =>
+        set({ selectedOutboundFlight }),
+      setSelectedReturnFlight: (selectedReturnFlight) =>
+        set({ selectedReturnFlight })
+    })),
+    {
+      name: 'booking-store',
+      getStorage: () => localStorage
+    }
+  )
 )
 
 const useFormStore = create(
@@ -348,6 +346,29 @@ const useFlightStore = create(
         set(() => ({
           returnDate: date
         }))
+      },
+      outboundFlights: [],
+      returnFlights: [],
+      setOutboundFlights: (flights) => {
+        set({ outboundFlights: flights })
+      },
+      setReturnFlights: (flights) => {
+        set({ returnFlights: flights })
+      },
+
+      resetFlightSearch: () => {
+        set({
+          originAirport: {},
+          destinationAirport: {},
+          originAirportSearchValue: '',
+          destinationAirportSearchValue: '',
+          isReturn: true,
+          passengerCount: 1,
+          departDate: moment(),
+          returnDate: moment(),
+          outboundFlights: [],
+          returnFlights: []
+        })
       }
     })),
     {

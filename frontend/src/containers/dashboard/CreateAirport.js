@@ -4,7 +4,7 @@ import moment from 'moment-timezone'
 import { useHistory } from 'react-router'
 
 import { AirportService } from '../../api'
-import Spinner from '../../components/Spinner'
+import Spinner from '../../components/common/Spinner'
 import { useSessionStore } from '../../hooks/Store'
 
 const { Option } = Select

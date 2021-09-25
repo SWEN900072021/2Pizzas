@@ -90,8 +90,8 @@ const Signup = () => {
           })
           setLoading(false)
           if (isCreatingBooking) {
-            history.push('/booking/create')
             setCreatingBooking(false)
+            history.push('/booking/create')
           } else history.push('/')
         }
       },
