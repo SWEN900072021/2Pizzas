@@ -33,7 +33,7 @@ class PassengerMapperImpl implements PassengerMapper {
             "INSERT INTO " + TABLE_PASSENGER +
                     "(" + COLUMN_ID + ", " + COLUMN_GIVENNAME + ", " + COLUMN_SURNAME + ", " + COLUMN_DOB + ", " +
                     COLUMN_NATIONALITY + ", " + COLUMN_PASSPORTNUMBER + ", " + COLUMN_BOOKING_ID + ")" +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?);";
+                    " VALUES (?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_PASSENGER +

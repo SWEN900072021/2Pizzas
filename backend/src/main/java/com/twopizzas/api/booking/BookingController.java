@@ -18,6 +18,7 @@ import com.twopizzas.web.*;
 import org.mapstruct.factory.Mappers;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,8 @@ public class BookingController {
         Flight returnFlight = flightRepository.find(EntityId.of(body.getReturnFlightId())).orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, String.format("flight %s not found", body.getFlightId())));
 
         Customer customer = (Customer) authenticatedUser;
+        Booking booking = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer);
+        bookingRepository.save(booking);
 
         BookingRequest.BookingRequestBuilder flightBuilder = BookingRequest.builder();
         BookingRequest.BookingRequestBuilder returnBuilder = BookingRequest.builder();
@@ -65,6 +68,7 @@ public class BookingController {
                             passengerBooking.getNationality(),
                             passengerBooking.getPassportNumber()
                     );
+                    passenger.setBooking(booking);
                     passengerRepository.save(passenger);
                     passengerBooking.getSeatAllocations().forEach(a -> {
 
@@ -96,7 +100,7 @@ public class BookingController {
             flightRepository.save(returnFlight);
         }
 
-        Booking booking = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer);
+
         booking.addFlight(flightSeatBooking);
         booking.addReturnFlight(returnSeatBooking);
         bookingRepository.save(booking);
