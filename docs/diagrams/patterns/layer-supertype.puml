@@ -3,7 +3,7 @@
 abstract class DomainEntity {
   - id: EntityId
   + isNew(): boolean
-  # setNew(isNew: boolean)
+  ~ setNew(isNew: boolean)
   + getId(): EntityId
   + hashCode(): int
   + equals(obj: Object): boolean
