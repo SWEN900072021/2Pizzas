@@ -9,7 +9,7 @@ import { FaSadTear } from 'react-icons/fa'
 import { useSessionStore } from '../../hooks/Store'
 
 // Containers and Components
-import Spinner from '../../components/Spinner'
+import Spinner from '../../components/common/Spinner'
 import useBookings from '../../hooks/useBookings'
 
 const ListBookings = ({ bookingsStatus }) => {
@@ -77,7 +77,7 @@ const ListBookings = ({ bookingsStatus }) => {
           </div>
         ) : (
           bookings.map((booking) => (
-            <Link to={`/dashboard/bookings/${booking.id}`}>
+            <Link to={`/dashboard/view/bookings/${booking.id}`}>
               <article
                 className={`${
                   booking.returnFlight
@@ -92,7 +92,7 @@ const ListBookings = ({ bookingsStatus }) => {
                   </span>
                   <span>
                     Booked on{' '}
-                    {moment(booking.dateTime).format('YYYY/MM/DD')}
+                    {moment(booking.dateTime).format('YYYY-MM-DD')}
                   </span>
                 </span>
               </article>

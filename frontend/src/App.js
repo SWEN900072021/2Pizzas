@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
-
 import React from 'react'
 import { Route, Switch } from 'react-router'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -14,11 +12,15 @@ import {
   UserInfo,
   ListBookings,
   ViewBooking,
+  ViewFlight,
   ListAirlines,
   ListAirports,
-  ListFlights
+  ListFlights,
+  CreateAirline,
+  CreateAirport,
+  CreateFlight,
+  EditFlight
 } from './containers/dashboard'
-import FlightListings from './containers/FlightListings'
 
 function App() {
   const queryClient = new QueryClient()
@@ -33,8 +35,11 @@ function App() {
           <Route
             exact
             path='/flight/results'
-            render={() => <FlightListings />}
+            render={() => <FlightSearchResults />}
           />
+
+          {/* All User Dashboards */}
+
           <Route
             exact
             path='/dashboard'
@@ -42,9 +47,11 @@ function App() {
               <DashboardSideNav sectionOpened={<UserInfo />} />
             )}
           />
+
+          {/* Customer Dashboard */}
           <Route
             exact
-            path='/dashboard/current-bookings'
+            path='/dashboard/view/bookings/current'
             render={() => (
               <DashboardSideNav
                 sectionOpened={
@@ -55,7 +62,7 @@ function App() {
           />
           <Route
             exact
-            path='/dashboard/previous-bookings'
+            path='/dashboard/view/bookings/previous'
             render={() => (
               <DashboardSideNav
                 sectionOpened={
@@ -66,30 +73,67 @@ function App() {
           />
           <Route
             exact
-            path='/dashboard/bookings/:id'
+            path='/dashboard/view/bookings/:id'
             render={() => (
               <DashboardSideNav sectionOpened={<ViewBooking />} />
             )}
           />
+          {/* Admin Dashboard */}
           <Route
             exact
-            path='/dashboard/airlines'
+            path='/dashboard/view/airlines'
             render={() => (
               <DashboardSideNav sectionOpened={<ListAirlines />} />
             )}
           />
           <Route
             exact
-            path='/dashboard/airports'
+            path='/dashboard/view/airports'
             render={() => (
               <DashboardSideNav sectionOpened={<ListAirports />} />
             )}
           />
           <Route
             exact
-            path='/dashboard/flights'
+            path='/dashboard/create/airports'
+            render={() => (
+              <DashboardSideNav sectionOpened={<CreateAirport />} />
+            )}
+          />
+          <Route
+            exact
+            path='/dashboard/create/airlines'
+            render={() => (
+              <DashboardSideNav sectionOpened={<CreateAirline />} />
+            )}
+          />
+          {/* Airline Dashboard */}
+          <Route
+            exact
+            path='/dashboard/view/flights'
             render={() => (
               <DashboardSideNav sectionOpened={<ListFlights />} />
+            )}
+          />
+          <Route
+            exact
+            path='/dashboard/view/flights/:id'
+            render={() => (
+              <DashboardSideNav sectionOpened={<ViewFlight />} />
+            )}
+          />
+          <Route
+            exact
+            path='/dashboard/create/flights'
+            render={() => (
+              <DashboardSideNav sectionOpened={<CreateFlight />} />
+            )}
+          />
+          <Route
+            exact
+            path='/dashboard/edit/flights/:id'
+            render={() => (
+              <DashboardSideNav sectionOpened={<EditFlight />} />
             )}
           />
           <Route

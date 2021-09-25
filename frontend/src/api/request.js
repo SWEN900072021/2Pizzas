@@ -11,11 +11,12 @@ const client = (() =>
 // options format: https://axios-http.com/docs/req_config
 const request = async ({ options, onSuccess, onError }) => {
   const onSuccessFn =
-    onSuccess ||
-    ((response) => {
-      const { data } = response
-      return data
-    })
+    onSuccess !== undefined
+      ? onSuccess
+      : (response) => {
+          const { data } = response
+          return data
+        }
 
   const onErrorFn =
     onError || ((error) => Promise.reject(error.response))

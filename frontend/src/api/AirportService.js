@@ -6,6 +6,9 @@ export default class AirportService {
       options: {
         url: '/airport',
         method: 'GET'
+      },
+      onError: (err) => {
+        console.log('Error getting all airports:', err.response)
       }
     })
   }
@@ -19,6 +22,9 @@ export default class AirportService {
         headers: {
           Authorization: `Bearer ${token}`
         }
+      },
+      onError: (err) => {
+        console.log('Error creating airport:', err.response)
       }
     })
   }

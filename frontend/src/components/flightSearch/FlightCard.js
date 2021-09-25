@@ -1,4 +1,3 @@
-/* eslint-disable react/forbid-prop-types */
 import moment from 'moment'
 import { arrayOf, number, shape, string } from 'prop-types'
 import React from 'react'

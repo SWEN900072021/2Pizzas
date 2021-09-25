@@ -6,6 +6,9 @@ export default class AirlineService {
       options: {
         method: 'GET',
         url: '/airline'
+      },
+      onError: (err) => {
+        console.log('Error getting all airlines:', err.response)
       }
     })
   }
@@ -19,6 +22,9 @@ export default class AirlineService {
         headers: {
           Authorization: `Bearer ${token}`
         }
+      },
+      onError: (err) => {
+        console.log('Error creating airline:', err.response)
       }
     })
   }

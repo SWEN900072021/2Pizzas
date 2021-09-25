@@ -1,6 +1,6 @@
 import React from 'react'
 import { number } from 'prop-types'
-import Dropdown from './Dropdown'
+import Dropdown from '../common/Dropdown'
 
 // eslint-disable-next-line no-unused-vars
 const FlightFilter = ({ results }) => (

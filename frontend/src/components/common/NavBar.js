@@ -10,7 +10,7 @@ import {
 } from 'react-icons/bs'
 import { IoIosAirplane, IoIosLogOut } from 'react-icons/io'
 
-import { useSessionStore } from '../hooks/Store'
+import { useSessionStore } from '../../hooks/Store'
 
 const NavBar = () => {
   const history = useHistory()
