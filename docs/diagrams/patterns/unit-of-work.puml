@@ -1,0 +1,72 @@
+@startuml unit of work
+
+participant "UnitOfWork" as uow
+participant "newEntities:List<Object>" as new
+participant "dirtyEntities:List<Object>" as dirty
+participant "removedEntities:List<Object>" as removed
+participant "DataSource" as ds
+participant "MapperRegistry" as mr
+participant "mapper:DataMapper" as mapper
+
+
+[-> uow: start()
+activate uow
+uow -> new **: new ArrayList()
+uow -> dirty **: new ArrayList()
+uow -> removed **: new ArrayList()
+uow -> ds: startNewTransaction()
+activate ds
+deactivate ds
+deactivate uow
+
+...
+
+[-> uow: registerNew(entity)
+activate uow
+uow -> new: add(entity)
+activate new
+deactivate new
+deactivate uow
+
+...
+
+alt error processing the request
+  [-> uow: rollback()
+  activate uow
+  uow -> ds: rollbackTransaction()
+  activate ds
+  deactivate ds
+else
+  [-> uow: commit()
+  loop for entity in newEntities
+    uow -> mr: mapper = getForClass(entity.getClass())
+    activate mr
+    deactivate mr
+    uow -> mapper: create(entity)
+    activate mapper
+    deactivate mapper
+  end
+  loop for entity in dirtyEntities
+    uow -> mr: mapper = getForClass(entity.getClass())
+    activate mr
+    deactivate mr
+    uow -> mapper: update(entity)
+    activate mapper
+    deactivate mapper
+  end
+  loop for entity in removedEntities
+    uow -> mr: mapper = getForClass(entity.getClass())
+    activate mr
+    deactivate mr
+    uow -> mapper: delete(entity)
+    activate mapper
+    deactivate mapper
+  end
+  uow -> ds: commitTransaction()
+  activate ds
+  deactivate ds
+end
+
+
+
+@enduml

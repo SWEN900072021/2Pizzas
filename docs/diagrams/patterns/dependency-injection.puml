@@ -86,9 +86,9 @@ loop for bean in beans
     activate interceptor
     deactivate interceptor
     deactivate bean
-    bean --> compMan: component
-    deactivate bean
   end
+  bean --> compMan: component
+  deactivate bean
 end
 compMan --> appCtx: void
 deactivate compMan

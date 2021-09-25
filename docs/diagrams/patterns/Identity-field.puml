@@ -1,0 +1,11 @@
+@startuml identity field
+
+class EntityId {
+  - value: UUID
+  + {static} nextId(): EntityId
+  + getValue(): UUID
+  + hashCode(): int
+  + equals(obj: Object): boolean
+}
+
+@enduml

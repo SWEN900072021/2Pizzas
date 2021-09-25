@@ -1,0 +1,62 @@
+@startuml lazy load
+
+participant "FlightSeatMapper" as mapper
+participant "flightSeat:FlightSeat" as fs
+participant "ResultSet" as res 
+participant "loader:FlightByIdLoader" as loader
+participant "LazyValueHolderProxy" as lvpC << Class >>
+participant "lazyValueHolder:LazyValueHoldeProxy" as lvp
+participant "Proxy" as pC <<Class>>
+participant "proxy:Proxy" as proxy
+participant "mapper:FlightMapper" as fmapper
+participant "flight:Flight" as flight
+participant "valueHolder:ValueHolder" as vh
+
+[-> mapper: mapOne(resultSet)
+activate mapper
+mapper -> res: fightId = getObject(COLUMN_FLIGHT_ID, String.class)
+activate res
+deactivate res
+mapper -> loader **: new FlightByIdLoader(mapper, flightId)
+mapper -> lvpC: makeLazy(loader)
+activate lvpC 
+lvpC -> lvp **: new LazyValueHolderProxy(loader)
+lvpC -> pC: newProxyInstance(ValueHolder.class.getClassLoader(), [ValueHolder.class], lazyValueHolder)
+activate pC
+pC -> proxy **: new Proxy()
+pC --> lvpC: proxy
+deactivate pC
+lvpC --> mapper: proxy
+deactivate lvpC
+note over fs: constuctor simplified here for brevity
+mapper -> fs **: new FlightSeat(proxy)
+[<-- mapper: flightSeat
+deactivate mapper
+...
+note over mapper: later in execution the flight seat is required to load its flight attribute
+[-> fs: getFlight()
+activate fs
+fs -> proxy: get() 
+activate proxy
+proxy -> lvp: invoke(proxy, method, args)
+activate lvp
+opt valueHolder is null
+  lvp -> loader: load()
+  activate loader
+  loader -> fmapper: find(flightId)
+  activate fmapper
+  fmapper -> flight **: new Flight()
+  fmapper --> loader: flight
+  deactivate fmapper
+  loader -> vh **: new ValueHolder(flight)
+  loader --> lvp: valueHolder 
+end
+lvp -> vh: flight = get()
+activate vh
+deactivate vh
+lvp --> proxy: flight
+proxy --> fs: flight
+[<-- fs: flight
+deactivate lvp
+
+@enduml

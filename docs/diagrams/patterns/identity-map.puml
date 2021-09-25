@@ -1,0 +1,54 @@
+@startuml identity map
+
+participant IdentityMapper as idmap
+participant "Map<EntityId, Object>" as entities
+participant "entity:Entity" as ent
+participant "targetClass:Class" as c
+
+
+[-> idmap: testAndGet(entity) 
+activate idmap
+idmap -> ent: id = getId()
+activate ent
+deactivate ent
+idmap -> entities: loaded = containsKey(id)
+activate entities
+deactivate entities
+alt is loaded
+idmap -> entities: entity = get(id)
+activate entities
+deactivate entities
+[<-- idmap: entity
+else 
+idmap -> entities: put(id, entity)
+activate entities
+deactivate entities
+[<-- idmap: entity
+end
+deactivate idmap
+
+...
+
+[-> idmap: get(targetClass, id) 
+activate idmap
+idmap -> entities: entity = get(id)
+activate entities
+deactivate entities
+alt entity exists
+idmap -> ent: entityClass = getClass()
+activate ent
+deactivate ent
+idmap -> c: isForTargetClass = isAssignableFrom(entityClass)
+activate c
+deactivate c
+alt isForTargetClass 
+[<-- idmap: Optional.of(entity)
+else
+[<-- idmap: Optional.empty()
+end
+else 
+[<-- idmap: Optional.empty()
+end
+deactivate idmap
+
+@enduml
