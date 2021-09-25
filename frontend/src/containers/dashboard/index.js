@@ -6,6 +6,7 @@ import ListBookings from './ListBookings'
 import ListFlights from './ListFlights'
 import ViewBooking from './ViewBooking'
 import ViewFlight from './ViewFlight'
+import EditFlight from './EditFlight'
 import CreateAirline from './CreateAirline'
 import CreateAirport from './CreateAirport'
 import CreateFlight from './CreateFlight'
@@ -19,6 +20,7 @@ export {
   ListFlights,
   ViewBooking,
   ViewFlight,
+  EditFlight,
   CreateAirport,
   CreateAirline,
   CreateFlight

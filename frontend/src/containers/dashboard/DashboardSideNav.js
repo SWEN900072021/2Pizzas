@@ -23,25 +23,25 @@ const DashboardSideNav = ({ sectionOpened }) => {
   const adminDashboard = (
     <>
       <NavLink
-        to='/dashboard/manage/airlines'
+        to='/dashboard/view/airlines'
         className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'
       >
         View Airlines
       </NavLink>
       <NavLink
-        to='/dashboard/manage/airports'
+        to='/dashboard/view/airports'
         className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'
       >
         View Airports
       </NavLink>
       <NavLink
-        to='/dashboard/manage/airlines/create'
+        to='/dashboard/create/airlines'
         className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'
       >
         Add Airline
       </NavLink>
       <NavLink
-        to='/dashboard/manage/airports/create'
+        to='/dashboard/create/airports'
         className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'
       >
         Add Airport
@@ -52,13 +52,13 @@ const DashboardSideNav = ({ sectionOpened }) => {
   const airlineDashboard = (
     <>
       <NavLink
-        to='/dashboard/manage/flights'
+        to='/dashboard/view/flights'
         className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'
       >
         View Flights
       </NavLink>
       <NavLink
-        to='/dashboard/manage/flights/create'
+        to='/dashboard/create/flights'
         className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'
       >
         Create Flight
@@ -75,13 +75,13 @@ const DashboardSideNav = ({ sectionOpened }) => {
         My Info
       </NavLink>
       <NavLink
-        to='/dashboard/current-bookings'
+        to='/dashboard/view/bookings/current'
         className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'
       >
         Current Bookings
       </NavLink>
       <NavLink
-        to='/dashboard/previous-bookings'
+        to='/dashboard/view/bookings/previous'
         className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'
       >
         Previous Bookings

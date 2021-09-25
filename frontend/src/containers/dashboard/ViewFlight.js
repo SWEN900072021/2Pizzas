@@ -90,6 +90,12 @@ const ViewFlight = () => {
 
   /* -------------------------------------------------------------------------- */
 
+  const editFlight = () => {
+    history.push(`/dashboard/edit/flights/${id}`)
+  }
+
+  /* -------------------------------------------------------------------------- */
+
   const [isUpdating, setIsUpdating] = useState(false)
 
   const cancelFlight = () => {
@@ -162,6 +168,7 @@ const ViewFlight = () => {
               <button
                 type='button'
                 className='flex items-center justify-center gap-2 p-2 text-white transition-colors bg-gray-400 rounded-md shadow-sm hover:bg-gray-600'
+                onClick={editFlight}
               >
                 <p className='font-bold'>Edit</p>
                 <FaPen className='w-5 h-5' />

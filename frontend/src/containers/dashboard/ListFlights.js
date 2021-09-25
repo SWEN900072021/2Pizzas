@@ -44,7 +44,7 @@ const ListFlights = () => {
   const heading = (
     <header className='flex items-center justify-between'>
       <h2 className='text-3xl font-bold'>Your flights</h2>
-      <Link to='/dashboard/manage/flights/create'>
+      <Link to='/dashboard/create/flights'>
         <button
           type='button'
           className='flex items-center justify-center gap-2 p-2 font-bold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
@@ -175,6 +175,9 @@ const ListFlights = () => {
             dataIndex='status'
             key='status'
             width={150}
+            sorter={{
+              compare: (a, b) => sort(a.status, b.status)
+            }}
             render={(status) => {
               let colour = 'geekblue'
 
@@ -199,7 +202,7 @@ const ListFlights = () => {
             render={(text, record) => (
               <Space size='middle'>
                 <Link
-                  to={`/dashboard/flights/${record.id}`}
+                  to={`/dashboard/view/flights/${record.id}`}
                   className='underline hover:underline'
                 >
                   View

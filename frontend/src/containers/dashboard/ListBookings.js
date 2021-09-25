@@ -77,7 +77,7 @@ const ListBookings = ({ bookingsStatus }) => {
           </div>
         ) : (
           bookings.map((booking) => (
-            <Link to={`/dashboard/bookings/${booking.id}`}>
+            <Link to={`/dashboard/view/bookings/${booking.id}`}>
               <article
                 className={`${
                   booking.returnFlight
