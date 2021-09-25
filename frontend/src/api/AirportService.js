@@ -6,6 +6,9 @@ export default class AirportService {
       options: {
         url: '/airport',
         method: 'GET'
+      },
+      onError: (err) => {
+        console.log('Error getting all airports:', err.response)
       }
     })
   }

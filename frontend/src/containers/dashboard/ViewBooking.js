@@ -8,7 +8,7 @@ import {
   FaPlaneDeparture
 } from 'react-icons/fa'
 import { useHistory, useParams } from 'react-router'
-import Spinner from '../../components/Spinner'
+import Spinner from '../../components/common/Spinner'
 import { useSessionStore } from '../../hooks/Store'
 import useBookings from '../../hooks/useBookings'
 
@@ -263,7 +263,7 @@ const ViewBooking = () => {
           <section className='flex items-center justify-between w-full'>
             <span className='text-gray-500'>
               Booked on{' '}
-              {moment(booking.dateTime).format('YYYY/MM/DD')}
+              {moment(booking.dateTime).format('YYYY-MM-DD')}
             </span>
             <span className='text-2xl font-medium'>
               Total cost:{' '}

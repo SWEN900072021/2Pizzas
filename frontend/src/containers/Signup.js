@@ -3,13 +3,17 @@ import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
 // Containers and Components
-// import Button from '../components/Button'
-import TextField from '../components/TextField'
-import NavBar from '../components/NavBar'
-import Spinner from '../components/Spinner'
+// import Button from '../components/common/Button'
+import TextField from '../components/common/TextField'
+import NavBar from '../components/common/NavBar'
+import Spinner from '../components/common/Spinner'
 
 // Hooks
-import { useFormStore, useSessionStore } from '../hooks/Store'
+import {
+  useFormStore,
+  useSessionStore,
+  useBookingStore
+} from '../hooks/Store'
 import { AuthenticationService } from '../api'
 
 // Assets
@@ -19,6 +23,12 @@ const Signup = () => {
   const history = useHistory()
   const setToken = useSessionStore((state) => state.setToken)
   const setUser = useSessionStore((state) => state.setUser)
+  const setCreatingBooking = useBookingStore(
+    (state) => state.setCreatingBooking
+  )
+  const isCreatingBooking = useBookingStore(
+    (state) => state.isCreatingBooking
+  )
 
   const username = useFormStore((state) => state.username)
   const givenName = useFormStore((state) => state.givenName)
@@ -79,13 +89,17 @@ const Signup = () => {
             userType: res.data.userTYpe
           })
           setLoading(false)
-          history.push('/')
+          if (isCreatingBooking) {
+            history.push('/booking/create')
+            setCreatingBooking(false)
+          } else history.push('/')
         }
       },
-      onError: () => {
+      onError: (err) => {
         // console.log(err)
         setLoading(false)
         setErrorMessage('Cannot create user.')
+        Promise.reject(err)
       }
     })
   }

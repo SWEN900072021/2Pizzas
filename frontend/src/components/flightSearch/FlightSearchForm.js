@@ -12,19 +12,19 @@ import { useHistory } from 'react-router-dom'
 
 import OriginSearch from './OriginSearch'
 import DestinationSearch from './DestinationSearch'
-import Button from '../components/Button'
-import Search from '../components/Search'
-import { useFlightStore } from '../hooks/Store'
-import useAirports from '../hooks/useAirports'
-import useFlightSearch from '../hooks/useFlightSearch'
+import Button from '../common/Button'
+import Search from '../common/Search'
+import { useFlightStore } from '../../hooks/Store'
+import useAirports from '../../hooks/useAirports'
+import useFlightSearch from '../../hooks/useFlightSearch'
 
 const moment = require('moment-timezone')
 
 const { RangePicker } = DatePicker
 
-const FlightForm = () => {
+const FlightSearchForm = () => {
   const history = useHistory()
-  const airports = useAirports()
+  const { isSuccess, data: airports } = useAirports()
 
   /* -------------------------------------------------------------------------- */
 
@@ -216,8 +216,8 @@ const FlightForm = () => {
         }`}
       >
         {/* Airport Search */}
-        <OriginSearch airports={airports.data} />
-        <DestinationSearch airports={airports.data} />
+        <OriginSearch airports={isSuccess ? airports : []} />
+        <DestinationSearch airports={isSuccess ? airports : []} />
 
         {/* (Date Pickers) Visible only for Mobile Devices or One-Way Flights */}
         <span
@@ -384,4 +384,4 @@ const FlightForm = () => {
   )
 }
 
-export default FlightForm
+export default FlightSearchForm

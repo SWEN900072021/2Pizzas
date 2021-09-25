@@ -1,25 +1,13 @@
 import { useQuery, useQueryClient } from 'react-query'
-import FlightSearchService from '../api/FlightSearchService'
+import { FlightService } from '../api'
 
-const useFlightSearch = ({
-  destination,
-  origin,
-  departDate,
-  airline
-}) => {
+const useFlights = (token) => {
   const queryClient = useQueryClient()
 
   return useQuery({
     // enabled: false,
     queryKey: ['flights'],
-    queryFn: () =>
-      FlightSearchService.searchFlights({
-        destination,
-        origin,
-        departingAfter: departDate.startOf('day').format(),
-        departingBefore: departDate.endOf('day').format(),
-        airline
-      }),
+    queryFn: () => FlightService.getAllFlights(token),
     config: {
       onSuccess: (data) => {
         data.forEach((flight) => {
@@ -30,8 +18,8 @@ const useFlightSearch = ({
                 id: flight.id,
                 origin: flight.origin,
                 destination: flight.destination,
-                departure: flight.departure,
-                arrival: flight.arrival,
+                departure: flight.departureLocal,
+                arrival: flight.arrivalLocal,
                 airline: flight.airline
               }
             ],
@@ -43,4 +31,4 @@ const useFlightSearch = ({
   })
 }
 
-export default useFlightSearch
+export default useFlights

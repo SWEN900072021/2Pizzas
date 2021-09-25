@@ -6,17 +6,20 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import Login from './containers/Login'
 import Home from './containers/Home'
 import Signup from './containers/Signup'
+import CreateBooking from './containers/CreateBooking'
 import {
   DashboardSideNav,
   UserInfo,
   ListBookings,
   ViewBooking,
+  ViewFlight,
   ListAirlines,
   ListAirports,
   ListFlights,
   CreateAirline,
   CreateAirport,
-  CreateFlight
+  CreateFlight,
+  EditFlight
 } from './containers/dashboard'
 
 import FlightListings from './containers/FlightListings'
@@ -31,12 +34,14 @@ function App() {
           <Route exact path='/' render={() => <Home />} />
           <Route exact path='/login' render={() => <Login />} />
           <Route exact path='/signup' render={() => <Signup />} />
-          {/* User Dashboard */}
           <Route
             exact
             path='/flight/results'
             render={() => <FlightListings />}
           />
+
+          {/* All User Dashboards */}
+
           <Route
             exact
             path='/dashboard'
@@ -44,9 +49,11 @@ function App() {
               <DashboardSideNav sectionOpened={<UserInfo />} />
             )}
           />
+
+          {/* Customer Dashboard */}
           <Route
             exact
-            path='/dashboard/current-bookings'
+            path='/dashboard/view/bookings/current'
             render={() => (
               <DashboardSideNav
                 sectionOpened={
@@ -57,7 +64,7 @@ function App() {
           />
           <Route
             exact
-            path='/dashboard/previous-bookings'
+            path='/dashboard/view/bookings/previous'
             render={() => (
               <DashboardSideNav
                 sectionOpened={
@@ -68,7 +75,7 @@ function App() {
           />
           <Route
             exact
-            path='/dashboard/bookings/:id'
+            path='/dashboard/view/bookings/:id'
             render={() => (
               <DashboardSideNav sectionOpened={<ViewBooking />} />
             )}
@@ -76,45 +83,64 @@ function App() {
           {/* Admin Dashboard */}
           <Route
             exact
-            path='/dashboard/manage/airlines'
+            path='/dashboard/view/airlines'
             render={() => (
               <DashboardSideNav sectionOpened={<ListAirlines />} />
             )}
           />
           <Route
             exact
-            path='/dashboard/manage/airports'
+            path='/dashboard/view/airports'
             render={() => (
               <DashboardSideNav sectionOpened={<ListAirports />} />
             )}
           />
           <Route
             exact
-            path='/dashboard/manage/flights'
+            path='/dashboard/create/airports'
             render={() => (
               <DashboardSideNav sectionOpened={<ListFlights />} />
             )}
           />
           <Route
             exact
-            path='/dashboard/manage/airports/create'
+            path='/dashboard/create/airlines'
             render={() => (
               <DashboardSideNav sectionOpened={<CreateAirport />} />
             )}
           />
           <Route
             exact
-            path='/dashboard/manage/flights/create'
+            path='/dashboard/view/flights'
+            render={() => (
+              <DashboardSideNav sectionOpened={<ListFlights />} />
+            )}
+          />
+          <Route
+            exact
+            path='/dashboard/view/flights/:id'
+            render={() => (
+              <DashboardSideNav sectionOpened={<ViewFlight />} />
+            )}
+          />
+          <Route
+            exact
+            path='/dashboard/create/flights'
             render={() => (
               <DashboardSideNav sectionOpened={<CreateFlight />} />
             )}
           />
           <Route
             exact
-            path='/dashboard/manage/airlines/create'
+            path='/dashboard/edit/flights/:id'
             render={() => (
-              <DashboardSideNav sectionOpened={<CreateAirline />} />
+              <DashboardSideNav sectionOpened={<EditFlight />} />
             )}
+          />
+          <Route
+            exact
+            path='/booking/create'
+            render={() => <CreateBooking />}
           />
         </Switch>
       </main>
