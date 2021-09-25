@@ -28,6 +28,8 @@ const CreateBooking = () => {
   const token = useSessionStore((state) => state.token)
   const history = useHistory()
 
+  const isReturn = useFlightStore((state) => state.isReturn)
+
   const numberOfPassengers = useFlightStore(
     (state) => state.passengerCount
   )
@@ -68,7 +70,9 @@ const CreateBooking = () => {
       console.log(passengerState)
       console.log(selectedOutboundFlight)
     }
-  }, [])
+  }, [numberOfPassengers, selectedOutboundFlight, state])
+
+  /* -------------------------------------------------------------------------- */
 
   const invalidDOB = (current) => current > moment()
 
@@ -307,23 +311,24 @@ const CreateBooking = () => {
               handleClassSeatChange(value, passenger, 'outboundSeat')
             }
           >
-            {selectedOutboundFlight.seatAvailabilities.map(
-              (seatsPerClass) => {
-                if (
-                  seatsPerClass.seatClass ===
-                  state[passenger].outboundClass
-                )
-                  return seatsPerClass.seats.map((seat) => (
-                    <Option id={seat} value={seat}>
-                      {seat}
-                    </Option>
-                  ))
-                return null
-              }
-            )}
+            {selectedOutboundFlight.seatAvailabilities &&
+              selectedOutboundFlight.seatAvailabilities.map(
+                (seatsPerClass) => {
+                  if (
+                    seatsPerClass.seatClass ===
+                    state[passenger].outboundClass
+                  )
+                    return seatsPerClass.seats.map((seat) => (
+                      <Option id={seat} value={seat}>
+                        {seat}
+                      </Option>
+                    ))
+                  return null
+                }
+              )}
           </Select>
 
-          {selectedReturnFlight ? (
+          {isReturn && selectedReturnFlight ? (
             <>
               <p>Return flight class</p>
               <Select
@@ -365,20 +370,21 @@ const CreateBooking = () => {
                   )
                 }
               >
-                {selectedReturnFlight.seatAvailabilities.map(
-                  (seatsPerClass) => {
-                    if (
-                      seatsPerClass.seatClass ===
-                      state[passenger].outboundClass
-                    )
-                      return seatsPerClass.seats.map((seat) => (
-                        <Option id={seat} value={seat}>
-                          {seat}
-                        </Option>
-                      ))
-                    return null
-                  }
-                )}
+                {selectedReturnFlight.seatAvailabilities &&
+                  selectedReturnFlight.seatAvailabilities.map(
+                    (seatsPerClass) => {
+                      if (
+                        seatsPerClass.seatClass ===
+                        state[passenger].outboundClass
+                      )
+                        return seatsPerClass.seats.map((seat) => (
+                          <Option id={seat} value={seat}>
+                            {seat}
+                          </Option>
+                        ))
+                      return null
+                    }
+                  )}
               </Select>
             </>
           ) : null}
@@ -408,7 +414,7 @@ const CreateBooking = () => {
           {selectedOutboundFlight.destination.name}
           at {selectedOutboundFlight.arrivalLocal}
         </p>
-        {selectedReturnFlight ? (
+        {isReturn && selectedReturnFlight ? (
           <>
             <h2 className='text-xl font-bold'>Your return flight</h2>
             <p>

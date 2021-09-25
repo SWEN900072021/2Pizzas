@@ -354,6 +354,21 @@ const useFlightStore = create(
       },
       setReturnFlights: (flights) => {
         set({ returnFlights: flights })
+      },
+
+      resetFlightSearch: () => {
+        set({
+          originAirport: {},
+          destinationAirport: {},
+          originAirportSearchValue: '',
+          destinationAirportSearchValue: '',
+          isReturn: true,
+          passengerCount: 1,
+          departDate: moment(),
+          returnDate: moment(),
+          outboundFlights: [],
+          returnFlights: []
+        })
       }
     })),
     {

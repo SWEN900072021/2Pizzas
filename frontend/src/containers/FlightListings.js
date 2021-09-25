@@ -29,7 +29,6 @@ const flightSearchDetails = (state) => [
 const FlightListings = () => {
   const isReturn = useFlightStore((state) => state.isReturn)
 
-  const history = useHistory()
   const token = useSessionStore((state) => state.token)
   const setCreatingBooking = useBookingStore(
     (state) => state.setCreatingBooking
@@ -201,6 +200,8 @@ const FlightListings = () => {
   )
 
   /* -------------------------------------------------------------------------- */
+
+  const history = useHistory()
 
   const handleSubmit = (e) => {
     e.preventDefault()
