@@ -59,12 +59,14 @@ const ViewFlight = () => {
 
     if (isSuccess && data && id) {
       const currentFlight = data.find((b) => b.id === id)
-      // console.log(currentFlight)
+      console.log('Current flight:', currentFlight)
       setFlight(currentFlight)
     }
 
-    if (!passengers) {
-      refetchPassengers()
+    if (token && id && !passengers) {
+      refetchPassengers().then((res) => {
+        console.log('Passengers:', res)
+      })
     }
   }, [
     data,
@@ -75,7 +77,8 @@ const ViewFlight = () => {
     resetSession,
     flight,
     passengers,
-    refetchPassengers
+    refetchPassengers,
+    token
   ])
 
   const goBack = () => {
@@ -375,42 +378,62 @@ const ViewFlight = () => {
               <Table
                 className='col-span-12'
                 dataSource={
-                  flight.seats
-                    ? flight.seats.map((seat) => {
-                        if (passengers) {
-                          const passenger = passengers.find(
-                            (p) => p.seatName === seat.name
-                          )
-
-                          if (passenger) {
-                            return {
-                              givenName: passenger.givenName,
-                              surname: passenger.surname,
-                              passportNumber:
-                                passenger.passportNumber,
-                              dateOfBirth: moment(
-                                passenger.dateOfBirth
-                              ).format('YYYY/MM/DD'),
-                              nationality: passenger.nationality,
-                              booking: passenger.booking,
-                              seatName: seat.name,
-                              seatClass: seat.seatClass
-                            }
-                          }
-                        }
+                  passengers
+                    ? passengers.map((passenger) => {
+                        const seat = flight.seats.find(
+                          (s) => s.name === passenger.seatName
+                        )
 
                         return {
-                          givenName: '',
-                          surname: '',
-                          passportNumber: '',
-                          dateOfBirth: '',
-                          nationality: '',
-                          booking: '',
+                          givenName: passenger.givenName,
+                          surname: passenger.surname,
+                          passportNumber: passenger.passportNumber,
+                          dateOfBirth: moment(
+                            passenger.dateOfBirth
+                          ).format('YYYY/MM/DD'),
+                          nationality: passenger.nationality,
+                          booking: passenger.booking,
                           seatName: seat.name,
                           seatClass: seat.seatClass
                         }
                       })
                     : []
+                  // flight.seats
+                  //   ? flight.seats.map((seat) => {
+                  //       if (passengers) {
+                  //         const passenger = passengers.find(
+                  //           (p) => p.seatName === seat.name
+                  //         )
+
+                  //         if (passenger) {
+                  //           return {
+                  //             givenName: passenger.givenName,
+                  //             surname: passenger.surname,
+                  //             passportNumber:
+                  //               passenger.passportNumber,
+                  //             dateOfBirth: moment(
+                  //               passenger.dateOfBirth
+                  //             ).format('YYYY/MM/DD'),
+                  //             nationality: passenger.nationality,
+                  //             booking: passenger.booking,
+                  //             seatName: seat.name,
+                  //             seatClass: seat.seatClass
+                  //           }
+                  //         }
+                  //       }
+
+                  //       return {
+                  //         givenName: '',
+                  //         surname: '',
+                  //         passportNumber: '',
+                  //         dateOfBirth: '',
+                  //         nationality: '',
+                  //         booking: '',
+                  //         seatName: seat.name,
+                  //         seatClass: seat.seatClass
+                  //       }
+                  //     })
+                  //   : []
                 }
                 bordered
                 size='middle'
