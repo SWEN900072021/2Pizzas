@@ -107,8 +107,8 @@ public class Flight extends DomainEntity {
 
         if (!bookingConflicts.isEmpty()) {
             throw new BusinessRuleException(String.format("seats %s are already booked for flight %s",
-                    id,
-                    bookingConflicts.stream().map(FlightSeat::getName).collect(Collectors.toList())));
+                    bookingConflicts.stream().map(FlightSeat::getName).collect(Collectors.toList()),
+                    id));
         }
 
         Set<FlightSeatAllocation> newAllocations = availableSeats.stream()
