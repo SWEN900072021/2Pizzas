@@ -96,11 +96,17 @@ const CreateBooking = () => {
         ? selectedReturnFlight.id
         : null,
       passengerBookings: state.map((passenger) => ({
-        ...passenger,
+        givenName: passenger.givenName,
+        surname: passenger.surname,
+        passportNumber: passenger.passportNumber,
         dateOfBirth: passenger.dateOfBirth.format('YYYY-MM-DD'),
+        nationality: passenger.nationality,
         seatAllocations
       }))
     }
+    console.log('payload')
+    console.log(selectedOutboundFlight)
+    console.log(booking)
     BookingService.createBooking(
       token,
       booking,
@@ -175,6 +181,29 @@ const CreateBooking = () => {
       )
     }
   }
+
+  // const seatListHandler = (passenger) => {
+  //   for (let i = 0; i < numberOfPassengers; i += 1) {
+  //     const seatClass = selectedReturnFlight.seatAvailabilities[i][0]
+  //     const seat = selectedReturnFlight.seatAvailabilities[i][1]
+  //     if (
+  //       seatClass === 'ECONOMY' &&
+  //       state[passenger].returnClass === 'ECONOMY'
+  //     )
+  //       return seat
+  //     if (
+  //       seatClass === 'BUSINESS' &&
+  //       state[passenger].returnClass === 'BUSINESS'
+  //     )
+  //       return seat
+  //     if (
+  //       seatClass === 'FIRST' &&
+  //       state[passenger].returnClass === 'FIRST'
+  //     )
+  //       return seat
+  //   }
+  //   return null
+  // }
 
   const passengerForm =
     state &&
@@ -293,53 +322,66 @@ const CreateBooking = () => {
               }
             )}
           </Select>
-          <p>Return flight class</p>
-          <Select
-            required
-            defaultValue='ECONOMY'
-            id='returnClass'
-            className='col-span-3'
-            onChange={(value) =>
-              handleClassSeatChange(value, passenger, 'returnClass')
-            }
-          >
-            <Option id='economy' value='ECONOMY'>
-              Economy Class ($
-              {selectedReturnFlight.economyClassCost})
-            </Option>
-            <Option id='business' value='BUSINESS'>
-              Business Class ($
-              {selectedReturnFlight.businessClassCost})
-            </Option>
-            <Option id='first' value='FIRST'>
-              First Class (${selectedReturnFlight.firstClassCost})
-            </Option>
-          </Select>
-          <p>Return flight seat</p>
-          <Select
-            required
-            defaultValue='ECONOMY'
-            id='returnSeat'
-            className='col-span-3'
-            onChange={(value) =>
-              handleClassSeatChange(value, passenger, 'returnSeat')
-            }
-          >
-            {selectedReturnFlight.seatAvailabilities.map(
-              (seatsPerClass) => {
-                if (
-                  seatsPerClass.seatClass ===
-                  state[passenger].outboundClass
-                )
-                  return seatsPerClass.seats.map((seat) => (
-                    <Option id={seat} value={seat}>
-                      {seat}
-                    </Option>
-                  ))
-                return null
-              }
-            )}
-          </Select>
+
+          {selectedReturnFlight ? (
+            <>
+              <p>Return flight class</p>
+              <Select
+                required
+                defaultValue='ECONOMY'
+                id='returnClass'
+                className='col-span-3'
+                onChange={(value) =>
+                  handleClassSeatChange(
+                    value,
+                    passenger,
+                    'returnClass'
+                  )
+                }
+              >
+                <Option id='economy' value='ECONOMY'>
+                  Economy Class ($
+                  {selectedReturnFlight.economyClassCost})
+                </Option>
+                <Option id='business' value='BUSINESS'>
+                  Business Class ($
+                  {selectedReturnFlight.businessClassCost})
+                </Option>
+                <Option id='first' value='FIRST'>
+                  First Class (${selectedReturnFlight.firstClassCost})
+                </Option>
+              </Select>
+              <p>Return flight seat</p>
+              <Select
+                required
+                // defaultValue={() => seatListHandler(passenger)}
+                id='returnSeat'
+                className='col-span-3'
+                onChange={(value) =>
+                  handleClassSeatChange(
+                    value,
+                    passenger,
+                    'returnSeat'
+                  )
+                }
+              >
+                {selectedReturnFlight.seatAvailabilities.map(
+                  (seatsPerClass) => {
+                    if (
+                      seatsPerClass.seatClass ===
+                      state[passenger].outboundClass
+                    )
+                      return seatsPerClass.seats.map((seat) => (
+                        <Option id={seat} value={seat}>
+                          {seat}
+                        </Option>
+                      ))
+                    return null
+                  }
+                )}
+              </Select>
+            </>
+          ) : null}
         </Panel>
       )
     })
@@ -352,14 +394,37 @@ const CreateBooking = () => {
       <NavBar />
       <section className='flex flex-col w-full h-full max-w-lg gap-4'>
         <h1 className='text-3xl font-bold'>Finalise Booking</h1>
-        <h2>
+        <hr />
+        <h2 className='text-xl font-bold'>Your outbound flight</h2>
+        <p>
           Departing : {selectedOutboundFlight.origin.code}{' '}
           {selectedOutboundFlight.origin.location}{' '}
           {selectedOutboundFlight.origin.name}
           at {selectedOutboundFlight.departureLocal}
-        </h2>
-        <h2>Arriving : JFK New York Airport 08:00 24/05/2021</h2>
-        <h2>Number of passengers : {numberOfPassengers}</h2>
+        </p>
+        <p>
+          Arriving : {selectedOutboundFlight.destination.code}{' '}
+          {selectedOutboundFlight.destination.location}{' '}
+          {selectedOutboundFlight.destination.name}
+          at {selectedOutboundFlight.arrivalLocal}
+        </p>
+        {selectedReturnFlight ? (
+          <>
+            <h2 className='text-xl font-bold'>Your return flight</h2>
+            <p>
+              Departing : {selectedReturnFlight.origin.code}{' '}
+              {selectedReturnFlight.origin.location}{' '}
+              {selectedReturnFlight.origin.name}
+              at {selectedReturnFlight.departureLocal}
+            </p>
+            <p>
+              Arriving : {selectedReturnFlight.destination.code}{' '}
+              {selectedReturnFlight.destination.location}{' '}
+              {selectedReturnFlight.destination.name}
+              at {selectedReturnFlight.arrivalLocal}
+            </p>
+          </>
+        ) : null}
         <hr />
         <form className='flex flex-col items-start w-full h-full max-h-full gap-4 overflow-y-auto'>
           <Collapse defaultActiveKey={['1']}>
