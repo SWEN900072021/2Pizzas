@@ -13,7 +13,11 @@ export default class AirlineService {
     })
   }
 
-  static createAirline(token, airline) {
+  static createAirline({
+    data: { token, airline },
+    onSuccess,
+    onError
+  }) {
     return request({
       options: {
         method: 'POST',
@@ -23,9 +27,8 @@ export default class AirlineService {
           Authorization: `Bearer ${token}`
         }
       },
-      onError: (err) => {
-        console.log('Error creating airline:', err.response)
-      }
+      onSuccess,
+      onError
     })
   }
 }

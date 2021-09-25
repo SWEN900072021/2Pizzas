@@ -22,6 +22,8 @@ import {
   EditFlight
 } from './containers/dashboard'
 
+import FlightListings from './containers/FlightListings'
+
 function App() {
   const queryClient = new QueryClient()
 
@@ -35,7 +37,7 @@ function App() {
           <Route
             exact
             path='/flight/results'
-            render={() => <FlightSearchResults />}
+            render={() => <FlightListings />}
           />
 
           {/* All User Dashboards */}
@@ -97,17 +99,16 @@ function App() {
             exact
             path='/dashboard/create/airports'
             render={() => (
-              <DashboardSideNav sectionOpened={<CreateAirport />} />
+              <DashboardSideNav sectionOpened={<ListFlights />} />
             )}
           />
           <Route
             exact
             path='/dashboard/create/airlines'
             render={() => (
-              <DashboardSideNav sectionOpened={<CreateAirline />} />
+              <DashboardSideNav sectionOpened={<CreateAirport />} />
             )}
           />
-          {/* Airline Dashboard */}
           <Route
             exact
             path='/dashboard/view/flights'
