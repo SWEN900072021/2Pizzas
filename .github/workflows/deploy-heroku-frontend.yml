@@ -8,15 +8,14 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-      - name: Deploy to Heroku
-        uses: akhileshns/heroku-deploy@v3.12.12
+      - name: Build, Push and Deploy to Heroku
+        id: heroku
+        uses: jctaveras/heroku-deploy@v1.0.0 # use the latest version of the action
         with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: ${{ env.APP_NAME }}
-          heroku_email: ${{ secrets.HEROKU_EMAIL }}
-          healthcheck: https://${{ env.APP_NAME }}.herokuapp.com
-          usedocker: true
-          appdir: 'frontend'
+          email: ${{ secrets.HEROKU_EMAIL }} # your heroku email
+          api_key: ${{ secrets.HEROKU_API_KEY }} # your heroku api key
+          app_name: https://${{ env.APP_NAME }}.herokuapp.com
+          dockerfile_path: 'frontend'
           branch: ${GITHUB_REF}
           delay: 30
         env:
