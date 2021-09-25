@@ -4,12 +4,15 @@ participant compMan as "manager:ComponentManager"
 participant BeanLoader as loader
 participant bean as "bean:Bean"
 participant ConfigurationConstructionInterceptor as configInter
-participant "configurationContext:ConfigurationContext" as configCtx
 participant field as "field:Field"
+participant "configurationContext:ConfigurationContext" as configCtx
+
 
 [-> compMan: init()
 activate compMan
 compMan -> loader: loaded = load()
+activate loader
+deactivate loader
 loop for bean in loaded
   compMan -> bean: construct(manager)
   activate bean
@@ -23,8 +26,14 @@ loop for bean in loaded
     deactivate compMan
     loop for field of component annotated with @Value
       configInter -> field: valueAnnotation = field.getAnnotation(Value.class)
+      activate field
+      deactivate field
       configInter -> configCtx: value = getConfigurationProperty(valueAnnotation.value())
+      activate configCtx
+      deactivate configCtx
       configInter -> field: set(component, value)
+      activate field
+      deactivate field
       configInter --> bean: component
       deactivate configInter
       bean --> compMan: component

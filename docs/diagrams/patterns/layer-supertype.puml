@@ -1,0 +1,34 @@
+@startuml layer supertype
+
+abstract class DomainEntity {
+  - id: EntityId
+  + isNew(): boolean
+  # setNew(isNew: boolean)
+  + getId(): EntityId
+  + hashCode(): int
+  + equals(obj: Object): boolean
+}
+
+class Flight
+
+class Booking 
+
+class FlightSeat
+
+class Passenger 
+
+class User
+
+class Airport
+
+class AirplaneProfile
+
+Flight -up-|> DomainEntity
+FlightSeat -up-|> DomainEntity
+Booking -up-|> DomainEntity
+Passenger -up-|> DomainEntity
+User -up-|> DomainEntity
+Airport -up-|> DomainEntity
+AirplaneProfile -up-|> DomainEntity
+
+@enduml

@@ -28,7 +28,7 @@ deactivate repo
 
 [-> repo: find(id)
 activate repo
-repo -> mapper: entity find(id)
+repo -> mapper: entity = find(id)
 activate mapper
 deactivate mapper
 alt entity != null
