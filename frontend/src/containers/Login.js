@@ -3,7 +3,11 @@ import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
 // Hooks
-import { useFormStore, useSessionStore } from '../hooks/Store'
+import {
+  useFormStore,
+  useSessionStore,
+  useBookingStore
+} from '../hooks/Store'
 import { AuthenticationService } from '../api'
 
 // Containers and Components
@@ -15,9 +19,15 @@ import Spinner from '../components/common/Spinner'
 import thailandPicture from '../assets/thailand.png'
 
 const Login = () => {
+  const isCreatingBooking = useBookingStore(
+    (state) => state.isCreatingBooking
+  )
   const history = useHistory()
   const setToken = useSessionStore((state) => state.setToken)
   const setUser = useSessionStore((state) => state.setUser)
+  const setCreatingBooking = useBookingStore(
+    (state) => state.setCreatingBooking
+  )
 
   const username = useFormStore((state) => state.username)
   const setUsername = useFormStore((state) => state.setUsername)
@@ -51,7 +61,10 @@ const Login = () => {
             userType: res.data.userType
           })
           setLoading(false)
-          history.push('/')
+          if (isCreatingBooking) {
+            history.push('/booking/create')
+            setCreatingBooking(false)
+          } else history.push('/')
         }
       },
       onError: (err) => {
