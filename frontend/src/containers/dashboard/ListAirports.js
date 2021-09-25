@@ -4,7 +4,7 @@ import { useHistory } from 'react-router'
 import { Table, Space } from 'antd'
 import { FaPlus } from 'react-icons/fa'
 
-import Spinner from '../../components/Spinner'
+import Spinner from '../../components/common/Spinner'
 import { useSessionStore } from '../../hooks/Store'
 import useAirports from '../../hooks/useAirports'
 import AirportService from '../../api/AirportService'
@@ -75,14 +75,14 @@ const ListAirports = () => {
           .then(() => {
             setIsUpdating(null)
           })
-          .catch((err) => {
-            console.log(err)
+          .catch(() => {
+            // console.log(err)
             setIsUpdating(null)
           })
       },
-      onError: (err) => {
+      onError: () => {
         setIsUpdating(null)
-        console.log(err)
+        // console.log(err)
       }
     })
   }

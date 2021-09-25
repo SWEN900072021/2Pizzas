@@ -1,15 +1,10 @@
 import { React, useEffect } from 'react'
-
-// Containers and Components
+import { useHistory } from 'react-router'
 
 import NavBar from '../components/common/NavBar'
-
-// Hooks
-
-// Assets
 import landscapePicture from '../assets/home-landscape.png'
-import FlightSearchForm from '../components/flightSearch/FlightSearchForm'
-import { useFlightStore } from '../hooks/Store'
+import FlightForm from '../components/flightSearch/FlightForm'
+import { useFlightStore, useSessionStore } from '../hooks/Store'
 
 const Home = () => {
   const setOriginAirportSearchValue = useFlightStore(
@@ -24,6 +19,21 @@ const Home = () => {
   const setDestinationAirport = useFlightStore(
     (state) => state.setDestinationAirport
   )
+
+  const token = useSessionStore((state) => state.token)
+  const user = useSessionStore((state) => state.user)
+  const history = useHistory()
+
+  useEffect(() => {
+    if (
+      token &&
+      user &&
+      user.userType &&
+      user.userType !== 'customer'
+    ) {
+      history.push('/dashboard')
+    }
+  }, [history, token, user])
 
   useEffect(() => {
     setOriginAirportSearchValue('')
@@ -60,7 +70,7 @@ const Home = () => {
         /*                           Main Flight Search Form                          */
         /* -------------------------------------------------------------------------- */}
         <section className='absolute flex flex-col flex-wrap items-center justify-center flex-grow p-5 bg-yellow-50 mt-52 max-w-max'>
-          <FlightSearchForm />
+          <FlightForm showButton />
         </section>
       </section>
     </main>

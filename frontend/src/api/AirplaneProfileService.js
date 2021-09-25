@@ -6,12 +6,6 @@ export default class AirplaneProfileService {
       options: {
         url: '/airplane-profile',
         method: 'GET'
-      },
-      onError: (err) => {
-        console.log(
-          'Error getting all airplane profiles:',
-          err.response
-        )
       }
     })
   }
@@ -25,9 +19,6 @@ export default class AirplaneProfileService {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      },
-      onError: (err) => {
-        console.log('Error creating airplane profile:', err.response)
       }
     })
   }

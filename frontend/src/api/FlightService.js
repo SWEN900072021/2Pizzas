@@ -28,9 +28,6 @@ export default class FlightService {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      },
-      onError: (err) => {
-        console.log('Error getting all flights:', err.response)
       }
     })
   }
@@ -43,9 +40,6 @@ export default class FlightService {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      },
-      onError: (err) => {
-        console.log('Error getting flight by Id:', err.response)
       }
     })
   }
@@ -65,11 +59,7 @@ export default class FlightService {
         }
       },
       onSuccess,
-      onError:
-        onError ||
-        ((err) => {
-          console.log('Error updating flight:', err.response)
-        })
+      onError
     })
   }
 
@@ -81,9 +71,6 @@ export default class FlightService {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      },
-      onError: (err) => {
-        console.log('Error getting flight passengers:', err.response)
       }
     })
   }

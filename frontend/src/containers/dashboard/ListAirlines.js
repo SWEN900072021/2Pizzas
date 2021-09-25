@@ -4,7 +4,7 @@ import { useHistory } from 'react-router'
 import { Table, Space } from 'antd'
 import { FaPlus } from 'react-icons/fa'
 
-import Spinner from '../../components/Spinner'
+import Spinner from '../../components/common/Spinner'
 import { useSessionStore } from '../../hooks/Store'
 import useAirlines from '../../hooks/useAirlines'
 import UserService from '../../api/UserService'
@@ -37,7 +37,7 @@ const ListAirlines = () => {
   }, [token, user, history])
 
   useEffect(() => {
-    console.log(airlines)
+    // console.log(airlines)
 
     if (!airlines) {
       refetchAirlines()
@@ -77,14 +77,14 @@ const ListAirlines = () => {
           .then(() => {
             setIsUpdating(null)
           })
-          .catch((err) => {
-            console.log(err)
+          .catch(() => {
+            // console.log(err)
             setIsUpdating(null)
           })
       },
-      onError: (err) => {
+      onError: () => {
         setIsUpdating(null)
-        console.log(err)
+        // console.log(err)
       }
     })
   }

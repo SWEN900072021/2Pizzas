@@ -59,14 +59,12 @@ const ViewFlight = () => {
 
     if (isSuccess && data && id) {
       const currentFlight = data.find((b) => b.id === id)
-      console.log('Current flight:', currentFlight)
+      // console.log('Current flight:', currentFlight)
       setFlight(currentFlight)
     }
 
     if (token && id && !passengers) {
-      refetchPassengers().then((res) => {
-        console.log('Passengers:', res)
-      })
+      refetchPassengers()
     }
   }, [
     data,
@@ -111,9 +109,9 @@ const ViewFlight = () => {
           setIsUpdating(false)
         })
       },
-      onError: (err) => {
+      onError: () => {
         setIsUpdating(false)
-        console.log('Error cancelling flight:', err.response)
+        // console.log('Error cancelling flight:', err.response)
       }
     })
   }
@@ -128,9 +126,9 @@ const ViewFlight = () => {
           setIsUpdating(false)
         })
       },
-      onError: (err) => {
+      onError: () => {
         setIsUpdating(false)
-        console.log('Error delaying flight:', err.response)
+        // console.log('Error delaying flight:', err.response)
       }
     })
   }
@@ -145,9 +143,9 @@ const ViewFlight = () => {
           setIsUpdating(false)
         })
       },
-      onError: (err) => {
+      onError: () => {
         setIsUpdating(false)
-        console.log('Error setting flight to schedule:', err.response)
+        // console.log('Error setting flight to schedule:', err.response)
       }
     })
   }
@@ -398,42 +396,6 @@ const ViewFlight = () => {
                         }
                       })
                     : []
-                  // flight.seats
-                  //   ? flight.seats.map((seat) => {
-                  //       if (passengers) {
-                  //         const passenger = passengers.find(
-                  //           (p) => p.seatName === seat.name
-                  //         )
-
-                  //         if (passenger) {
-                  //           return {
-                  //             givenName: passenger.givenName,
-                  //             surname: passenger.surname,
-                  //             passportNumber:
-                  //               passenger.passportNumber,
-                  //             dateOfBirth: moment(
-                  //               passenger.dateOfBirth
-                  //             ).format('YYYY/MM/DD'),
-                  //             nationality: passenger.nationality,
-                  //             booking: passenger.booking,
-                  //             seatName: seat.name,
-                  //             seatClass: seat.seatClass
-                  //           }
-                  //         }
-                  //       }
-
-                  //       return {
-                  //         givenName: '',
-                  //         surname: '',
-                  //         passportNumber: '',
-                  //         dateOfBirth: '',
-                  //         nationality: '',
-                  //         booking: '',
-                  //         seatName: seat.name,
-                  //         seatClass: seat.seatClass
-                  //       }
-                  //     })
-                  //   : []
                 }
                 bordered
                 size='middle'

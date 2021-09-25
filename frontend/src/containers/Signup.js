@@ -90,9 +90,17 @@ const Signup = () => {
           })
           setLoading(false)
           if (isCreatingBooking) {
-            history.push('/booking/create')
             setCreatingBooking(false)
-          } else history.push('/')
+            if (res.data.userType !== 'customer') {
+              history.push('/dashboard')
+            } else {
+              history.push('/booking/create')
+            }
+          } else if (res.data.userType !== 'customer') {
+            history.push('/dashboard')
+          } else {
+            history.push('/')
+          }
         }
       },
       onError: (err) => {

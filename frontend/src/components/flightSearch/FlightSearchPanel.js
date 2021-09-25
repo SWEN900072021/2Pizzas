@@ -10,7 +10,7 @@ import {
 import moment from 'moment'
 
 import { useFlightStore } from '../../hooks/Store'
-import FlightSearchForm from './FlightSearchForm'
+import FlightForm from './FlightForm'
 
 const FlightSearchPanel = () => {
   const originAirport = useFlightStore((state) => state.originAirport)
@@ -20,7 +20,6 @@ const FlightSearchPanel = () => {
   const passengerCount = useFlightStore(
     (state) => state.passengerCount
   )
-  const cabinClass = useFlightStore((state) => state.cabinClass)
 
   const isReturn = useFlightStore((state) => state.isReturn)
 
@@ -196,13 +195,8 @@ const FlightSearchPanel = () => {
           </div>
 
           {/* ----------------------------- Passenger Count ---------------------------- */}
-          <div className='flex self-center gap-2 font-medium sm:self-start'>
-            <div>{passengerCount} passenger(s)</div>
-            <div>•</div>
-            <div>
-              {cabinClass.charAt(0).toUpperCase() +
-                cabinClass.slice(1)}
-            </div>
+          <div className='flex self-center font-medium sm:self-start'>
+            {passengerCount} passenger(s)
           </div>
         </section>
 
@@ -224,7 +218,7 @@ const FlightSearchPanel = () => {
           searchOpen ? 'block' : 'hidden'
         } mt-5 mb-3 md:my-0 md:mt-3`}
       >
-        <FlightSearchForm />
+        <FlightForm />
       </section>
     </section>
   )

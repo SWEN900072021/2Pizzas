@@ -99,14 +99,14 @@ function App() {
             exact
             path='/dashboard/create/airports'
             render={() => (
-              <DashboardSideNav sectionOpened={<ListFlights />} />
+              <DashboardSideNav sectionOpened={<CreateAirport />} />
             )}
           />
           <Route
             exact
             path='/dashboard/create/airlines'
             render={() => (
-              <DashboardSideNav sectionOpened={<CreateAirport />} />
+              <DashboardSideNav sectionOpened={<CreateAirline />} />
             )}
           />
           <Route

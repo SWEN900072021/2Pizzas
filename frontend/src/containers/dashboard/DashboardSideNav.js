@@ -7,7 +7,7 @@ import { useSessionStore } from '../../hooks/Store'
 
 // Containers and Components
 import NavBar from '../../components/common/NavBar'
-// import Spinner from '../components/Spinner'
+// import Spinner from '../components/common/Spinner'
 
 const DashboardSideNav = ({ sectionOpened }) => {
   const history = useHistory()
@@ -22,6 +22,12 @@ const DashboardSideNav = ({ sectionOpened }) => {
 
   const adminDashboard = (
     <>
+      <NavLink
+        to='/dashboard'
+        className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'
+      >
+        My Info
+      </NavLink>
       <NavLink
         to='/dashboard/view/airlines'
         className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'
@@ -52,6 +58,12 @@ const DashboardSideNav = ({ sectionOpened }) => {
   const airlineDashboard = (
     <>
       <NavLink
+        to='/dashboard'
+        className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'
+      >
+        My Info
+      </NavLink>
+      <NavLink
         to='/dashboard/view/flights'
         className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'
       >
@@ -69,7 +81,7 @@ const DashboardSideNav = ({ sectionOpened }) => {
   const userDashboard = (
     <>
       <NavLink
-        to='/dashboard/'
+        to='/dashboard'
         className='block py-2.5 px-4 rounded-lg transition duration-200 hover:bg-yellow-500 hover:text-white font-bold shadow-sm'
       >
         My Info

@@ -2,7 +2,7 @@ import { Input } from 'antd'
 import React, { useState } from 'react'
 import { useHistory } from 'react-router'
 import { AirlineService } from '../../api'
-import Spinner from '../../components/Spinner'
+import Spinner from '../../components/common/Spinner'
 import { useSessionStore } from '../../hooks/Store'
 
 const CreateAirline = () => {
@@ -41,10 +41,6 @@ const CreateAirline = () => {
       onSuccess: () => {
         setLoading(false)
         history.push('/dashboard/manage/airlines')
-      },
-      onError: (error) => {
-        console.log(error)
-        setLoading(false)
       }
     })
   }
