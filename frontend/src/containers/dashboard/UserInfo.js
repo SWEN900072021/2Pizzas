@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
-import Spinner from '../../components/Spinner'
+import Spinner from '../../components/common/Spinner'
 
 import { useSessionStore } from '../../hooks/Store'
 

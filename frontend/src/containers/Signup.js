@@ -3,10 +3,10 @@ import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
 // Containers and Components
-// import Button from '../components/Button'
-import TextField from '../components/TextField'
-import NavBar from '../components/NavBar'
-import Spinner from '../components/Spinner'
+// import Button from '../components/common/Button'
+import TextField from '../components/common/TextField'
+import NavBar from '../components/common/NavBar'
+import Spinner from '../components/common/Spinner'
 
 // Hooks
 import {
@@ -95,10 +95,11 @@ const Signup = () => {
           } else history.push('/')
         }
       },
-      onError: () => {
+      onError: (err) => {
         // console.log(err)
         setLoading(false)
         setErrorMessage('Cannot create user.')
+        Promise.reject(err)
       }
     })
   }

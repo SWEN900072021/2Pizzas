@@ -216,7 +216,7 @@ const FlightListings = () => {
     <main className='flex flex-col items-start w-full h-screen'>
       <NavBar />
       <section className='flex flex-col self-center justify-start w-full h-full gap-10 mt-8 md:max-w-screen-md'>
-        <FlightSearch />
+        <FlightSearchPanel />
         {/* <FlightFilter /> */}
         <div className='flex flex-col items-center w-full gap-3'>
           {/* <FlightSidebar /> */}
@@ -287,4 +287,4 @@ const FlightListings = () => {
   )
 }
 
-export default FlightListings
+export default FlightSearchResults

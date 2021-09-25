@@ -2,13 +2,13 @@ import { React, useEffect } from 'react'
 
 // Containers and Components
 
-import NavBar from '../components/NavBar'
+import NavBar from '../components/common/NavBar'
 
 // Hooks
 
 // Assets
 import landscapePicture from '../assets/home-landscape.png'
-import FlightForm from './FlightForm'
+import FlightSearchForm from '../components/flightSearch/FlightSearchForm'
 import { useFlightStore } from '../hooks/Store'
 
 const Home = () => {

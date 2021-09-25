@@ -6,11 +6,37 @@ export default class AirportService {
       options: {
         url: '/airport',
         method: 'GET'
+      },
+      onError: (err) => {
+        console.log('Error getting all airports:', err.response)
       }
     })
   }
 
-  static createAirport(token, airport) {
+  static updateAirport({
+    data: { token, id, status },
+    onSuccess,
+    onError
+  }) {
+    return request({
+      options: {
+        url: `/airport/${id}`,
+        method: 'PATCH',
+        data: { status },
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      },
+      onSuccess,
+      onError
+    })
+  }
+
+  static createAirport({
+    data: { token, airport },
+    onSuccess,
+    onError
+  }) {
     return request({
       options: {
         url: '/airport',
@@ -19,7 +45,9 @@ export default class AirportService {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      }
+      },
+      onSuccess,
+      onError
     })
   }
 }

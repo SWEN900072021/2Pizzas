@@ -9,10 +9,10 @@ import {
 } from 'react-icons/fa'
 import moment from 'moment'
 
-import { useFlightStore } from '../hooks/Store'
-import FlightForm from '../containers/FlightForm'
+import { useFlightStore } from '../../hooks/Store'
+import FlightSearchForm from './FlightSearchForm'
 
-const FlightSearch = () => {
+const FlightSearchPanel = () => {
   const originAirport = useFlightStore((state) => state.originAirport)
   const destinationAirport = useFlightStore(
     (state) => state.destinationAirport
@@ -218,10 +218,10 @@ const FlightSearch = () => {
           searchOpen ? 'block' : 'hidden'
         } mt-5 mb-3 md:my-0 md:mt-3`}
       >
-        <FlightForm />
+        <FlightSearchForm />
       </section>
     </section>
   )
 }
 
-export default FlightSearch
+export default FlightSearchPanel
