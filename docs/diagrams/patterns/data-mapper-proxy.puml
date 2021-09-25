@@ -3,7 +3,7 @@
 participant "DataProxy" as dp
 participant "IdentityMapper" as idmap
 participant "UnitOfWork" as uow
-participant "mapper:DataMapper" as dm
+participant "DataMapper" as dm
 participant "Postgresql" as db << Database >>
 participant "entity:Entity" as ent
 participant "entities:List<Entity>" as ents

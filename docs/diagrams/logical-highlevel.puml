@@ -1,4 +1,4 @@
-@startuml
+@startuml logical high level
 
 node "Presentation Layer" {
 
