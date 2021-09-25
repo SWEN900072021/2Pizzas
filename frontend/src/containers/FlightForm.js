@@ -9,6 +9,7 @@ import { IoIosPerson } from 'react-icons/io'
 import { DatePicker, Popover } from 'antd'
 import { useMediaQuery } from 'react-responsive'
 import { useHistory } from 'react-router-dom'
+import { bool } from 'prop-types'
 
 import OriginSearch from './OriginSearch'
 import DestinationSearch from './DestinationSearch'
@@ -21,7 +22,7 @@ const moment = require('moment-timezone')
 
 const { RangePicker } = DatePicker
 
-const FlightForm = () => {
+const FlightForm = ({ showButton }) => {
   const history = useHistory()
   const airports = useAirports()
 
@@ -292,17 +293,23 @@ const FlightForm = () => {
         </section>
 
         {/* Find Flight Button */}
-        <section className='flex flex-col flex-wrap items-center justify-center gap-4 md:flex-row'>
-          <span
-            className={`${!errorMessage && 'hidden'} text-red-500`}
-          >
-            {errorMessage}
-          </span>
-          <Button label='Find Flights' onClick={handleSubmit} />
-        </section>
+        {showButton && (
+          <section className='flex flex-col flex-wrap items-center justify-center gap-4 md:flex-row'>
+            <span
+              className={`${!errorMessage && 'hidden'} text-red-500`}
+            >
+              {errorMessage}
+            </span>
+            <Button label='Find Flights' onClick={handleSubmit} />
+          </section>
+        )}
       </section>
     </section>
   )
+}
+
+FlightForm.propTypes = {
+  showButton: bool.isRequired
 }
 
 export default FlightForm
