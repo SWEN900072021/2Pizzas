@@ -164,7 +164,7 @@ const ViewFlight = () => {
         <section className='flex flex-col w-full max-w-lg gap-4'>
           <header className='flex flex-col items-start self-start w-full gap-2'>
             <div className='flex items-center justify-between w-full'>
-              <h1 className='text-3xl font-bold'>Flight Details</h1>
+              <h1 className='text-3xl font-bold'>Flight details</h1>
               <button
                 type='button'
                 className='flex items-center justify-center gap-2 p-2 text-white transition-colors bg-gray-400 rounded-md shadow-sm hover:bg-gray-600'
@@ -214,6 +214,16 @@ const ViewFlight = () => {
                   </button>
                 )}
               </>
+            )}
+            {flight.status === 'CANCELLED' && (
+              <button
+                type='button'
+                disabled={isUpdating}
+                className='px-4 py-2 font-bold text-white transition-colors bg-green-400 rounded-lg hover:bg-green-600'
+                onClick={scheduleFlight}
+              >
+                Mark as To Schedule
+              </button>
             )}
           </section>
           <main className='h-full overflow-y-auto max-h-96'>
@@ -338,6 +348,25 @@ const ViewFlight = () => {
                     </p>
                   </>
                 )}
+              </>
+              <>
+                <p className='col-span-6 font-semibold '>
+                  Seat Cost by Cabin Class
+                </p>
+                <p className='col-span-6 pl-3 border-l'>
+                  <p>
+                    <span className='font-medium'>First:</span> $
+                    {flight.firstClassCost}/seat
+                  </p>
+                  <p>
+                    <span className='font-medium'>Business:</span> $
+                    {flight.businessClassCost}/seat
+                  </p>
+                  <p>
+                    <span className='font-medium'>First:</span> $
+                    {flight.economyClassCost}/seat
+                  </p>
+                </p>
               </>
               <hr className='col-span-12' />
               <p className='col-span-12 font-semibold'>
