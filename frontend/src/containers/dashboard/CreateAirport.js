@@ -38,10 +38,6 @@ const CreateAirport = () => {
       onSuccess: () => {
         setLoading(false)
         history.push('/dashboard/manage/airports')
-      },
-      onError: (error) => {
-        setLoading(false)
-        console.log(error)
       }
     })
   }

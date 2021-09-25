@@ -41,10 +41,6 @@ const CreateAirline = () => {
       onSuccess: () => {
         setLoading(false)
         history.push('/dashboard/manage/airlines')
-      },
-      onError: (error) => {
-        console.log(error)
-        setLoading(false)
       }
     })
   }

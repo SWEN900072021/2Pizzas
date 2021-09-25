@@ -76,7 +76,7 @@ const FlightListings = () => {
   )
 
   useEffect(() => {
-    console.log(moment(departDate).startOf('day').utc(true))
+    // console.log(moment(departDate).startOf('day').utc(true))
 
     const outboundFlightSearchCriteria = {
       origin: originAirport.id,
@@ -94,18 +94,15 @@ const FlightListings = () => {
       airline: null
     }
 
-    console.log('Outbound flight dates:', {
-      departingAfter: outboundFlightSearchCriteria.departingAfter,
-      departingBefore: outboundFlightSearchCriteria.departingBefore
-    })
+    // console.log('Outbound flight dates:', {
+    //   departingAfter: outboundFlightSearchCriteria.departingAfter,
+    //   departingBefore: outboundFlightSearchCriteria.departingBefore
+    // })
 
     FlightSearchService.searchFlights({
       data: outboundFlightSearchCriteria,
       onSuccess: (res) => {
         setOutboundFlights(res.data)
-      },
-      onError: (err) => {
-        console.log(err)
       }
     })
 
@@ -131,9 +128,6 @@ const FlightListings = () => {
         data: returnFlightSearchCriteria,
         onSuccess: (res) => {
           setReturnFlights(res.data)
-        },
-        onError: (err) => {
-          console.log(err)
         }
       })
     }

@@ -94,16 +94,13 @@ const CreateFlight = () => {
       }))
     }
 
-    console.log(flight)
+    // console.log(flight)
 
     setLoading(true)
     FlightService.createFlight({
       data: { token, flight },
       onSuccess: () => {
         history.push('/dashboard/view/flights')
-      },
-      onError: (error) => {
-        console.log(error)
       }
     })
 

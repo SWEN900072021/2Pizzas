@@ -9,9 +9,6 @@ export default class BookingService {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      },
-      onError: (err) => {
-        console.log('Error getting customer booking:', err.response)
       }
     })
   }

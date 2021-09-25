@@ -1,15 +1,10 @@
 import { React, useEffect } from 'react'
-
-// Containers and Components
+import { useHistory } from 'react-router'
 
 import NavBar from '../components/common/NavBar'
-
-// Hooks
-
-// Assets
 import landscapePicture from '../assets/home-landscape.png'
 import FlightForm from '../components/flightSearch/FlightForm'
-import { useFlightStore } from '../hooks/Store'
+import { useFlightStore, useSessionStore } from '../hooks/Store'
 
 const Home = () => {
   const setOriginAirportSearchValue = useFlightStore(
@@ -24,6 +19,21 @@ const Home = () => {
   const setDestinationAirport = useFlightStore(
     (state) => state.setDestinationAirport
   )
+
+  const token = useSessionStore((state) => state.token)
+  const user = useSessionStore((state) => state.user)
+  const history = useHistory()
+
+  useEffect(() => {
+    if (
+      token &&
+      user &&
+      user.userType &&
+      user.userType !== 'customer'
+    ) {
+      history.push('/dashboard')
+    }
+  }, [history, token, user])
 
   useEffect(() => {
     setOriginAirportSearchValue('')

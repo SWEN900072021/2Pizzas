@@ -6,9 +6,6 @@ export default class AirlineService {
       options: {
         method: 'GET',
         url: '/airline'
-      },
-      onError: (err) => {
-        console.log('Error getting all airlines:', err.response)
       }
     })
   }

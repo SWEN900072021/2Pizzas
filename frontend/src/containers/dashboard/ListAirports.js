@@ -75,14 +75,14 @@ const ListAirports = () => {
           .then(() => {
             setIsUpdating(null)
           })
-          .catch((err) => {
-            console.log(err)
+          .catch(() => {
+            // console.log(err)
             setIsUpdating(null)
           })
       },
-      onError: (err) => {
+      onError: () => {
         setIsUpdating(null)
-        console.log(err)
+        // console.log(err)
       }
     })
   }

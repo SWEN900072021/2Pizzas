@@ -37,7 +37,7 @@ const ListAirlines = () => {
   }, [token, user, history])
 
   useEffect(() => {
-    console.log(airlines)
+    // console.log(airlines)
 
     if (!airlines) {
       refetchAirlines()
@@ -77,14 +77,14 @@ const ListAirlines = () => {
           .then(() => {
             setIsUpdating(null)
           })
-          .catch((err) => {
-            console.log(err)
+          .catch(() => {
+            // console.log(err)
             setIsUpdating(null)
           })
       },
-      onError: (err) => {
+      onError: () => {
         setIsUpdating(null)
-        console.log(err)
+        // console.log(err)
       }
     })
   }

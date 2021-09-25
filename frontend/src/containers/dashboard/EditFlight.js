@@ -100,8 +100,8 @@ const EditFlight = () => {
     ) {
       const flight = flights.find((f) => f.id === flightId)
 
-      console.log('Retrieved flight:', flight)
-      console.log('Airports:', airports)
+      // console.log('Retrieved flight:', flight)
+      // console.log('Airports:', airports)
 
       const flightProfile = airplaneProfiles.find(
         (ap) =>
@@ -139,7 +139,7 @@ const EditFlight = () => {
         stopOvers: flightStopovers
       }
 
-      console.log('Initial Flight State:', flightState)
+      // console.log('Initial Flight State:', flightState)
 
       setState(flightState)
     }
@@ -174,7 +174,7 @@ const EditFlight = () => {
       }))
     }
 
-    console.log('Update to flight:', updatedFlight)
+    // console.log('Update to flight:', updatedFlight)
 
     setLoading(true)
 
@@ -183,9 +183,6 @@ const EditFlight = () => {
       onSuccess: () => {
         setLoading(false)
         history.push(`/dashboard/view/flights/${flightId}`)
-      },
-      onError: (error) => {
-        console.log(error)
       }
     })
 
