@@ -401,27 +401,6 @@ const CreateFlight = () => {
                 </section>
 
                 <section className='grid items-center w-full grid-cols-5 gap-2'>
-                  <p className='col-span-2'>Business Class Cost</p>
-                  <span className='col-span-3'>
-                    <InputNumber
-                      style={{ width: '100%' }}
-                      placeholder='Enter a value'
-                      formatter={(value) => `$ ${value}`}
-                      min={1}
-                      value={state.businessClassCost}
-                      onChange={(value) => {
-                        setState((oldState) => ({
-                          ...oldState,
-                          businessClassCost: value
-                            ? Number.parseInt(value, 10)
-                            : 1
-                        }))
-                      }}
-                    />
-                  </span>
-                </section>
-
-                <section className='grid items-center w-full grid-cols-5 gap-2'>
                   <p className='col-span-2'>First Class Cost</p>
                   <span className='col-span-3'>
                     <InputNumber
@@ -434,6 +413,27 @@ const CreateFlight = () => {
                         setState((oldState) => ({
                           ...oldState,
                           firstClassCost: value
+                            ? Number.parseInt(value, 10)
+                            : 1
+                        }))
+                      }}
+                    />
+                  </span>
+                </section>
+
+                <section className='grid items-center w-full grid-cols-5 gap-2'>
+                  <p className='col-span-2'>Business Class Cost</p>
+                  <span className='col-span-3'>
+                    <InputNumber
+                      style={{ width: '100%' }}
+                      placeholder='Enter a value'
+                      formatter={(value) => `$ ${value}`}
+                      min={1}
+                      value={state.businessClassCost}
+                      onChange={(value) => {
+                        setState((oldState) => ({
+                          ...oldState,
+                          businessClassCost: value
                             ? Number.parseInt(value, 10)
                             : 1
                         }))

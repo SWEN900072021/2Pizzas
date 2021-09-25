@@ -5,7 +5,7 @@ const useAirports = () => {
   const queryClient = useQueryClient()
 
   return useQuery({
-    enabled: false,
+    // enabled: false,
     queryKey: ['airports'],
     queryFn: () => AirportService.getAllAirports(),
     config: {

@@ -5,7 +5,7 @@ const useAirplaneProfiles = () => {
   const queryClient = useQueryClient()
 
   return useQuery({
-    enabled: false,
+    // enabled: false,
     queryKey: ['airplaneProfiles'],
     queryFn: () => AirplaneProfileService.getAllAirplaneProfiles(),
     config: {

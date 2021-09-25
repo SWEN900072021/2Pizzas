@@ -10,7 +10,7 @@ const useFlightSearch = ({
   const queryClient = useQueryClient()
 
   return useQuery({
-    enabled: false,
+    // enabled: false,
     queryKey: ['flights'],
     queryFn: () =>
       FlightSearchService.searchFlights({

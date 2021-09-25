@@ -12,13 +12,14 @@ import {
   UserInfo,
   ListBookings,
   ViewBooking,
+  ViewFlight,
   ListAirlines,
   ListAirports,
   ListFlights,
   CreateAirline,
-  CreateAirport
+  CreateAirport,
+  CreateFlight
 } from './containers/dashboard'
-import CreateFlight from './containers/dashboard/CreateFlight'
 
 function App() {
   const queryClient = new QueryClient()
@@ -30,12 +31,14 @@ function App() {
           <Route exact path='/' render={() => <Home />} />
           <Route exact path='/login' render={() => <Login />} />
           <Route exact path='/signup' render={() => <Signup />} />
-          {/* User Dashboard */}
           <Route
             exact
             path='/flight/results'
             render={() => <FlightSearchResults />}
           />
+
+          {/* All User Dashboards */}
+
           <Route
             exact
             path='/dashboard'
@@ -43,6 +46,8 @@ function App() {
               <DashboardSideNav sectionOpened={<UserInfo />} />
             )}
           />
+
+          {/* Customer Dashboard */}
           <Route
             exact
             path='/dashboard/current-bookings'
@@ -89,16 +94,24 @@ function App() {
           />
           <Route
             exact
-            path='/dashboard/manage/flights'
+            path='/dashboard/manage/airports/create'
             render={() => (
-              <DashboardSideNav sectionOpened={<ListFlights />} />
+              <DashboardSideNav sectionOpened={<CreateAirport />} />
             )}
           />
           <Route
             exact
-            path='/dashboard/manage/airports/create'
+            path='/dashboard/manage/airlines/create'
             render={() => (
-              <DashboardSideNav sectionOpened={<CreateAirport />} />
+              <DashboardSideNav sectionOpened={<CreateAirline />} />
+            )}
+          />
+          {/* Airline Dashboard */}
+          <Route
+            exact
+            path='/dashboard/manage/flights'
+            render={() => (
+              <DashboardSideNav sectionOpened={<ListFlights />} />
             )}
           />
           <Route
@@ -110,9 +123,9 @@ function App() {
           />
           <Route
             exact
-            path='/dashboard/manage/airlines/create'
+            path='/dashboard/flights/:id'
             render={() => (
-              <DashboardSideNav sectionOpened={<CreateAirline />} />
+              <DashboardSideNav sectionOpened={<ViewFlight />} />
             )}
           />
         </Switch>

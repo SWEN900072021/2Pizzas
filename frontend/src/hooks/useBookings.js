@@ -5,7 +5,7 @@ const useBookings = (token) => {
   const queryClient = useQueryClient()
 
   return useQuery({
-    enabled: false,
+    // enabled: false,
     queryKey: ['bookings'],
     queryFn: () => BookingService.getCustomerBookings(token),
     config: {

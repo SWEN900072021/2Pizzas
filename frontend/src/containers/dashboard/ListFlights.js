@@ -200,7 +200,7 @@ const ListFlights = () => {
               <Space size='middle'>
                 <Link
                   to={`/dashboard/flights/${record.id}`}
-                  className='underline'
+                  className='underline hover:underline'
                 >
                   View
                 </Link>
