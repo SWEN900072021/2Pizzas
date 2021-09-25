@@ -60,7 +60,7 @@ const Home = () => {
         /*                           Main Flight Search Form                          */
         /* -------------------------------------------------------------------------- */}
         <section className='absolute flex flex-col flex-wrap items-center justify-center flex-grow p-5 bg-yellow-50 mt-52 max-w-max'>
-          <FlightForm />
+          <FlightForm showButton />
         </section>
       </section>
     </main>
