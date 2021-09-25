@@ -488,7 +488,7 @@ components:
           $ref: "#/components/schemas/Id"
         returnFlightId:
           $ref: "#/components/schemas/Id"
-        passengers:
+        passengerBookings:
           type: array
           items:
             $ref: "#/components/schemas/PassengerBooking"
