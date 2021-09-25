@@ -7,7 +7,7 @@ import { useSessionStore } from '../../hooks/Store'
 
 // Containers and Components
 import NavBar from '../../components/common/NavBar'
-// import Spinner from '../components/Spinner'
+// import Spinner from '../components/common/Spinner'
 
 const DashboardSideNav = ({ sectionOpened }) => {
   const history = useHistory()

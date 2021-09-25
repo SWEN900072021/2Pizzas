@@ -8,7 +8,7 @@ import NavBar from '../components/common/NavBar'
 
 // Assets
 import landscapePicture from '../assets/home-landscape.png'
-import FlightSearchForm from '../components/flightSearch/FlightSearchForm'
+import FlightForm from '../components/flightSearch/FlightForm'
 import { useFlightStore } from '../hooks/Store'
 
 const Home = () => {

@@ -6,11 +6,11 @@ import { v4 as uuid } from 'uuid'
 import { Listbox, Transition } from '@headlessui/react'
 import { BiCheck, BiChevronDown } from 'react-icons/bi'
 
-import Button from '../components/Button'
-import FlightCard from '../components/FlightCard'
-// import FlightFilter from '../components/FlightFilter'
-import FlightSearch from '../components/FlightSearch'
-import NavBar from '../components/NavBar'
+import Button from '../components/common/Button'
+import FlightCard from '../components/flightSearch/FlightCard'
+// import FlightFilter from '../components/flightSearch/FlightFilter'
+import FlightSearchPanel from '../components/flightSearch/FlightSearchPanel'
+import NavBar from '../components/common/NavBar'
 
 import FlightSearchService from '../api/FlightSearchService'
 import {
@@ -287,4 +287,4 @@ const FlightListings = () => {
   )
 }
 
-export default FlightSearchResults
+export default FlightListings

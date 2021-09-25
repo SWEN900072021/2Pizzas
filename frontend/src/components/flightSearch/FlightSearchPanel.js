@@ -10,7 +10,7 @@ import {
 import moment from 'moment'
 
 import { useFlightStore } from '../../hooks/Store'
-import FlightSearchForm from './FlightSearchForm'
+import FlightForm from './FlightForm'
 
 const FlightSearchPanel = () => {
   const originAirport = useFlightStore((state) => state.originAirport)
@@ -218,7 +218,7 @@ const FlightSearchPanel = () => {
           searchOpen ? 'block' : 'hidden'
         } mt-5 mb-3 md:my-0 md:mt-3`}
       >
-        <FlightSearchForm />
+        <FlightForm />
       </section>
     </section>
   )

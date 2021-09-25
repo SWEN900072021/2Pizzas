@@ -17,7 +17,7 @@ import {
   useFlightStore,
   useBookingStore
 } from '../hooks/Store'
-import NavBar from '../components/NavBar'
+import NavBar from '../components/common/NavBar'
 import { BookingService } from '../api'
 
 const { Panel } = Collapse
@@ -215,7 +215,7 @@ const CreateBooking = () => {
           key={passengerNumber}
         >
           {/* <section className='grid items-center w-full grid-cols-5 gap-2 p-3 bg-gray-50'> */}
-          <h1 className='text-1xl font-bold'>
+          <h1 className='font-bold text-1xl'>
             Passenger {passenger + 1}
           </h1>
           <p>First name</p>

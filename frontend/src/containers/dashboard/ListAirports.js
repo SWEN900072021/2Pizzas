@@ -4,7 +4,7 @@ import { useHistory } from 'react-router'
 import { Table, Space } from 'antd'
 import { FaPlus } from 'react-icons/fa'
 
-import Spinner from '../../components/Spinner'
+import Spinner from '../../components/common/Spinner'
 import { useSessionStore } from '../../hooks/Store'
 import useAirports from '../../hooks/useAirports'
 import AirportService from '../../api/AirportService'

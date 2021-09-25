@@ -13,10 +13,10 @@ import { bool } from 'prop-types'
 
 import OriginSearch from './OriginSearch'
 import DestinationSearch from './DestinationSearch'
-import Button from '../components/Button'
-import Search from '../components/Search'
-import { useFlightStore } from '../hooks/Store'
-import useAirports from '../hooks/useAirports'
+import Button from '../common/Button'
+import Search from '../common/Search'
+import { useFlightStore } from '../../hooks/Store'
+import useAirports from '../../hooks/useAirports'
 
 const moment = require('moment-timezone')
 
