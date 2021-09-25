@@ -21,6 +21,7 @@ const NavBar = () => {
   const handleLogout = (e) => {
     e.preventDefault()
     resetSession()
+    history.push('/')
   }
 
   const loggedInMenu = (
