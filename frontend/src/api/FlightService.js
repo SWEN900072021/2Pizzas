@@ -71,9 +71,6 @@ export default class FlightService {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      },
-      onError: (err) => {
-        console.log('Error getting flight passengers:', err.response)
       }
     })
   }

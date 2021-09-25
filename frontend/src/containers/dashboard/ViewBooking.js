@@ -47,7 +47,7 @@ const ViewBooking = () => {
 
     if (isSuccess && data && id) {
       const currentBooking = data.find((b) => b.id === id)
-      console.log(currentBooking)
+      // console.log(currentBooking)
       setBooking(currentBooking)
     }
   }, [data, isSuccess, id, history, isError, resetSession])
