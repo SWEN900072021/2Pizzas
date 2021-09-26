@@ -12,7 +12,7 @@
 | Submission | Release |
 | - | - |
 | Part 1 | [SWEN90007_2021_Part1_2Pizzas](https://github.com/SWEN900072021/2Pizzas/releases/tag/SWEN90007_2021_Part1_2Pizzas) |
-| Part 2 | - |
+| Part 2 | [SWEN90007_2021_Part2_2Pizzas](https://github.com/SWEN900072021/2Pizzas/releases/tag/SWEN90007_2021_Part2_2Pizzas) |
 | Part 3 | - |
 | Part 4 | - |
 
