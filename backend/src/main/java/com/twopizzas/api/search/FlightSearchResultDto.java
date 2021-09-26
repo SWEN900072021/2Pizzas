@@ -20,7 +20,7 @@ public class FlightSearchResultDto {
     private List<StopOver> stopOvers;
     private Airline airline;
     private String code;
-    private Flight.Status status;
+    private Flight.FlightStatus status;
     private AirplaneProfile profile;
     private BigDecimal firstClassCost;
     private BigDecimal businessClassCost;

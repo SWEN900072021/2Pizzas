@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 public class AirlineController {
 
     private static final AirlineMapper MAPPER = Mappers.getMapper(AirlineMapper.class);
-    private final AirlineRepository airlineRepository;
+    private final AirlineRepository repository;
 
     @Autowired
     public AirlineController(AirlineRepository airlineRepository) {
-        this.airlineRepository = airlineRepository;
+        this.repository = airlineRepository;
     }
 
     @RequestMapping(
@@ -27,7 +27,7 @@ public class AirlineController {
             method = HttpMethod.GET
     )
     public RestResponse<List<AirlineDto>> getAllAirlines() {
-        return RestResponse.ok(airlineRepository.findAllAirlines().stream().map(MAPPER::map).collect(Collectors.toList()));
+        return RestResponse.ok(repository.findAllAirlines().stream().map(MAPPER::map).collect(Collectors.toList()));
     }
 
     @RequestMapping(
@@ -41,7 +41,7 @@ public class AirlineController {
             throw new HttpException(HttpStatus.BAD_REQUEST, String.join(", ", errors));
         }
 
-        Airline newAirline = airlineRepository.save(new Airline(
+        Airline newAirline = repository.save(new Airline(
                 body.getUsername(),
                 body.getPassword(),
                 body.getName(),

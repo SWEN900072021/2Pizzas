@@ -10,24 +10,23 @@ import com.twopizzas.web.*;
 
 @Controller
 public class AuthenticationController {
-    private final UserRepository userRepository;
+    private final UserRepository repository;
     private final AuthenticationProvider authenticationProvider;
 
     @Autowired
     public AuthenticationController(UserRepository userRepository, AuthenticationProvider authenticationProvider) {
-        this.userRepository = userRepository;
+        this.repository = userRepository;
         this.authenticationProvider = authenticationProvider;
     }
 
     @RequestMapping(path = "/signup", method = HttpMethod.POST)
-    RestResponse<SignupResponseDTO> createUser(@RequestBody SignupRequestDTO body) throws HttpException {
+    RestResponse<SignupResponseDto> createUser(@RequestBody SignupRequestDto body) throws HttpException {
         Customer user = new Customer(body.getUsername(), body.getPassword(), body.getGivenName(), body.getSurname(), body.getEmail());
-        userRepository.save(user);
-
+        repository.save(user);
 
         String token = authenticationProvider.login(user);
 
-        return RestResponse.ok(new SignupResponseDTO()
+        return RestResponse.ok(new SignupResponseDto()
                 .setId(user.getId().toString())
                 .setEmail(user.getEmail())
                 .setGivenName(user.getGivenName())
@@ -36,12 +35,12 @@ public class AuthenticationController {
     }
 
     @RequestMapping(path = "/login", method = HttpMethod.POST)
-    RestResponse<LoginResponseDTO> login(@RequestBody LoginRequestDTO body) throws HttpException {
+    RestResponse<LoginResponseDto> login(@RequestBody LoginRequestDto body) throws HttpException {
         String token = authenticationProvider.login(body.getUsername(), body.getPassword()).orElseThrow(
                 () -> new HttpException(HttpStatus.UNAUTHORIZED)
         );
 
-        User user = userRepository.find(body.getUsername(), body.getPassword()).orElseThrow(() -> new HttpException((HttpStatus.NOT_FOUND)));
-        return RestResponse.ok(new LoginResponseDTO().setToken(token).setUsername(user.getUsername()).setUserType(user.getUserType()));
+        User user = repository.find(body.getUsername(), body.getPassword()).orElseThrow(() -> new HttpException((HttpStatus.NOT_FOUND)));
+        return RestResponse.ok(new LoginResponseDto().setToken(token).setUsername(user.getUsername()).setUserType(user.getUserType()));
     }
 }

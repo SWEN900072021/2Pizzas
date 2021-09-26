@@ -10,5 +10,5 @@ public class AirportDto {
     private String code;
     private String location;
     private String zoneId;
-    private Airport.Status status;
+    private Airport.AirportStatus status;
 }

@@ -75,7 +75,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         Optional<User> maybeUser = userRepository.find(username, password);
         if (maybeUser.isPresent()) {
-            if (User.Status.ACTIVE.equals(maybeUser.get().getStatus())) {
+            if (User.UserStatus.ACTIVE.equals(maybeUser.get().getStatus())) {
                 return Optional.of(login(maybeUser.get()));
             }
         }
@@ -86,7 +86,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     @Override
     public String login(User user) {
 
-        if (!User.Status.ACTIVE.equals(user.getStatus())) {
+        if (!User.UserStatus.ACTIVE.equals(user.getStatus())) {
             return null;
         }
 

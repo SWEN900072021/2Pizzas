@@ -8,5 +8,5 @@ public class UserDto {
     private String type;
     private String username;
     private String id;
-    private User.Status status;
+    private User.UserStatus status;
 }

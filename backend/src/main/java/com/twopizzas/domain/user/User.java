@@ -13,9 +13,9 @@ public abstract class User extends DomainEntity {
     private final String password;
 
     @Setter
-    private Status status;
+    private UserStatus status;
 
-    public User(EntityId id, String username, String password, Status status) {
+    public User(EntityId id, String username, String password, UserStatus status) {
         super(id);
         this.username = username;
         this.password = password;
@@ -23,12 +23,12 @@ public abstract class User extends DomainEntity {
     }
 
     public User(EntityId id, String username, String password) {
-        this(id, username, password, Status.ACTIVE);
+        this(id, username, password, UserStatus.ACTIVE);
     }
 
     public abstract String getUserType();
 
-    public enum Status {
+    public enum UserStatus {
         ACTIVE,
         INACTIVE
     }

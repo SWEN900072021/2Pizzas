@@ -8,5 +8,5 @@ public class AirlineDto {
     private String id;
     private String name;
     private String code;
-    private User.Status status;
+    private User.UserStatus status;
 }

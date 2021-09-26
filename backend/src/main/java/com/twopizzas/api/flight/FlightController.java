@@ -193,7 +193,7 @@ public class FlightController {
     }
 
     private Airport assertAirport(Airport airport) throws HttpException {
-        if (airport.getStatus().equals(Airport.Status.INACTIVE)) {
+        if (airport.getStatus().equals(Airport.AirportStatus.INACTIVE)) {
             throw new HttpException(HttpStatus.FORBIDDEN, String.format("airport %s is in %s state", airport.getId(), airport.getStatus()));
         }
         return airport;

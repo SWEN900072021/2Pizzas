@@ -1,0 +1,234 @@
+@startuml domain layer class diagram
+
+class EntityId {
+  - id: UUID
+}
+
+abstract class DomainEntity {
+  + getId(): EntityId
+  + isNew(): boolean
+  ~ setNew(isNew: boolean): boolean
+}
+
+enum FlightStatus {
+  CANCLELLED
+  TO_SCHEDULE
+  DELAYED
+}
+
+class Flight {
+  - code: String
+  - departure: OffsetDateTime
+  - arrival: OffsetDateTime
+  - firstClassCost: BigDecimal
+  - businessClassCost: BigDecimal
+  - economyClassCost: BigDecimal
+  + allocateSeats(bookingRequest: BookingRequest): List<SeatAllocation>
+}
+
+class FlightSeat {
+  - name: String
+}
+
+enum SeatClass {
+  FIRST
+  BUSINESS
+  ECONOMY
+}
+
+class FlightSeatAllocation {
+  + getCost(): BigDecimal
+}
+
+class StopOver {
+  - departure: OffsetDateTime
+  - arrival: OffsetDateTime
+}
+
+class AirportStatus {
+  ACTIVE
+  INACTIVE
+}
+
+class Airport {
+  - name: String
+  - location: String
+  - code: String
+  - utcOffset: ZoneId
+}
+
+class AirplaneProfile {
+  - code: String
+  - type: String
+  - firstClassRows: int
+  - firstClassColumnss: int
+  - businessClassRows: int
+  - businessClassColumns: int
+  - economyClassRows: int
+  - economyClassColumns: int
+  + getFlightSeats(flight: Flight): List<FlightSeat>
+}
+
+class UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+abstract class User {
+  - username
+  - password
+}
+
+class Airline {
+  - name
+  - code
+}
+
+class Administrator {
+
+}
+
+class Customer {
+  - givenName
+  - surname
+  - email
+}
+
+class Booking {
+  - date: OffsetDateTime
+  + getTotalCost(): BigDecimal
+}
+
+class SeatBooking {
+  
+}
+
+class Passenger {
+  - givenName: String
+  - surname: String
+  - dateOfBirth: LocalDate
+  - nationality: String
+  - passportNumber: String
+}
+
+interface Repository<T, ID> {
+  + save(entity: T): T
+  + find(id: ID): Optional<T>
+  + remove(entity: T): 
+}
+
+interface AirportRepository {
+  + findAllAirports(): List<Airport>
+}
+
+interface BookingRepository {
+  + findAllCustomerBookings(customerId: EntityId): List<Booking>
+}
+
+interface PassengerRepository {}
+
+interface AirplaneProfileRepository {
+  + findAllAirplanes(): List<AirplaneProfile>
+}
+
+interface FlightRepository {
+  + searchFlights(search: FlightSearch): List<Flight>
+}
+
+interface FlightSeatRepository {}
+
+
+interface UserRepository {
+  + find(String username, String password: String): Optional<T>
+  + allUsers(): List<User>
+}
+
+interface CustomerRepository {
+
+}
+
+interface AdministratorRepository {
+  
+}
+
+interface AirlineRepository {
+  + findAllAirlines(): List<Airline>
+}
+
+class FlightSearch {
+  - departing: TimePeriod
+  - from: EntityId
+  - to: EntityId
+  - airline: EntityId
+}
+
+FlightRepository -down-|> Repository
+FlightSeatRepository -down-|> Repository
+AirportRepository -down-|> Repository
+PassengerRepository -down-|> Repository
+BookingRepository -down-|> Repository
+AirplaneProfileRepository -down-|> Repository
+UserRepository -down-|> Repository
+CustomerRepository -down-|> Repository
+AdministratorRepository -down-|> Repository
+AirlineRepository -down-|> Repository
+
+FlightRepository ..> FlightSearch: "searches with"
+
+FlightRepository ..up..> Flight: persists/retrieves
+FlightSeatRepository ..up..> FlightSeat: persists/retrieves
+AirportRepository ..up..> Airport: persists/retrieves
+PassengerRepository ..up..> Passenger: persists/retrieves
+BookingRepository ..up..> Booking: persists/retrieves
+AirplaneProfileRepository ..up..> AirplaneProfile: persists/retrieves
+UserRepository ..up..> User: persists/retrieves
+CustomerRepository ..up..> Customer: persists/retrieves
+AdministratorRepository ..up..> Administrator: persists/retrieves
+AirlineRepository ..up..> Airline: persists/retrieves
+
+DomainEntity "1"->"1" EntityId: id
+
+Flight -up-|> DomainEntity
+FlightSeat -up-|> DomainEntity
+Airport -up-|> DomainEntity
+Passenger -up-|> DomainEntity
+Booking -up-|> DomainEntity
+User -up-|> DomainEntity
+AirplaneProfile -up-|> DomainEntity
+
+Flight "*"--->"1" AirplaneProfile: airplaneProfile
+Flight "*"-->"1" Airline: airline
+Flight "1"-->"*" FlightSeat: seats
+Flight "1"-down->"*" FlightSeatAllocation: allocatedSeats
+Flight "*"->"1" Airport: origin
+Flight "*"->"1" Airport: destination
+Flight "1"-down->"*" StopOver: stopOvers
+Flight "*"-up->"1" FlightStatus: status
+
+FlightSeat "*"->"1" SeatClass
+FlightSeat "*"->"1" Flight : flight
+
+StopOver "*"->"1" Airport: location
+
+FlightSeatAllocation "*"->"1" Passenger: Passenger
+FlightSeatAllocation "0..1"->"1" FlightSeat: seat
+
+Airport "*"->"1" AirportStatus: status
+
+User "*"->"1" UserStatus: status
+
+Booking "*"->"1" Customer: customer
+Booking "1"->"1" SeatBooking: flightBooking
+Booking "1"->"0..1" SeatBooking: returnFlightBooking
+
+SeatBooking "*"->"1" Flight: flight
+SeatBooking "1"->"*" FlightSeatAllocation: allocations
+
+Passenger "*"->"0..1" Booking: booking
+
+Airline -up-|> User
+Administrator -up-|> User
+Customer -up-|> User
+
+
+@enduml

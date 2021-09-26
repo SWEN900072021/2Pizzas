@@ -29,7 +29,7 @@ public class BookingDto {
         private Airport destination;
         private List<SeatAllocation> seatAllocations;
         private List<StopOver> stopOvers;
-        private com.twopizzas.domain.flight.Flight.Status status;
+        private com.twopizzas.domain.flight.Flight.FlightStatus status;
         private Airline airline;
         private AirplaneProfile profile;
     }

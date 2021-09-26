@@ -74,17 +74,17 @@ public class UserMapperImplTests {
     @DisplayName("GIVEN user object in db WHEN update invoked THEN customer object updated in db")
     void testValidUpdate() {
         // GIVEN
-        User customerEntity = new Customer(EntityId.nextId(), "username", "password", "John", "Smith", "johnsmith@gmail.com", User.Status.ACTIVE);
-        User airlineEntity = new Airline(EntityId.nextId(), "airline", "password", "qantas", "QN", User.Status.ACTIVE);
-        User adminEntity = new Administrator(EntityId.nextId(), "admin", "password", User.Status.ACTIVE);
+        User customerEntity = new Customer(EntityId.nextId(), "username", "password", "John", "Smith", "johnsmith@gmail.com", User.UserStatus.ACTIVE);
+        User airlineEntity = new Airline(EntityId.nextId(), "airline", "password", "qantas", "QN", User.UserStatus.ACTIVE);
+        User adminEntity = new Administrator(EntityId.nextId(), "admin", "password", User.UserStatus.ACTIVE);
         mapper.create(customerEntity);
         mapper.create(airlineEntity);
         mapper.create(adminEntity);
 
         // WHEN
-        User updatedCustomerEntity = new Customer(customerEntity.getId(), "username", "newPassword", "John", "Smith", "johnsmith@gmail.com", User.Status.INACTIVE);
-        User updatedAirlineEntity = new Airline(airlineEntity.getId(), "airline", "newPassword", "qantas", "QN", User.Status.INACTIVE);
-        User updatedAdminEntity = new Administrator(adminEntity.getId(), "admin", "newPassword", User.Status.INACTIVE);
+        User updatedCustomerEntity = new Customer(customerEntity.getId(), "username", "newPassword", "John", "Smith", "johnsmith@gmail.com", User.UserStatus.INACTIVE);
+        User updatedAirlineEntity = new Airline(airlineEntity.getId(), "airline", "newPassword", "qantas", "QN", User.UserStatus.INACTIVE);
+        User updatedAdminEntity = new Administrator(adminEntity.getId(), "admin", "newPassword", User.UserStatus.INACTIVE);
         mapper.update(updatedCustomerEntity);
         mapper.update(updatedAirlineEntity);
         mapper.update(updatedAdminEntity);

@@ -13,7 +13,7 @@ public class Customer extends User {
     private final String lastName;
     private final String email;
 
-    public Customer(EntityId id, String username, String password, String givenName, String lastName, String email, Status status) {
+    public Customer(EntityId id, String username, String password, String givenName, String lastName, String email, UserStatus status) {
         super(id, username, password, status);
         this.givenName = notBlank(givenName, "givenName");
         this.lastName = notBlank(lastName, "lastName");
@@ -21,7 +21,7 @@ public class Customer extends User {
     }
 
     public Customer(String username, String password, String givenName, String lastName, String email) {
-        this(EntityId.nextId(), username, password, givenName, lastName, email, Status.ACTIVE);
+        this(EntityId.nextId(), username, password, givenName, lastName, email, UserStatus.ACTIVE);
     }
 
     @Override

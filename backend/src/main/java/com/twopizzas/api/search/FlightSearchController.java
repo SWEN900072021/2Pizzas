@@ -11,7 +11,6 @@ import com.twopizzas.domain.flight.FlightSearch;
 import com.twopizzas.web.*;
 import org.mapstruct.factory.Mappers;
 
-import javax.xml.crypto.Data;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +103,7 @@ public class FlightSearchController {
         }
 
         return RestResponse.ok(repository.searchFlights(builder.build()).stream()
-                .filter(f -> !f.getStatus().equals(Flight.Status.CANCELLED))
+                .filter(f -> !f.getStatus().equals(Flight.FlightStatus.CANCELLED))
                 .filter(f -> f.getDeparture().isAfter(OffsetDateTime.now()))
                 .map(MAPPER::map)
                 .collect(Collectors.toList()));

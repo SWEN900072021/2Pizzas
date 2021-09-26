@@ -15,7 +15,6 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,11 +43,11 @@ public class Flight extends DomainEntity {
     private final BigDecimal economyClassCost;
 
     @Setter
-    private Status status;
+    private FlightStatus status;
 
     public Flight(EntityId id, ValueHolder<List<FlightSeatAllocation>> allocatedSeats, AirplaneProfile airplaneProfile,
                   Airline airline, ValueHolder<List<FlightSeat>> seats, Airport origin, Airport destination,
-                  OffsetDateTime departure, OffsetDateTime arrival, List<StopOver> stopOvers, String code, Status status,
+                  OffsetDateTime departure, OffsetDateTime arrival, List<StopOver> stopOvers, String code, FlightStatus status,
                   BigDecimal firstClassCost, BigDecimal businessClassCost, BigDecimal economyClassCost) {
         super(id);
         this.allocatedSeats = notNull(allocatedSeats, "bookedSeats");
@@ -79,7 +78,7 @@ public class Flight extends DomainEntity {
     }
 
     public Flight(AirplaneProfile airplaneProfile, Airline airline, Airport origin, Airport destination, List<StopOver> stopOvers, String code, OffsetDateTime departure, OffsetDateTime arrival, BigDecimal firstClassCost, BigDecimal businessClassCost, BigDecimal economyClassCost) {
-        this(EntityId.nextId(), BaseValueHolder.of(new ArrayList<>()), airplaneProfile, airline, null, origin, destination, departure, arrival, stopOvers, code, Status.TO_SCHEDULE, firstClassCost, businessClassCost, economyClassCost);
+        this(EntityId.nextId(), BaseValueHolder.of(new ArrayList<>()), airplaneProfile, airline, null, origin, destination, departure, arrival, stopOvers, code, FlightStatus.TO_SCHEDULE, firstClassCost, businessClassCost, economyClassCost);
     }
 
     public SeatBooking allocateSeats(BookingRequest request) {
@@ -200,7 +199,7 @@ public class Flight extends DomainEntity {
         return arrival.atZoneSameInstant(destination.getUtcOffset()).toOffsetDateTime();
     }
 
-    public enum Status {
+    public enum FlightStatus {
         CANCELLED,
         TO_SCHEDULE,
         DELAYED,

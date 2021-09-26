@@ -20,7 +20,7 @@ public class FlightDto {
     private Airport destination;
     private List<Seat> seats;
     private List<StopOver> stopOvers;
-    private Flight.Status status;
+    private Flight.FlightStatus status;
     private Airline airline;
     private String code;
     private AirplaneProfile profile;

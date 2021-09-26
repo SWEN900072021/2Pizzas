@@ -5,12 +5,11 @@ import lombok.Data;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Data
 public class UpdateFlightDto {
-    private Flight.Status status;
+    private Flight.FlightStatus status;
     private OffsetDateTime arrival;
     private OffsetDateTime departure;
     private ArrayList<NewFlightDto.StopOver> stopOvers;

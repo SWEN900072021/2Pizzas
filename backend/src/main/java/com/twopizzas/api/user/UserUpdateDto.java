@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class UserUpdateDto {
-    private User.Status status;
+    private User.UserStatus status;
 
     List<String> validate() {
         List<String> errors = new ArrayList<>();

@@ -1,0 +1,264 @@
+@startuml application layer class diagram
+
+class AirlineController {
+  + getAllAirlines(): RestResponse<List<AirlineDto>>
+  + createAirline(body: NewAirlineDto): RestResponse<AirlineDto>
+}
+
+interface AirlineMapper {
+  + map(source: Airline): AirlineDto
+}
+
+AirlineController ..> Airline: "delegates to"
+AirlineController -down-> AirlineMapper: MAPPER
+AirlineMapper ..> Airline: "maps"
+AirlineController -> AirlineRepository: repository
+
+class AirportController {
+  + getAllAirports(): RestResponse<List<AirportDto>>
+  + createAirport(body: NewAirportDto): RestResponse<AirportDto>
+  + updateAirport(id: String, body: AirportUpdateDto): RestResponse<AirportDto>
+}
+
+interface AirportMapper {
+  + map(source: Airport): AirportDto
+}
+
+AirportController ..> Airport: "delegates to"
+AirportController -down-> AirportMapper: MAPPER
+AirportMapper ..> Airport: "maps"
+AirportController -> AirportRepository: repository
+
+class AirplaneProfileController {
+  + getAllAirplaneProfiles(): RestResponse<List<AiplaneProfileDto>>
+  + createAirplaneProfile(body: NewAirplaneProfileDto): RestResponse<AiplaneProfileDto>
+}
+
+interface AirplaneProfileMapper {
+  + map(source: AirplaneProfile): AirplaneProfileDto
+}
+
+AirplaneProfileController ..> AirplaneProfile: "delegates to"
+AirplaneProfileController -down-> AirplaneProfileMapper: MAPPER
+AirplaneProfileMapper ..> AirplaneProfile: "maps"
+AirplaneProfileController -> AirplaneProfileRepository: repository
+
+interface AuthenticationProvider {
+  + authenticate(token: String): Optional<User>
+  + login(username: String, password: String): Optional<String>
+  + login(user: User): String
+}
+
+class JwtAuthenticationProvider {}
+
+JwtAuthenticationProvider .|> AuthenticationProvider
+
+class AuthenticationController {
+  + createUser(body: SignupRequestDto): RestResponse<SignupResponseDto>
+  + login(body: LoginRequestDto): RestResponse<LoginResponseDto>
+}
+
+AuthenticationController ..> User: "delegates to"
+AuthenticationController -> UserRepository: repository
+AuthenticationController -up-> AuthenticationProvider: authenticationProvider
+ 
+class BookingController {
+  + getCustomerBookings(User authenticatedUser): RestResponse<List<BookingDto>>
+  + createBooking(body: NewBookingDto): RestResponse<BookingDto>
+}
+
+interface BookingMapper {
+  + map(source: Booking): BookingDto
+}
+
+BookingController ..> Booking: "delegates to"
+BookingController ..> Flight: "delegates to"
+BookingController ..> Passenger: "delegates to"
+BookingController -down-> BookingMapper: MAPPER
+BookingMapper ..> Booking: maps
+BookingController -> BookingRepository: bookingRepository
+BookingController -> FlightRepository: flightRepository
+BookingController -> PassengerRepository: passengerRepository
+
+class FlightController {
+  + getAllFlights(user: User): RestResponse<List<FlightDto>>
+  + createFlight(body: NewFlightDto, user: User): RestResponse<FlightDto>
+  + getFlightById(id: String, user: User): RestResponse<FlightDto>
+  + updateFlight(id: String, body: UpdateFlightDto, user: User): RestResponse<FlightDto>
+  + getFlightPassengers(id: String, user: User): RestResponse<FlightPassengerDto>
+}
+
+interface FlightMapper {
+  + map(source: Flight): FlightDto
+  + map(source: FlightSeatAllocation): FlightPassengerDto
+}
+
+FlightController ..> Flight: "delegates to"
+FlightController ..> FlightSeat: "delegates to"
+FlightController ..> Airport: "delegates to"
+FlightController ..> AirplaneProfile: "delegates to"
+FlightController ..> User: "delegates to"
+FlightController -down-> FlightMapper: MAPPER
+FlightMapper ..> Flight: "maps"
+FlightController -> FlightRepository: repository
+FlightController -> FlightSeatRepository: flightSeatRepository
+FlightController -> AirportRepository: airportRepository
+FlightController -> AirplaneProfileRepository: airplaneProfileRepository
+
+class FlightSearchController {
+  + searchFlights(destination String, origin String, departingAfter ...): RestResponse<List<FlightSearchResultDto>>
+}
+
+interface FlightSearchMapper {
+  + map(source: Flight): FlightSearchResultDto
+}
+
+FlightSearchController ..> Flight: "delegates to"
+FlightSearchController ..> FlightSearch: creates
+FlightSearchController -down-> FlightSearchMapper: MAPPER
+FlightSearchMapper ..> Flight: "maps"
+FlightSearchController -> FlightRepository: repository
+
+class UserController {
+  + getAllUsers(): RestResponse<List<UserDto>>
+  + updateUser(body: UserUpdateDto, id: String): RestResponse<UserDto>
+  + creatAdmin(body: NewAdminDto): RestResponse<UserDto>
+}
+
+interface UserMapper {
+  + map(source: Flight): FlightSearchResultDto
+}
+
+UserController ..> User: "delegates to"
+UserController ..> Administrator: creates
+UserController -down-> UserMapper: MAPPER
+UserMapper ..> User: "maps"
+UserController -> UserRepository: repository
+
+interface Servlet {
+  + service(request: ServletRequest, response: ServletResponse)
+}
+
+class DispatcherServlet {
+
+} 
+
+interface HttpRequestDispatcher {
+  + dispatch(request: HttpRequest): HttpReponse
+}
+
+interface HttpRequestDispatcherImpl {
+  + dispatch(request: HttpRequest): HttpReponse
+}
+
+interface UnitOfWork {
+  + start()
+  + commit()
+  + rollback()
+}
+
+interface IdentityMapper {
+  get(id: ID): T
+  testAndGet(entity: T): T
+  reset() 
+}
+
+HttpRequestDispatcherImpl .up.|> HttpRequestDispatcher
+HttpRequestDispatcherImpl -> UnitOfWork: unitOfWork
+HttpRequestDispatcherImpl -> IdentityMapper: identityMapper
+HttpRequestDispatcherImpl -> WebApplicationContext: context
+
+
+interface HttpRequestDelegate {
+  + handle(request HttpRequest): RestResponse
+  + getPathResolver(): PathResolver
+  + getMethods(): Set<HttpMethod>
+}
+
+class CompositeHttpRequestDelegate {
+
+}
+
+class BaseRequestDelegate {
+  - method: HttpMethod
+  - targetController: Object
+  - handler: Method
+  - mapper: ObjectMapper
+}
+
+BaseRequestDelegate .down.> AirlineController: "invokes controller method"
+BaseRequestDelegate .down.> AirportController: "invokes controller method"
+BaseRequestDelegate .down.> AirplaneProfileController: "invokes controller method"
+BaseRequestDelegate .down.> BookingController: "invokes controller method"
+BaseRequestDelegate .down.> FlightController: "invokes controller method"
+BaseRequestDelegate .down.> FlightSearchController: "invokes controller method"
+BaseRequestDelegate .down.> UserController: "invokes controller method"
+BaseRequestDelegate .down.> AuthenticationController: "invokes controller method"
+BaseRequestDelegate -down-> AuthenticationProvider: authenticationProvider
+
+class PathResolver {
+  - path: String
+  - tokens: List<PathToken>
+  + test(path: String): PathResult
+}
+
+class WebApplicationContext {
+  + getDelegatesForPath(path: Path): List<HttpRequestDelegate>
+  + getObjectMapper(): ObjectMapper
+}
+
+class WebApplicationContextImpl {
+  - objectMapper: ObjectMapper
+  + init()
+  # loadDelegates(): List<HttpRequestDelegate>
+}
+
+WebApplicationContextImpl .up.|> WebApplicationContext
+WebApplicationContextImpl -down->"*" HttpRequestDelegate: delegates
+WebApplicationContextImpl ->"1" AuthenticationProvider: authenticationProvider
+
+
+DispatcherServlet .up.|> Servlet
+DispatcherServlet -> HttpRequestDispatcher: dispatcher
+CompositeHttpRequestDelegate .up.|> HttpRequestDelegate
+BaseRequestDelegate .up.|> HttpRequestDelegate
+CompositeHttpRequestDelegate ->"*" HttpRequestDelegate: delegates
+CompositeHttpRequestDelegate ->"1" PathResolver: pathResolver
+BaseRequestDelegate ->"1" PathResolver: pathResolver
+
+HttpRequestDispatcher -down->"*" HttpRequestDelegate: delegates
+
+class Flight {}
+class FlightSeat {}
+class Airport {}
+class AirplaneProfile {}
+abstract class User {}
+class Airline {}
+class Administrator {}
+class Booking {}
+class Passenger {}
+interface AirportRepository {}
+interface BookingRepository {}
+interface PassengerRepository {}
+interface AirplaneProfileRepository {}
+interface FlightRepository {}
+interface FlightSeatRepository {}
+interface UserRepository {}
+interface AdministratorRepository {}
+interface AirlineRepository {}
+class FlightSearch {}
+
+FlightRepository ..> FlightSearch: "searches with"
+
+FlightRepository .up.> Flight: persists/retrieves
+FlightSeatRepository .up.> FlightSeat: persists/retrieves
+AirportRepository .up.> Airport: persists/retrieves
+PassengerRepository .up.> Passenger: persists/retrieves
+BookingRepository .up.> Booking: persists/retrieves
+AirplaneProfileRepository .up.> AirplaneProfile: persists/retrieves
+UserRepository .up.> User: persists/retrieves
+AdministratorRepository .up.> Administrator: persists/retrieves
+AirlineRepository .up.> Airline: persists/retrieves
+
+
+@enduml

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class AirportUpdateDto {
-    private Airport.Status status;
+    private Airport.AirportStatus status;
 
     List<String> validate() {
         List<String> errors = new ArrayList<>();

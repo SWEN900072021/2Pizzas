@@ -197,7 +197,7 @@ class FlightMapperImpl implements FlightMapper {
                     resultSet.getObject(COLUMN_ARRIVAL, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
                     new FlightStopOversLoader(connectionPool, airportMapper, flightId).load().get(),
                     resultSet.getObject(COLUMN_CODE, String.class),
-                    Flight.Status.valueOf(resultSet.getObject(COLUMN_STATUS, String.class)),
+                    Flight.FlightStatus.valueOf(resultSet.getObject(COLUMN_STATUS, String.class)),
                             resultSet.getObject(COLUMN_FIRST_CLASS_COST, BigDecimal.class),
                             resultSet.getObject(COLUMN_BUSINESS_CLASS_COST, BigDecimal.class),
                             resultSet.getObject(COLUMN_ECONOMY_CLASS_COST, BigDecimal.class)

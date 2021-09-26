@@ -40,7 +40,7 @@ public class JwtAuthenticationProviderTests {
         // GIVEN
         User user = Mockito.mock(User.class);
         Mockito.when(user.getId()).thenReturn(EntityId.nextId());
-        Mockito.when(user.getStatus()).thenReturn(User.Status.ACTIVE);
+        Mockito.when(user.getStatus()).thenReturn(User.UserStatus.ACTIVE);
         Mockito.when(userRepository.find(Mockito.any(), Mockito.any())).thenReturn(Optional.of(user));
         Mockito.when(userRepository.find(Mockito.any())).thenReturn(Optional.of(user));
         String username = "username";
@@ -65,7 +65,7 @@ public class JwtAuthenticationProviderTests {
         // GIVEN
         User user = Mockito.mock(User.class);
         Mockito.when(user.getId()).thenReturn(EntityId.nextId());
-        Mockito.when(user.getStatus()).thenReturn(User.Status.ACTIVE);
+        Mockito.when(user.getStatus()).thenReturn(User.UserStatus.ACTIVE);
         Mockito.when(userRepository.find(Mockito.any(), Mockito.any())).thenReturn(Optional.of(user));
         Mockito.when(userRepository.find(Mockito.any())).thenReturn(Optional.of(user));
         String username = "username";
