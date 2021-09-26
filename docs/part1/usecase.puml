@@ -6,37 +6,35 @@ actor :Administrator: as ad
 
 rectangle "Online Travel Booking Application Use Cases" {
   left to right direction
-  (Administrator logs in) as u1
-  (Administrator creates Airport) as u2
-  (Administrator disables Airport) as u3
-  (Administrator creates Airline) as u4
-  (Administrator searches for Airline) as u5
-  (Administrator removes Airline) as u6
-  (Airline logs in) as u12
-  (Airline creates Flight) as u7
-  (Airline cancels Flight) as u8
-  (Airline edits Flight) as u9
-  (Customer books Flight) as u10
-  (Customer searches for a Flight) as u11
-  (Customer looks up booking information) as u13
-  (Customer logs in) as u14
+  (Login) as u1
+  (Create  Airport) as u2
+  (Disable Airport) as u3
+  (Create Airline) as u4
+  (Disable Airline) as u5
+  (Create Flight) as u7
+  (Manage Flight) as u8
+  (View Flight Manifest) as u9
+  (Book Flights) as u10
+  (Search Flights) as u11
+  (View Booking Information) as u12
+  (Signup) as u13
 
   ad -- u1
+  ar -- u1
+  c -- u1
   ad -- u2
   ad -- u3
   ad -- u4
   ad -- u5
-  ad -- u6
-  ar -- u12
   ar -- u7
   ar -- u8
   ar -- u9
   c -- u10
   c -- u11
-  c -- u8
-  c -- u9
+  c -- u12
   c -- u13
-  c -- u14
+  u10 .> u13: include 
+  u10 .> u1: include 
 }
 
 @enduml

@@ -100,8 +100,9 @@ public class Flight extends DomainEntity {
                 ));
 
         Set<FlightSeat> availableSeats = getAvailableSeats();
+        Set<FlightSeat> seatsToBook = getSeats(seatNames);
 
-        Set<FlightSeat> bookingConflicts = getSeats().stream()
+        Set<FlightSeat> bookingConflicts = seatsToBook.stream()
                 .filter(s -> !availableSeats.contains(s))
                 .collect(Collectors.toSet());
 
@@ -133,8 +134,8 @@ public class Flight extends DomainEntity {
         if (matchingSeats.size() != seatNames.size()) {
             List<String> matchedNames = matchingSeats.stream().map(FlightSeat::getName).collect(Collectors.toList());
             throw new BusinessRuleException(String.format("seats %s are invalid for flight %s",
-                    id,
-                    seatNames.stream().filter(n -> !matchedNames.contains(n)).collect(Collectors.toList())));
+                    seatNames.stream().filter(n -> !matchedNames.contains(n)).collect(Collectors.toList()),
+                    id));
         }
 
         return matchingSeats;
