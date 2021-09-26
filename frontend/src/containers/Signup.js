@@ -82,32 +82,29 @@ const Signup = () => {
     AuthenticationService.signup({
       data: user,
       onSuccess: (res) => {
-        if (res.status === 200) {
-          setToken(res.data.token)
-          setUser({
-            username: res.data.username,
-            userType: res.data.userTYpe
-          })
-          setLoading(false)
-          if (isCreatingBooking) {
-            setCreatingBooking(false)
-            if (res.data.userType !== 'customer') {
-              history.push('/dashboard')
-            } else {
-              history.push('/booking/create')
-            }
-          } else if (res.data.userType !== 'customer') {
+        setToken(res.data.token)
+        setUser({
+          username: res.data.username,
+          userType: res.data.userTYpe
+        })
+        setLoading(false)
+        if (isCreatingBooking) {
+          setCreatingBooking(false)
+          if (res.data.userType !== 'customer') {
             history.push('/dashboard')
           } else {
-            history.push('/')
+            history.push('/booking/create')
           }
+        } else if (res.data.userType !== 'customer') {
+          history.push('/dashboard')
+        } else {
+          history.push('/')
         }
       },
-      onError: (err) => {
+      onError: () => {
         // console.log(err)
         setLoading(false)
         setErrorMessage('Cannot create user.')
-        Promise.reject(err)
       }
     })
   }

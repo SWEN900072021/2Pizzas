@@ -29,14 +29,12 @@ const FlightForm = ({ showButton }) => {
   const [airports, setAirports] = useState(null)
 
   useEffect(() => {
-    if (!airports) {
-      refetchAirports().then((res) => {
-        const validAirports = res.data.filter(
-          (airport) => airport.status === 'ACTIVE'
-        )
-        setAirports(validAirports)
-      })
-    }
+    refetchAirports().then((res) => {
+      const validAirports = res.data.filter(
+        (airport) => airport.status === 'ACTIVE'
+      )
+      setAirports(validAirports)
+    })
   }, [airports, refetchAirports])
 
   /* -------------------------------------------------------------------------- */

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router'
 import { Table, Tag, Space } from 'antd'
 import { FaPlus } from 'react-icons/fa'
+import { useQueryClient } from 'react-query'
 
 import Spinner from '../../components/common/Spinner'
 import { useSessionStore } from '../../hooks/Store'
@@ -37,10 +38,8 @@ const ListAirports = () => {
   }, [token, user, history])
 
   useEffect(() => {
-    if (!airports) {
-      refetchAirports()
-    }
-  }, [airports, refetchAirports])
+    refetchAirports()
+  }, [refetchAirports])
 
   const heading = (
     <header className='flex items-center justify-between'>
@@ -64,6 +63,8 @@ const ListAirports = () => {
   }
 
   const [isUpdating, setIsUpdating] = useState(null)
+  const queryClient = useQueryClient()
+  const resetSession = useSessionStore((st) => st.resetSession)
 
   const updateAirport = (id, status) => {
     setIsUpdating(id)
@@ -80,8 +81,18 @@ const ListAirports = () => {
             setIsUpdating(null)
           })
       },
-      onError: () => {
+      onError: (err) => {
         setIsUpdating(null)
+
+        if (
+          err.response &&
+          err.response.status &&
+          err.response.status === 401
+        ) {
+          queryClient.clear()
+          resetSession()
+          history.push('/login')
+        }
         // console.log(err)
       }
     })
@@ -89,7 +100,7 @@ const ListAirports = () => {
 
   const renderAirports = () => {
     if (isLoading) {
-      return <Spinner size={6} />
+      return <p>Loading...</p>
     }
 
     if (isSuccess && airports) {
@@ -189,7 +200,7 @@ const ListAirports = () => {
                     )}
                   </>
                 )}
-                {record.id === isUpdating && <Spinner size={6} />}
+                {record.id === isUpdating && <Spinner size={4} />}
               </Space>
             )}
           />
@@ -201,13 +212,13 @@ const ListAirports = () => {
       return <p>Something went wrong</p>
     }
 
-    return <Spinner size={6} />
+    return <p>Loading...</p>
   }
 
   return (
     <main className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'>
       {!validUser ? (
-        <Spinner size={6} />
+        <p>Loading...</p>
       ) : (
         <section className='flex flex-col w-full h-full max-w-3xl gap-4'>
           {heading}

@@ -3,6 +3,7 @@ import { Input, Select, DatePicker, InputNumber } from 'antd'
 import { useHistory, useParams } from 'react-router'
 import moment from 'moment-timezone'
 import { v4 as uuid } from 'uuid'
+import { useQueryClient } from 'react-query'
 
 import Spinner from '../../components/common/Spinner'
 import useAirplaneProfiles from '../../hooks/useAirplaneProfiles'
@@ -47,23 +48,20 @@ const EditFlight = () => {
     isSuccess: airplaneProfilesSuccess,
     refetch: refetchAirplaneProfiles
   } = useAirplaneProfiles()
+
   const { isError: airportsError, refetch: refetchAirports } =
     useAirports()
 
   const [airports, setAirports] = useState(null)
 
   useEffect(() => {
-    if (!airplaneProfiles) {
-      refetchAirplaneProfiles()
-    }
-    if (!airports) {
-      refetchAirports().then((res) => {
-        const activeAirports = res.data.filter(
-          (airport) => airport.status === 'ACTIVE'
-        )
-        setAirports(activeAirports)
-      })
-    }
+    refetchAirplaneProfiles()
+    refetchAirports().then((res) => {
+      const activeAirports = res.data.filter(
+        (airport) => airport.status === 'ACTIVE'
+      )
+      setAirports(activeAirports)
+    })
   }, [
     airplaneProfiles,
     airports,
@@ -71,19 +69,23 @@ const EditFlight = () => {
     refetchAirports
   ])
 
+  const queryClient = useQueryClient()
+  const resetSession = useSessionStore((state) => state.resetSession)
+
   useEffect(() => {
-    if (airplaneProfilesError) {
+    if (airportsError || airplaneProfilesError || flightsError) {
+      queryClient.clear()
+      resetSession()
       history.push('/')
     }
-
-    if (airportsError) {
-      history.push('/')
-    }
-
-    if (flightsError) {
-      history.push('/')
-    }
-  }, [airportsError, airplaneProfilesError, history, flightsError])
+  }, [
+    airportsError,
+    airplaneProfilesError,
+    history,
+    flightsError,
+    queryClient,
+    resetSession
+  ])
 
   /* -------------------------------------------------------------------------- */
   /*                                 Form State                                 */
@@ -180,22 +182,40 @@ const EditFlight = () => {
 
     if (flightError) {
       setError(flightError)
-    } else {
-      setLoading(true)
-      // console.log('Update to flight:', updatedFlight)
-
-      FlightService.updateFlight({
-        data: { token, id: flightId, flight: updatedFlight },
-        onSuccess: () => {
-          setLoading(false)
-          history.push(`/dashboard/view/flights/${flightId}`)
-        },
-        onError: (err) => {
-          setLoading(false)
-          setError(err)
-        }
-      })
+      return
     }
+
+    setLoading(true)
+    // console.log('Update to flight:', updatedFlight)
+
+    FlightService.updateFlight({
+      data: { token, id: flightId, flight: updatedFlight },
+      onSuccess: () => {
+        setLoading(false)
+        history.push(`/dashboard/view/flights/${flightId}`)
+      },
+      onError: (err) => {
+        setLoading(false)
+
+        if (
+          err.response &&
+          err.response.status &&
+          err.response.status === 401
+        ) {
+          queryClient.clear()
+          resetSession()
+          history.push('/login')
+        }
+
+        if (
+          err.response &&
+          err.response.data &&
+          err.response.data.message
+        ) {
+          setError(err.response.data.message)
+        }
+      }
+    })
   }
 
   /* -------------------------------------------------------------------------- */
@@ -527,9 +547,9 @@ const EditFlight = () => {
               <p className='text-red-500'>{error || ''}</p>
               <button
                 type='submit'
-                className='self-end p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
+                className='self-end w-20 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
               >
-                {loading ? <Spinner size={6} /> : 'Submit'}
+                {loading ? <Spinner size={5} /> : 'Submit'}
               </button>
             </span>
           </form>

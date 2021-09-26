@@ -13,6 +13,8 @@ import {
   Button
 } from 'antd'
 import moment from 'moment-timezone'
+import { useQueryClient } from 'react-query'
+
 import {
   useSessionStore,
   useFlightStore,
@@ -182,12 +184,36 @@ const CreateBooking = () => {
 
   const invalidDOB = (current) => current > moment()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const validate = () => {
+    state.forEach((passenger) => {
+      if (passenger.givenName === '') {
+        return 'Please enter a first name for all passengers.'
+      }
+
+      if (passenger.surname === '') {
+        return 'Please enter a surname for all passengers.'
+      }
+
+      if (passenger.passportNumber === '') {
+        return 'Please enter a passport number for all passengers.'
+      }
+
+      return null
+    })
+  }
+
+  /* -------------------------------------------------------------------------- */
+
+  const queryClient = useQueryClient()
+  const resetSession = useSessionStore((st) => st.resetSession)
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // [[pass1 seatAlloc], [pass2 seatAlloc]]
 
-    setLoading(true)
+    setError(null)
+
     const seatAllocations = []
     state.forEach((passenger) => {
       const individualSeatAllocation = []
@@ -239,6 +265,15 @@ const CreateBooking = () => {
     // console.log('booking')
     // console.log(booking)
 
+    const bookingError = validate()
+
+    if (bookingError) {
+      setError(bookingError)
+      return
+    }
+
+    setLoading(true)
+
     BookingService.createBooking(
       token,
       booking,
@@ -248,7 +283,25 @@ const CreateBooking = () => {
       },
       (err) => {
         setLoading(false)
-        console.log(err)
+
+        if (
+          err.response &&
+          err.response.status &&
+          err.response.status === 401
+        ) {
+          queryClient.clear()
+          resetSession()
+          history.push('/login')
+        }
+
+        if (
+          err.response &&
+          err.response.data &&
+          err.response.data.message
+        ) {
+          setError(err.response.data.message)
+        }
+        // console.log(err)
       }
     )
 
@@ -741,12 +794,15 @@ const CreateBooking = () => {
             {passengerForm}
           </Collapse>
         </form>
-        <Button
-          onClick={handleSubmit}
-          className='flex items-center self-end justify-center w-20 h-10 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
-        >
-          {loading ? <Spinner size={5} /> : 'Submit'}
-        </Button>
+        <span className='flex items-center justify-end w-full gap-3'>
+          <p className='text-red-500'>{error || ''}</p>
+          <Button
+            onClick={handleSubmit}
+            className='flex items-center self-end justify-center w-20 h-10 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
+          >
+            {loading ? <Spinner size={5} /> : 'Submit'}
+          </Button>
+        </span>
       </section>
     </main>
   )

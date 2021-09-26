@@ -9,9 +9,9 @@ import {
   FaPlaneDeparture
 } from 'react-icons/fa'
 import { Listbox, Transition } from '@headlessui/react'
+import { useQueryClient } from 'react-query'
 import { BiCheck, BiChevronDown } from 'react-icons/bi'
 import { useHistory, useParams } from 'react-router'
-import Spinner from '../../components/common/Spinner'
 import { useSessionStore } from '../../hooks/Store'
 import useBookings from '../../hooks/useBookings'
 
@@ -39,9 +39,12 @@ const ViewBooking = () => {
   const { data, isLoading, isSuccess, isError } = useBookings(token)
   const [booking, setBooking] = useState(null)
 
+  const queryClient = useQueryClient()
+
   useEffect(() => {
     if (isError) {
       resetSession()
+      queryClient.clear()
       history.push('/')
     }
 
@@ -50,7 +53,15 @@ const ViewBooking = () => {
       // console.log(currentBooking)
       setBooking(currentBooking)
     }
-  }, [data, isSuccess, id, history, isError, resetSession])
+  }, [
+    data,
+    isSuccess,
+    id,
+    history,
+    isError,
+    resetSession,
+    queryClient
+  ])
 
   const goBack = () => {
     history.goBack()
@@ -419,7 +430,7 @@ const ViewBooking = () => {
   return (
     <main className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'>
       {!validUser || !isSuccess || !booking ? (
-        <div>{isLoading && <Spinner size={6} />}</div>
+        <div>{isLoading && <p>Loading...</p>}</div>
       ) : (
         <section className='flex flex-col w-full max-w-lg gap-4'>
           <header className='flex flex-col items-start self-start w-full gap-2'>

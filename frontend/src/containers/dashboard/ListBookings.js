@@ -10,7 +10,6 @@ import { Table, Tag } from 'antd'
 import { useSessionStore } from '../../hooks/Store'
 
 // Containers and Components
-import Spinner from '../../components/common/Spinner'
 import useBookings from '../../hooks/useBookings'
 
 const { Column, ColumnGroup } = Table
@@ -223,12 +222,12 @@ const ListBookings = ({ bookingsStatus }) => {
   return (
     <main className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'>
       {!validUser ? (
-        <Spinner size={6} />
+        <p>Loading...</p>
       ) : (
         <section className='flex flex-col w-full h-full max-w-lg gap-4'>
           {heading}
           <hr />
-          {isLoading && <Spinner size={6} />}
+          {isLoading && <p>Loading...</p>}
           {isSuccess && renderBookings()}
         </section>
       )}

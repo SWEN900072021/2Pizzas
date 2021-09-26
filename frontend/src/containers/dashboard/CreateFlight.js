@@ -5,6 +5,7 @@ import { useHistory } from 'react-router'
 import moment from 'moment-timezone'
 import { v4 as uuid } from 'uuid'
 import { BsTrashFill } from 'react-icons/bs'
+import { useQueryClient } from 'react-query'
 
 import Spinner from '../../components/common/Spinner'
 import useAirplaneProfiles from '../../hooks/useAirplaneProfiles'
@@ -32,17 +33,13 @@ const CreateFlight = () => {
   const [airports, setAirports] = useState(null)
 
   useEffect(() => {
-    if (!airplaneProfiles) {
-      refetchAirplaneProfiles()
-    }
-    if (!airports) {
-      refetchAirports().then((res) => {
-        const activeAirports = res.data.filter(
-          (airport) => airport.status === 'ACTIVE'
-        )
-        setAirports(activeAirports)
-      })
-    }
+    refetchAirplaneProfiles()
+    refetchAirports().then((res) => {
+      const activeAirports = res.data.filter(
+        (airport) => airport.status === 'ACTIVE'
+      )
+      setAirports(activeAirports)
+    })
   }, [
     airplaneProfiles,
     airports,
@@ -118,11 +115,11 @@ const CreateFlight = () => {
 
       state.stopOvers.forEach((stopOver) => {
         if (stopOver.arrival.isAfter(stopOver.departure)) {
-          return `Arrival at stopover ${stopoverIndex} must be after departure from it`
+          return `Arrival at stopover ${stopoverIndex} must be before departure from it`
         }
 
         if (stopOver.departure.isBefore(stopOver.arrival)) {
-          return `Departure at stopover ${stopoverIndex} must be before arrival to it`
+          return `Departure from stopover ${stopoverIndex} must be after arrival to it`
         }
 
         if (
@@ -146,6 +143,11 @@ const CreateFlight = () => {
     }
     return null
   }
+
+  /* -------------------------------------------------------------------------- */
+
+  const queryClient = useQueryClient()
+  const resetSession = useSessionStore((st) => st.resetSession)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -173,20 +175,40 @@ const CreateFlight = () => {
 
     if (flightError) {
       setError(flightError)
-    } else {
-      setLoading(true)
-      FlightService.createFlight({
-        data: { token, flight },
-        onSuccess: () => {
-          setLoading(false)
-          history.push('/dashboard/view/flights')
-        },
-        onError: (err) => {
-          setLoading(false)
-          console.log(err)
-        }
-      })
+      return
     }
+
+    setLoading(true)
+    FlightService.createFlight({
+      data: { token, flight },
+      onSuccess: () => {
+        setLoading(false)
+        history.push('/dashboard/view/flights')
+      },
+      onError: (err) => {
+        setLoading(false)
+
+        if (
+          err.response &&
+          err.response.status &&
+          err.response.status === 401
+        ) {
+          queryClient.clear()
+          resetSession()
+          history.push('/login')
+        }
+
+        if (
+          err.response &&
+          err.response.data &&
+          err.response.data.message &&
+          err.response.status === 400
+        ) {
+          setError(err.response.data.reason)
+        }
+        // console.log(err)
+      }
+    })
   }
 
   const invalidDeparture = (current) => {
@@ -850,7 +872,7 @@ const CreateFlight = () => {
                 type='submit'
                 className='w-20 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
               >
-                {loading ? <Spinner size={6} /> : 'Submit'}
+                {loading ? <Spinner size={5} /> : 'Submit'}
               </button>
             </span>
           </form>

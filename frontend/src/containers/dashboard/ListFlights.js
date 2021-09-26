@@ -4,8 +4,8 @@ import { Table, Tag, Space } from 'antd'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import { FaPlus } from 'react-icons/fa'
+import { useQueryClient } from 'react-query'
 
-import Spinner from '../../components/common/Spinner'
 import { useSessionStore } from '../../hooks/Store'
 import useFlights from '../../hooks/useFlights'
 
@@ -37,6 +37,17 @@ const ListFlights = () => {
     refetch: refetchFlights
   } = useFlights(token)
 
+  const queryClient = useQueryClient()
+  const resetSession = useSessionStore((state) => state.resetSession)
+
+  useEffect(() => {
+    if (isError) {
+      queryClient.clear()
+      resetSession()
+      history.push('/')
+    }
+  }, [history, isError, queryClient, resetSession])
+
   useEffect(() => {
     refetchFlights()
   }, [refetchFlights])
@@ -64,7 +75,7 @@ const ListFlights = () => {
 
   const renderFlights = () => {
     if (isLoading) {
-      return <Spinner size={6} />
+      return <p>Loading...</p>
     }
 
     if (isSuccess && flights) {
@@ -223,13 +234,13 @@ const ListFlights = () => {
       return <p>Something went wrong</p>
     }
 
-    return <Spinner size={6} />
+    return <p>Loading...</p>
   }
 
   return (
     <main className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'>
       {!validUser ? (
-        <Spinner size={6} />
+        <p>Loading...</p>
       ) : (
         <section className='flex flex-col w-full h-full max-w-3xl gap-4'>
           {heading}

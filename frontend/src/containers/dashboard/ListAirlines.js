@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router'
 import { Table, Space, Tag } from 'antd'
 import { FaPlus } from 'react-icons/fa'
+import { useQueryClient } from 'react-query'
 
 import Spinner from '../../components/common/Spinner'
 import { useSessionStore } from '../../hooks/Store'
@@ -37,12 +38,8 @@ const ListAirlines = () => {
   }, [token, user, history])
 
   useEffect(() => {
-    // console.log(airlines)
-
-    if (!airlines) {
-      refetchAirlines()
-    }
-  }, [airlines, refetchAirlines])
+    refetchAirlines()
+  }, [refetchAirlines])
 
   const heading = (
     <header className='flex items-center justify-between'>
@@ -67,6 +64,9 @@ const ListAirlines = () => {
 
   const [isUpdating, setIsUpdating] = useState(null)
 
+  const queryClient = useQueryClient()
+  const resetSession = useSessionStore((st) => st.resetSession)
+
   const updateAirline = (id, status) => {
     setIsUpdating(id)
 
@@ -82,8 +82,19 @@ const ListAirlines = () => {
             setIsUpdating(null)
           })
       },
-      onError: () => {
+      onError: (err) => {
         setIsUpdating(null)
+
+        if (
+          err.response &&
+          err.response.status &&
+          err.response.status === 401
+        ) {
+          queryClient.clear()
+          resetSession()
+          history.push('/login')
+        }
+
         // console.log(err)
       }
     })
@@ -91,7 +102,7 @@ const ListAirlines = () => {
 
   const renderAirlines = () => {
     if (isLoading) {
-      return <Spinner size={6} />
+      return <p>Loading...</p>
     }
 
     if (isSuccess && airlines) {
@@ -114,7 +125,6 @@ const ListAirlines = () => {
           <Column
             title='Name'
             dataIndex='name'
-            width={80}
             sorter={{
               compare: (a, b) => sort(a.name, b.name)
             }}
@@ -122,7 +132,6 @@ const ListAirlines = () => {
           <Column
             title='Code'
             dataIndex='code'
-            width={80}
             sorter={{
               compare: (a, b) => sort(a.code, b.code)
             }}
@@ -176,7 +185,7 @@ const ListAirlines = () => {
                     )}
                   </>
                 )}
-                {record.id === isUpdating && <Spinner size={6} />}
+                {record.id === isUpdating && <Spinner size={4} />}
               </Space>
             )}
           />
@@ -188,7 +197,7 @@ const ListAirlines = () => {
       return <p>Something went wrong</p>
     }
 
-    return <Spinner size={6} />
+    return <p>Loading...</p>
   }
 
   return (
@@ -197,7 +206,7 @@ const ListAirlines = () => {
       className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'
     >
       {!validUser ? (
-        <Spinner size={6} />
+        <p>Loading...</p>
       ) : (
         <section className='flex flex-col w-full h-full max-w-3xl gap-4'>
           {heading}

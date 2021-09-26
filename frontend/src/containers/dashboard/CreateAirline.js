@@ -1,5 +1,6 @@
 import { Input } from 'antd'
 import React, { useState } from 'react'
+import { useQueryClient } from 'react-query'
 import { useHistory } from 'react-router'
 import { AirlineService } from '../../api'
 import Spinner from '../../components/common/Spinner'
@@ -24,14 +25,40 @@ const CreateAirline = () => {
       [e.target.id]: e.target.value
     }))
 
+  const [error, setError] = useState(false)
+  const queryClient = useQueryClient()
+  const resetSession = useSessionStore((st) => st.resetSession)
+
+  const validate = () => {
+    if (
+      !state.name ||
+      !state.code ||
+      !state.username ||
+      !state.password
+    ) {
+      return 'All fields are required'
+    }
+
+    return null
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    setError(null)
 
     const airline = {
       name: state.name,
       code: state.code,
       username: state.username,
       password: state.password
+    }
+
+    const airlineError = validate()
+
+    if (airlineError) {
+      setError(airlineError)
+      return
     }
 
     setLoading(true)
@@ -42,9 +69,26 @@ const CreateAirline = () => {
         setLoading(false)
         history.push('/dashboard/view/airlines')
       },
-      onError: (error) => {
-        console.log(error)
+      onError: (err) => {
         setLoading(false)
+        // console.log(err)
+        if (
+          err.response &&
+          err.response.status &&
+          err.response.status === 401
+        ) {
+          queryClient.clear()
+          resetSession()
+          history.push('/login')
+        }
+
+        if (
+          err.response &&
+          err.response.data &&
+          err.response.data.message
+        ) {
+          setError(err.response.data.message)
+        }
       }
     })
   }
@@ -101,12 +145,16 @@ const CreateAirline = () => {
               onChange={handleChange}
             />
           </section>
-          <button
-            type='submit'
-            className='flex items-center self-end justify-center w-20 h-10 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
-          >
-            {loading ? <Spinner size={5} /> : 'Submit'}
-          </button>
+          <span className='flex items-center justify-end w-full gap-3'>
+            <p className='text-red-500'>{error || ''}</p>
+            <button
+              type='submit'
+              onClick={handleSubmit}
+              className='flex items-center self-end justify-center w-20 h-10 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
+            >
+              {loading ? <Spinner size={5} /> : 'Submit'}
+            </button>
+          </span>
         </form>
       </section>
     </main>

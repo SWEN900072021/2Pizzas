@@ -1,6 +1,6 @@
 import { bool, func, string } from 'prop-types'
-import React, { useState } from 'react'
-import { BsEye, BsEyeSlash } from 'react-icons/bs'
+import React from 'react'
+// import { BsEye, BsEyeSlash } from 'react-icons/bs'
 
 const TextField = ({
   value,
@@ -11,24 +11,23 @@ const TextField = ({
   onChange,
   className,
   required
-}) => {
-  const [show, setShow] = useState(!password)
-  const toggleShow = () => setShow(!show)
-  return (
-    <div className='relative'>
-      <label htmlFor={label || placeholder} className='space-y-1'>
-        <div className='font-medium'>{label}</div>
-        <input
-          value={value}
-          required={required}
-          name={name || label || placeholder}
-          onChange={onChange}
-          type={show ? 'text' : 'password'}
-          id={label || placeholder}
-          placeholder={placeholder || label}
-          className={`${className} px-4 py-3 rounded-lg border border-bg-grey focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:border-transparent`}
-        />
-        <button
+}) => (
+  // const [show, setShow] = useState(!password)
+  // const toggleShow = () => setShow(!show)
+  <div className='relative'>
+    <label htmlFor={label || placeholder} className='space-y-1'>
+      <div className='font-medium'>{label}</div>
+      <input
+        value={value}
+        required={required}
+        name={name || label || placeholder}
+        onChange={onChange}
+        type={!password ? 'text' : 'password'}
+        id={label || placeholder}
+        placeholder={placeholder || label}
+        className={`${className} px-4 py-3 rounded-lg border border-bg-grey focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:border-transparent`}
+      />
+      {/* <button
           type='button'
           className={`${
             (!password || !show) && 'hidden'
@@ -36,8 +35,8 @@ const TextField = ({
           onClick={toggleShow}
         >
           <BsEye className='w-5 h-5' />
-        </button>
-        <button
+        </button> */}
+      {/* <button
           type='button'
           className={`${
             (!password || show) && 'hidden'
@@ -45,11 +44,10 @@ const TextField = ({
           onClick={toggleShow}
         >
           <BsEyeSlash className='w-5 h-5' />
-        </button>
-      </label>
-    </div>
-  )
-}
+        </button> */}
+    </label>
+  </div>
+)
 
 TextField.defaultProps = {
   value: '',

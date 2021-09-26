@@ -10,7 +10,7 @@ import {
   // FaPlaneDeparture
 } from 'react-icons/fa'
 import { useHistory, useParams } from 'react-router'
-import Spinner from '../../components/common/Spinner'
+import { useQueryClient } from 'react-query'
 import { useSessionStore } from '../../hooks/Store'
 import useFlights from '../../hooks/useFlights'
 import useAirports from '../../hooks/useAirports'
@@ -38,22 +38,27 @@ const ViewFlight = () => {
 
   const { id } = useParams()
   const resetSession = useSessionStore((state) => state.resetSession)
+  const queryClient = useQueryClient()
   const {
     data,
     isLoading,
     isSuccess,
-    isError,
+    isError: isFlightsError,
     refetch: refetchFlights
   } = useFlights(token)
   const { data: airports } = useAirports()
-  const { data: passengers, refetch: refetchPassengers } =
-    useFlightPassengers(token, id)
+  const {
+    data: passengers,
+    refetch: refetchPassengers,
+    isError: isPassengersError
+  } = useFlightPassengers(token, id)
 
   const [flight, setFlight] = useState(null)
 
   useEffect(() => {
-    if (isError) {
+    if (isFlightsError || isPassengersError) {
       resetSession()
+      queryClient.clear()
       history.push('/')
     }
 
@@ -65,21 +70,21 @@ const ViewFlight = () => {
       // console.log('Current flight:', currentFlight)
     }
 
-    if (token && id && !passengers) {
-      refetchPassengers()
-    }
+    refetchPassengers()
   }, [
     data,
     isSuccess,
     id,
     history,
-    isError,
     resetSession,
     flight,
     passengers,
     refetchPassengers,
     token,
-    refetchFlights
+    refetchFlights,
+    queryClient,
+    isFlightsError,
+    isPassengersError
   ])
 
   const goBack = () => {
@@ -112,8 +117,17 @@ const ViewFlight = () => {
           setIsUpdating(false)
         })
       },
-      onError: () => {
+      onError: (err) => {
         setIsUpdating(false)
+        if (
+          err.response &&
+          err.response.status &&
+          err.response.status === 401
+        ) {
+          queryClient.clear()
+          resetSession()
+          history.push('/login')
+        }
         // console.log('Error cancelling flight:', err.response)
       }
     })
@@ -129,8 +143,18 @@ const ViewFlight = () => {
           setIsUpdating(false)
         })
       },
-      onError: () => {
+      onError: (err) => {
         setIsUpdating(false)
+
+        if (
+          err.response &&
+          err.response.status &&
+          err.response.status === 401
+        ) {
+          queryClient.clear()
+          resetSession()
+          history.push('/login')
+        }
         // console.log('Error delaying flight:', err.response)
       }
     })
@@ -146,8 +170,13 @@ const ViewFlight = () => {
           setIsUpdating(false)
         })
       },
-      onError: () => {
+      onError: (err) => {
         setIsUpdating(false)
+        if (err.response && err.response.status === 401) {
+          resetSession()
+          queryClient.clear()
+          history.push('/')
+        }
         // console.log('Error setting flight to schedule:', err.response)
       }
     })
@@ -162,7 +191,7 @@ const ViewFlight = () => {
       isLoading ||
       isUpdating ? (
         <div>
-          <Spinner size={6} />
+          <p>Loading...</p>
         </div>
       ) : (
         <section className='flex flex-col w-full max-w-lg gap-4'>
@@ -301,10 +330,14 @@ const ViewFlight = () => {
                 </p>
                 <p className='col-span-6 pl-3 border-l'>
                   <p>
-                    {moment(flight.arrivalLocal).format('YYYY/MM/DD')}
+                    {moment(flight.departureLocal).format(
+                      'YYYY/MM/DD'
+                    )}
                   </p>
                   <p>
-                    {moment(flight.arrivalLocal).format('HH:mm Z z')}
+                    {moment(flight.departureLocal).format(
+                      'HH:mm Z z'
+                    )}
                   </p>
                 </p>
               </>

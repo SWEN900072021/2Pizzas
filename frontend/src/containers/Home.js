@@ -4,7 +4,11 @@ import { useHistory } from 'react-router'
 import NavBar from '../components/common/NavBar'
 import landscapePicture from '../assets/home-landscape.png'
 import FlightForm from '../components/flightSearch/FlightForm'
-import { useFlightStore, useSessionStore } from '../hooks/Store'
+import {
+  useBookingStore,
+  useFlightStore,
+  useSessionStore
+} from '../hooks/Store'
 
 const Home = () => {
   const setOriginAirportSearchValue = useFlightStore(
@@ -24,6 +28,13 @@ const Home = () => {
   const user = useSessionStore((state) => state.user)
   const history = useHistory()
 
+  const setOutboundFlight = useBookingStore(
+    (state) => state.setSelectedOutboundFlight
+  )
+  const setReturnFlight = useBookingStore(
+    (state) => state.setSelectedReturnFlight
+  )
+
   useEffect(() => {
     if (
       token &&
@@ -36,6 +47,8 @@ const Home = () => {
   }, [history, token, user])
 
   useEffect(() => {
+    setOutboundFlight(null)
+    setReturnFlight(null)
     setOriginAirportSearchValue('')
     setDestinationAirportSearchValue('')
     setOriginAirport({})
@@ -44,7 +57,9 @@ const Home = () => {
     setOriginAirportSearchValue,
     setDestinationAirportSearchValue,
     setOriginAirport,
-    setDestinationAirport
+    setDestinationAirport,
+    setOutboundFlight,
+    setReturnFlight
   ])
 
   return (

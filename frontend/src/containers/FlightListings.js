@@ -34,6 +34,9 @@ const FlightListings = () => {
     (state) => state.setCreatingBooking
   )
 
+  const [outboundSelected, setOutboundSelected] = useState(false)
+  const [returnSelected, setReturnSelected] = useState(false)
+
   const outboundFlight = useBookingStore(
     (state) => state.selectedOutboundFlight
   )
@@ -51,10 +54,12 @@ const FlightListings = () => {
   const [flightToggle, setFlightToggle] = useState(flightType[0])
 
   const handleSelectOutboundFlight = (flight) => {
+    setOutboundSelected(true)
     setOutboundFlight(flight)
   }
 
   const handleSelectReturnFlight = (flight) => {
+    setReturnSelected(true)
     setReturnFlight(flight)
   }
 
@@ -289,8 +294,8 @@ const FlightListings = () => {
             onClick={handleSubmit}
             disabled={
               isReturn
-                ? !(outboundFlight && returnFlight)
-                : !outboundFlight
+                ? !(outboundSelected && returnSelected)
+                : !outboundSelected
             }
           />
         </div>
