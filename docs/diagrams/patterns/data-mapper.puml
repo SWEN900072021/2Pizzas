@@ -67,10 +67,10 @@ loop for result in resultSet
   deactivate seats
 end
 alt seats is not empty
-mapper -> seats: seat = get(0)
-[<-- mapper: seat
-else 
-[<-- mapper: null
+  mapper -> seats: seat = get(0)
+  [<-- mapper: seat
+else
+  [<-- mapper: null
 end
 
 

@@ -2,7 +2,7 @@
 
 participant "FlightSeatMapper" as mapper
 participant "flightSeat:FlightSeat" as fs
-participant "ResultSet" as res 
+participant "ResultSet" as res
 participant "loader:FlightByIdLoader" as loader
 participant "LazyValueHolderProxy" as lvpC << Class >>
 participant "lazyValueHolder:LazyValueHoldeProxy" as lvp
@@ -19,7 +19,7 @@ activate res
 deactivate res
 mapper -> loader **: new FlightByIdLoader(mapper, flightId)
 mapper -> lvpC: makeLazy(loader)
-activate lvpC 
+activate lvpC
 lvpC -> lvp **: new LazyValueHolderProxy(loader)
 lvpC -> pC: newProxyInstance(ValueHolder.class.getClassLoader(), [ValueHolder.class], lazyValueHolder)
 activate pC
@@ -36,7 +36,7 @@ deactivate mapper
 note over mapper: later in execution the flight seat is required to load its flight attribute
 [-> fs: getFlight()
 activate fs
-fs -> proxy: get() 
+fs -> proxy: get()
 activate proxy
 proxy -> lvp: invoke(proxy, method, args)
 activate lvp
@@ -49,7 +49,7 @@ opt valueHolder is null
   fmapper --> loader: flight
   deactivate fmapper
   loader -> vh **: new ValueHolder(flight)
-  loader --> lvp: valueHolder 
+  loader --> lvp: valueHolder
 end
 lvp -> vh: flight = get()
 activate vh

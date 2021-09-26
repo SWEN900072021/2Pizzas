@@ -154,6 +154,19 @@ public class FlightController {
             throw new HttpException(HttpStatus.CONFLICT, "arrival must occur after departure");
         }
 
+        if (body.getStopOvers() != null) {
+            List<StopOver> stopOvers = new ArrayList<>();
+            for (NewFlightDto.StopOver stopOver : body.getStopOvers()) {
+                stopOvers.add(new StopOver(
+                        assertAirport(airportRepository.find(EntityId.of(stopOver.getLocation()))
+                                .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, "airport %s not found"))),
+                        stopOver.getArrival(),
+                        stopOver.getDeparture()
+                ));
+            }
+            flight.setStopOvers(stopOvers);
+        }
+
         repository.save(flight);
 
         return RestResponse.ok(MAPPER.map(flight));

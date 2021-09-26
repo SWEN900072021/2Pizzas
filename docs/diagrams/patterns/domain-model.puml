@@ -6,7 +6,7 @@ participant "booking:Booking" as b
 participant "flight:Flight" as f
 participant "allocations:List<FlightSeatAllocation>" as al
 participant "seatBooking:SeatBooking" as sb
- 
+
 
 [-> bc: createBooking(body, customer)
 activate bc
@@ -16,16 +16,16 @@ bc -> b **: create(customer)
 bc -> f: allocateSeats(bookingRequest)
 activate f
 alt requested seats are valid and available
-note over al: constuction simplified for brevity
-f -> al **: create allocations for seats
-f --> bc: allocations
-bc -> sb **: new SeatBooking(flight, allocations)
-bc -> b: setFlight(seatBooking)
-activate b
-deactivate b
-else 
-f --> bc: error invalid seats or seats are already booked
-end 
+  note over al: constuction simplified for brevity
+  f -> al **: create allocations for seats
+  f --> bc: allocations
+  bc -> sb **: new SeatBooking(flight, allocations)
+  bc -> b: setFlight(seatBooking)
+  activate b
+  deactivate b
+else
+  f --> bc: error invalid seats or seats are already booked
+end
 deactivate f
 deactivate bc
 @enduml

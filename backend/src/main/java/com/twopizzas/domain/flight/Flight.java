@@ -35,7 +35,9 @@ public class Flight extends DomainEntity {
     @Setter
     private OffsetDateTime arrival;
 
-    private final List<StopOver> stopOvers;
+    @Setter
+    private List<StopOver> stopOvers;
+
     private final String code;
     private final BigDecimal firstClassCost;
     private final BigDecimal businessClassCost;
