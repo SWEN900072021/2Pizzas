@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
-import Spinner from '../../components/common/Spinner'
 
 import { useSessionStore } from '../../hooks/Store'
 
@@ -47,7 +46,7 @@ const UserInfo = () => {
   return (
     <main className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'>
       {!validUser ? (
-        <Spinner size={6} />
+        <p>Loading...</p>
       ) : (
         <section className='flex flex-col w-full h-full max-w-lg gap-4'>
           {heading}

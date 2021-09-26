@@ -54,25 +54,23 @@ const Login = () => {
     AuthenticationService.login({
       data: user,
       onSuccess: (res) => {
-        if (res.status === 200) {
-          setToken(res.data.token)
-          setUser({
-            username: res.data.username,
-            userType: res.data.userType
-          })
-          setLoading(false)
-          if (isCreatingBooking) {
-            setCreatingBooking(false)
-            if (res.data.userType !== 'customer') {
-              history.push('/dashboard')
-            } else {
-              history.push('/booking/create')
-            }
-          } else if (res.data.userType !== 'customer') {
+        setToken(res.data.token)
+        setUser({
+          username: res.data.username,
+          userType: res.data.userType
+        })
+        setLoading(false)
+        if (isCreatingBooking) {
+          setCreatingBooking(false)
+          if (res.data.userType !== 'customer') {
             history.push('/dashboard')
           } else {
-            history.push('/')
+            history.push('/booking/create')
           }
+        } else if (res.data.userType !== 'customer') {
+          history.push('/dashboard')
+        } else {
+          history.push('/')
         }
       },
       onError: (err) => {
@@ -106,11 +104,11 @@ const Login = () => {
             placeholder='Username'
           />
           <TextField
+            password
             required
             value={password}
             onChange={handlePasswordChange}
             placeholder='Password'
-            password
           />
           <div
             className={`${

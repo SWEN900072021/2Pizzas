@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Input, Select } from 'antd'
 import moment from 'moment-timezone'
 import { useHistory } from 'react-router'
+import { useQueryClient } from 'react-query'
 
 import { AirportService } from '../../api'
 import Spinner from '../../components/common/Spinner'
@@ -21,11 +22,27 @@ const CreateAirport = () => {
   })
 
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const queryClient = useQueryClient()
+  const resetSession = useSessionStore((st) => st.resetSession)
+
+  const validate = () => {
+    if (
+      !state.name ||
+      !state.code ||
+      !state.location ||
+      !state.zoneId
+    ) {
+      return 'All fields are required'
+    }
+
+    return null
+  }
 
   const handleSubmit = (e) => {
-    setLoading(true)
-
     e.preventDefault()
+
+    setError(null)
     const airport = {
       name: state.name,
       code: state.code,
@@ -33,15 +50,41 @@ const CreateAirport = () => {
       zoneId: state.zoneId
     }
 
+    const airportError = validate()
+
+    if (airportError) {
+      setError(airportError)
+      return
+    }
+
+    setLoading(true)
     AirportService.createAirport({
       data: { airport, token },
       onSuccess: () => {
         setLoading(false)
         history.push('/dashboard/view/airports')
       },
-      onError: (error) => {
+      onError: (err) => {
         setLoading(false)
-        console.log(error)
+
+        if (
+          err.response &&
+          err.response.status &&
+          err.response.status === 401
+        ) {
+          queryClient.clear()
+          resetSession()
+          history.push('/login')
+        }
+
+        if (
+          err.response &&
+          err.response.data &&
+          err.response.data.message
+        ) {
+          setError(err.response.data.message)
+        }
+        // console.log(error)
       }
     })
   }
@@ -97,7 +140,6 @@ const CreateAirport = () => {
           <section className='grid items-center w-full grid-cols-5 gap-2 p-3 bg-gray-50'>
             <p className='col-span-2 font-bold'>Time Zone</p>
             <Select
-              required
               id='zoneId'
               className='col-span-3'
               placeholder='Select timezone'
@@ -120,13 +162,16 @@ const CreateAirport = () => {
               ))}
             </Select>
           </section>
-          <button
-            type='submit'
-            onClick={handleSubmit}
-            className='flex items-center self-end justify-center w-20 h-10 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
-          >
-            {loading ? <Spinner size={5} /> : 'Submit'}
-          </button>
+          <span className='flex items-center justify-end w-full gap-3'>
+            <p className='text-red-500'>{error || ''}</p>
+            <button
+              type='submit'
+              onClick={handleSubmit}
+              className='flex items-center self-end justify-center w-20 h-10 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
+            >
+              {loading ? <Spinner size={5} /> : 'Submit'}
+            </button>
+          </span>
         </form>
       </section>
     </main>

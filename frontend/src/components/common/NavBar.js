@@ -9,6 +9,7 @@ import {
   BsPerson
 } from 'react-icons/bs'
 import { IoIosAirplane, IoIosLogOut } from 'react-icons/io'
+import { useQueryClient } from 'react-query'
 
 import { useSessionStore } from '../../hooks/Store'
 
@@ -17,21 +18,25 @@ const NavBar = () => {
   const token = useSessionStore((state) => state.token)
   const user = useSessionStore((state) => state.user)
   const resetSession = useSessionStore((state) => state.resetSession)
+  const queryClient = useQueryClient()
 
   const handleLogout = (e) => {
     e.preventDefault()
     resetSession()
+    queryClient.clear()
     history.push('/')
   }
 
   const loggedInMenu = (
     <Menu>
-      <Menu.Item key='0'>
-        <NavLink to='/' className='flex items-center gap-2'>
-          <IoIosAirplane className='w-5 h-5 text-gray-600' />
-          Find flights
-        </NavLink>
-      </Menu.Item>
+      {user && user.type === 'customer' && (
+        <Menu.Item key='0'>
+          <NavLink to='/' className='flex items-center gap-2'>
+            <IoIosAirplane className='w-5 h-5 text-gray-600' />
+            Find flights
+          </NavLink>
+        </Menu.Item>
+      )}
       <Menu.Item key='1'>
         <NavLink to='/dashboard' className='flex items-center gap-2'>
           <BsPerson className='w-5 h-5 text-gray-600' />
@@ -72,7 +77,6 @@ const NavBar = () => {
         >
           <span className='flex gap-2'>
             <span className='cursor-pointer select-none hover:underline'>
-              Welcome,{' '}
               <span className='font-bold'>{user.username}</span>
             </span>
             <BsChevronDown className='w-5 h-5 text-gray-600' />
