@@ -4,6 +4,7 @@ import { string } from 'prop-types'
 import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router'
 import { FaSadTear } from 'react-icons/fa'
+import { Table, Tag } from 'antd'
 
 // Hooks
 import { useSessionStore } from '../../hooks/Store'
@@ -11,6 +12,8 @@ import { useSessionStore } from '../../hooks/Store'
 // Containers and Components
 import Spinner from '../../components/common/Spinner'
 import useBookings from '../../hooks/useBookings'
+
+const { Column, ColumnGroup } = Table
 
 const ListBookings = ({ bookingsStatus }) => {
   const token = useSessionStore((state) => state.token)
@@ -36,24 +39,20 @@ const ListBookings = ({ bookingsStatus }) => {
   } = useBookings(token)
 
   const heading = (
-    <header className='flex flex-col gap-3'>
+    <header>
       {bookingsStatus === 'previous' ? (
         <h2 className='text-3xl font-bold'>Your previous bookings</h2>
       ) : (
         <h2 className='text-3xl font-bold'>Your current bookings</h2>
       )}
-      <nav className='flex items-center gap-6'>
-        <span className='flex gap-2'>
-          <div className='w-5 h-5 bg-green-500 rounded-xl' />
-          <span>One-way</span>
-        </span>
-        <span className='flex gap-2'>
-          <div className='w-5 h-5 bg-blue-500 rounded-xl' />
-          <span>Return</span>
-        </span>
-      </nav>
     </header>
   )
+
+  const sort = (a, b) => {
+    if (a < b) return -1
+    if (a > b) return 1
+    return 0
+  }
 
   const renderBookings = () => {
     const bookings =
@@ -76,28 +75,146 @@ const ListBookings = ({ bookingsStatus }) => {
             No bookings yet <FaSadTear />
           </div>
         ) : (
-          bookings.map((booking) => (
-            <Link to={`/dashboard/view/bookings/${booking.id}`}>
-              <article
-                className={`${
-                  booking.returnFlight
-                    ? 'bg-blue-500 hover:bg-blue-400'
-                    : 'bg-green-500 hover:bg-green-400'
-                } transition-colors flex flex-col w-full text-white group px-4 py-2`}
-              >
-                <span className='flex justify-between w-full'>
-                  <span>
-                    {booking.flight.origin.code} -{' '}
-                    {booking.flight.destination.code}
-                  </span>
-                  <span>
-                    Booked on{' '}
-                    {moment(booking.dateTime).format('YYYY-MM-DD')}
-                  </span>
-                </span>
-              </article>
-            </Link>
-          ))
+          <Table
+            bordered
+            size='middle'
+            scroll={{ x: 1200, y: 400 }}
+            pagination={false}
+            dataSource={bookings.map((booking) => ({
+              key: booking.id,
+              id: booking.id.slice(0, 8),
+
+              flightType: booking.returnFlight ? 'RETURN' : 'ONE WAY',
+
+              flightCode: booking.flight.code,
+              flightOrigin: booking.flight.origin.code,
+              flightDestination: booking.flight.destination.code,
+              flightDeparture: moment(
+                booking.flight.departure
+              ).format('YYYY-MM-DD HH:mm Z'),
+              flightArrival: moment(booking.flight.arrival).format(
+                'YYYY-MM-DD HH:mm Z'
+              ),
+              returnFlightCode: booking.returnFlight
+                ? booking.returnFlight.code
+                : 'N/A',
+              returnFlightOrigin: booking.returnFlight
+                ? booking.returnFlight.origin.code
+                : 'N/A',
+              returnFlightDestination: booking.returnFlight
+                ? booking.returnFlight.destination.code
+                : 'N/A',
+              returnFlightDeparture: booking.returnFlight
+                ? moment(booking.returnFlight.departure).format(
+                    'YYYY-MM-DD HH:mm Z'
+                  )
+                : 'N/A',
+              returnFlightArrival: booking.returnFlight
+                ? moment(booking.returnFlight.arrival).format(
+                    'YYYY-MM-DD HH:mm Z'
+                  )
+                : 'N/A'
+            }))}
+          >
+            <Column
+              title='ID'
+              dataIndex='id'
+              width={100}
+              sorter={{
+                compare: (a, b) => sort(a.id, b.id)
+              }}
+            />
+            <Column
+              title='Type'
+              width={80}
+              sorter={{
+                compare: (a, b) => sort(a.id, b.id)
+              }}
+              render={(text, record) => {
+                let colour = 'geekblue'
+                if (record.flightType === 'RETURN') {
+                  colour = 'green'
+                }
+                return (
+                  <Tag color={colour} key={record.flightType}>
+                    {record.flightType}
+                  </Tag>
+                )
+              }}
+            />
+            <Column
+              title='Origin'
+              dataIndex='flightOrigin'
+              width={80}
+              sorter={{
+                compare: (a, b) =>
+                  sort(a.flightOrigin, b.flightOrigin)
+              }}
+            />
+            <Column
+              title='Destination'
+              dataIndex='flightDestination'
+              width={100}
+              sorter={{
+                compare: (a, b) =>
+                  sort(a.flightDestination, b.flightDestination)
+              }}
+            />
+            <ColumnGroup title='Outbound Flight'>
+              <Column
+                title='Code'
+                dataIndex='flightCode'
+                width={80}
+                sorter={{
+                  compare: (a, b) => sort(a.flightCode, b.flightCode)
+                }}
+              />
+              <Column
+                title='Departure'
+                dataIndex='flightDeparture'
+                width={125}
+              />
+              <Column
+                title='Arrival'
+                dataIndex='flightArrival'
+                width={125}
+              />
+            </ColumnGroup>
+            <ColumnGroup title='Return Flight'>
+              <Column
+                title='Code'
+                dataIndex='returnFlightCode'
+                width={80}
+                sorter={{
+                  compare: (a, b) =>
+                    sort(a.returnFlightCode, b.returnFlightCode)
+                }}
+              />
+              <Column
+                title='Departure'
+                dataIndex='returnFlightDeparture'
+                width={125}
+              />
+              <Column
+                title='Arrival'
+                dataIndex='returnFlightArrival'
+                width={125}
+              />
+            </ColumnGroup>
+            <Column
+              title='Details'
+              fixed='right'
+              width={80}
+              render={(text, record) => (
+                <Link
+                  className='underline hover:underline'
+                  to={`/dashboard/view/bookings/${record.key}`}
+                >
+                  View
+                </Link>
+              )}
+            />
+          </Table>
         )}
       </section>
     )

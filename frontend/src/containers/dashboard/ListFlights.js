@@ -107,10 +107,38 @@ const ListFlights = () => {
             title='Code'
             dataIndex='flightCode'
             width={80}
+            defaultSortOrder='ascend'
+            fixed='left'
             sorter={{
               compare: (a, b) => sort(a.flightCode, b.flightCode)
             }}
           />
+          <Column
+            title='Status'
+            dataIndex='status'
+            key='status'
+            width={125}
+            sorter={{
+              compare: (a, b) => sort(a.status, b.status)
+            }}
+            render={(status) => {
+              let colour = 'geekblue'
+
+              if (status === 'TO_SCHEDULE') {
+                colour = 'green'
+              }
+              if (status === 'CANCELLED') {
+                colour = 'volcano'
+              }
+
+              return (
+                <Tag color={colour} key={status}>
+                  {status}
+                </Tag>
+              )
+            }}
+          />
+
           <ColumnGroup title='Origin Airport'>
             <Column
               title='Name'
@@ -170,31 +198,7 @@ const ListFlights = () => {
                 sort(a.arrivalMoment, b.arrivalMoment)
             }}
           />
-          <Column
-            title='Status'
-            dataIndex='status'
-            key='status'
-            width={150}
-            sorter={{
-              compare: (a, b) => sort(a.status, b.status)
-            }}
-            render={(status) => {
-              let colour = 'geekblue'
 
-              if (status === 'TO_SCHEDULE') {
-                colour = 'green'
-              }
-              if (status === 'CANCELLED') {
-                colour = 'volcano'
-              }
-
-              return (
-                <Tag color={colour} key={status}>
-                  {status}
-                </Tag>
-              )
-            }}
-          />
           <Column
             title='Details'
             key='details'
