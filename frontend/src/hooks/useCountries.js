@@ -9,7 +9,7 @@ const useCountries = () =>
       const countriesIso = moment.tz.countries()
       const countries = []
 
-      console.log('Countries ISO:', countriesIso)
+      // console.log('Countries ISO:', countriesIso)
 
       countriesIso.forEach(async (countryIso) => {
         try {
@@ -18,11 +18,11 @@ const useCountries = () =>
           )
           countries.push(data[1][0].name)
         } catch (error) {
-          console.log(error)
+          // console.log(error)
         }
       })
 
-      console.log('Countries fetched:', countries)
+      // console.log('Countries fetched:', countries)
       return countries
     }
   })

@@ -63,8 +63,16 @@ const Login = () => {
           setLoading(false)
           if (isCreatingBooking) {
             setCreatingBooking(false)
-            history.push('/booking/create')
-          } else history.push('/')
+            if (res.data.userType !== 'customer') {
+              history.push('/dashboard')
+            } else {
+              history.push('/booking/create')
+            }
+          } else if (res.data.userType !== 'customer') {
+            history.push('/dashboard')
+          } else {
+            history.push('/')
+          }
         }
       },
       onError: (err) => {

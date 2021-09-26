@@ -58,15 +58,15 @@ const ViewFlight = () => {
     }
 
     if (isSuccess && data && id) {
-      const currentFlight = data.find((b) => b.id === id)
-      console.log('Current flight:', currentFlight)
-      setFlight(currentFlight)
+      refetchFlights().then((res) => {
+        const currentFlight = res.data.find((b) => b.id === id)
+        setFlight(currentFlight)
+      })
+      // console.log('Current flight:', currentFlight)
     }
 
     if (token && id && !passengers) {
-      refetchPassengers().then((res) => {
-        console.log('Passengers:', res)
-      })
+      refetchPassengers()
     }
   }, [
     data,
@@ -78,7 +78,8 @@ const ViewFlight = () => {
     flight,
     passengers,
     refetchPassengers,
-    token
+    token,
+    refetchFlights
   ])
 
   const goBack = () => {
@@ -111,9 +112,9 @@ const ViewFlight = () => {
           setIsUpdating(false)
         })
       },
-      onError: (err) => {
+      onError: () => {
         setIsUpdating(false)
-        console.log('Error cancelling flight:', err.response)
+        // console.log('Error cancelling flight:', err.response)
       }
     })
   }
@@ -128,9 +129,9 @@ const ViewFlight = () => {
           setIsUpdating(false)
         })
       },
-      onError: (err) => {
+      onError: () => {
         setIsUpdating(false)
-        console.log('Error delaying flight:', err.response)
+        // console.log('Error delaying flight:', err.response)
       }
     })
   }
@@ -145,9 +146,9 @@ const ViewFlight = () => {
           setIsUpdating(false)
         })
       },
-      onError: (err) => {
+      onError: () => {
         setIsUpdating(false)
-        console.log('Error setting flight to schedule:', err.response)
+        // console.log('Error setting flight to schedule:', err.response)
       }
     })
   }
@@ -287,9 +288,11 @@ const ViewFlight = () => {
                   Destination Airport
                 </p>
                 <p className='grid-flow-row col-span-6 pl-3 border-l'>
-                  <p className='font-medium'>{flight.origin.name}</p>
-                  <p>{flight.origin.code}</p>
-                  <p>{flight.origin.location}</p>
+                  <p className='font-medium'>
+                    {flight.destination.name}
+                  </p>
+                  <p>{flight.destination.code}</p>
+                  <p>{flight.destination.location}</p>
                 </p>
               </>
               <>
@@ -398,42 +401,6 @@ const ViewFlight = () => {
                         }
                       })
                     : []
-                  // flight.seats
-                  //   ? flight.seats.map((seat) => {
-                  //       if (passengers) {
-                  //         const passenger = passengers.find(
-                  //           (p) => p.seatName === seat.name
-                  //         )
-
-                  //         if (passenger) {
-                  //           return {
-                  //             givenName: passenger.givenName,
-                  //             surname: passenger.surname,
-                  //             passportNumber:
-                  //               passenger.passportNumber,
-                  //             dateOfBirth: moment(
-                  //               passenger.dateOfBirth
-                  //             ).format('YYYY/MM/DD'),
-                  //             nationality: passenger.nationality,
-                  //             booking: passenger.booking,
-                  //             seatName: seat.name,
-                  //             seatClass: seat.seatClass
-                  //           }
-                  //         }
-                  //       }
-
-                  //       return {
-                  //         givenName: '',
-                  //         surname: '',
-                  //         passportNumber: '',
-                  //         dateOfBirth: '',
-                  //         nationality: '',
-                  //         booking: '',
-                  //         seatName: seat.name,
-                  //         seatClass: seat.seatClass
-                  //       }
-                  //     })
-                  //   : []
                 }
                 bordered
                 size='middle'

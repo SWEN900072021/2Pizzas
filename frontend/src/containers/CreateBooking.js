@@ -67,8 +67,8 @@ const CreateBooking = () => {
         numberOfPassengers
       )
       setState(passengerState)
-      console.log(passengerState)
-      console.log(selectedOutboundFlight)
+      // console.log(passengerState)
+      // console.log(selectedOutboundFlight)
     }
   }, [numberOfPassengers, selectedOutboundFlight, state])
 
@@ -108,16 +108,17 @@ const CreateBooking = () => {
         seatAllocations
       }))
     }
-    console.log('payload')
-    console.log(selectedOutboundFlight)
-    console.log(booking)
+    // console.log('payload')
+    // console.log(selectedOutboundFlight)
+    // console.log(booking)
     BookingService.createBooking(
       token,
       booking,
-      (res) => history.push('/dashboard/current-booking'),
-      (err) => console.log(err)
+      (res) => history.push('/dashboard/view/bookings/current'),
+      // (err) => console.log(err)
+      null
     )
-    console.log(state)
+    // console.log(state)
   }
 
   const handleChange = (e, index) => {
