@@ -7,6 +7,7 @@ actor :Administrator: as ad
 rectangle "Online Travel Booking Application Use Cases" {
   left to right direction
   (Login) as u1
+  (Signup) as u13
   (Create  Airport) as u2
   (Disable Airport) as u3
   (Create Airline) as u4
@@ -17,7 +18,6 @@ rectangle "Online Travel Booking Application Use Cases" {
   (Book Flights) as u10
   (Search Flights) as u11
   (View Booking Information) as u12
-  (Signup) as u13
 
   ad -- u1
   ar -- u1
@@ -33,8 +33,9 @@ rectangle "Online Travel Booking Application Use Cases" {
   c -- u11
   c -- u12
   c -- u13
-  u10 .> u13: include 
-  u10 .> u1: include 
+  u10 .> u13: include
+  u10 .> u1: include
+  u1 -[hidden]down- u13
 }
 
 @enduml

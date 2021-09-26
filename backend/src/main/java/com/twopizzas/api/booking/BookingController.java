@@ -51,7 +51,10 @@ public class BookingController {
             throw new HttpException(HttpStatus.BAD_REQUEST, String.join(", ", errors));
         }
         Flight flight = flightRepository.find(EntityId.of(body.getFlightId())).orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, String.format("flight %s not found", body.getFlightId())));
-        Flight returnFlight = flightRepository.find(EntityId.of(body.getReturnFlightId())).orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, String.format("flight %s not found", body.getFlightId())));
+        Flight returnFlight = null;
+        if (body.getReturnFlightId() != null) {
+            returnFlight = flightRepository.find(EntityId.of(body.getReturnFlightId())).orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, String.format("flight %s not found", body.getFlightId())));
+        }
 
         Customer customer = (Customer) authenticatedUser;
         Booking booking = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer);
@@ -85,16 +88,16 @@ public class BookingController {
 
         BookingRequest flightBooking = flightBuilder.build();
         if (flightBooking.getAllocations().isEmpty()) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, String.format("no seat allocations provided for flight %s", body.getFlightId()));
+            throw new HttpException(HttpStatus.BAD_REQUEST, String.format("no seat allocations provided for flight %s", flight.getId()));
         }
         SeatBooking flightSeatBooking = flight.allocateSeats(flightBuilder.build());
         flightRepository.save(flight);
 
         SeatBooking returnSeatBooking = null;
-        if (body.getReturnFlightId() != null) {
+        if (returnFlight != null) {
             BookingRequest returnFlightBooking = returnBuilder.build();
             if (returnFlightBooking.getAllocations().isEmpty()) {
-                throw new HttpException(HttpStatus.BAD_REQUEST, String.format("no seat allocations provided for return flight %s", body.getFlightId()));
+                throw new HttpException(HttpStatus.BAD_REQUEST, String.format("no seat allocations provided for return flight %s", returnFlight.getId()));
             }
             returnSeatBooking = returnFlight.allocateSeats(returnFlightBooking);
             flightRepository.save(returnFlight);
