@@ -1,0 +1,161 @@
+@startuml data layer class diagram
+
+interface ConnectionPool {
+  getCurrentTransaction(): Connection
+}
+
+interface DataMapperRegistry {
+  + getForClass(class: Class<T>): DataMapper<T>
+  + register(class: Class<T>, mapper: DataMapper<T>)
+}
+
+interface DataMapper<T, ID, S> {
+  + create(entity: T)
+  + read(id: ID): T
+  + update(entity: T)
+  + delete(entity: T)
+  + readAll(specification: S): List<T>
+  + getEntityClass(): Class<T>
+  + register(registry: DataMapper)
+}
+
+DataMapper .> DataMapperRegistry: "registers self with"
+DataMapperRegistry ->"*" DataMapper: mappers
+
+interface SqlResultSetMapper<T> {
+  + map(results: ResultSet): List<T> 
+  + mapOne(results: ResultSet): T 
+}
+
+abstract class AbstractUserMapper<T> {
+  # abstractCreate(entity: T)
+  # abstractRead(id: ID): T
+  # abstractUpdate(entity: T)
+  # abstractDelete(entity: T)
+}
+
+AbstractUserMapper ->"1" ConnectionPool: connectionPool
+
+interface AirlineMapper {} 
+interface AirlineSpecification {}
+
+AirlineMapper -up-|> DataMapper
+AirlineMapper -up-|> SqlResultSetMapper
+AirlineMapper .> AirlineSpecification: "finds all with"
+AirlineRepositoryImpl -down->"1" AirlineMapper: mapper
+
+class AirlineMapperImpl {}
+
+AirlineMapperImpl --up-->"1" ConnectionPool: connectionPool
+AirlineMapperImpl .|> AirlineMapper
+AirlineMapperImpl -|> AbstractUserMapper
+AirlineMapperImpl .down.> Airline: maps
+
+interface AdministratorMapper {}
+interface AdministratorSpecification {}
+
+AdministratorMapper -up-|> DataMapper
+AdministratorMapper -up-|> SqlResultSetMapper
+AdministratorMapper .> AdministratorSpecification: "finds all with"
+AdministratorRepositoryImpl -down->"1" AdministratorMapper: mapper
+
+class AdministratorMapperImpl {}
+
+AdministratorMapperImpl --up-->"1" ConnectionPool: connectionPool
+AdministratorMapperImpl .|> AdministratorMapper
+AdministratorMapperImpl -|> AbstractUserMapper
+AdministratorMapperImpl .down.> Administrator: maps
+
+interface CustomerMapper {} 
+interface CustomerSpecification {}
+
+CustomerMapper -|> DataMapper
+CustomerMapper -|> SqlResultSetMapper
+CustomerMapper ..> CustomerSpecification: "finds all with"
+CustomerRepositoryImpl -down->"1" CustomerMapper: mapper
+
+class CustomerMapperImpl {}
+
+CustomerMapperImpl ->"1" ConnectionPool: connectionPool
+CustomerMapperImpl .|> CustomerMapper
+CustomerMapperImpl -|> AbstractUserMapper
+CustomerMapperImpl .> Customer: maps
+
+interface UserMapper {} 
+interface UserSpecification {}
+
+UserMapper -|> DataMapper
+UserMapper -|> SqlResultSetMapper
+UserMapper .> UserSpecification: "finds all with"
+UserRepositoryImpl ->"1" UserMapper: mapper
+
+class UserMapperImpl {}
+
+UserMapperImpl ->"1" ConnectionPool: connectionPool
+UserMapperImpl .|> UserMapper
+UserMapperImpl -|> AbstractUserMapper
+UserMapperImpl .> User: maps
+UserMapperImpl -> CustomerMapper: customerMapper
+UserMapperImpl -> AirlineMapper: customerMapper
+UserMapperImpl -> AdministratorMapper: customerMapper
+
+interface AirportRepository {
+  + findAllAirports(): List<Airport>
+}
+
+interface BookingRepository {
+  + findAllCustomerBookings(customerId: EntityId): List<Booking>
+}
+
+interface PassengerRepository {}
+
+interface AirplaneProfileRepository {
+  + findAllAirplanes(): List<AirplaneProfile>
+}
+
+interface FlightRepository {
+  + searchFlights(search: FlightSearch): List<Flight>
+}
+
+interface FlightSeatRepository {}
+
+
+interface UserRepository {
+  + find(String username, String password: String): Optional<T>
+  + allUsers(): List<User>
+}
+
+interface CustomerRepository {
+
+}
+
+interface AdministratorRepository {
+  
+}
+
+interface AirlineRepository {
+  + findAllAirlines(): List<Airline>
+}
+
+FlightRepositoryImpl .up.|> FlightRepository
+FlightSeatRepositoryImpl .up.|> FlightSeatRepository
+AirportRepositoryImpl .up.|> AirportRepository
+PassengerRepositoryImpl .up.|> PassengerRepository
+BookingRepositoryImpl .up.|> BookingRepository
+AirplaneProfileRepositoryImpl .up.|> AirplaneProfileRepository
+UserRepositoryImpl .up.|> UserRepository
+CustomerRepositoryImpl .up.|> CustomerRepository
+AdministratorRepositoryImpl .up.|> AdministratorRepository
+AirlineRepositoryImpl .up.|> AirlineRepository
+
+class Flight {}
+class FlightSeat {}
+class Airport {}
+class AirplaneProfile {}
+abstract class User {}
+class Airline {}
+class Administrator {}
+class Booking {}
+class Passenger {}
+
+@enduml

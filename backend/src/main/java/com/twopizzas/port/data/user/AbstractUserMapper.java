@@ -50,7 +50,7 @@ public abstract class AbstractUserMapper<T extends User> {
         this.connectionPool = connectionPool;
     }
 
-    public void abstractCreate(T entity) {
+    protected void abstractCreate(T entity) {
         new SqlStatement(CREATE_TEMPLATE,
                 entity.getId().toString(),
                 entity.getUsername(),
@@ -60,7 +60,7 @@ public abstract class AbstractUserMapper<T extends User> {
         ).doExecute(connectionPool.getCurrentTransaction());
     }
 
-    public void abstractUpdate(T entity) {
+    protected void abstractUpdate(T entity) {
         new SqlStatement(UPDATE_TEMPLATE,
                 entity.getUsername(),
                 entity.getPassword(),
@@ -72,7 +72,7 @@ public abstract class AbstractUserMapper<T extends User> {
         ).doExecute(connectionPool.getCurrentTransaction());
     }
 
-    public void abstractDelete(T entity) {
+    protected void abstractDelete(T entity) {
         new SqlStatement(DELETE_TEMPLATE,
                 entity.getId().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
