@@ -24,9 +24,13 @@ Link to the application [here](https://frontend-2-pizzas.herokuapp.com/)
 There are three account types present in the application which can be accessed with the following credentials:
 | User Type | Username | Password |
 | - | - | - |
-| Administrator | *admin_1* | *password_1*
-| Airline | *airline_username* | *airline_password* |
-| Customer | *user_username* | *user_password* |
+| Administrator | *admin* | *password*
+| Airline | *qantas* | *password* |
+| Airline | *virgin* | *password* |
+| Airline | *emirates* | *password* |
+| Customer | *john* | *password* |
+| Customer | *jane* | *password* |
+| Customer | *james* | *password* |
 
 To log in with these accounts, click on the 'Log In' button on the top right of the screen
 
