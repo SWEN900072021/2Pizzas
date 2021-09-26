@@ -40,12 +40,7 @@ const CreateFlight = () => {
       )
       setAirports(activeAirports)
     })
-  }, [
-    airplaneProfiles,
-    airports,
-    refetchAirplaneProfiles,
-    refetchAirports
-  ])
+  }, [])
 
   useEffect(() => {
     if (airplaneProfilesError) {
@@ -110,37 +105,40 @@ const CreateFlight = () => {
       return 'Economy class cost must be greater than 0'
     }
 
-    if (state.stopOvers.length === 0) {
+    let stopoverError = ''
+
+    if (state.stopOvers.length > 0) {
       let stopoverIndex = 1
 
       state.stopOvers.forEach((stopOver) => {
         if (stopOver.arrival.isAfter(stopOver.departure)) {
-          return `Arrival at stopover ${stopoverIndex} must be before departure from it`
+          stopoverError = `Arrival at stopover ${stopoverIndex} must be before departure from it`
         }
 
         if (stopOver.departure.isBefore(stopOver.arrival)) {
-          return `Departure from stopover ${stopoverIndex} must be after arrival to it`
+          stopoverError = `Departure from stopover ${stopoverIndex} must be after arrival to it`
         }
 
         if (
           stopOver.arrival.isBefore(state.departure) ||
           stopOver.departure.isBefore(state.departure)
         ) {
-          return `Duration at stopover ${stopoverIndex} must be after flight departure`
+          stopoverError = `Duration at stopover ${stopoverIndex} must be after flight departure`
         }
 
         if (
           stopOver.arrival.isAfter(state.arrival) ||
           stopOver.departure.isAfter(state.arrival)
         ) {
-          return `Duration at ${stopoverIndex} must happen before flight arrival`
+          stopoverError = `Duration at ${stopoverIndex} must happen before flight arrival`
         }
 
         stopoverIndex += 1
-
-        return null
       })
     }
+
+    if (stopoverError) return stopoverError
+
     return null
   }
 
@@ -201,8 +199,7 @@ const CreateFlight = () => {
         if (
           err.response &&
           err.response.data &&
-          err.response.data.message &&
-          err.response.status === 400
+          err.response.data.reason
         ) {
           setError(err.response.data.reason)
         }
@@ -225,6 +222,7 @@ const CreateFlight = () => {
 
     return zonedCurrent.isSameOrBefore(zonedNow)
   }
+
   const invalidArrival = (current) => {
     const destinationZoneId = state.destination.zoneId
     const zonedCurrent = moment.tz(
@@ -237,7 +235,7 @@ const CreateFlight = () => {
       destinationZoneId
     )
 
-    return zonedCurrent.isSameOrBefore(zonedDeparture)
+    return zonedCurrent.isSameOrBefore(zonedDeparture, 'milliseconds')
   }
 
   const invalidStopoverArrival = (current, index) => {
@@ -318,6 +316,11 @@ const CreateFlight = () => {
     // .set('hour', zonedDeparture.hour())
     // .set('minute', zonedDeparture.add(1, 'minute').minute())
 
+    const zonedCurrentStopoverArrival = moment.tz(
+      state.stopOvers[index].arrival.format('YYYY-MM-DD HH:mmZ'),
+      stopoverZoneId
+    )
+
     const zonedDeparture = moment.tz(
       state.departure.format('YYYY-MM-DD HH:mmZ'),
       stopoverZoneId
@@ -328,14 +331,13 @@ const CreateFlight = () => {
       stopoverZoneId
     )
 
-    const beforeFlightDeparture = zonedCurrent.isBefore(
-      zonedDeparture,
-      'day'
+    const beforeCurrentStopoverArrival = zonedCurrent.isBefore(
+      zonedCurrentStopoverArrival
     )
-    const afterFlightArrival = zonedCurrent.isAfter(
-      zonedArrival,
-      'day'
-    )
+
+    const beforeFlightDeparture =
+      zonedCurrent.isBefore(zonedDeparture)
+    const afterFlightArrival = zonedCurrent.isAfter(zonedArrival)
 
     // const beforePreviousStopoverDeparture =
     //   index - 1 > 0 && current < state.stopOvers[index].departure
@@ -387,13 +389,28 @@ const CreateFlight = () => {
 
   const handleStopoverArrivalChange = (date, index) => {
     const stopOvers = [...state.stopOvers]
-    stopOvers[index].arrival = date
+
+    const stopoverZoneId = airports.find(
+      (a) => a.id === state.stopOvers[index].location
+    ).zoneId
+
+    stopOvers[index].arrival = moment.tz(
+      date.format('YYYY-MM-DD HH:mm'),
+      stopoverZoneId
+    )
     setState({ ...state, stopOvers })
   }
 
   const handleStopoverDepartureChange = (date, index) => {
     const stopOvers = [...state.stopOvers]
-    stopOvers[index].departure = date
+    const stopoverZoneId = airports.find(
+      (a) => a.id === state.stopOvers[index].location
+    ).zoneId
+
+    stopOvers[index].departure = moment.tz(
+      date.format('YYYY-MM-DD HH:mm'),
+      stopoverZoneId
+    )
     setState({ ...state, stopOvers })
   }
 
@@ -454,6 +471,9 @@ const CreateFlight = () => {
             disabledDate={(current) =>
               invalidStopoverArrival(current, index)
             }
+            disabledTime={(current) =>
+              invalidStopoverArrival(current, index)
+            }
             disabled={!stopover.location}
             allowClear={false}
             placeholder='Arrival at stopover'
@@ -487,6 +507,9 @@ const CreateFlight = () => {
           <DatePicker
             className='col-span-7 sm:col-span-6'
             disabledDate={(current) =>
+              invalidStopoverDeparture(current, index)
+            }
+            disabledTime={(current) =>
               invalidStopoverDeparture(current, index)
             }
             disabled={!stopover.location || !stopover.arrival}
@@ -870,7 +893,7 @@ const CreateFlight = () => {
               <p className='text-red-500'>{error || ''}</p>
               <button
                 type='submit'
-                className='w-20 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
+                className='flex items-center self-end justify-center w-20 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
               >
                 {loading ? <Spinner size={5} /> : 'Submit'}
               </button>

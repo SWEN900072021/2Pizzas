@@ -64,7 +64,7 @@ const ViewBooking = () => {
   ])
 
   const goBack = () => {
-    history.goBack()
+    history.push('/dashboard/view/bookings/current')
   }
 
   /* -------------------------------------------------------------------------- */

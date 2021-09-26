@@ -9,6 +9,7 @@ import {
   // FaPlaneArrival,
   // FaPlaneDeparture
 } from 'react-icons/fa'
+import { v4 as uuid } from 'uuid'
 import { useHistory, useParams } from 'react-router'
 import { useQueryClient } from 'react-query'
 import { useSessionStore } from '../../hooks/Store'
@@ -88,7 +89,7 @@ const ViewFlight = () => {
   ])
 
   const goBack = () => {
-    history.goBack()
+    history.push('/dashboard/view/flights')
   }
 
   const sort = (a, b) => {
@@ -191,7 +192,7 @@ const ViewFlight = () => {
       isLoading ||
       isUpdating ? (
         <div>
-          <p>Loading...</p>
+          <div>Loading...</div>
         </div>
       ) : (
         <section className='flex flex-col w-full max-w-lg gap-4'>
@@ -203,7 +204,7 @@ const ViewFlight = () => {
                 className='flex items-center justify-center gap-2 p-2 text-white transition-colors bg-gray-400 rounded-md shadow-sm hover:bg-gray-600'
                 onClick={editFlight}
               >
-                <p className='font-bold'>Edit</p>
+                <div className='font-bold'>Edit</div>
                 <FaPen className='w-5 h-5' />
               </button>
             </div>
@@ -262,8 +263,10 @@ const ViewFlight = () => {
           <main className='h-full overflow-y-auto max-h-96'>
             <section className='grid grid-cols-12 gap-y-4'>
               <>
-                <p className='col-span-6 font-semibold '>Status</p>
-                <p className='col-span-6 pl-3 border-l'>
+                <div className='col-span-6 font-semibold '>
+                  Status
+                </div>
+                <div className='col-span-6 pl-3 border-l'>
                   <Tag
                     color={
                       flight.status === 'CANCELLED'
@@ -275,142 +278,135 @@ const ViewFlight = () => {
                   >
                     {flight.status}
                   </Tag>
-                </p>
+                </div>
               </>
               <>
-                <p className='col-span-6 font-semibold '>
+                <div className='col-span-6 font-semibold '>
                   Flight Code
-                </p>
-                <p className='col-span-6 pl-3 font-medium border-l'>
+                </div>
+                <div className='col-span-6 pl-3 font-medium border-l'>
                   {flight.code}
-                </p>
+                </div>
               </>
               <>
-                <p className='col-span-6 font-semibold '>
+                <div className='col-span-6 font-semibold '>
                   Origin Airport
-                </p>
-                <p className='grid-flow-row col-span-6 pl-3 border-l'>
-                  <p className='font-medium'>{flight.origin.name}</p>
-                  <p>{flight.origin.code}</p>
-                  <p>{flight.origin.location}</p>
-                </p>
+                </div>
+                <div className='grid-flow-row col-span-6 pl-3 border-l'>
+                  <div className='font-medium'>
+                    {flight.origin.name}
+                  </div>
+                  <div>{flight.origin.code}</div>
+                  <div>{flight.origin.location}</div>
+                </div>
               </>
               <>
-                <p className='col-span-6 font-semibold '>
+                <div className='col-span-6 font-semibold '>
                   Departure Date/Time
-                </p>
-                <p className='col-span-6 pl-3 border-l'>
-                  <p>
+                </div>
+                <div className='col-span-6 pl-3 border-l'>
+                  <div>
                     {moment(flight.departureLocal).format(
                       'YYYY/MM/DD'
                     )}
-                  </p>
-                  <p>
+                  </div>
+                  <div>
                     {moment(flight.departureLocal).format(
                       'HH:mm Z z'
                     )}
-                  </p>
-                </p>
+                  </div>
+                </div>
               </>
               <>
-                <p className='col-span-6 font-semibold '>
+                <div className='col-span-6 font-semibold '>
                   Destination Airport
-                </p>
-                <p className='grid-flow-row col-span-6 pl-3 border-l'>
-                  <p className='font-medium'>
+                </div>
+                <div className='grid-flow-row col-span-6 pl-3 border-l'>
+                  <div className='font-medium'>
                     {flight.destination.name}
-                  </p>
-                  <p>{flight.destination.code}</p>
-                  <p>{flight.destination.location}</p>
-                </p>
+                  </div>
+                  <div>{flight.destination.code}</div>
+                  <div>{flight.destination.location}</div>
+                </div>
               </>
               <>
-                <p className='col-span-6 font-semibold '>
+                <div className='col-span-6 font-semibold '>
                   Arrival Date/Time
-                </p>
-                <p className='col-span-6 pl-3 border-l'>
-                  <p>
-                    {moment(flight.departureLocal).format(
-                      'YYYY/MM/DD'
-                    )}
-                  </p>
-                  <p>
-                    {moment(flight.departureLocal).format(
-                      'HH:mm Z z'
-                    )}
-                  </p>
-                </p>
+                </div>
+                <div className='col-span-6 pl-3 border-l'>
+                  <div>
+                    {moment(flight.arrivalLocal).format('YYYY/MM/DD')}
+                  </div>
+                  <div>
+                    {moment(flight.arrivalLocal).format('HH:mm Z z')}
+                  </div>
+                </div>
               </>
               <>
                 {flight.stopOvers ? (
                   <>
-                    <p className='col-span-3 font-semibold '>
+                    <div className='col-span-3 font-semibold '>
                       Stopovers
-                    </p>
-                    <p className='grid-flow-row col-span-9 divide-y-2 divide-gray-200'>
+                    </div>
+                    <div className='grid-flow-row col-span-9 divide-y-2 divide-gray-200'>
                       {flight.stopOvers.map((stopover) => (
-                        <>
-                          <span
-                            key={stopover.location.id}
-                            className='min-h-full'
-                          >
-                            <article className='pl-3 border-l'>
-                              <p className='font-medium'>
-                                {stopover.location.name} (
-                                {stopover.location.code})
-                              </p>
-                              <p>
-                                Arriving at{' '}
-                                {moment(stopover.arrivalLocal).format(
-                                  'YYYY/MM/DD HH:mm Z z'
-                                )}
-                              </p>
-                              <p>
-                                Departing at{' '}
-                                {moment(
-                                  stopover.departureLocal
-                                ).format('YYYY/MM/DD HH:mm Z z')}
-                              </p>
-                            </article>
-                          </span>
-                        </>
+                        <span key={uuid()} className='min-h-full'>
+                          <div className='pl-3 border-l'>
+                            <div className='font-medium'>
+                              {stopover.location.name} (
+                              {stopover.location.code})
+                            </div>
+                            <div>
+                              Arriving at{' '}
+                              {moment(stopover.arrivalLocal).format(
+                                'YYYY/MM/DD HH:mm Z z'
+                              )}
+                            </div>
+                            <div>
+                              Departing at{' '}
+                              {moment(stopover.departureLocal).format(
+                                'YYYY/MM/DD HH:mm Z z'
+                              )}
+                            </div>
+                          </div>
+                        </span>
                       ))}
-                    </p>
+                    </div>
                   </>
                 ) : (
                   <>
-                    <p className='col-span-6 font-semibold'>
+                    <div className='col-span-6 font-semibold'>
                       Stopovers
-                    </p>
-                    <p className='col-span-6 pl-3 border-l'>
-                      <p>N/A</p>
-                    </p>
+                    </div>
+                    <div className='col-span-6 pl-3 border-l'>
+                      <div>N/A</div>
+                    </div>
                   </>
                 )}
               </>
               <>
-                <p className='col-span-6 font-semibold '>
+                <div className='col-span-6 font-semibold '>
                   Seat Cost by Cabin Class
-                </p>
-                <p className='col-span-6 pl-3 border-l'>
-                  <p>
+                </div>
+                <div className='col-span-6 pl-3 border-l'>
+                  <div>
                     <span className='font-medium'>First:</span> $
                     {flight.firstClassCost}/seat
-                  </p>
-                  <p>
+                  </div>
+                  <div>
                     <span className='font-medium'>Business:</span> $
                     {flight.businessClassCost}/seat
-                  </p>
-                  <p>
+                  </div>
+                  <div>
                     <span className='font-medium'>First:</span> $
                     {flight.economyClassCost}/seat
-                  </p>
-                </p>
+                  </div>
+                </div>
               </>
               <hr className='col-span-12' />
-              <p className='col-span-12 font-semibold'>
+              <div className='col-span-12 font-semibold'>
                 Passenger Details
-              </p>
+              </div>
               <Table
                 className='col-span-12'
                 dataSource={

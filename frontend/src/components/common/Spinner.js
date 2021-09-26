@@ -3,7 +3,7 @@ import React from 'react'
 
 const Spinner = ({ size }) => (
   <svg
-    className={`h-${size} w-auto animate-spin text-skin-muted`}
+    className={`h-${size} w-auto animate-spin text-skin-muted self-center`}
     xmlns='http://www.w3.org/2000/svg'
     fill='none'
     viewBox='0 0 24 24'

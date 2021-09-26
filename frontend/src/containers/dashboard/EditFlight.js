@@ -62,12 +62,7 @@ const EditFlight = () => {
       )
       setAirports(activeAirports)
     })
-  }, [
-    airplaneProfiles,
-    airports,
-    refetchAirplaneProfiles,
-    refetchAirports
-  ])
+  }, [])
 
   const queryClient = useQueryClient()
   const resetSession = useSessionStore((state) => state.resetSession)
@@ -161,9 +156,61 @@ const EditFlight = () => {
   const [error, setError] = useState(null)
 
   const validate = () => {
+    // console.log('flight dep:', state.departure.format())
+    // console.log('flight arr:', state.arrival.format())
+
     if (state.arrival.isBefore(state.departure)) {
       return 'Arrival time must be after departure time'
     }
+
+    let stopoverError = ''
+
+    if (state.stopOvers.length > 0) {
+      let stopoverIndex = 1
+
+      state.stopOvers.forEach((stopOver) => {
+        // console.log(
+        //   stopoverIndex,
+        //   '- arr:',
+        //   stopOver.arrival.utc().format()
+        // )
+        // console.log(
+        //   stopoverIndex,
+        //   '- dep:',
+        //   stopOver.departure.utc().format()
+        // )
+
+        if (
+          stopOver.arrival.utc().isAfter(stopOver.departure.utc())
+        ) {
+          stopoverError = `Arrival at stopover ${stopoverIndex} must be before departure from it`
+        }
+
+        if (
+          stopOver.departure.utc().isBefore(stopOver.arrival.utc())
+        ) {
+          stopoverError = `Departure from stopover ${stopoverIndex} must be after arrival to it`
+        }
+
+        if (
+          stopOver.arrival.utc().isBefore(state.departure) ||
+          stopOver.departure.utc().isBefore(state.departure)
+        ) {
+          stopoverError = `Duration at stopover ${stopoverIndex} must be after flight departure`
+        }
+
+        if (
+          stopOver.arrival.utc().isAfter(state.arrival) ||
+          stopOver.departure.utc().isAfter(state.arrival)
+        ) {
+          stopoverError = `Duration at ${stopoverIndex} must happen before flight arrival`
+        }
+
+        stopoverIndex += 1
+      })
+    }
+
+    if (stopoverError) return stopoverError
 
     return null
   }
@@ -244,6 +291,7 @@ const EditFlight = () => {
         </p>
         <main className='grid items-center grid-cols-12 col-span-11 gap-4'>
           <Select
+            disabled
             className='col-span-12'
             placeholder='Select stopover airport'
             value={stopover.location}
@@ -453,7 +501,6 @@ const EditFlight = () => {
                   <DatePicker
                     className='col-span-8 sm:col-span-5'
                     disabledDate={invalidDeparture}
-                    disabledTime={invalidDeparture}
                     allowClear={false}
                     placeholder='Departure date & time'
                     value={state.departure}
@@ -507,7 +554,6 @@ const EditFlight = () => {
                   <DatePicker
                     className='col-span-8 sm:col-span-5'
                     disabledDate={invalidArrival}
-                    disabledTime={invalidArrival}
                     allowClear={false}
                     placeholder='Arrival date & time'
                     value={state.arrival}
@@ -547,7 +593,7 @@ const EditFlight = () => {
               <p className='text-red-500'>{error || ''}</p>
               <button
                 type='submit'
-                className='self-end w-20 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
+                className='flex items-center self-end justify-center w-20 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
               >
                 {loading ? <Spinner size={5} /> : 'Submit'}
               </button>

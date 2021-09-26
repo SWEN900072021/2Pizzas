@@ -81,25 +81,24 @@ const Signup = () => {
 
     AuthenticationService.signup({
       data: user,
-      onSuccess: (res) => {
-        setToken(res.data.token)
-        setUser({
-          username: res.data.username,
-          userType: res.data.userTYpe
-        })
-        setLoading(false)
-        if (isCreatingBooking) {
-          setCreatingBooking(false)
-          if (res.data.userType !== 'customer') {
-            history.push('/dashboard')
-          } else {
-            history.push('/booking/create')
+      onSuccess: () => {
+        AuthenticationService.login({
+          data: { username, password },
+          onSuccess: (res) => {
+            setToken(res.data.token)
+            setUser({
+              username: res.data.username,
+              userType: res.data.userType
+            })
+
+            setLoading(false)
+            if (isCreatingBooking) {
+              setCreatingBooking(false)
+              history.push('/booking/create')
+            }
+            history.push('/')
           }
-        } else if (res.data.userType !== 'customer') {
-          history.push('/dashboard')
-        } else {
-          history.push('/')
-        }
+        })
       },
       onError: () => {
         // console.log(err)
