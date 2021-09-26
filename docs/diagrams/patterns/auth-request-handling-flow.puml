@@ -1,0 +1,110 @@
+@startuml
+
+participant BaseRequestDelegate as BRD
+participant PathResolver as PR
+participant "authenticationProvider : AuthenticationProvider" as AP
+participant HttpException as HE
+participant "request : HttpRequest" as HR
+participant RequestProcessingException as RPE
+participant "targetController : AuthenticationController" as AC
+
+-> BRD : handle(request)
+activate BRD
+
+BRD -> PR : result = test(request.getPath())
+
+alt result.isMatch() && request.getMethod().equals(result.getMethod())
+
+  BRD -> Method : authenticatedAnnotation = getDeclaredAnnotation(Authenticated.class)
+
+  alt authenticatedAnnotation != null
+
+    alt request.getHeaders().containsKey("Authorization")
+
+      BRD -> HR : auth = request.getHeaders().get("Authorization")
+      BRD -> BRD : bearerAndToken = auth.split(" ")
+
+      alt bearerAndToken.length != 2
+        BRD -> HE : throw new HttpException(HttpStatus.BAD_REQUEST, "Invalid authorization token")
+      end
+
+      alt !bearerAndToken[0].equals("Bearer")
+        BRD -> HE : throw new HttpException(HttpStatus.BAD_REQUEST, "Authorization must be of type Bearer")
+      end
+
+      BRD -> AP : authenticatedUser = authenticate(bearerAndToken[1])
+      activate AP
+
+      AP -> Jwts : jws = Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(bearerAndToken[1])
+      
+      alt !jws.getBody().getAudience().equals(issuer)
+        AP -> BRD : authenticatedUser = Optional.empty()
+      else
+        AP -> AP : userId = jws.getBody().getId()
+        AP -> BRD : authenticatedUser = userRepository.find(EntityId.of(userId))
+      end
+      deactivate AP
+
+    else
+
+      BRD -> BRD : authenticatedUser = Optional.empty()
+
+    end
+
+    alt authenticatedUser.isPresent() && authenticatedAnnotation.value().length > 0
+
+      alt Arrays.asList(authenticatedAnnotation.value()).contains(authenticateduser.get().getUserType())
+
+        BRD -> BRD : authorized = true
+
+      end
+
+    end
+
+    alt !authorized
+
+      BRD -> HE : throw new HttpException(HttpStatus.UNAUTHORIZED)
+
+    end
+
+  end
+
+  BRD -> BRD : args = getArgsFromRequest(request, result, authenticatedUser.orElse(null))
+  BRD -> BRD : response = handler.invoke(targetController, args.toArray())
+
+  opt targetController instanceOf AuthenticationController
+
+    alt
+      BRD -> AC : login(body)
+      activate AC
+      AC -> AP : token = login(body.getUsername(), body.getPassword()).orElseThrow(() -> new HttpException(HttpStatus.UNAUTHORIZED))
+      AC -> AC : user = userRepository.find(body.getUsername(), body.getPassword()).orElsethrow(() -> new HttpException(HttpStatus.NOT_FOUND))
+      AC -> BRD : response = RestResponse.ok(new LoginResponseDto().setToken(token).setUsername(user.getUsername()).setUserType(user.getUserType()))
+    else
+      BRD -> AC : signup(body)
+      AC -> AC : user = new Customer(body.getUsername(), body.getPassword(), body.getGivenName(), body.getSurname(), body.getEmail())
+      AC -> AC : userRepository.save(user)
+      AC -> AP : token = login(user)
+      AC -> BRD : response = RestResponse.ok(new SignupResponseDto().setId(user.getId().toString()).setEmail(user.getEmail()).setGivenName(user.getGivenName()).setSurname(user.getLastName()).setToken(token))
+    end
+
+  end
+
+  alt response == null
+    BRD -> RPE : throw new RequestProcessingException()
+  else !(response instanceof RestResponse)
+    BRD -> RPE : throw new RequestProcessingException()
+  end
+
+  <- BRD : response
+
+else
+
+  BRD -> RPE : throw new RequestProcessingException()
+
+end
+
+
+
+
+@enduml
