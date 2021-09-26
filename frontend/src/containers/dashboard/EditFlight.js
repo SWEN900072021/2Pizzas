@@ -145,7 +145,9 @@ const EditFlight = () => {
     }
   }, [
     airplaneProfiles,
+    airplaneProfilesSuccess,
     airports,
+    airportsSuccess,
     flightId,
     flights,
     flightsSuccess,
