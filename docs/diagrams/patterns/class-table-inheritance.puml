@@ -1,0 +1,69 @@
+@startuml
+
+abstract User {
+
+  - USERNAME: String
+  - PASSWORD: String
+
+  + {abstract} getUserType(): String
+
+}
+
+class Administrator extends User {
+
+  + {static} TYPE: String = "administrator"
+  + getUserType(): String
+
+}
+
+class Airline extends User {
+
+  + {static} TYPE: String = "airline"
+  - NAME: String
+  - CODE: String
+
+  + getUserType(): String
+
+}
+
+class Customer extends User {
+
+  + {static} TYPE: String = "customer"
+  - GIVENNAME: String
+  - LASTNAME: String
+  - EMAIL: String
+
+  + getUserType(): String
+
+}
+
+object UserTable {
+  id
+  usertype
+  username
+  password
+}
+
+object AdministratorTable {
+  id
+}
+
+object AirlineTable {
+  id
+  name
+  code
+}
+
+object CustomerTable {
+  id
+  givenname
+  surname
+  email
+}
+
+AdministratorTable -up[hidden]-|> UserTable
+AirlineTable -up[hidden]-|> UserTable
+CustomerTable -up[hidden]-|> UserTable
+
+
+@enduml
