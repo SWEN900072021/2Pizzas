@@ -49,8 +49,8 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
         abstractCreate(entity);
         new SqlStatement(CREATE_TEMPLATE,
                 entity.getId().toString(),
-                entity.getCode(),
-                entity.getName()
+                entity.getName(),
+                entity.getCode()
         ).doExecute(connectionPool.getCurrentTransaction());
     }
 
@@ -70,8 +70,8 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
     public void update(Airline entity) {
         abstractUpdate(entity);
         new SqlStatement(UPDATE_TEMPLATE,
-            entity.getCode(),
             entity.getName(),
+            entity.getCode(),
             entity.getId().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
     }
@@ -111,8 +111,8 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
                     EntityId.of(resultSet.getObject(AirlineMapperImpl.COLUMN_ID, String.class)),
                     resultSet.getObject(AbstractUserMapper.COLUMN_USERNAME, String.class),
                     resultSet.getObject(AbstractUserMapper.COLUMN_PASSWORD, String.class),
-                    resultSet.getObject(AirlineMapperImpl.COLUMN_CODE, String.class),
                     resultSet.getObject(AirlineMapperImpl.COLUMN_NAME, String.class),
+                    resultSet.getObject(AirlineMapperImpl.COLUMN_CODE, String.class),
                     User.UserStatus.valueOf(resultSet.getObject(AbstractUserMapper.COLUMN_STATUS, String.class))
             );
         } catch (SQLException e) {

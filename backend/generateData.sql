@@ -44,9 +44,9 @@ VALUES (gen_random_uuid(), 'MEL', 'Tullamarine Airport', 'Melbourne', 'Australia
 -- Qantas Planes
 INSERT INTO airplaneProfile(id, code, type, firstClassRows, firstClassColumns, businessClassRows, businessClassColumns,
                             economyClassRows, economyClassColumns)
-VALUES (gen_random_uuid(), 'planecode_1', 'boeing', 6, 3, 8, 4, 40, 7),
-       (gen_random_uuid(), 'planecode_2', 'airbus', 6, 3, 10, 4, 40, 10),
-       (gen_random_uuid(), 'planecode_test', 'airbus', 2, 1, 2, 1, 3, 1);
+VALUES (gen_random_uuid(), '747', 'boeing', 6, 3, 8, 4, 40, 7),
+       (gen_random_uuid(), 'A380', 'airbus', 6, 3, 10, 4, 40, 10),
+       (gen_random_uuid(), 'A220', 'airbus', 2, 1, 2, 1, 3, 1);
 
 
 -- Flight Table
@@ -54,7 +54,7 @@ VALUES (gen_random_uuid(), 'planecode_1', 'boeing', 6, 3, 8, 4, 40, 7),
 INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, status, firstClassCost,
                    businessClassCost, economyClassCost)
 VALUES (gen_random_uuid(),
-        'QN111', '2021-01-01 08:00', '2021-01-01 13:00',
+        'QN111', '2022-01-01 08:00', '2022-01-01 13:00',
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'QFA'),
@@ -63,7 +63,7 @@ VALUES (gen_random_uuid(),
         80.0,
         50.0),
        (gen_random_uuid(),
-        'QN112', '2021-01-01 15:00', '2021-01-01 18:00',
+        'QN112', '2022-01-01 15:00', '2022-01-01 18:00',
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airline WHERE code = 'QFA'),
@@ -72,7 +72,7 @@ VALUES (gen_random_uuid(),
         80.0,
         50.0),
        (gen_random_uuid(),
-        'QN113', '2021-01-02 19:00', '2021-01-02 21:00',
+        'QN113', '2022-01-02 19:00', '2022-01-02 21:00',
         (SELECT id FROM airport WHERE code = 'AVV'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'QFA'),
@@ -112,7 +112,7 @@ VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'QN113'), '
 INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, status, firstClassCost,
                    businessClassCost, economyClassCost)
 VALUES (gen_random_uuid(),
-        'VA111', '2021-02-01 08:00', '2021-02-01 13:00',
+        'VA111', '2022-02-01 08:00', '2022-02-01 13:00',
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'VIR'),
@@ -121,7 +121,7 @@ VALUES (gen_random_uuid(),
         81.0,
         51.0),
        (gen_random_uuid(),
-        'VA112', '2021-02-01 15:00', '2021-02-01 18:00',
+        'VA112', '2022-02-01 15:00', '2022-02-01 18:00',
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airline WHERE code = 'VIR'),
@@ -130,7 +130,7 @@ VALUES (gen_random_uuid(),
         81.0,
         51.0),
        (gen_random_uuid(),
-        'VA113', '2021-02-02 19:00', '2021-02-02 21:00',
+        'VA113', '2022-02-02 19:00', '2022-02-02 21:00',
         (SELECT id FROM airport WHERE code = 'AVV'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'VIR'),
@@ -170,7 +170,7 @@ VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'VA113'), '
 INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, status, firstClassCost,
                    businessClassCost, economyClassCost)
 VALUES (gen_random_uuid(),
-        'EM111', '2021-03-01 08:00', '2021-03-01 13:00',
+        'EM111', '2022-03-01 08:00', '2022-03-01 13:00',
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'UAE'),
@@ -179,7 +179,7 @@ VALUES (gen_random_uuid(),
         82.0,
         52.0),
        (gen_random_uuid(),
-        'EM112', '2021-03-01 15:00', '2021-03-01 18:00',
+        'EM112', '2022-03-01 15:00', '2022-03-01 18:00',
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airline WHERE code = 'UAE'),
@@ -188,7 +188,7 @@ VALUES (gen_random_uuid(),
         82.0,
         52.0),
        (gen_random_uuid(),
-        'EM113', '2021-03-02 19:00', '2021-03-02 21:00',
+        'EM113', '2022-03-02 19:00', '2022-03-02 21:00',
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'UAE'),
@@ -228,12 +228,12 @@ VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'EM113'), '
 -- Qantas
 INSERT INTO stopover(flightId, departure, arrival, airportId)
 VALUES ((SELECT id FROM flight WHERE code = 'QN111'),
-        '2021-01-01 10:30', '2021-01-01 10:00',
+        '2022-01-01 10:30', '2022-01-01 10:00',
         (SELECT id FROM airport WHERE code = 'AVV'));
 -- Virgin
 INSERT INTO stopover(flightId, departure, arrival, airportId)
 VALUES ((SELECT id FROM flight WHERE code = 'VA111'),
-        '2021-02-01 10:30', '2021-02-01 10:00',
+        '2022-02-01 10:30', '2022-02-01 10:00',
         (SELECT id FROM airport WHERE code = 'AVV'));
 
 -- Booking Table
