@@ -22,10 +22,10 @@ interface DataMapper<T, ID, S> {
 DataMapper .> DataMapperRegistry: "registers self with"
 DataMapperRegistry ->"*" DataMapper: mappers
 
-interface SqlResultSetMapper<T> {
-  + map(results: ResultSet): List<T> 
-  + mapOne(results: ResultSet): T 
-}
+' interface SqlResultSetMapper<T> {
+'   + map(results: ResultSet): List<T> 
+'   + mapOne(results: ResultSet): T 
+' }
 
 abstract class AbstractUserMapper<T> {
   # abstractCreate(entity: T)
@@ -39,14 +39,14 @@ AbstractUserMapper ->"1" ConnectionPool: connectionPool
 interface AirlineMapper {} 
 interface AirlineSpecification {}
 
-AirlineMapper -up-|> DataMapper
-AirlineMapper -up-|> SqlResultSetMapper
+AirlineMapper --up--|> DataMapper
 AirlineMapper .> AirlineSpecification: "finds all with"
 AirlineRepositoryImpl -down->"1" AirlineMapper: mapper
 
-class AirlineMapperImpl {}
+class AirlineMapperImpl {
+  - connectionPool: ConnectionPool
+}
 
-AirlineMapperImpl --up-->"1" ConnectionPool: connectionPool
 AirlineMapperImpl .|> AirlineMapper
 AirlineMapperImpl -|> AbstractUserMapper
 AirlineMapperImpl .down.> Airline: maps
@@ -54,29 +54,29 @@ AirlineMapperImpl .down.> Airline: maps
 interface AdministratorMapper {}
 interface AdministratorSpecification {}
 
-AdministratorMapper -up-|> DataMapper
-AdministratorMapper -up-|> SqlResultSetMapper
+AdministratorMapper --up--|> DataMapper
 AdministratorMapper .> AdministratorSpecification: "finds all with"
 AdministratorRepositoryImpl -down->"1" AdministratorMapper: mapper
 
-class AdministratorMapperImpl {}
+class AdministratorMapperImpl {
+  - connectionPool: ConnectionPool
+}
 
-AdministratorMapperImpl --up-->"1" ConnectionPool: connectionPool
 AdministratorMapperImpl .|> AdministratorMapper
-AdministratorMapperImpl -|> AbstractUserMapper
+AdministratorMapperImpl -up-|> AbstractUserMapper
 AdministratorMapperImpl .down.> Administrator: maps
 
 interface CustomerMapper {} 
 interface CustomerSpecification {}
 
-CustomerMapper -|> DataMapper
-CustomerMapper -|> SqlResultSetMapper
+CustomerMapper --up--|> DataMapper
 CustomerMapper ..> CustomerSpecification: "finds all with"
 CustomerRepositoryImpl -down->"1" CustomerMapper: mapper
 
-class CustomerMapperImpl {}
+class CustomerMapperImpl {
+  - connectionPool: ConnectionPool
+}
 
-CustomerMapperImpl ->"1" ConnectionPool: connectionPool
 CustomerMapperImpl .|> CustomerMapper
 CustomerMapperImpl -|> AbstractUserMapper
 CustomerMapperImpl .> Customer: maps
@@ -84,20 +84,133 @@ CustomerMapperImpl .> Customer: maps
 interface UserMapper {} 
 interface UserSpecification {}
 
-UserMapper -|> DataMapper
-UserMapper -|> SqlResultSetMapper
+UserMapper --up--|> DataMapper
 UserMapper .> UserSpecification: "finds all with"
-UserRepositoryImpl ->"1" UserMapper: mapper
+UserRepositoryImpl -down-|>"1" UserMapper: mapper
 
-class UserMapperImpl {}
+class UserMapperImpl {
+  - connectionPool: ConnectionPool
+  - customerMapper: CustomerMapper
+  - airlineMapper: AirlineMapper
+  - administratorMapper: AdministratorMapper
+}
 
-UserMapperImpl ->"1" ConnectionPool: connectionPool
 UserMapperImpl .|> UserMapper
 UserMapperImpl -|> AbstractUserMapper
 UserMapperImpl .> User: maps
-UserMapperImpl -> CustomerMapper: customerMapper
-UserMapperImpl -> AirlineMapper: customerMapper
-UserMapperImpl -> AdministratorMapper: customerMapper
+
+
+interface AirportMapper {} 
+interface AirportSpecification {}
+
+AirportMapper --up--|>  DataMapper
+AirportMapper .> AirportSpecification: "finds all with"
+AirportRepositoryImpl -down-|>"1" AirportMapper: mapper
+
+class AirportMapperImpl {
+  - connectionPool: ConnectionPool
+}
+
+AirportMapperImpl .|> AirportMapper
+AirportMapperImpl .> Airport: maps
+
+interface PassengerMapper {} 
+interface PassengerSpecification {}
+
+PassengerMapper --up--|> DataMapper
+PassengerMapper .> PassengerSpecification: "finds all with"
+PassengerRepositoryImpl -down-|>"1" PassengerMapper: mapper
+
+class PassengerMapperImpl {
+  - connectionPool: ConnectionPool
+  - bookingMapper: BookingMapper
+}
+
+PassengerMapperImpl .|> PassengerMapper
+PassengerMapperImpl .> Passenger: maps
+
+interface BookingMapper {} 
+interface BookingSpecification {}
+
+BookingMapper --up--|> DataMapper
+BookingMapper .> BookingSpecification: "finds all with"
+BookingRepositoryImpl -down-|>"1" BookingMapper: mapper
+
+class BookingMapperImpl {
+  - connectionPool: ConnectionPool
+  - flightMapper: FlightMapper
+  - customerMapper: CutomerMapper
+  - flightSeatAllocationResultsMapper: FlightSeatAllocationMapper
+}
+
+BookingMapperImpl .|> BookingMapper
+BookingMapperImpl .> Booking: maps
+
+interface FlightMapper {} 
+interface FlightSpecification {}
+
+FlightMapper --up--|> DataMapper
+FlightMapper .> FlightSpecification: "finds all with"
+FlightRepositoryImpl -down-|>"1" FlightMapper: mapper
+
+class FlightMapperImpl {
+  - connectionPool: ConnectionPool
+  - airlineMapper: AirlineMapper
+  - airportMapper: AirportMapper
+  - flightSeatAllocationMapper: FlightSeatAllocationMapper
+  - airplaneMapper: AirplaneProfileMapper
+  - flightSeatMapper: FlightSeatMapper
+}
+
+FlightMapperImpl .|> FlightMapper
+FlightMapperImpl .> Flight: maps
+
+interface FlightSeatMapper {} 
+interface FlightSeatSpecification {}
+
+FlightSeatMapper --up--|> DataMapper
+FlightSeatMapper .> FlightSeatSpecification: "finds all with"
+FlightSeatRepositoryImpl -down-|>"1" FlightSeatMapper: mapper
+
+class FlightSeatMapperImpl {
+  - connectionPool: ConnectionPool
+  - flightMapper: FlightMapper
+}
+
+FlightSeatMapperImpl .|> FlightSeatMapper
+FlightSeatMapperImpl .> FlightSeat: maps
+
+interface AirplaneProfileMapper {} 
+interface AirplaneProfileSpecification {}
+
+AirplaneProfileMapper --up--|> DataMapper
+
+AirplaneProfileMapper .> AirplaneProfileSpecification: "finds all with"
+AirplaneProfileRepositoryImpl -down-|>"1" AirplaneProfileMapper: mapper
+
+class AirplaneProfileMapperImpl {
+  - connectionPool: ConnectionPool
+}
+
+AirplaneProfileMapperImpl .|> AirplaneProfileMapper
+AirplaneProfileMapperImpl .> AirplaneProfile: maps
+
+interface UnitOfWork {
+  + registerNew(entity: Object)
+  + registerDirty(entity: Object)
+  + registerRemoved(entity: Object)
+  + start() 
+  + commit()
+  + rollback()
+}
+
+class UnitOfWorkImpl {
+  
+}
+
+UnitOfWorkImpl .up.|> UnitOfWork
+UnitOfWorkImpl -> DataMapperRegistry: registry
+UnitOfWorkImpl .> DataMapper: calls mapping fuctions
 
 interface AirportRepository {
   + findAllAirports(): List<Airport>
