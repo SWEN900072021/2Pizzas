@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react'
 import { Input, Select, DatePicker, InputNumber } from 'antd'
 import { useHistory, useParams } from 'react-router'
@@ -48,19 +49,22 @@ const EditFlight = () => {
     isSuccess: airplaneProfilesSuccess,
     refetch: refetchAirplaneProfiles
   } = useAirplaneProfiles()
-  const {
-    data: airports,
-    isError: airportsError,
-    isSuccess: airportsSuccess,
-    refetch: refetchAirports
-  } = useAirports()
+  const { isError: airportsError, refetch: refetchAirports } =
+    useAirports()
+
+  const [airports, setAirports] = useState(null)
 
   useEffect(() => {
     if (!airplaneProfiles) {
       refetchAirplaneProfiles()
     }
     if (!airports) {
-      refetchAirports()
+      refetchAirports().then((res) => {
+        const activeAirports = res.data.filter(
+          (airport) => airport.status === 'ACTIVE'
+        )
+        setAirports(activeAirports)
+      })
     }
   }, [
     airplaneProfiles,
@@ -95,7 +99,7 @@ const EditFlight = () => {
       flightsSuccess &&
       flights &&
       !state &&
-      airportsSuccess &&
+      airports &&
       airplaneProfilesSuccess
     ) {
       const flight = flights.find((f) => f.id === flightId)
@@ -147,7 +151,6 @@ const EditFlight = () => {
     airplaneProfiles,
     airplaneProfilesSuccess,
     airports,
-    airportsSuccess,
     flightId,
     flights,
     flightsSuccess,
@@ -161,7 +164,6 @@ const EditFlight = () => {
 
     const updatedFlight = {
       code: state.code,
-      profile: state.profile.id,
       origin: state.origin.id,
       destination: state.destination.id,
       departure: state.departure.utc().format(),
@@ -176,7 +178,7 @@ const EditFlight = () => {
       }))
     }
 
-    // console.log('Update to flight:', updatedFlight)
+    console.log('Update to flight:', updatedFlight)
 
     setLoading(true)
 
@@ -432,34 +434,11 @@ const EditFlight = () => {
                 </section>
 
                 <div className='grid w-full grid-flow-row gap-2 p-3 bg-gray-50'>
-                  <section className='grid items-center w-full grid-cols-5 gap-2 '>
+                  <section className='grid items-start w-full grid-cols-5 gap-2 '>
                     <p className='col-span-2 font-bold'>
                       Airplane Profile
                     </p>
-                    <Select
-                      className='col-span-3'
-                      style={{ width: '100%' }}
-                      placeholder='Select an airplane profile'
-                      value={state.profile.id}
-                      onSelect={(key) => {
-                        setState((oldState) => ({
-                          ...oldState,
-                          profile: airplaneProfiles.find(
-                            (profile) => profile.id === key
-                          )
-                        }))
-                      }}
-                    >
-                      {airplaneProfiles &&
-                        airplaneProfiles.map(({ id, code }) => (
-                          <Option key={id}>
-                            <article>
-                              <p>{code}</p>
-                            </article>
-                          </Option>
-                        ))}
-                    </Select>
-                    <span className='col-span-2' />
+
                     {Object.entries(state.profile).length !== 0 && (
                       <span className='col-span-3'>
                         <p>

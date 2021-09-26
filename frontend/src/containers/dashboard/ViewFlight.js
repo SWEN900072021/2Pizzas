@@ -58,9 +58,11 @@ const ViewFlight = () => {
     }
 
     if (isSuccess && data && id) {
-      const currentFlight = data.find((b) => b.id === id)
+      refetchFlights().then((res) => {
+        const currentFlight = res.data.find((b) => b.id === id)
+        setFlight(currentFlight)
+      })
       // console.log('Current flight:', currentFlight)
-      setFlight(currentFlight)
     }
 
     if (token && id && !passengers) {
@@ -76,7 +78,8 @@ const ViewFlight = () => {
     flight,
     passengers,
     refetchPassengers,
-    token
+    token,
+    refetchFlights
   ])
 
   const goBack = () => {
@@ -285,9 +288,11 @@ const ViewFlight = () => {
                   Destination Airport
                 </p>
                 <p className='grid-flow-row col-span-6 pl-3 border-l'>
-                  <p className='font-medium'>{flight.origin.name}</p>
-                  <p>{flight.origin.code}</p>
-                  <p>{flight.origin.location}</p>
+                  <p className='font-medium'>
+                    {flight.destination.name}
+                  </p>
+                  <p>{flight.destination.code}</p>
+                  <p>{flight.destination.location}</p>
                 </p>
               </>
               <>

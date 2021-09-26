@@ -37,7 +37,11 @@ const CreateAirport = () => {
       data: { airport, token },
       onSuccess: () => {
         setLoading(false)
-        history.push('/dashboard/manage/airports')
+        history.push('/dashboard/view/airports')
+      },
+      onError: (error) => {
+        setLoading(false)
+        console.log(error)
       }
     })
   }
@@ -54,7 +58,7 @@ const CreateAirport = () => {
       className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'
     >
       <section className='flex flex-col w-full h-full max-w-lg gap-4'>
-        <h1 className='text-3xl font-bold'>Create Airline</h1>
+        <h1 className='text-3xl font-bold'>Create Airport</h1>
         <hr />
         <form
           className='flex flex-col items-start w-full h-full max-h-full gap-4 overflow-y-auto'

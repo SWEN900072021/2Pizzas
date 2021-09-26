@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router'
-import { Table, Space } from 'antd'
+import { Table, Space, Tag } from 'antd'
 import { FaPlus } from 'react-icons/fa'
 
 import Spinner from '../../components/common/Spinner'
@@ -47,7 +47,7 @@ const ListAirlines = () => {
   const heading = (
     <header className='flex items-center justify-between'>
       <h2 className='text-3xl font-bold'>Your airlines</h2>
-      <Link to='/dashboard/manage/airlines/create'>
+      <Link to='/dashboard/create/airlines'>
         <button
           type='button'
           className='flex items-center justify-center gap-2 p-2 font-bold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
@@ -127,7 +127,23 @@ const ListAirlines = () => {
               compare: (a, b) => sort(a.code, b.code)
             }}
           />
+          <Column
+            title='Status'
+            dateIndex='status'
+            render={(text, record) => {
+              let colour = 'green'
 
+              if (record.status === 'INACTIVE') {
+                colour = 'volcano'
+              }
+
+              return (
+                <Tag color={colour} key={record.status}>
+                  {record.status}
+                </Tag>
+              )
+            }}
+          />
           <Column
             title='Actions'
             key='actions'

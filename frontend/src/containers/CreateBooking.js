@@ -114,7 +114,7 @@ const CreateBooking = () => {
     BookingService.createBooking(
       token,
       booking,
-      (res) => history.push('/dashboard/current-booking'),
+      (res) => history.push('/dashboard/view/bookings/current'),
       // (err) => console.log(err)
       null
     )

@@ -23,20 +23,24 @@ const CreateFlight = () => {
     error: airplaneProfilesError,
     refetch: refetchAirplaneProfiles
   } = useAirplaneProfiles()
-  const {
-    data: airports,
-    error: airportsError,
-    refetch: refetchAirports
-  } = useAirports()
+  const { error: airportsError, refetch: refetchAirports } =
+    useAirports()
 
   const history = useHistory()
+
+  const [airports, setAirports] = useState(null)
 
   useEffect(() => {
     if (!airplaneProfiles) {
       refetchAirplaneProfiles()
     }
     if (!airports) {
-      refetchAirports()
+      refetchAirports().then((res) => {
+        const activeAirports = res.data.filter(
+          (airport) => airport.status === 'ACTIVE'
+        )
+        setAirports(activeAirports)
+      })
     }
   }, [
     airplaneProfiles,
@@ -256,7 +260,7 @@ const CreateFlight = () => {
             className='col-span-5 sm:col-span-4'
             readOnly
             value={
-              stopover.location
+              stopover.location && airports
                 ? moment
                     .tz(
                       airports.find((a) => a.id === stopover.location)
@@ -289,7 +293,7 @@ const CreateFlight = () => {
             className='col-span-5 sm:col-span-4'
             readOnly
             value={
-              stopover.location
+              stopover.location && airports
                 ? moment
                     .tz(
                       airports.find((a) => a.id === stopover.location)
