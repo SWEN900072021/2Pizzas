@@ -156,39 +156,46 @@ const EditFlight = () => {
   ])
 
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const validate = () => {
+    if (state.arrival.isBefore(state.departure)) {
+      return 'Arrival time must be after departure time'
+    }
+
+    return null
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
+    setError(null)
+
     const updatedFlight = {
-      code: state.code,
-      origin: state.origin.id,
-      destination: state.destination.id,
       departure: state.departure.utc().format(),
-      arrival: state.arrival.utc().format(),
-      firstClassCost: state.firstClassCost,
-      businessClassCost: state.businessClassCost,
-      economyClassCost: state.economyClassCost,
-      stopOvers: state.stopOvers.map((s) => ({
-        location: s.location,
-        arrival: s.arrival.utc().format(),
-        departure: s.departure.utc().format()
-      }))
+      arrival: state.arrival.utc().format()
     }
 
-    console.log('Update to flight:', updatedFlight)
+    const flightError = validate(updatedFlight)
 
-    setLoading(true)
+    if (flightError) {
+      setError(flightError)
+    } else {
+      setLoading(true)
+      // console.log('Update to flight:', updatedFlight)
 
-    FlightService.updateFlight({
-      data: { token, id: flightId, flight: updatedFlight },
-      onSuccess: () => {
-        setLoading(false)
-        history.push(`/dashboard/view/flights/${flightId}`)
-      }
-    })
-
-    setLoading(false)
+      FlightService.updateFlight({
+        data: { token, id: flightId, flight: updatedFlight },
+        onSuccess: () => {
+          setLoading(false)
+          history.push(`/dashboard/view/flights/${flightId}`)
+        },
+        onError: (err) => {
+          setLoading(false)
+          setError(err)
+        }
+      })
+    }
   }
 
   /* -------------------------------------------------------------------------- */
@@ -303,7 +310,7 @@ const EditFlight = () => {
         <h1 className='text-3xl font-bold'>Edit Flight</h1>
         <hr />
         {!validUser || !airplaneProfiles || !airports || !state ? (
-          <Spinner size={6} />
+          <p>Loading...</p>
         ) : (
           <form
             className='flex flex-col items-start w-full h-full max-h-full gap-4 overflow-y-auto'
@@ -433,7 +440,10 @@ const EditFlight = () => {
                     onChange={(date) =>
                       setState((oldState) => ({
                         ...oldState,
-                        departure: date
+                        departure: moment.tz(
+                          date.format('YYYY-MM-DD HH:mm'),
+                          state.origin.zoneId
+                        )
                       }))
                     }
                     format='YYYY-MM-DD HH:mm'
@@ -484,7 +494,10 @@ const EditFlight = () => {
                     onChange={(date) =>
                       setState((oldState) => ({
                         ...oldState,
-                        arrival: date
+                        arrival: moment.tz(
+                          date.format('YYYY-MM-DD HH:mm'),
+                          state.destination.zoneId
+                        )
                       }))
                     }
                     format='YYYY-MM-DD HH:mm'
@@ -510,12 +523,15 @@ const EditFlight = () => {
               </main>
             )}
 
-            <button
-              type='submit'
-              className='self-end p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
-            >
-              {loading ? <Spinner size={6} /> : 'Submit'}
-            </button>
+            <span className='flex items-center justify-end w-full gap-3'>
+              <p className='text-red-500'>{error || ''}</p>
+              <button
+                type='submit'
+                className='self-end p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
+              >
+                {loading ? <Spinner size={6} /> : 'Submit'}
+              </button>
+            </span>
           </form>
         )}
       </section>

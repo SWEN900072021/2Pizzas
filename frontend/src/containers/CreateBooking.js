@@ -20,6 +20,7 @@ import {
 } from '../hooks/Store'
 import NavBar from '../components/common/NavBar'
 import { BookingService } from '../api'
+import Spinner from '../components/common/Spinner'
 
 const { Panel } = Collapse
 const { RangePicker } = DatePicker
@@ -55,10 +56,10 @@ const CreateBooking = () => {
     useState(false)
 
   useEffect(() => {
-    console.log(
-      'Outbound availabilities:',
-      selectedOutboundFlight.seatAvailabilities
-    )
+    // console.log(
+    //   'Outbound availabilities:',
+    //   selectedOutboundFlight.seatAvailabilities
+    // )
 
     selectedOutboundFlight.seatAvailabilities.forEach(
       (classAvailable) => {
@@ -83,10 +84,10 @@ const CreateBooking = () => {
     )
 
     if (isReturn) {
-      console.log(
-        'Return availabilities:',
-        selectedReturnFlight.seatAvailabilities
-      )
+      // console.log(
+      //   'Return availabilities:',
+      //   selectedReturnFlight.seatAvailabilities
+      // )
 
       selectedReturnFlight.seatAvailabilities.forEach(
         (classAvailable) => {
@@ -111,14 +112,14 @@ const CreateBooking = () => {
       )
     }
 
-    console.log(
-      economyAvailableOutbound,
-      businessAvailableOutbound,
-      firstAvailableOutbound,
-      economyAvailableReturn,
-      businessAvailableReturn,
-      firstAvailableReturn
-    )
+    // console.log(
+    //   economyAvailableOutbound,
+    //   businessAvailableOutbound,
+    //   firstAvailableOutbound,
+    //   economyAvailableReturn,
+    //   businessAvailableReturn,
+    //   firstAvailableReturn
+    // )
   }, [
     businessAvailableOutbound,
     businessAvailableReturn,
@@ -180,10 +181,13 @@ const CreateBooking = () => {
   /* -------------------------------------------------------------------------- */
 
   const invalidDOB = (current) => current > moment()
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = (e) => {
     e.preventDefault()
     // [[pass1 seatAlloc], [pass2 seatAlloc]]
+
+    setLoading(true)
     const seatAllocations = []
     state.forEach((passenger) => {
       const individualSeatAllocation = []
@@ -238,8 +242,14 @@ const CreateBooking = () => {
     BookingService.createBooking(
       token,
       booking,
-      (res) => history.push('/dashboard/view/bookings/current'),
-      (err) => console.log(err)
+      (res) => {
+        setLoading(false)
+        history.push('/dashboard/view/bookings/current')
+      },
+      (err) => {
+        setLoading(false)
+        console.log(err)
+      }
     )
 
     // console.log(state)
@@ -440,7 +450,7 @@ const CreateBooking = () => {
               placeholder={`Enter passenger ${passengerNumber} nationality`}
               onChange={(e) => handleChange(e, passenger)}
             />
-            <p className='font-medium'>Date of birth</p>
+            <p className='font-medium'>Date of Birth</p>
             {/* <Space direction='vertical' size={12}> */}
             <DatePicker
               disabledDate={invalidDOB}
@@ -465,7 +475,7 @@ const CreateBooking = () => {
             {/* </Space> */}
 
             {/* OUTBOUND FLIGHT SEAT AND CLASS */}
-            <p className='font-medium'>Outbound flight class</p>
+            <p className='font-medium'>Outbound Flight Class</p>
             <Select
               required
               defaultValue={
@@ -509,7 +519,7 @@ const CreateBooking = () => {
               )}
             </Select>
 
-            <p className='font-medium'>Outbound flight seat</p>
+            <p className='font-medium'>Outbound Flight Seat</p>
             <Select
               required
               value={state[passenger].outboundSeat}
@@ -556,7 +566,7 @@ const CreateBooking = () => {
             {/* RETURN FLIGHT CLASS AND SEAT */}
             {isReturn && selectedReturnFlight ? (
               <>
-                <p className='font-medium'>Return flight class</p>
+                <p className='font-medium'>Return Flight Class</p>
                 <Select
                   required
                   defaultValue={
@@ -600,7 +610,7 @@ const CreateBooking = () => {
                   )}
                 </Select>
 
-                <p className='font-medium'>Return flight seat</p>
+                <p className='font-medium'>Return Flight Seat</p>
                 <Select
                   required
                   value={state[passenger].returnSeat}
@@ -654,45 +664,75 @@ const CreateBooking = () => {
 
   return (
     <main
-      style={{ maxHeight: '80vh' }}
-      //   className='flex items-start justify-center w-full h-full px-5 py-8 md:items-center'
+      // style={{ maxHeight: '80vh' }}
+      className='flex flex-col w-full h-screen gap-8'
     >
       <NavBar />
-      <section className='flex flex-col w-full h-full max-w-lg gap-4'>
+      <section
+        style={{ maxHeight: '80vh' }}
+        className='flex flex-col items-start self-center justify-center w-screen h-full max-w-lg gap-4'
+      >
         <h1 className='text-3xl font-bold'>Finalise Booking</h1>
-        <hr />
         <h2 className='text-xl font-bold'>Your outbound flight</h2>
         <p>
-          Departing : {selectedOutboundFlight.origin.code}{' '}
-          {selectedOutboundFlight.origin.location}{' '}
-          {selectedOutboundFlight.origin.name}
-          at {selectedOutboundFlight.departureLocal}
+          Departing from{' '}
+          <span className='font-semibold'>
+            ({selectedOutboundFlight.origin.code}){' '}
+            {selectedOutboundFlight.origin.name}
+          </span>{' '}
+          at{' '}
+          <span className='font-bold'>
+            {moment(selectedOutboundFlight.departureLocal).format(
+              'YYYY/MM/DD, HH:mm'
+            )}
+          </span>
         </p>
         <p>
-          Arriving : {selectedOutboundFlight.destination.code}{' '}
-          {selectedOutboundFlight.destination.location}{' '}
-          {selectedOutboundFlight.destination.name}
-          at {selectedOutboundFlight.arrivalLocal}
+          Arriving at{' '}
+          <span className='font-semibold'>
+            ({selectedOutboundFlight.destination.code}){' '}
+            {selectedOutboundFlight.destination.name}
+          </span>{' '}
+          at{' '}
+          <span className='font-bold'>
+            {moment(selectedOutboundFlight.arrivalLocal).format(
+              'YYYY/MM/DD, HH:mm'
+            )}
+          </span>
         </p>
         {isReturn && selectedReturnFlight ? (
           <>
             <h2 className='text-xl font-bold'>Your return flight</h2>
             <p>
-              Departing : {selectedReturnFlight.origin.code}{' '}
-              {selectedReturnFlight.origin.location}{' '}
-              {selectedReturnFlight.origin.name}
-              at {selectedReturnFlight.departureLocal}
+              Departing from{' '}
+              <span className='font-semibold'>
+                ({selectedReturnFlight.origin.code}){' '}
+                {selectedReturnFlight.origin.name}
+              </span>{' '}
+              at{' '}
+              <span className='font-bold'>
+                {moment(selectedReturnFlight.departureLocal).format(
+                  'YYYY/MM/DD, HH:mm'
+                )}
+              </span>
             </p>
             <p>
-              Arriving : {selectedReturnFlight.destination.code}{' '}
-              {selectedReturnFlight.destination.location}{' '}
-              {selectedReturnFlight.destination.name}
-              at {selectedReturnFlight.arrivalLocal}
+              Arriving at{' '}
+              <span className='font-semibold'>
+                ({selectedReturnFlight.destination.code}){' '}
+                {selectedReturnFlight.destination.name}
+              </span>{' '}
+              at{' '}
+              <span className='font-bold'>
+                {moment(selectedReturnFlight.arrivalLocal).format(
+                  'YYYY/MM/DD, HH:mm'
+                )}
+              </span>
             </p>
           </>
         ) : null}
         <hr />
-        <form className='flex flex-col items-start w-full h-full max-h-full gap-4 overflow-y-auto'>
+        <form className='flex flex-col items-start w-full h-full gap-4 overflow-y-auto'>
           <Collapse
             className='w-full'
             accordion
@@ -700,15 +740,13 @@ const CreateBooking = () => {
           >
             {passengerForm}
           </Collapse>
-
-          <Button
-            onClick={handleSubmit}
-            className='flex items-center self-end justify-center w-20 h-10 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
-          >
-            Confirm Booking
-            {/* {loading ? <Spinner size={5} /> : 'Submit'} */}
-          </Button>
         </form>
+        <Button
+          onClick={handleSubmit}
+          className='flex items-center self-end justify-center w-20 h-10 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
+        >
+          {loading ? <Spinner size={5} /> : 'Submit'}
+        </Button>
       </section>
     </main>
   )
