@@ -1,38 +1,33 @@
 
-
 -- User Table
 INSERT INTO "user"(id, username, password, userType, status)
-VALUES (gen_random_uuid(), 'customer_1', crypt('password_1', gen_salt('bf')), 'customer', 'ACTIVE'),
-       (gen_random_uuid(), 'customer_2', crypt('password_2', gen_salt('bf')), 'customer', 'ACTIVE'),
-       (gen_random_uuid(), 'customer_3', crypt('password_3', gen_salt('bf')), 'customer', 'ACTIVE');
+VALUES (gen_random_uuid(), 'john', crypt('password', gen_salt('bf')), 'customer', 'ACTIVE'),
+       (gen_random_uuid(), 'jane', crypt('password', gen_salt('bf')), 'customer', 'ACTIVE'),
+       (gen_random_uuid(), 'james', crypt('password', gen_salt('bf')), 'customer', 'ACTIVE');
 
 INSERT INTO "user"(id, username, password, userType, status)
-VALUES (gen_random_uuid(), 'airline_1', crypt('password_1', gen_salt('bf')), 'airline', 'ACTIVE'),
-       (gen_random_uuid(), 'airline_2', crypt('password_2', gen_salt('bf')), 'airline', 'ACTIVE'),
-       (gen_random_uuid(), 'airline_3', crypt('password_3', gen_salt('bf')), 'airline', 'ACTIVE');
+VALUES (gen_random_uuid(), 'qantas', crypt('password', gen_salt('bf')), 'airline', 'ACTIVE'),
+       (gen_random_uuid(), 'virgin', crypt('password', gen_salt('bf')), 'airline', 'ACTIVE'),
+       (gen_random_uuid(), 'emirates', crypt('password', gen_salt('bf')), 'airline', 'ACTIVE');
 
 INSERT INTO "user"(id, username, password, userType, status)
-VALUES (gen_random_uuid(), 'admin_1', crypt('password_1', gen_salt('bf')), 'administrator', 'ACTIVE'),
-       (gen_random_uuid(), 'admin_2', crypt('password_2', gen_salt('bf')), 'administrator', 'ACTIVE'),
-       (gen_random_uuid(), 'admin_3', crypt('password_3', gen_salt('bf')), 'administrator', 'ACTIVE');
+VALUES (gen_random_uuid(), 'admin', crypt('password', gen_salt('bf')), 'administrator', 'ACTIVE');
 
 -- Customer Table
 INSERT INTO customer(id, givenName, surname, email)
-VALUES ((SELECT id FROM "user" WHERE username = 'customer_1'), 'John', 'Doe', 'johndoe@gmail.com'),
-       ((SELECT id FROM "user" WHERE username = 'customer_2'), 'Jane', 'Doe', 'janedoe@gmail.com'),
-       ((SELECT id FROM "user" WHERE username = 'customer_3'), 'James', 'Doe', 'jamesdoe@gmail.com');
+VALUES ((SELECT id FROM "user" WHERE username = 'john'), 'John', 'Doe', 'johndoe@gmail.com'),
+       ((SELECT id FROM "user" WHERE username = 'jane'), 'Jane', 'Doe', 'janedoe@gmail.com'),
+       ((SELECT id FROM "user" WHERE username = 'james'), 'James', 'Doe', 'jamesdoe@gmail.com');
 
 -- Airline Table
 INSERT INTO airline(id, code, name)
-VALUES ((SELECT id FROM "user" WHERE username = 'airline_1'), 'QFA', 'Qantas'),
-       ((SELECT id FROM "user" WHERE username = 'airline_2'), 'VIR', 'Virgin'),
-       ((SELECT id FROM "user" WHERE username = 'airline_3'), 'UAE', 'Emirates');
+VALUES ((SELECT id FROM "user" WHERE username = 'qantas'), 'QFA', 'Qantas'),
+       ((SELECT id FROM "user" WHERE username = 'virgin'), 'VIR', 'Virgin'),
+       ((SELECT id FROM "user" WHERE username = 'emirates'), 'UAE', 'Emirates');
 
 -- Admin Table
 INSERT INTO administrator(id)
-VALUES ((SELECT id FROM "user" WHERE username = 'admin_1')),
-       ((SELECT id FROM "user" WHERE username = 'admin_2')),
-       ((SELECT id FROM "user" WHERE username = 'admin_3'));
+VALUES ((SELECT id FROM "user" WHERE username = 'admin'));
 
 -- Airport Table
 INSERT INTO airport(id, code, name, location, utcOffset, status)
@@ -58,7 +53,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'QFA'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
+        (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         100.0,
         80.0,
         50.0),
@@ -67,7 +62,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airline WHERE code = 'QFA'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
+        (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         100.0,
         80.0,
         50.0),
@@ -76,7 +71,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'AVV'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'QFA'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
+        (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         100.0,
         80.0,
         50.0);
@@ -116,7 +111,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'VIR'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
+        (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         101.0,
         81.0,
         51.0),
@@ -125,7 +120,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airline WHERE code = 'VIR'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
+        (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         101.0,
         81.0,
         51.0),
@@ -134,7 +129,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'AVV'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'VIR'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
+        (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         101.0,
         81.0,
         51.0);
@@ -174,7 +169,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'UAE'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
+        (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         102.0,
         82.0,
         52.0),
@@ -183,7 +178,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airline WHERE code = 'UAE'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
+        (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         102.0,
         82.0,
         52.0),
@@ -192,7 +187,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airport WHERE code = 'MEL'),
         (SELECT id FROM airport WHERE code = 'SYD'),
         (SELECT id FROM airline WHERE code = 'UAE'),
-        (SELECT id FROM airplaneProfile WHERE code = 'planecode_test'), 'TO_SCHEDULE',
+        (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         102.0,
         82.0,
         52.0);
