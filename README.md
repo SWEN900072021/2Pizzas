@@ -16,7 +16,7 @@
 | Part 3 | - |
 | Part 4 | - |
 
-# SWEN90007 Part 2 - Online Travel Reservation 
+# Part 2 - Application 
 
 Link to the application [here](https://frontend-2-pizzas.herokuapp.com/)
 
