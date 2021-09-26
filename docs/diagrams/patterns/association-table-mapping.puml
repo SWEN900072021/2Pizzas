@@ -1,0 +1,64 @@
+@startuml
+
+class FlightSeatAllocation {
+
+  + getSeat() : FlightSeat
+  + getPassenger() : Passenger
+  + getCost() : BigDecimal
+
+}
+
+class FlightSeat {
+
+  - NAME : String
+  - SEATCLASS : SeatClass
+  - FLIGHT : ValueHolder<Flight>
+
+  + getFlight() : Flight
+
+}
+
+class Passenger {
+
+  - GIVENNAME : String
+  - SURNAME : String
+  - DATEOFBIRTH : LocalDate
+  - NATIONALITY : String
+  - PASSPORTNUMBER : String
+  - booking : ValueHolder<Booking>
+
+  + getBooking() : Booking
+  + setBooking(booking : Booking) : void
+
+}
+
+object SeatTable {
+  id
+  name
+  "class"
+  flightid
+}
+
+object SeatAllocationTable {
+  seatid
+  passengerid
+  flightid
+}
+
+object PassengerTable {
+  id
+  givenname
+  surname
+  dob
+  nationality
+  passportnumber
+  bookingid
+}
+
+SeatAllocationTable -up[hidden]-> SeatTable
+SeatAllocationTable -down[hidden]-> PassengerTable
+
+FlightSeatAllocation -left-> FlightSeat : 1..1
+FlightSeatAllocation -> Passenger : 1..1
+
+@enduml
