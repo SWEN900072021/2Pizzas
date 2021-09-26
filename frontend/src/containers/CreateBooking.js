@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/no-unresolved */
@@ -39,7 +40,86 @@ const CreateBooking = () => {
   const selectedReturnFlight = useBookingStore(
     (state) => state.selectedReturnFlight
   )
+  // let economyAvailableOutbound = null
+  // let businessAvailableOutbound = null
+  // let firstAvailableOutbound = null
 
+  // selectedOutboundFlight.seatAvailabilities.forEach(
+  //   (classAvailable, index) => {
+  //     classAvailable.seatClass === 'ECONOMY'
+  //       ? (economyAvailableOutbound = true)
+  //       : (economyAvailableOutbound = false)
+  //     classAvailable.seatClass === 'BUSINESS'
+  //       ? (businessAvailableOutbound = true)
+  //       : (businessAvailableOutbound = false)
+  //     classAvailable.seatClass === 'FIRST'
+  //       ? (firstAvailableOutbound = true)
+  //       : (firstAvailableOutbound = false)
+  //   }
+  // )
+
+  // let economyAvailableReturn = null
+  // let businessAvailableReturn = null
+  // let firstAvailableReturn = null
+
+  // selectedReturnFlight.seatAvailabilities.forEach(
+  //   (classAvailable, index) => {
+  //     classAvailable.seatClass === 'ECONOMY'
+  //       ? (economyAvailableReturn = true)
+  //       : (economyAvailableReturn = false)
+  //     classAvailable.seatClass === 'BUSINESS'
+  //       ? (businessAvailableReturn = true)
+  //       : (businessAvailableReturn = false)
+  //     classAvailable.seatClass === 'FIRST'
+  //       ? (firstAvailableReturn = true)
+  //       : (firstAvailableReturn = false)
+  //   }
+  // )
+
+  // let economySeatsOutbound = []
+
+  const [economyAvailableOutbound, setEconomyAvailableOutbound] =
+    useState(null)
+  const [businessAvailableOutbound, setBusinessAvailableOutbound] =
+    useState(null)
+  const [firstAvailableOutbound, setFirstAvailableOutbound] =
+    useState(null)
+  const [economyAvailableReturn, setEconomyAvailableReturn] =
+    useState(null)
+  const [businessAvailableReturn, setBusinessAvailableReturn] =
+    useState(null)
+  const [firstAvailableReturn, setFirstAvailableReturn] =
+    useState(null)
+
+  useEffect(() => {
+    selectedOutboundFlight.seatAvailabilities.forEach(
+      (classAvailable, index) => {
+        classAvailable.seatClass === 'ECONOMY'
+          ? setEconomyAvailableOutbound(true)
+          : setEconomyAvailableOutbound(false)
+        classAvailable.seatClass === 'BUSINESS'
+          ? (setBusinessAvailableOutbound = true)
+          : (setBusinessAvailableOutbound = false)
+        classAvailable.seatClass === 'FIRST'
+          ? (setFirstAvailableOutbound = true)
+          : (setFirstAvailableOutbound = false)
+      }
+    )
+
+    selectedReturnFlight.seatAvailabilities.forEach(
+      (classAvailable, index) => {
+        classAvailable.seatClass === 'ECONOMY'
+          ? (setEconomyAvailableReturn = true)
+          : (setEconomyAvailableReturn = false)
+        classAvailable.seatClass === 'BUSINESS'
+          ? (setBusinessAvailableReturn = true)
+          : (setBusinessAvailableReturn = false)
+        classAvailable.seatClass === 'FIRST'
+          ? (setFirstAvailableReturn = true)
+          : (setFirstAvailableReturn = false)
+      }
+    )
+  }, [])
   const generatePassengerState = (numPassengers) => {
     const passengerState = []
     const singlePassenger = {
@@ -48,8 +128,20 @@ const CreateBooking = () => {
       passportNumber: '',
       nationality: '',
       dateOfBirth: moment(),
-      outboundClass: 'economy',
-      returnClass: 'economy',
+      outboundClass: economyAvailableOutbound
+        ? 'ECONOMY'
+        : businessAvailableOutbound
+        ? 'BUSINESS'
+        : firstAvailableOutbound
+        ? 'FIRST'
+        : null,
+      returnClass: economyAvailableReturn
+        ? 'ECONOMY'
+        : businessAvailableReturn
+        ? 'BUSINESS'
+        : firstAvailableReturn
+        ? 'FIRST'
+        : null,
       outboundSeat: '',
       returnSeat: ''
     }
@@ -78,39 +170,55 @@ const CreateBooking = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    // [[pass1 seatAlloc], [pass2 seatAlloc]]
     const seatAllocations = []
     state.forEach((passenger) => {
+      const individualSeatAllocation = []
       if (passenger.outboundSeat) {
-        seatAllocations.push({
+        // seatAllocations.push({
+        individualSeatAllocation.push({
           seatName: passenger.outboundSeat,
           flightId: selectedOutboundFlight.id
         })
       }
 
       if (selectedReturnFlight && passenger.returnSeat) {
-        seatAllocations.push({
+        // seatAllocations.push({
+        individualSeatAllocation.push({
           seatName: passenger.returnSeat,
           flightId: selectedReturnFlight.id
         })
       }
+      seatAllocations.push(individualSeatAllocation)
     })
+
+    const passengerBookings = []
+    for (let i = 0; i < numberOfPassengers; i += 1) {
+      passengerBookings.push({
+        givenName: state[i].givenName,
+        surname: state[i].surname,
+        passportNumber: state[i].passportNumber,
+        dateOfBirth: state[i].dateOfBirth.format('YYYY-MM-DD'),
+        nationality: state[i].nationality,
+        seatAllocations: seatAllocations[i]
+      })
+    }
+
     const booking = {
       flightId: selectedOutboundFlight.id,
       returnFlightId: selectedReturnFlight
         ? selectedReturnFlight.id
         : null,
-      passengerBookings: state.map((passenger) => ({
-        givenName: passenger.givenName,
-        surname: passenger.surname,
-        passportNumber: passenger.passportNumber,
-        dateOfBirth: passenger.dateOfBirth.format('YYYY-MM-DD'),
-        nationality: passenger.nationality,
-        seatAllocations
-      }))
+      passengerBookings
     }
-    // console.log('payload')
-    // console.log(selectedOutboundFlight)
-    // console.log(booking)
+    console.log('outboundFlight')
+    console.log(selectedOutboundFlight)
+    console.log('returnFlight')
+    console.log(selectedReturnFlight)
+    console.log('state')
+    console.log(state)
+    console.log('booking')
+    console.log(booking)
     BookingService.createBooking(
       token,
       booking,
@@ -283,29 +391,43 @@ const CreateBooking = () => {
           <p>Outbound flight class</p>
           <Select
             required
-            defaultValue='ECONOMY'
+            defaultValue={
+              economyAvailableOutbound
+                ? 'ECONOMY'
+                : businessAvailableOutbound
+                ? 'BUSINESS'
+                : firstAvailableOutbound
+                ? 'FIRST'
+                : null
+            }
             id='outboundClass'
             className='col-span-3'
             onChange={(value) =>
               handleClassSeatChange(value, passenger, 'outboundClass')
             }
           >
-            <Option id='economy' value='ECONOMY'>
-              Economy Class ($
-              {selectedOutboundFlight.economyClassCost})
-            </Option>
-            <Option id='business' value='BUSINESS'>
-              Business Class ($
-              {selectedOutboundFlight.businessClassCost})
-            </Option>
-            <Option id='first' value='FIRST'>
-              First Class (${selectedOutboundFlight.firstClassCost})
-            </Option>
+            {economyAvailableOutbound ? (
+              <Option id='economy' value='ECONOMY'>
+                Economy Class ($
+                {selectedOutboundFlight.economyClassCost})
+              </Option>
+            ) : null}
+            {businessAvailableOutbound ? (
+              <Option id='business' value='BUSINESS'>
+                Business Class ($
+                {selectedOutboundFlight.businessClassCost})
+              </Option>
+            ) : null}
+            {firstAvailableOutbound ? (
+              <Option id='first' value='FIRST'>
+                First Class (${selectedOutboundFlight.firstClassCost})
+              </Option>
+            ) : null}
           </Select>
           <p>Outbound flight seat</p>
           <Select
             required
-            // defaultValue='economy'
+            defaultValue='3A'
             id='outboundSeat'
             className='col-span-3'
             onChange={(value) =>
@@ -334,7 +456,7 @@ const CreateBooking = () => {
               <p>Return flight class</p>
               <Select
                 required
-                defaultValue='ECONOMY'
+                value={state[passenger].returnClass}
                 id='returnClass'
                 className='col-span-3'
                 onChange={(value) =>
@@ -345,22 +467,29 @@ const CreateBooking = () => {
                   )
                 }
               >
-                <Option id='economy' value='ECONOMY'>
-                  Economy Class ($
-                  {selectedReturnFlight.economyClassCost})
-                </Option>
-                <Option id='business' value='BUSINESS'>
-                  Business Class ($
-                  {selectedReturnFlight.businessClassCost})
-                </Option>
-                <Option id='first' value='FIRST'>
-                  First Class (${selectedReturnFlight.firstClassCost})
-                </Option>
+                {economyAvailableReturn ? (
+                  <Option id='economy' value='ECONOMY'>
+                    Economy Class ($
+                    {selectedReturnFlight.economyClassCost})
+                  </Option>
+                ) : null}
+                {businessAvailableReturn ? (
+                  <Option id='business' value='BUSINESS'>
+                    Business Class ($
+                    {selectedReturnFlight.businessClassCost})
+                  </Option>
+                ) : null}
+                {firstAvailableReturn ? (
+                  <Option id='first' value='FIRST'>
+                    First Class ($
+                    {selectedReturnFlight.firstClassCost})
+                  </Option>
+                ) : null}
               </Select>
               <p>Return flight seat</p>
               <Select
                 required
-                // defaultValue={() => seatListHandler(passenger)}
+                defaultValue='3A'
                 id='returnSeat'
                 className='col-span-3'
                 onChange={(value) =>
