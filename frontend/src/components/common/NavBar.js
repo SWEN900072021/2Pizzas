@@ -54,9 +54,12 @@ const NavBar = () => {
 
   return (
     <nav className='z-30 flex items-center justify-between w-full h-16 px-5 py-3 bg-white shadow-md -0 focus:outline-none'>
-      <NavLink to='/' className='inline-flex gap-3 group '>
+      <NavLink
+        to='/'
+        className='inline-flex items-center gap-3 group'
+      >
         <FaPizzaSlice className='w-8 h-8 text-yellow-600 transition-colors group-hover:text-yellow-700' />
-        <h1 className='text-2xl font-medium text-gray-800 transition-colors group-hover:text-gray-600'>
+        <h1 className='text-xl font-medium text-gray-800 transition-colors sm:text-2xl group-hover:text-gray-600'>
           Pepperoni Planes
         </h1>
       </NavLink>

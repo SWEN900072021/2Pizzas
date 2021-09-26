@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react'
 import { Input, Select, DatePicker, InputNumber } from 'antd'
 import { useHistory } from 'react-router'
@@ -23,20 +24,24 @@ const CreateFlight = () => {
     error: airplaneProfilesError,
     refetch: refetchAirplaneProfiles
   } = useAirplaneProfiles()
-  const {
-    data: airports,
-    error: airportsError,
-    refetch: refetchAirports
-  } = useAirports()
+  const { error: airportsError, refetch: refetchAirports } =
+    useAirports()
 
   const history = useHistory()
+
+  const [airports, setAirports] = useState(null)
 
   useEffect(() => {
     if (!airplaneProfiles) {
       refetchAirplaneProfiles()
     }
     if (!airports) {
-      refetchAirports()
+      refetchAirports().then((res) => {
+        const activeAirports = res.data.filter(
+          (airport) => airport.status === 'ACTIVE'
+        )
+        setAirports(activeAirports)
+      })
     }
   }, [
     airplaneProfiles,
@@ -73,9 +78,79 @@ const CreateFlight = () => {
   })
 
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const validate = () => {
+    if (state.code === '') {
+      return 'Flight code is required'
+    }
+
+    if (state.profile === {}) {
+      return 'Airplane profile is required'
+    }
+
+    if (!state.origin.id) {
+      return 'Origin is required'
+    }
+
+    if (!state.destination.id) {
+      return 'Destination is required'
+    }
+
+    if (state.arrival.isBefore(state.departure)) {
+      return 'Arrival time must be after departure time'
+    }
+
+    if (state.firstClassCost <= 0) {
+      return 'First class cost must be greater than 0'
+    }
+
+    if (state.businessClassCost <= 0) {
+      return 'Business class cost must be greater than 0'
+    }
+
+    if (state.economyClassCost <= 0) {
+      return 'Economy class cost must be greater than 0'
+    }
+
+    if (state.stopOvers.length === 0) {
+      let stopoverIndex = 1
+
+      state.stopOvers.forEach((stopOver) => {
+        if (stopOver.arrival.isAfter(stopOver.departure)) {
+          return `Arrival at stopover ${stopoverIndex} must be after departure from it`
+        }
+
+        if (stopOver.departure.isBefore(stopOver.arrival)) {
+          return `Departure at stopover ${stopoverIndex} must be before arrival to it`
+        }
+
+        if (
+          stopOver.arrival.isBefore(state.departure) ||
+          stopOver.departure.isBefore(state.departure)
+        ) {
+          return `Duration at stopover ${stopoverIndex} must be after flight departure`
+        }
+
+        if (
+          stopOver.arrival.isAfter(state.arrival) ||
+          stopOver.departure.isAfter(state.arrival)
+        ) {
+          return `Duration at ${stopoverIndex} must happen before flight arrival`
+        }
+
+        stopoverIndex += 1
+
+        return null
+      })
+    }
+    return null
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    setError(null)
 
     const flight = {
       code: state.code,
@@ -94,65 +169,181 @@ const CreateFlight = () => {
       }))
     }
 
-    // console.log(flight)
+    const flightError = validate()
 
-    setLoading(true)
-    FlightService.createFlight({
-      data: { token, flight },
-      onSuccess: () => {
-        history.push('/dashboard/view/flights')
-      }
-    })
-
-    setLoading(false)
+    if (flightError) {
+      setError(flightError)
+    } else {
+      setLoading(true)
+      FlightService.createFlight({
+        data: { token, flight },
+        onSuccess: () => {
+          setLoading(false)
+          history.push('/dashboard/view/flights')
+        },
+        onError: (err) => {
+          setLoading(false)
+          console.log(err)
+        }
+      })
+    }
   }
 
-  const invalidDeparture = (current) => current < moment()
-  const invalidArrival = (current) => current <= state.departure
+  const invalidDeparture = (current) => {
+    const originZoneId = state.origin.zoneId
+    const zonedCurrent = moment.tz(
+      current.format('YYYY-MM-DD HH:mm'),
+      originZoneId
+    )
 
-  const invalidStopoverArrival = (current) => {
-    const beforeFlightDeparture = current <= state.departure
-    const afterFlightArrival = current >= state.arrival
+    const zonedNow = moment.tz(
+      moment().format('YYYY-MM-DD HH:mmZ'),
+      originZoneId
+    )
+
+    return zonedCurrent.isSameOrBefore(zonedNow)
+  }
+  const invalidArrival = (current) => {
+    const destinationZoneId = state.destination.zoneId
+    const zonedCurrent = moment.tz(
+      current.format('YYYY-MM-DD HH:mm'),
+      destinationZoneId
+    )
+
+    const zonedDeparture = moment.tz(
+      state.departure.format('YYYY-MM-DD HH:mmZ'),
+      destinationZoneId
+    )
+
+    return zonedCurrent.isSameOrBefore(zonedDeparture)
+  }
+
+  const invalidStopoverArrival = (current, index) => {
+    const stopoverZoneId = airports.find(
+      (a) => a.id === state.stopOvers[index].location
+    ).zoneId
+    const zonedCurrent = moment.tz(
+      current.format('YYYY-MM-DD HH:mm'),
+      stopoverZoneId
+    )
+
+    const zonedDeparture = moment.tz(
+      state.departure.format('YYYY-MM-DD HH:mmZ'),
+      stopoverZoneId
+    )
+
+    const zonedArrival = moment.tz(
+      state.arrival.format('YYYY-MM-DD HH:mmZ'),
+      stopoverZoneId
+    )
+
+    const beforeLastStopoverDeparture =
+      index - 1 >= 0
+        ? zonedCurrent.isBefore(
+            moment.tz(
+              state.stopOvers[index - 1].departure.format(
+                'YYYY-MM-DD HH:mmZ'
+              ),
+              stopoverZoneId
+            ),
+            'day'
+          )
+        : false
+
+    const beforeFlightDeparture = zonedCurrent.isBefore(
+      zonedDeparture,
+      'day'
+    )
+    const afterFlightArrival = zonedCurrent.isAfter(
+      zonedArrival,
+      'day'
+    )
+
     // const beforePreviousStopoverDeparture =
     //   index - 1 > 0 && current < state.stopOvers[index].departure
     // const afterNextStopoverArrival =
     //   index + 1 < state.stopOvers.length &&
     //   current > state.stopOvers[index + 1].arrival
 
-    return beforeFlightDeparture || afterFlightArrival
+    // console.log(
+    //   'Zoned current:\n -',
+    //   zonedCurrent.format(),
+    //   '\n - Departure:\n',
+    //   zonedDeparture.format(),
+    //   '\n - Arrival:\n',
+    //   zonedArrival.format(),
+    //   '\nIs before departure:',
+    //   beforeFlightDeparture,
+    //   '\nIs after arrival:',
+    //   afterFlightArrival
+    // )
+
+    return (
+      beforeLastStopoverDeparture ||
+      beforeFlightDeparture ||
+      afterFlightArrival
+    )
   }
 
   const invalidStopoverDeparture = (current, index) => {
-    const beforeFlightDeparture = current <= state.departure
-    const afterFlightArrival = current >= state.arrival
-    const beforeCurrentStopoverArrival =
-      current <= state.stopOvers[index].arrival
+    const stopoverZoneId = airports.find(
+      (a) => a.id === state.stopOvers[index].location
+    ).zoneId
+    const zonedCurrent = moment.tz(
+      current.format('YYYY-MM-DD HH:mm'),
+      stopoverZoneId
+    )
+    // .set('hour', zonedDeparture.hour())
+    // .set('minute', zonedDeparture.add(1, 'minute').minute())
 
+    const zonedDeparture = moment.tz(
+      state.departure.format('YYYY-MM-DD HH:mmZ'),
+      stopoverZoneId
+    )
+
+    const zonedArrival = moment.tz(
+      state.arrival.format('YYYY-MM-DD HH:mmZ'),
+      stopoverZoneId
+    )
+
+    const beforeFlightDeparture = zonedCurrent.isBefore(
+      zonedDeparture,
+      'day'
+    )
+    const afterFlightArrival = zonedCurrent.isAfter(
+      zonedArrival,
+      'day'
+    )
+
+    // const beforePreviousStopoverDeparture =
+    //   index - 1 > 0 && current < state.stopOvers[index].departure
     // const afterNextStopoverArrival =
     //   index + 1 < state.stopOvers.length &&
     //   current > state.stopOvers[index + 1].arrival
 
-    return (
-      beforeFlightDeparture ||
-      afterFlightArrival ||
-      beforeCurrentStopoverArrival
-    )
+    // console.log(
+    //   'Zoned current:\n -',
+    //   zonedCurrent.format(),
+    //   '\n - Departure:\n',
+    //   zonedDeparture.format(),
+    //   '\n - Arrival:\n',
+    //   zonedArrival.format(),
+    //   '\nIs before departure:',
+    //   beforeFlightDeparture,
+    //   '\nIs after arrival:',
+    //   afterFlightArrival
+    // )
+
+    return beforeFlightDeparture || afterFlightArrival
   }
 
   const addStopover = () => {
     const stopOvers = [...state.stopOvers]
-    const lastStopoverIndex = stopOvers.length - 1
 
     stopOvers.push({
       location: null,
-      departure:
-        lastStopoverIndex >= 0
-          ? stopOvers[lastStopoverIndex].departure
-          : state.departure,
-      arrival:
-        lastStopoverIndex >= 0
-          ? stopOvers[lastStopoverIndex].departure
-          : state.departure
+      departure: moment(),
+      arrival: moment()
     })
 
     setState((oldState) => ({ ...oldState, stopOvers }))
@@ -241,6 +432,7 @@ const CreateFlight = () => {
             disabledDate={(current) =>
               invalidStopoverArrival(current, index)
             }
+            disabled={!stopover.location}
             allowClear={false}
             placeholder='Arrival at stopover'
             value={stopover.arrival}
@@ -253,10 +445,11 @@ const CreateFlight = () => {
             }}
           />
           <Input
+            required
             className='col-span-5 sm:col-span-4'
             readOnly
             value={
-              stopover.location
+              stopover.location && airports
                 ? moment
                     .tz(
                       airports.find((a) => a.id === stopover.location)
@@ -274,6 +467,7 @@ const CreateFlight = () => {
             disabledDate={(current) =>
               invalidStopoverDeparture(current, index)
             }
+            disabled={!stopover.location || !stopover.arrival}
             allowClear={false}
             placeholder='Departure at stopover'
             value={stopover.departure}
@@ -289,7 +483,7 @@ const CreateFlight = () => {
             className='col-span-5 sm:col-span-4'
             readOnly
             value={
-              stopover.location
+              stopover.location && airports
                 ? moment
                     .tz(
                       airports.find((a) => a.id === stopover.location)
@@ -320,7 +514,7 @@ const CreateFlight = () => {
         <h1 className='text-3xl font-bold'>Create Flight</h1>
         <hr />
         {!airplaneProfiles || !airports ? (
-          <Spinner size={6} />
+          <p>Loading...</p>
         ) : (
           <form
             className='flex flex-col items-start w-full h-full max-h-full gap-4 overflow-y-auto'
@@ -330,6 +524,7 @@ const CreateFlight = () => {
               <section className='grid items-center w-full grid-cols-5 gap-2 p-3 bg-gray-50'>
                 <p className='col-span-2 font-bold'>Flight Code</p>
                 <Input
+                  required
                   value={state.code}
                   className='col-span-3'
                   placeholder='Enter flight code'
@@ -401,6 +596,7 @@ const CreateFlight = () => {
                   <p className='col-span-2'>First Class Cost</p>
                   <span className='col-span-3'>
                     <InputNumber
+                      required
                       style={{ width: '100%' }}
                       placeholder='Enter a value'
                       formatter={(value) => `$ ${value}`}
@@ -422,6 +618,7 @@ const CreateFlight = () => {
                   <p className='col-span-2'>Business Class Cost</p>
                   <span className='col-span-3'>
                     <InputNumber
+                      required
                       style={{ width: '100%' }}
                       placeholder='Enter a value'
                       formatter={(value) => `$ ${value}`}
@@ -443,6 +640,7 @@ const CreateFlight = () => {
                   <p className='col-span-2'>Economy Class Cost</p>
                   <span className='col-span-3'>
                     <InputNumber
+                      required
                       style={{ width: '100%' }}
                       placeholder='Enter a value'
                       formatter={(value) => `$ ${value}`}
@@ -500,23 +698,41 @@ const CreateFlight = () => {
                 <span className='hidden sm:block sm:col-span-4' />
                 <DatePicker
                   className='col-span-8 sm:col-span-5'
+                  disabled={!state.origin.id}
                   disabledDate={invalidDeparture}
                   disabledTime={invalidDeparture}
                   allowClear={false}
                   placeholder='Departure date & time'
                   value={state.departure}
-                  onChange={(date) =>
+                  onChange={(date) => {
+                    // console.log('Origin Zone:', state.origin.zoneId)
+                    // console.log(
+                    //   'Changed departure date:',
+                    //   '\n',
+                    //   date.format(),
+                    //   '\n',
+                    //   moment
+                    //     .tz(
+                    //       date.format('YYYY-MM-DD HH:mm'),
+                    //       state.origin.zoneId
+                    //     )
+                    //     .format()
+                    // )
                     setState((oldState) => ({
                       ...oldState,
-                      departure: date
+                      departure: moment.tz(
+                        date.format('YYYY-MM-DD HH:mm'),
+                        state.origin.zoneId
+                      )
                     }))
-                  }
+                  }}
                   format='YYYY-MM-DD HH:mm'
                   showTime={{
                     defaultValue: moment('00:00', 'HH:mm')
                   }}
                 />
                 <Input
+                  required
                   className='col-span-4 sm:col-span-3'
                   readOnly
                   value={moment.tz(state.origin.zoneId).format('Z z')}
@@ -561,23 +777,45 @@ const CreateFlight = () => {
                 <span className='hidden sm:block sm:col-span-4' />
                 <DatePicker
                   className='col-span-8 sm:col-span-5'
+                  disabled={!state.destination.id}
                   disabledDate={invalidArrival}
                   disabledTime={invalidArrival}
                   allowClear={false}
                   placeholder='Arrival date & time'
                   value={state.arrival}
-                  onChange={(date) =>
+                  onChange={(date) => {
+                    // console.log(
+                    //   'Destination Zone:',
+                    //   state.destination.zoneId
+                    // )
+                    // console.log(
+                    //   'Changed arrival date:',
+                    //   '\n',
+                    //   date.format(),
+                    //   '\n',
+                    //   moment
+                    //     .tz(
+                    //       date.format('YYYY-MM-DD HH:mm'),
+                    //       state.destination.zoneId
+                    //     )
+                    //     .format()
+                    // )
+
                     setState((oldState) => ({
                       ...oldState,
-                      arrival: date
+                      arrival: moment.tz(
+                        date.format('YYYY-MM-DD HH:mm'),
+                        state.destination.zoneId
+                      )
                     }))
-                  }
+                  }}
                   format='YYYY-MM-DD HH:mm'
                   showTime={{
                     defaultValue: moment('00:00', 'HH:mm')
                   }}
                 />
                 <Input
+                  required
                   className='col-span-4 sm:col-span-3'
                   readOnly
                   value={moment
@@ -591,8 +829,13 @@ const CreateFlight = () => {
                   Stopovers
                 </p>
                 <button
-                  className='col-span-4 py-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500 sm:col-span-3'
+                  className={`${
+                    !state.origin.id || !state.destination.id
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-yellow-600 hover:bg-yellow-500'
+                  } col-span-4 py-2 font-semibold text-white transition-colors sm:col-span-3`}
                   type='button'
+                  disabled={!state.origin.id || !state.destination.id}
                   onClick={addStopover}
                 >
                   Add Stopover
@@ -601,12 +844,15 @@ const CreateFlight = () => {
               </section>
             </main>
 
-            <button
-              type='submit'
-              className='self-end p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
-            >
-              {loading ? <Spinner size={6} /> : 'Submit'}
-            </button>
+            <span className='flex items-center justify-end w-full gap-3'>
+              <p className='text-red-500'>{error || ''}</p>
+              <button
+                type='submit'
+                className='w-20 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
+              >
+                {loading ? <Spinner size={6} /> : 'Submit'}
+              </button>
+            </span>
           </form>
         )}
       </section>

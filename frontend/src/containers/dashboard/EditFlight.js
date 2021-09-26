@@ -3,7 +3,6 @@ import { Input, Select, DatePicker, InputNumber } from 'antd'
 import { useHistory, useParams } from 'react-router'
 import moment from 'moment-timezone'
 import { v4 as uuid } from 'uuid'
-import { BsTrashFill } from 'react-icons/bs'
 
 import Spinner from '../../components/common/Spinner'
 import useAirplaneProfiles from '../../hooks/useAirplaneProfiles'
@@ -48,19 +47,22 @@ const EditFlight = () => {
     isSuccess: airplaneProfilesSuccess,
     refetch: refetchAirplaneProfiles
   } = useAirplaneProfiles()
-  const {
-    data: airports,
-    isError: airportsError,
-    isSuccess: airportsSuccess,
-    refetch: refetchAirports
-  } = useAirports()
+  const { isError: airportsError, refetch: refetchAirports } =
+    useAirports()
+
+  const [airports, setAirports] = useState(null)
 
   useEffect(() => {
     if (!airplaneProfiles) {
       refetchAirplaneProfiles()
     }
     if (!airports) {
-      refetchAirports()
+      refetchAirports().then((res) => {
+        const activeAirports = res.data.filter(
+          (airport) => airport.status === 'ACTIVE'
+        )
+        setAirports(activeAirports)
+      })
     }
   }, [
     airplaneProfiles,
@@ -95,7 +97,7 @@ const EditFlight = () => {
       flightsSuccess &&
       flights &&
       !state &&
-      airportsSuccess &&
+      airports &&
       airplaneProfilesSuccess
     ) {
       const flight = flights.find((f) => f.id === flightId)
@@ -145,6 +147,7 @@ const EditFlight = () => {
     }
   }, [
     airplaneProfiles,
+    airplaneProfilesSuccess,
     airports,
     flightId,
     flights,
@@ -153,136 +156,55 @@ const EditFlight = () => {
   ])
 
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const validate = () => {
+    if (state.arrival.isBefore(state.departure)) {
+      return 'Arrival time must be after departure time'
+    }
+
+    return null
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
+    setError(null)
+
     const updatedFlight = {
-      code: state.code,
-      profile: state.profile.id,
-      origin: state.origin.id,
-      destination: state.destination.id,
       departure: state.departure.utc().format(),
-      arrival: state.arrival.utc().format(),
-      firstClassCost: state.firstClassCost,
-      businessClassCost: state.businessClassCost,
-      economyClassCost: state.economyClassCost,
-      stopOvers: state.stopOvers.map((s) => ({
-        location: s.location,
-        arrival: s.arrival.utc().format(),
-        departure: s.departure.utc().format()
-      }))
+      arrival: state.arrival.utc().format()
     }
 
-    // console.log('Update to flight:', updatedFlight)
+    const flightError = validate(updatedFlight)
 
-    setLoading(true)
+    if (flightError) {
+      setError(flightError)
+    } else {
+      setLoading(true)
+      // console.log('Update to flight:', updatedFlight)
 
-    FlightService.updateFlight({
-      data: { token, id: flightId, flight: updatedFlight },
-      onSuccess: () => {
-        setLoading(false)
-        history.push(`/dashboard/view/flights/${flightId}`)
-      }
-    })
-
-    setLoading(false)
+      FlightService.updateFlight({
+        data: { token, id: flightId, flight: updatedFlight },
+        onSuccess: () => {
+          setLoading(false)
+          history.push(`/dashboard/view/flights/${flightId}`)
+        },
+        onError: (err) => {
+          setLoading(false)
+          setError(err)
+        }
+      })
+    }
   }
 
   /* -------------------------------------------------------------------------- */
 
   const invalidDeparture = (current) => current < moment()
-  const invalidArrival = (current) => current <= state.departure
+  const invalidArrival = (current) =>
+    current < moment() || current <= state.departure
 
   /* -------------------------------------------------------------------------- */
-
-  const invalidStopoverArrival = (current) => {
-    const beforeFlightDeparture = current <= state.departure
-    const afterFlightArrival = current >= state.arrival
-    // const beforePreviousStopoverDeparture =
-    //   index - 1 > 0 && current < state.stopOvers[index].departure
-    // const afterNextStopoverArrival =
-    //   index + 1 < state.stopOvers.length &&
-    //   current > state.stopOvers[index + 1].arrival
-
-    return beforeFlightDeparture || afterFlightArrival
-  }
-
-  const invalidStopoverDeparture = (current, index) => {
-    const beforeFlightDeparture = current <= state.departure
-    const afterFlightArrival = current >= state.arrival
-    const beforeCurrentStopoverArrival =
-      current <= state.stopOvers[index].arrival
-
-    // const afterNextStopoverArrival =
-    //   index + 1 < state.stopOvers.length &&
-    //   current > state.stopOvers[index + 1].arrival
-
-    return (
-      beforeFlightDeparture ||
-      afterFlightArrival ||
-      beforeCurrentStopoverArrival
-    )
-  }
-
-  const addStopover = () => {
-    const stopOvers = [...state.stopOvers]
-    const lastStopoverIndex = stopOvers.length - 1
-
-    stopOvers.push({
-      location: null,
-      departure:
-        lastStopoverIndex >= 0
-          ? stopOvers[lastStopoverIndex].departure
-          : state.departure,
-      arrival:
-        lastStopoverIndex >= 0
-          ? stopOvers[lastStopoverIndex].departure
-          : state.departure
-    })
-
-    setState((oldState) => ({ ...oldState, stopOvers }))
-  }
-
-  const removeStopover = (index) => {
-    const stopOvers = [...state.stopOvers]
-    stopOvers.splice(index, 1)
-
-    setState((oldState) => ({ ...oldState, stopOvers }))
-  }
-
-  const handleStopoverSelect = (key, index) => {
-    const stopOvers = [...state.stopOvers]
-    stopOvers[index].location = key
-
-    setState((oldState) => ({ ...oldState, stopOvers }))
-  }
-
-  const handleStopoverArrivalChange = (date, index) => {
-    const stopOvers = [...state.stopOvers]
-    stopOvers[index].arrival = date
-    setState({ ...state, stopOvers })
-  }
-
-  const handleStopoverDepartureChange = (date, index) => {
-    const stopOvers = [...state.stopOvers]
-    stopOvers[index].departure = date
-    setState({ ...state, stopOvers })
-  }
-
-  const getStopoversWithoutSameLocations = (airportId) => {
-    const stopOvers = [...state.stopOvers].map((stopover) => {
-      if (stopover.location === airportId) {
-        return {
-          ...stopover,
-          location: undefined
-        }
-      }
-      return stopover
-    })
-
-    return stopOvers
-  }
 
   const renderStopovers = () => {
     if (!validUser || !state) return null
@@ -304,7 +226,6 @@ const EditFlight = () => {
           <Select
             className='col-span-12'
             placeholder='Select stopover airport'
-            onSelect={(key) => handleStopoverSelect(key, index)}
             value={stopover.location}
           >
             {airports
@@ -324,15 +245,10 @@ const EditFlight = () => {
           <p className='col-span-12 sm:col-span-2'>Arrival</p>
           <DatePicker
             className='col-span-7 sm:col-span-6'
-            disabledDate={(current) =>
-              invalidStopoverArrival(current, index)
-            }
+            disabled
             allowClear={false}
             placeholder='Arrival at stopover'
             value={stopover.arrival}
-            onChange={(date) =>
-              handleStopoverArrivalChange(date, index)
-            }
             format='YYYY-MM-DD HH:mm'
             showTime={{
               defaultValue: moment('00:00', 'HH:mm')
@@ -340,7 +256,7 @@ const EditFlight = () => {
           />
           <Input
             className='col-span-5 sm:col-span-4'
-            readOnly
+            disabled
             value={
               stopover.location && airports
                 ? moment
@@ -357,15 +273,10 @@ const EditFlight = () => {
           </p>
           <DatePicker
             className='col-span-7 sm:col-span-6'
-            disabledDate={(current) =>
-              invalidStopoverDeparture(current, index)
-            }
+            disabled
             allowClear={false}
             placeholder='Departure at stopover'
             value={stopover.departure}
-            onChange={(date) =>
-              handleStopoverDepartureChange(date, index)
-            }
             format='YYYY-MM-DD HH:mm'
             showTime={{
               defaultValue: moment('00:00', 'HH:mm')
@@ -373,7 +284,7 @@ const EditFlight = () => {
           />
           <Input
             className='col-span-5 sm:col-span-4'
-            readOnly
+            disabled
             value={
               stopover.location && airports
                 ? moment
@@ -386,13 +297,6 @@ const EditFlight = () => {
             }
           />
         </main>
-        <button
-          type='button'
-          onClick={() => removeStopover(index)}
-          className='flex items-center self-stretch justify-center col-span-1 transition-colors bg-gray-600 rounded-lg hover:bg-red-600'
-        >
-          <BsTrashFill className='w-4 h-4 text-white cursor-pointer' />
-        </button>
       </div>
     ))
   }
@@ -406,7 +310,7 @@ const EditFlight = () => {
         <h1 className='text-3xl font-bold'>Edit Flight</h1>
         <hr />
         {!validUser || !airplaneProfiles || !airports || !state ? (
-          <Spinner size={6} />
+          <p>Loading...</p>
         ) : (
           <form
             className='flex flex-col items-start w-full h-full max-h-full gap-4 overflow-y-auto'
@@ -418,46 +322,18 @@ const EditFlight = () => {
                   <p className='col-span-2 font-bold'>Flight Code</p>
                   <Input
                     value={state.code}
+                    disabled
                     className='col-span-3'
                     placeholder='Enter flight code'
-                    onChange={(e) =>
-                      setState((oldState) => ({
-                        ...oldState,
-                        code: e.target.value
-                      }))
-                    }
                   />
                 </section>
 
                 <div className='grid w-full grid-flow-row gap-2 p-3 bg-gray-50'>
-                  <section className='grid items-center w-full grid-cols-5 gap-2 '>
+                  <section className='grid items-start w-full grid-cols-5 gap-2 '>
                     <p className='col-span-2 font-bold'>
                       Airplane Profile
                     </p>
-                    <Select
-                      className='col-span-3'
-                      style={{ width: '100%' }}
-                      placeholder='Select an airplane profile'
-                      value={state.profile.id}
-                      onSelect={(key) => {
-                        setState((oldState) => ({
-                          ...oldState,
-                          profile: airplaneProfiles.find(
-                            (profile) => profile.id === key
-                          )
-                        }))
-                      }}
-                    >
-                      {airplaneProfiles &&
-                        airplaneProfiles.map(({ id, code }) => (
-                          <Option key={id}>
-                            <article>
-                              <p>{code}</p>
-                            </article>
-                          </Option>
-                        ))}
-                    </Select>
-                    <span className='col-span-2' />
+
                     {Object.entries(state.profile).length !== 0 && (
                       <span className='col-span-3'>
                         <p>
@@ -489,19 +365,12 @@ const EditFlight = () => {
                     <p className='col-span-2'>First Class Cost</p>
                     <span className='col-span-3'>
                       <InputNumber
+                        disabled
                         style={{ width: '100%' }}
                         placeholder='Enter a value'
                         formatter={(value) => `$ ${value}`}
                         min={1}
                         value={state.firstClassCost}
-                        onChange={(value) => {
-                          setState((oldState) => ({
-                            ...oldState,
-                            firstClassCost: value
-                              ? Number.parseInt(value, 10)
-                              : 1
-                          }))
-                        }}
                       />
                     </span>
                   </section>
@@ -510,19 +379,12 @@ const EditFlight = () => {
                     <p className='col-span-2'>Business Class Cost</p>
                     <span className='col-span-3'>
                       <InputNumber
+                        disabled
                         style={{ width: '100%' }}
                         placeholder='Enter a value'
                         formatter={(value) => `$ ${value}`}
                         min={1}
                         value={state.businessClassCost}
-                        onChange={(value) => {
-                          setState((oldState) => ({
-                            ...oldState,
-                            businessClassCost: value
-                              ? Number.parseInt(value, 10)
-                              : 1
-                          }))
-                        }}
                       />
                     </span>
                   </section>
@@ -531,19 +393,12 @@ const EditFlight = () => {
                     <p className='col-span-2'>Economy Class Cost</p>
                     <span className='col-span-3'>
                       <InputNumber
+                        disabled
                         style={{ width: '100%' }}
                         placeholder='Enter a value'
                         formatter={(value) => `$ ${value}`}
                         min={1}
                         value={state.economyClassCost}
-                        onChange={(value) => {
-                          setState((oldState) => ({
-                            ...oldState,
-                            economyClassCost: value
-                              ? Number.parseInt(value, 10)
-                              : 1
-                          }))
-                        }}
                       />
                     </span>
                   </section>
@@ -554,22 +409,10 @@ const EditFlight = () => {
                     Departure
                   </p>
                   <Select
+                    disabled
                     className='col-span-9 sm:col-span-8'
                     placeholder='Select origin airport'
                     value={state.origin.id}
-                    onSelect={(key) => {
-                      const newOrigin = airports.find(
-                        (airport) => airport.id === key
-                      )
-                      const newStopovers =
-                        getStopoversWithoutSameLocations(key)
-
-                      setState((oldState) => ({
-                        ...oldState,
-                        origin: newOrigin,
-                        stopOvers: newStopovers
-                      }))
-                    }}
                   >
                     {airports &&
                       airports
@@ -597,7 +440,10 @@ const EditFlight = () => {
                     onChange={(date) =>
                       setState((oldState) => ({
                         ...oldState,
-                        departure: date
+                        departure: moment.tz(
+                          date.format('YYYY-MM-DD HH:mm'),
+                          state.origin.zoneId
+                        )
                       }))
                     }
                     format='YYYY-MM-DD HH:mm'
@@ -619,23 +465,10 @@ const EditFlight = () => {
                     Arrival
                   </p>
                   <Select
+                    disabled
                     className='col-span-9 sm:col-span-8'
                     placeholder='Select destination airport'
                     value={state.destination.id}
-                    onSelect={(key) => {
-                      const newDestination = airports.find(
-                        (airport) => airport.id === key
-                      )
-
-                      const newStopovers =
-                        getStopoversWithoutSameLocations(key)
-
-                      setState((oldState) => ({
-                        ...oldState,
-                        destination: newDestination,
-                        stopOvers: newStopovers
-                      }))
-                    }}
                   >
                     {airports &&
                       airports
@@ -661,7 +494,10 @@ const EditFlight = () => {
                     onChange={(date) =>
                       setState((oldState) => ({
                         ...oldState,
-                        arrival: date
+                        arrival: moment.tz(
+                          date.format('YYYY-MM-DD HH:mm'),
+                          state.destination.zoneId
+                        )
                       }))
                     }
                     format='YYYY-MM-DD HH:mm'
@@ -679,27 +515,23 @@ const EditFlight = () => {
                 </section>
 
                 <section className='grid items-center w-full grid-cols-12 gap-4 p-3 sm:gap-2 bg-gray-50'>
-                  <p className='col-span-8 font-bold sm:col-span-9'>
+                  <p className='col-span-12 font-bold sm:col-span-9'>
                     Stopovers
                   </p>
-                  <button
-                    className='col-span-4 py-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500 sm:col-span-3'
-                    type='button'
-                    onClick={addStopover}
-                  >
-                    Add Stopover
-                  </button>
                   {renderStopovers()}
                 </section>
               </main>
             )}
 
-            <button
-              type='submit'
-              className='self-end p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
-            >
-              {loading ? <Spinner size={6} /> : 'Submit'}
-            </button>
+            <span className='flex items-center justify-end w-full gap-3'>
+              <p className='text-red-500'>{error || ''}</p>
+              <button
+                type='submit'
+                className='self-end p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
+              >
+                {loading ? <Spinner size={6} /> : 'Submit'}
+              </button>
+            </span>
           </form>
         )}
       </section>
