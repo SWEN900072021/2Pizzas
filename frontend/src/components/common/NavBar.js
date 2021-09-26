@@ -29,7 +29,7 @@ const NavBar = () => {
 
   const loggedInMenu = (
     <Menu>
-      {user && user.type === 'customer' && (
+      {user && user.userType === 'customer' && (
         <Menu.Item key='0'>
           <NavLink to='/' className='flex items-center gap-2'>
             <IoIosAirplane className='w-5 h-5 text-gray-600' />
