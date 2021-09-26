@@ -75,6 +75,10 @@ const FlightListings = () => {
     (state) => state.setReturnFlights
   )
 
+  const passengerCount = useFlightStore(
+    (state) => state.passengerCount
+  )
+
   useEffect(() => {
     // console.log(moment(departDate).startOf('day').utc(true))
 
@@ -102,7 +106,13 @@ const FlightListings = () => {
     FlightSearchService.searchFlights({
       data: outboundFlightSearchCriteria,
       onSuccess: (res) => {
-        setOutboundFlights(res.data)
+        const validFlights = res.data.filter(
+          (flight) =>
+            flight.status !== 'CANCELLED' &&
+            moment(flight.departureLocal) > moment() &&
+            flight.seatAvailabilities.length >= passengerCount
+        )
+        setOutboundFlights(validFlights)
       }
     })
 
@@ -127,7 +137,13 @@ const FlightListings = () => {
       FlightSearchService.searchFlights({
         data: returnFlightSearchCriteria,
         onSuccess: (res) => {
-          setReturnFlights(res.data)
+          const validFlights = res.data.filter(
+            (flight) =>
+              flight.status !== 'CANCELLED' &&
+              moment(flight.departureLocal) > moment() &&
+              flight.seatAvailabilities.length >= passengerCount
+          )
+          setReturnFlights(validFlights)
         }
       })
     }
@@ -136,6 +152,7 @@ const FlightListings = () => {
     destinationAirport,
     isReturn,
     originAirport,
+    passengerCount,
     returnDate,
     setOutboundFlight,
     setOutboundFlights,

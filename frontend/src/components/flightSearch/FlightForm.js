@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   FiArrowRight,
   FiChevronDown,
@@ -24,7 +24,20 @@ const { RangePicker } = DatePicker
 
 const FlightForm = ({ showButton }) => {
   const history = useHistory()
-  const airports = useAirports()
+  const { refetch: refetchAirports } = useAirports()
+
+  const [airports, setAirports] = useState(null)
+
+  useEffect(() => {
+    if (!airports) {
+      refetchAirports().then((res) => {
+        const validAirports = res.data.filter(
+          (airport) => airport.status === 'ACTIVE'
+        )
+        setAirports(validAirports)
+      })
+    }
+  }, [airports, refetchAirports])
 
   /* -------------------------------------------------------------------------- */
 
@@ -137,8 +150,8 @@ const FlightForm = ({ showButton }) => {
         }`}
       >
         {/* Airport Search */}
-        <OriginSearch airports={airports.data} />
-        <DestinationSearch airports={airports.data} />
+        <OriginSearch airports={airports || []} />
+        <DestinationSearch airports={airports || []} />
 
         {/* (Date Pickers) Visible only for Mobile Devices or One-Way Flights */}
         <span
