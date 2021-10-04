@@ -63,7 +63,13 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             }
 
             String userId = jws.getBody().getId();
-            return userRepository.find(EntityId.of(userId));
+            Optional<User> user = userRepository.find(EntityId.of(userId));
+
+            if (user.isPresent() && !User.UserStatus.ACTIVE.equals(user.get().getStatus())) {
+                return Optional.empty();
+            }
+
+            return  user;
 
         } catch (JwtException e) {
             return Optional.empty();
