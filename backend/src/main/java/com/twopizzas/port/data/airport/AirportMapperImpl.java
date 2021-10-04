@@ -5,6 +5,7 @@ import com.twopizzas.di.Component;
 import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.DataMappingException;
+import com.twopizzas.port.data.OptimisticLockingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 
@@ -24,15 +25,17 @@ class AirportMapperImpl implements AirportMapper {
     static final String COLUMN_LOCATION = "location";
     static final String COLUMN_UTC_OFFSET = "utcOffset";
     static final String COLUMN_STATUS = "status";
+    static final String COLUMN_VERSION = "version";
+
 
     private static final String INSERT_TEMPLATE =
-            "INSERT INTO " + TABLE_AIRPORT + "(" + COLUMN_ID + ", " + COLUMN_CODE + ", " + COLUMN_NAME + ", " + COLUMN_LOCATION + ", " + COLUMN_UTC_OFFSET + ", " + COLUMN_STATUS + ")" +
-            " VALUES (?, ?, ?, ?, ?, ?);";
+            "INSERT INTO " + TABLE_AIRPORT + "(" + COLUMN_ID + ", " + COLUMN_CODE + ", " + COLUMN_NAME + ", " + COLUMN_LOCATION + ", " + COLUMN_UTC_OFFSET + ", " + COLUMN_STATUS + ", " + COLUMN_VERSION + ")" +
+            " VALUES (?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_AIRPORT +
             " SET " + COLUMN_CODE + " = ?, " + COLUMN_NAME + " = ?, " + COLUMN_LOCATION + " = ?, " + COLUMN_UTC_OFFSET + " = ?," + COLUMN_STATUS + " = ?" +
-            " WHERE " + COLUMN_ID + " = ?;";
+            " WHERE id = ? AND version = ?;";
 
     private static final String DELETE_TEMPLATE =
             "DELETE FROM " + TABLE_AIRPORT +
@@ -57,7 +60,8 @@ class AirportMapperImpl implements AirportMapper {
                 entity.getName(),
                 entity.getLocation(),
                 entity.getUtcOffset().getId(),
-                entity.getStatus().toString()
+                entity.getStatus().toString(),
+                entity.getVersion()
         ).doExecute(connectionPool.getCurrentTransaction());
     }
 
@@ -79,14 +83,20 @@ class AirportMapperImpl implements AirportMapper {
 
     @Override
     public void update(Airport entity) {
-        new SqlStatement(UPDATE_TEMPLATE,
+        long updated = new SqlStatement(UPDATE_TEMPLATE,
                 entity.getCode(),
                 entity.getName(),
                 entity.getLocation(),
                 entity.getUtcOffset().getId(),
                 entity.getStatus().toString(),
-                entity.getId().toString()
-        ).doExecute(connectionPool.getCurrentTransaction());
+                entity.getVersion() + 1,
+                entity.getId().toString(),
+                entity.getVersion()
+        ).doUpdate(connectionPool.getCurrentTransaction());
+
+        if (updated == 0) {
+            throw new OptimisticLockingException();
+        }
     }
 
     @Override
@@ -123,7 +133,7 @@ class AirportMapperImpl implements AirportMapper {
                     resultSet.getObject(COLUMN_LOCATION, String.class),
                     ZoneId.of(resultSet.getObject(COLUMN_UTC_OFFSET, String.class)),
                     Airport.AirportStatus.valueOf(resultSet.getObject(COLUMN_STATUS, String.class)),
-                    0 // TODO change this to use the actual version!!!
+                    resultSet.getObject(COLUMN_VERSION, long.class)
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

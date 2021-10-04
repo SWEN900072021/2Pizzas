@@ -6,6 +6,7 @@ import com.twopizzas.domain.user.Airline;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.user.User;
 import com.twopizzas.port.data.DataMappingException;
+import com.twopizzas.port.data.OptimisticLockingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 import com.twopizzas.port.data.user.AbstractUserMapper;
@@ -22,15 +23,16 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
     static final String COLUMN_ID = "id";
     static final String COLUMN_NAME = "name";
     static final String COLUMN_CODE = "code";
+    static final String COLUMN_VERSION = "version";
 
     private static final String CREATE_TEMPLATE =
-            "INSERT INTO " + TABLE_AIRLINE + "(" + COLUMN_ID + " , " + COLUMN_NAME + ", " + COLUMN_CODE + ")" +
-                    " VALUES (?, ?, ?);";
+            "INSERT INTO " + TABLE_AIRLINE + "(" + COLUMN_ID + " , " + COLUMN_NAME + ", " + COLUMN_CODE + ", " + COLUMN_VERSION + ")" +
+                    " VALUES (?, ?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_AIRLINE +
-                    " SET " + COLUMN_NAME + " = ?, " + COLUMN_CODE + " = ?" +
-                    " WHERE id = ?;";
+                    " SET " + COLUMN_NAME + " = ?, " + COLUMN_CODE + " = ?" + COLUMN_VERSION + " = ?" +
+                    " WHERE id = ? AND version = ?;";
 
     private static final String SELECT_TEMPLATE =
             "SELECT * FROM " + TABLE_USER + " INNER JOIN " + TABLE_AIRLINE +
@@ -50,7 +52,8 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
         new SqlStatement(CREATE_TEMPLATE,
                 entity.getId().toString(),
                 entity.getName(),
-                entity.getCode()
+                entity.getCode(),
+                entity.getVersion()
         ).doExecute(connectionPool.getCurrentTransaction());
     }
 
@@ -69,11 +72,17 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
     @Override
     public void update(Airline entity) {
         abstractUpdate(entity);
-        new SqlStatement(UPDATE_TEMPLATE,
+        long updated = new SqlStatement(UPDATE_TEMPLATE,
             entity.getName(),
             entity.getCode(),
-            entity.getId().toString()
-        ).doExecute(connectionPool.getCurrentTransaction());
+            entity.getVersion() + 1,
+            entity.getId().toString(),
+            entity.getVersion()
+        ).doUpdate(connectionPool.getCurrentTransaction());
+
+        if (updated == 0) {
+            throw new OptimisticLockingException();
+        }
     }
 
     @Override
@@ -114,7 +123,7 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
                     resultSet.getObject(AirlineMapperImpl.COLUMN_NAME, String.class),
                     resultSet.getObject(AirlineMapperImpl.COLUMN_CODE, String.class),
                     User.UserStatus.valueOf(resultSet.getObject(AbstractUserMapper.COLUMN_STATUS, String.class)),
-                    0 // TODO change this to use the actual version!!!
+                    resultSet.getObject(COLUMN_VERSION, Long.class)
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(
