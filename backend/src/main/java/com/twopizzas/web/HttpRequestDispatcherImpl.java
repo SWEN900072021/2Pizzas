@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Component
 public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
 
-    private static final int MAX_RETRIES = 3;
+    static final int MAX_RETRIES = 3;
 
     private final WebApplicationContext context;
     private final UnitOfWork unitOfWork;
