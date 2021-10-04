@@ -23,16 +23,15 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
     static final String COLUMN_ID = "id";
     static final String COLUMN_NAME = "name";
     static final String COLUMN_CODE = "code";
-    static final String COLUMN_VERSION = "version";
 
     private static final String CREATE_TEMPLATE =
-            "INSERT INTO " + TABLE_AIRLINE + "(" + COLUMN_ID + " , " + COLUMN_NAME + ", " + COLUMN_CODE + ", " + COLUMN_VERSION + ")" +
-                    " VALUES (?, ?, ?, ?);";
+            "INSERT INTO " + TABLE_AIRLINE + "(" + COLUMN_ID + " , " + COLUMN_NAME + ", " + COLUMN_CODE + ")" +
+                    " VALUES (?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_AIRLINE +
-                    " SET " + COLUMN_NAME + " = ?, " + COLUMN_CODE + " = ?" + COLUMN_VERSION + " = ?" +
-                    " WHERE id = ? AND version = ?;";
+                    " SET " + COLUMN_NAME + " = ?, " + COLUMN_CODE + " = ?" +
+                    " WHERE id = ?;";
 
     private static final String SELECT_TEMPLATE =
             "SELECT * FROM " + TABLE_USER + " INNER JOIN " + TABLE_AIRLINE +
@@ -52,8 +51,7 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
         new SqlStatement(CREATE_TEMPLATE,
                 entity.getId().toString(),
                 entity.getName(),
-                entity.getCode(),
-                entity.getVersion()
+                entity.getCode()
         ).doExecute(connectionPool.getCurrentTransaction());
     }
 
@@ -72,17 +70,11 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
     @Override
     public void update(Airline entity) {
         abstractUpdate(entity);
-        long updated = new SqlStatement(UPDATE_TEMPLATE,
+        new SqlStatement(UPDATE_TEMPLATE,
             entity.getName(),
             entity.getCode(),
-            entity.getVersion() + 1,
-            entity.getId().toString(),
-            entity.getVersion()
-        ).doUpdate(connectionPool.getCurrentTransaction());
-
-        if (updated == 0) {
-            throw new OptimisticLockingException();
-        }
+            entity.getId().toString()
+        ).doExecute(connectionPool.getCurrentTransaction());
     }
 
     @Override
