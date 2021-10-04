@@ -67,7 +67,7 @@ public class CustomerMapperImplTests {
     }
 
     @Test
-    @DisplayName("GIVEN existing customer object in db WHEN update invoked ")
+    @DisplayName("GIVEN invalid customer version WHEN update invoked THEN throw OptimisticLockingException")
     void testInvalidVersionUpdate() {
         // GIVEN
         Customer oldEntity = new Customer(
@@ -83,7 +83,14 @@ public class CustomerMapperImplTests {
 //        mapper.update(updatedEntity);
 
         Customer persisted = mapper.read(oldEntity.getId());
-        Assertions.assertNotEquals(updatedEntity.getVersion() + 1, persisted.getVersion());
+        Assertions.assertNotNull(persisted);
+        Assertions.assertEquals(oldEntity.getId(), persisted.getId());
+        Assertions.assertEquals(oldEntity.getUsername(), persisted.getUsername());
+        Assertions.assertNotNull(persisted.getPassword());
+        Assertions.assertEquals(oldEntity.getGivenName(), persisted.getGivenName());
+        Assertions.assertEquals(oldEntity.getLastName(), persisted.getLastName());
+        Assertions.assertEquals(oldEntity.getEmail(), persisted.getEmail());
+        Assertions.assertNotEquals(oldEntity.getVersion() + 1, persisted.getVersion());
 
     }
 
