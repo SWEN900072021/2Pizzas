@@ -4,6 +4,7 @@ import com.twopizzas.data.Entity;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.util.AssertionConcern;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public abstract class DomainEntity extends AssertionConcern implements Entity<EntityId> {
@@ -12,7 +13,11 @@ public abstract class DomainEntity extends AssertionConcern implements Entity<En
     @EqualsAndHashCode.Include
     protected final EntityId id;
 
-    public DomainEntity(EntityId id) {
+    @Getter
+    private final long version;
+
+    public DomainEntity(EntityId id, long version) {
+        this.version = version;
         this.id = notNull(id, "id");
     }
 

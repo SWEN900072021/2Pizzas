@@ -120,7 +120,7 @@ public class FlightSeatMapperImplTests {
         Mockito.doReturn(flightUpdated).when(flightMapper).read(Mockito.eq(flightIdUpdated));
 
         FlightSeat update = new FlightSeat(
-                entity.getId(), "1B",  SeatClass.ECONOMY, BaseValueHolder.of(flightUpdated)
+                entity.getId(), "1B",  SeatClass.ECONOMY, BaseValueHolder.of(flightUpdated), 0
         );
 
         // WHEN

@@ -7,6 +7,7 @@ import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.domain.flight.*;
 import com.twopizzas.port.data.DataTestConfig;
+import com.twopizzas.port.data.OptimisticLockingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.airline.AirlineMapper;
 import com.twopizzas.port.data.airplane.AirplaneProfileMapper;
@@ -252,7 +253,8 @@ public class FlightMapperImplTests {
                 Flight.FlightStatus.CANCELLED,
                 firstClassCostUpdate,
                 businessClassCostUpdate,
-                economyClassCostUpdate
+                economyClassCostUpdate,
+                flight.getVersion()
         );
 
         // WHEN
@@ -284,11 +286,125 @@ public class FlightMapperImplTests {
         Assertions.assertNotNull(updated.getAllocatedSeats().get(0));
         Assertions.assertEquals(update.getAllocatedSeats().get(0).getSeat(), updated.getAllocatedSeats().get(0).getSeat());
         Assertions.assertEquals(update.getAllocatedSeats().get(0).getPassenger(), updated.getAllocatedSeats().get(0).getPassenger());
+        Assertions.assertEquals(update.getVersion() + 1, updated.getVersion());
+    }
+
+    @Test
+    @DisplayName("GIVEN flight version is invalid WHEN update invoked THEN throw OptimisticLockingException")
+    void test3() {
+        // GIVEN
+        Airport stopOverLocation = Mockito.mock(Airport.class);
+        EntityId stopOverLocationId = EntityId.nextId();
+        Mockito.when(stopOverLocation.getId()).thenReturn(stopOverLocationId);
+        Mockito.doReturn(stopOverLocation).when(airportMapper).read(Mockito.eq(stopOverLocationId));
+        insertTestAirports(stopOverLocation.getId());
+
+        OffsetDateTime departure = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC).withNano(0);
+        OffsetDateTime arrival = departure.plus(12, ChronoUnit.HOURS);
+
+        BigDecimal firstClassCost = new BigDecimal(100);
+        BigDecimal businessClassCost = new BigDecimal(80);
+        BigDecimal economyClassCost = new BigDecimal(40);
+
+        Flight flight = new Flight(
+                profile,
+                airline,
+                origin,
+                destination,
+                Collections.singletonList(new StopOver(
+                        stopOverLocation,
+                        departure.plus(6, ChronoUnit.HOURS),
+                        departure.plus(7, ChronoUnit.HOURS)
+                )),
+                "code",
+                departure,
+                arrival,
+                firstClassCost,
+                businessClassCost,
+                economyClassCost
+        );
+
+        mapper.create(flight);
+
+        EntityId bookingId = EntityId.nextId();
+        EntityId seatIdOther = EntityId.nextId();
+        insertTestSeat(seat.getId(), flight.getId());
+        insertTestSeat(seatIdOther, flight.getId());
+        insertTestPassenger(passenger.getId(), bookingId, flight.getId());
+        insertTestAllocation(passenger.getId(), seatIdOther);
+
+        Airport stopOverLocationUpdate = Mockito.mock(Airport.class);
+        EntityId stopOverLocationIdUpdate = EntityId.nextId();
+        Mockito.when(stopOverLocationUpdate.getId()).thenReturn(stopOverLocationIdUpdate);
+        Mockito.doReturn(stopOverLocationUpdate).when(airportMapper).read(Mockito.eq(stopOverLocationIdUpdate));
+        insertTestAirports(stopOverLocationUpdate.getId());
+
+        OffsetDateTime departureUpdate = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC).withNano(0);
+
+        BigDecimal firstClassCostUpdate = new BigDecimal(110);
+        BigDecimal businessClassCostUpdate = new BigDecimal(90);
+        BigDecimal economyClassCostUpdate = new BigDecimal(50);
+
+        Flight update = new Flight(
+                flight.getId(),
+                BaseValueHolder.of(Collections.singletonList(
+                        new FlightSeatAllocation(
+                                seat, passenger
+                        )
+                )),
+                profile,
+                airline,
+                BaseValueHolder.of(Collections.emptyList()),
+                origin,
+                destination,
+                departureUpdate,
+                departureUpdate.plus(12, ChronoUnit.HOURS),
+                Collections.singletonList(new StopOver(
+                        stopOverLocationUpdate,
+                        departureUpdate.plus(6, ChronoUnit.HOURS),
+                        departureUpdate.plus(7, ChronoUnit.HOURS)
+                )),
+                "codeUpdate",
+                Flight.FlightStatus.CANCELLED,
+                firstClassCostUpdate,
+                businessClassCostUpdate,
+                economyClassCostUpdate,
+                flight.getVersion() + 1
+        );
+
+        // WHEN + THEN
+        Assertions.assertThrows(OptimisticLockingException.class, () -> mapper.update(update));
+
+        Flight read = mapper.read(flight.getId());
+
+        Assertions.assertNotNull(read);
+        Assertions.assertEquals(flight.getId(), read.getId());
+        Assertions.assertEquals(flight.getCode(), read.getCode());
+        Assertions.assertEquals(flight.getDestination(), read.getDestination());
+        Assertions.assertEquals(flight.getOrigin(), read.getOrigin());
+        Assertions.assertEquals(flight.getAirline(), read.getAirline());
+        Assertions.assertEquals(flight.getAirplaneProfile(), read.getAirplaneProfile());
+        Assertions.assertEquals(flight.getDeparture(), read.getDeparture());
+        Assertions.assertEquals(flight.getArrival(), read.getArrival());
+        Assertions.assertEquals(flight.getStatus(), read.getStatus());
+        Assertions.assertEquals(flight.getFirstClassCost(), read.getFirstClassCost());
+        Assertions.assertEquals(flight.getBusinessClassCost(), read.getBusinessClassCost());
+        Assertions.assertEquals(flight.getEconomyClassCost(), read.getEconomyClassCost());
+        Assertions.assertNotNull(read.getStopOvers());
+        Assertions.assertEquals(1, read.getStopOvers().size());
+        Assertions.assertNotNull(read.getStopOvers().get(0));
+        Assertions.assertEquals(flight.getStopOvers().get(0).getArrival(), read.getStopOvers().get(0).getArrival());
+        Assertions.assertEquals(flight.getStopOvers().get(0).getDeparture(), read.getStopOvers().get(0).getDeparture());
+        Assertions.assertEquals(flight.getStopOvers().get(0).getLocation(), read.getStopOvers().get(0).getLocation());
+        Assertions.assertNotNull(flight.getSeats());
+        Assertions.assertEquals(1, flight.getSeats().size());
+        Assertions.assertEquals(seat, flight.getSeats().iterator().next());
+
     }
 
     @Test
     @DisplayName("GIVEN flight in database WHEN delete invoked THEN flight removed from database")
-    void test3() {
+    void test4() {
         // GIVEN
         Airport stopOverLocation = Mockito.mock(Airport.class);
         EntityId stopOverLocationId = EntityId.nextId();

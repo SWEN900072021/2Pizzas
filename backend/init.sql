@@ -9,7 +9,8 @@ CREATE TABLE "user"
     username varchar(255),
     password varchar(255),
     userType varchar(255),
-    status varchar(255)
+    status   varchar(255),
+    version  bigint
 );
 
 CREATE TABLE customer
@@ -48,7 +49,8 @@ CREATE TABLE airport
     name      varchar(255),
     location  varchar(255),
     utcOffset varchar(255),
-    status varchar(255)
+    status    varchar(255),
+    version   bigint
 );
 
 CREATE TABLE airplaneProfile
@@ -66,18 +68,19 @@ CREATE TABLE airplaneProfile
 
 CREATE TABLE flight
 (
-    id                  varchar(36) PRIMARY KEY,
-    code                varchar(255),
-    departure           timestamp(3) with time zone,
-    arrival             timestamp(3) with time zone,
-    origin              varchar(36),  -- airport ID
-    destination         varchar(36),  -- airport ID
-    airlineId           varchar(36),
-    airplaneId          varchar(36),
-    status              varchar(255),
-    firstClassCost      numeric,
-    businessClassCost   numeric,
-    economyClassCost    numeric,
+    id                varchar(36) PRIMARY KEY,
+    code              varchar(255),
+    departure         timestamp(3) with time zone,
+    arrival           timestamp(3) with time zone,
+    origin            varchar(36), -- airport ID
+    destination       varchar(36), -- airport ID
+    airlineId         varchar(36),
+    airplaneId        varchar(36),
+    status            varchar(255),
+    firstClassCost    numeric,
+    businessClassCost numeric,
+    economyClassCost  numeric,
+    version           bigint,
     CONSTRAINT airlineFK
         FOREIGN KEY (airlineId)
             REFERENCES airline (id),

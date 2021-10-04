@@ -78,7 +78,7 @@ public class AirplaneProfileMapperImplTests {
 
         // GIVEN
         AirplaneProfile update = new AirplaneProfile(
-                entity.getId(), "Boeing", "someOtherType", 7, 8, 9,  10,  11, 12
+                entity.getId(), "Boeing", "someOtherType", 7, 8, 9,  10,  11, 12, 0
         );
         // WHEN
         mapper.update(update);

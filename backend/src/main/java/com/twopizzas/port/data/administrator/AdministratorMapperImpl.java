@@ -95,7 +95,8 @@ public class AdministratorMapperImpl extends AbstractUserMapper<Administrator> i
                     EntityId.of(resultSet.getObject(AdministratorMapperImpl.COLUMN_ID, String.class)),
                     resultSet.getObject(AbstractUserMapper.COLUMN_USERNAME, String.class),
                     resultSet.getObject(AbstractUserMapper.COLUMN_PASSWORD, String.class),
-                    User.UserStatus.valueOf(resultSet.getObject(AbstractUserMapper.COLUMN_STATUS, String.class))
+                    User.UserStatus.valueOf(resultSet.getObject(AbstractUserMapper.COLUMN_STATUS, String.class)),
+                    resultSet.getObject(AbstractUserMapper.COLUMN_VERSION, Long.class)
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

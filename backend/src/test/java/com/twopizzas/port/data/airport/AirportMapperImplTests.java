@@ -3,6 +3,7 @@ package com.twopizzas.port.data.airport;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.port.data.DataTestConfig;
+import com.twopizzas.port.data.OptimisticLockingException;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import org.junit.jupiter.api.*;
 
@@ -72,12 +73,12 @@ public class AirportMapperImplTests {
     void test3() {
         // GIVEN
         Airport entity = new Airport(
-                EntityId.nextId(), "COD",  "New Test Airport", "Berlin", ZoneId.of("Asia/Calcutta"), Airport.AirportStatus.ACTIVE
+                EntityId.nextId(), "COD",  "New Test Airport", "Berlin", ZoneId.of("Asia/Calcutta"), Airport.AirportStatus.ACTIVE, 0
         );
         mapper.create(entity);
 
         Airport update = new Airport(
-                entity.getId(), "CED", "Updated Test Airport", "France", ZoneId.of("Europe/Berlin"), Airport.AirportStatus.INACTIVE
+                entity.getId(), "CED", "Updated Test Airport", "France", ZoneId.of("Europe/Berlin"), Airport.AirportStatus.INACTIVE, 0
         );
 
         // WHEN
@@ -118,5 +119,34 @@ public class AirportMapperImplTests {
         Assertions.assertTrue(all.size() >= 2);
         Assertions.assertTrue(all.stream().map(Airport::getId).collect(Collectors.toList()).contains(entity.getId()));
         Assertions.assertTrue(all.stream().map(Airport::getId).collect(Collectors.toList()).contains(entitySecond.getId()));
+    }
+
+    @Test
+    @DisplayName("GIVEN airport version is invalid WHEN update invoked THEN throw OptimisticLockingException and airport not updated")
+    void test5() {
+        // GIVEN
+        Airport airport = new Airport(
+                EntityId.nextId(), "COD",  "New Test Airport", "Berlin", ZoneId.of("Asia/Calcutta"),
+                Airport.AirportStatus.ACTIVE, 0
+        );
+        mapper.create(airport);
+
+        Airport update = new Airport(
+                airport.getId(), "CED", "Updated Test Airport", "France", ZoneId.of("Europe/Berlin"),
+                Airport.AirportStatus.INACTIVE, airport.getVersion() + 1
+        );
+
+        // WHEN
+        Assertions.assertThrows(OptimisticLockingException.class, () -> mapper.update(update));
+
+        // THEN
+        Airport updated = mapper.read(airport.getId());
+        Assertions.assertNotNull(updated);
+        Assertions.assertEquals(airport.getId(), updated.getId());
+        Assertions.assertEquals(airport.getCode(), updated.getCode());
+        Assertions.assertEquals(airport.getName(), updated.getName());
+        Assertions.assertEquals(airport.getLocation(), updated.getLocation());
+        Assertions.assertEquals(airport.getUtcOffset(), updated.getUtcOffset());
+        Assertions.assertEquals(airport.getStatus(), updated.getStatus());
     }
 }

@@ -19,9 +19,20 @@ public class SqlStatement {
         this(template, new Object[]{});
     }
 
-    public void doExecute(Connection connection) {
+    public boolean doExecute(Connection connection) {
         try {
-            prepareStatement(connection, template, args).execute();
+            return prepareStatement(connection, template, args).execute();
+        } catch (SQLException e) {
+            throw new DataMappingException(String.format(
+                    "error executing SQL statement %s, error: %s",
+                    template, e.getMessage()),
+                    e);
+        }
+    }
+
+    public long doUpdate(Connection connection) {
+        try {
+            return prepareStatement(connection, template, args).executeUpdate();
         } catch (SQLException e) {
             throw new DataMappingException(String.format(
                     "error executing SQL statement %s, error: %s",

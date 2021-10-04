@@ -5,6 +5,7 @@ import com.twopizzas.data.IdentityMapper;
 import com.twopizzas.data.UnitOfWork;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
+import com.twopizzas.port.data.OptimisticLockingException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
+
+    static final int MAX_RETRIES = 3;
 
     private final WebApplicationContext context;
     private final UnitOfWork unitOfWork;
@@ -62,39 +65,53 @@ public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
     }
 
     private HttpResponse handle(HttpRequest request, HttpRequestDelegate delegate) {
-        try {
+        int retries = 0;
+        while (retries < MAX_RETRIES) {
+
             identityMapper.reset();
             unitOfWork.start();
-            RestResponse<?> restResponse = delegate.handle(request);
 
-            String bodyStr = null;
-            Map<String, String> headers = new HashMap<>();
-            if (restResponse.getBody() != null) {
-                if (restResponse.getBody() instanceof String) {
-                    bodyStr = (String) restResponse.getBody();
-                } else {
-                    bodyStr = context.getObjectMapper().writeValueAsString(request.getBody());
-                    headers.put("content-type", "application/json");
+            try {
+                RestResponse<?> restResponse = delegate.handle(request);
+
+                String bodyStr = null;
+                Map<String, String> headers = new HashMap<>();
+                if (restResponse.getBody() != null) {
+                    if (restResponse.getBody() instanceof String) {
+                        bodyStr = (String) restResponse.getBody();
+                    } else {
+                        bodyStr = context.getObjectMapper().writeValueAsString(request.getBody());
+                        headers.put("content-type", "application/json");
+                    }
                 }
+
+                HttpResponse response = new HttpResponse(
+                        restResponse.getStatus(),
+                        context.getObjectMapper().writeValueAsString(restResponse.getBody()),
+                        headers
+                );
+
+                unitOfWork.commit();
+                return response;
+
+            } catch (Throwable e) {
+                unitOfWork.rollback();
+
+                if (e instanceof OptimisticLockingException) {
+                    retries++;
+                    continue;
+                }
+
+                if (e instanceof HttpException) {
+                    return buildErrorResponse(request, ((HttpException) e).getStatus(), ((HttpException) e).getReason());
+                }
+
+                return buildErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
             }
-
-            HttpResponse response = new HttpResponse(
-                    restResponse.getStatus(),
-                    context.getObjectMapper().writeValueAsString(restResponse.getBody()),
-                    headers
-            );
-
-            unitOfWork.commit();
-            return response;
-
-        } catch (Throwable e) {
-            unitOfWork.rollback();
-
-            if (e instanceof HttpException) {
-                return buildErrorResponse(request, ((HttpException) e).getStatus(), ((HttpException) e).getReason());
-            }
-            return buildErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+
+        // if we get here then we have tried and failed :(
+        return buildErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR, null);
     }
 
     private HttpResponse buildErrorResponse(HttpRequest request, HttpStatus status, String reason) {

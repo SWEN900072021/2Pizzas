@@ -147,7 +147,8 @@ class BookingMapperImpl implements BookingMapper {
             Booking one = new Booking(
                     bookingId,
                     resultSet.getObject(COLUMN_DATE, OffsetDateTime.class),
-                    customerMapper.read(EntityId.of(resultSet.getObject(COLUMN_CUSTOMER_ID, String.class)))
+                    customerMapper.read(EntityId.of(resultSet.getObject(COLUMN_CUSTOMER_ID, String.class))),
+                    0
             );
 
             EntityId flightId = EntityId.of(resultSet.getObject(COLUMN_FLIGHT_ID, String.class));

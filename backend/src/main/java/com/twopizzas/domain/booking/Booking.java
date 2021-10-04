@@ -19,14 +19,14 @@ public class Booking extends DomainEntity {
     private SeatBooking flightBooking;
     private SeatBooking returnFlightBooking;
 
-    public Booking(EntityId id, OffsetDateTime date, Customer customer) {
-        super(id);
+    public Booking(EntityId id, OffsetDateTime date, Customer customer, long version) {
+        super(id, version);
         this.date = notNull(date, "date");
         this.customer = notNull(customer, "customer");
     }
 
     public Booking(Customer customer) {
-        this(EntityId.nextId(), OffsetDateTime.now(), customer);
+        this(EntityId.nextId(), OffsetDateTime.now(), customer, 0);
     }
 
 

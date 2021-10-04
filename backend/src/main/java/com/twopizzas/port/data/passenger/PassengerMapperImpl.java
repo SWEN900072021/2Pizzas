@@ -137,7 +137,8 @@ class PassengerMapperImpl implements PassengerMapper {
                     resultSet.getObject(COLUMN_DOB, LocalDate.class),
                     resultSet.getObject(COLUMN_NATIONALITY, String.class),
                     resultSet.getObject(COLUMN_PASSPORTNUMBER, String.class),
-                    LazyValueHolderProxy.makeLazy(() -> BaseValueHolder.of(bookingMapper.read(bookingId)))
+                    LazyValueHolderProxy.makeLazy(() -> BaseValueHolder.of(bookingMapper.read(bookingId))),
+                    0
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

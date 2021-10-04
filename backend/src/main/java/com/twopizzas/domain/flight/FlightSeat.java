@@ -13,15 +13,15 @@ public class FlightSeat extends DomainEntity {
     private final SeatClass seatClass;
     private final ValueHolder<Flight> flight;
 
-    public FlightSeat(EntityId id, String name, SeatClass seatClass, ValueHolder<Flight> flight) {
-        super(id);
+    public FlightSeat(EntityId id, String name, SeatClass seatClass, ValueHolder<Flight> flight, long version) {
+        super(id, version);
         this.name = notNullAndNotBlank(name, "name");
         this.seatClass = notNull(seatClass, "seatClass");
         this.flight = notNull(flight, "flight");
     }
 
     public FlightSeat(String name, SeatClass seatClass, Flight flight) {
-        this(EntityId.nextId(), name, seatClass, BaseValueHolder.of(flight));
+        this(EntityId.nextId(), name, seatClass, BaseValueHolder.of(flight), 0);
     }
 
     public Flight getFlight() {

@@ -15,15 +15,15 @@ public abstract class User extends DomainEntity {
     @Setter
     private UserStatus status;
 
-    public User(EntityId id, String username, String password, UserStatus status) {
-        super(id);
+    public User(EntityId id, String username, String password, UserStatus status, long version) {
+        super(id, version);
         this.username = username;
         this.password = password;
         this.status = status;
     }
 
     public User(EntityId id, String username, String password) {
-        this(id, username, password, UserStatus.ACTIVE);
+        this(id, username, password, UserStatus.ACTIVE, 0);
     }
 
     public abstract String getUserType();

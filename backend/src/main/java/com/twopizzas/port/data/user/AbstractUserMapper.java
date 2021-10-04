@@ -3,6 +3,7 @@ package com.twopizzas.port.data.user;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.user.User;
+import com.twopizzas.port.data.OptimisticLockingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 
@@ -17,11 +18,12 @@ public abstract class AbstractUserMapper<T extends User> {
     public static final String COLUMN_PASSWORD = "password";
     public static final String COLUMN_TYPE = "userType";
     public static final String COLUMN_STATUS = "status";
+    public static final String COLUMN_VERSION = "version";
 
     private static final String CREATE_TEMPLATE =
             "INSERT INTO " + TABLE_USER +
-                    " (" + COLUMN_ID + ", " + COLUMN_USERNAME + ", " + COLUMN_PASSWORD + ", " + COLUMN_TYPE + ", " + COLUMN_STATUS + ")" +
-                    " VALUES (?, ?, crypt(?, gen_salt('bf')), ?, ?);";
+                    " (" + COLUMN_ID + ", " + COLUMN_USERNAME + ", " + COLUMN_PASSWORD + ", " + COLUMN_TYPE + ", " + COLUMN_STATUS + ", " + COLUMN_VERSION  + ")" +
+                    " VALUES (?, ?, crypt(?, gen_salt('bf')), ?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
   // password has not changed do not encrypt again
@@ -29,8 +31,9 @@ public abstract class AbstractUserMapper<T extends User> {
             " SET " + COLUMN_USERNAME + " = ?, " +
                     COLUMN_PASSWORD + " = CASE WHEN password = ? THEN ? ELSE crypt(?, gen_salt('bf')) END, " +
                     COLUMN_TYPE + " = ?, " +
-                    COLUMN_STATUS + " = ?" +
-            " WHERE id = ?;";
+                    COLUMN_STATUS + " = ?, " +
+                    COLUMN_VERSION + " = ?" +
+            " WHERE id = ? AND version = ?;";
 
     private static final String DELETE_TEMPLATE =
             "DELETE FROM " + TABLE_USER + " WHERE id = ?;";
@@ -56,20 +59,29 @@ public abstract class AbstractUserMapper<T extends User> {
                 entity.getUsername(),
                 entity.getPassword(),
                 entity.getUserType(),
-                entity.getStatus().toString()
+                entity.getStatus().toString(),
+                entity.getVersion()
         ).doExecute(connectionPool.getCurrentTransaction());
     }
 
-    protected void abstractUpdate(T entity) {
-        new SqlStatement(UPDATE_TEMPLATE,
+    protected long abstractUpdate(T entity) {
+        long updated = new SqlStatement(UPDATE_TEMPLATE,
                 entity.getUsername(),
                 entity.getPassword(),
                 entity.getPassword(),
                 entity.getPassword(),
                 entity.getUserType(),
                 entity.getStatus().toString(),
-                entity.getId().toString()
-        ).doExecute(connectionPool.getCurrentTransaction());
+                entity.getVersion() + 1,
+                entity.getId().toString(),
+                entity.getVersion()
+        ).doUpdate(connectionPool.getCurrentTransaction());
+
+        if (updated == 0) {
+            throw new OptimisticLockingException();
+        }
+
+        return updated;
     }
 
     protected void abstractDelete(T entity) {

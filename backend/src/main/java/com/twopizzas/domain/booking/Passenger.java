@@ -17,8 +17,8 @@ public class Passenger extends DomainEntity {
     private final String passportNumber;
     private ValueHolder<Booking> booking;
 
-    public Passenger(EntityId id, String givenName, String surname, LocalDate dateOfBirth, String nationality, String passportNumber, ValueHolder<Booking> booking) {
-        super(id);
+    public Passenger(EntityId id, String givenName, String surname, LocalDate dateOfBirth, String nationality, String passportNumber, ValueHolder<Booking> booking, long version) {
+        super(id, version);
         this.givenName = notNullAndNotBlank(givenName, "givenName");
         this.surname = notNullAndNotBlank(surname, "surname");
         this.dateOfBirth = notNull(dateOfBirth, "dateOfBirth");
@@ -28,7 +28,7 @@ public class Passenger extends DomainEntity {
     }
 
     public Passenger(String givenName, String surname, LocalDate dateOfBirth, String nationality, String passportNumber) {
-        this(EntityId.nextId(), givenName, surname, dateOfBirth, nationality, passportNumber, BaseValueHolder.of(null));
+        this(EntityId.nextId(), givenName, surname, dateOfBirth, nationality, passportNumber, BaseValueHolder.of(null), 0);
     }
 
     public Booking getBooking() {

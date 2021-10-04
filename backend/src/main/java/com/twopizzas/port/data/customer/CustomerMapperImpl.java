@@ -6,6 +6,7 @@ import com.twopizzas.domain.user.Customer;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.user.User;
 import com.twopizzas.port.data.DataMappingException;
+import com.twopizzas.port.data.OptimisticLockingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 import com.twopizzas.port.data.user.AbstractUserMapper;
@@ -54,6 +55,7 @@ public class CustomerMapperImpl extends AbstractUserMapper<Customer> implements 
                 entity.getGivenName(),
                 entity.getLastName(),
                 entity.getEmail()).doExecute(connectionPool.getCurrentTransaction());
+
     }
 
     @Override
@@ -76,6 +78,7 @@ public class CustomerMapperImpl extends AbstractUserMapper<Customer> implements 
                 entity.getLastName(),
                 entity.getEmail(),
                 entity.getId().toString()).doExecute(connectionPool.getCurrentTransaction());
+
     }
 
     @Override
@@ -112,7 +115,8 @@ public class CustomerMapperImpl extends AbstractUserMapper<Customer> implements 
                     resultSet.getObject(CustomerMapperImpl.COLUMN_GIVENNAME, String.class),
                     resultSet.getObject(CustomerMapperImpl.COLUMN_SURNAME, String.class),
                     resultSet.getObject(CustomerMapperImpl.COLUMN_EMAIL, String.class),
-                    User.UserStatus.valueOf(resultSet.getObject(AbstractUserMapper.COLUMN_STATUS, String.class))
+                    User.UserStatus.valueOf(resultSet.getObject(AbstractUserMapper.COLUMN_STATUS, String.class)),
+                    resultSet.getObject(AbstractUserMapper.COLUMN_VERSION, Long.class)
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

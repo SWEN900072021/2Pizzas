@@ -112,7 +112,7 @@ public class PassengerMapperImplTests {
         insertTestBooking(bookingUpdated.getId().toString(), flightUpdated.getId().toString());
         Mockito.doReturn(bookingUpdated).when(bookingMapper).read(Mockito.eq(bookingIdUpdated));
 
-        Passenger update = new Passenger(entity.getId(), "Jane", "Vulpix", LocalDate.now(), "Australian", "ABCD", () -> bookingUpdated);
+        Passenger update = new Passenger(entity.getId(), "Jane", "Vulpix", LocalDate.now(), "Australian", "ABCD", () -> bookingUpdated, 0);
 
         // WHEN
         mapper.update(update);

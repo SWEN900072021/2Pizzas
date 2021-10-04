@@ -97,7 +97,7 @@ public class BookingMapperImplTests {
         SeatBooking flightBooking = new SeatBooking(flight, allocationSet);
         SeatBooking returnFlightBooking = new SeatBooking(flight, allocationSet);
 
-        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer);
+        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer, 0);
         entity.addFlight(flightBooking);
         entity.addReturnFlight(returnFlightBooking);
 
@@ -152,7 +152,7 @@ public class BookingMapperImplTests {
 
         SeatBooking flightBooking = new SeatBooking(flight, allocationSet);
 
-        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer);
+        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer, 0);
         entity.addFlight(flightBooking);
 
         Mockito.when(customerMapper.read(Mockito.eq(customerId))).thenReturn(customer);
@@ -220,7 +220,7 @@ public class BookingMapperImplTests {
         SeatBooking flightBooking = new SeatBooking(flight, allocationSet);
         SeatBooking returnFlightBooking = new SeatBooking(flight, allocationSet);
 
-        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer);
+        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer, 0);
         entity.addFlight(flightBooking);
         entity.addReturnFlight(returnFlightBooking);
 
@@ -271,7 +271,7 @@ public class BookingMapperImplTests {
         SeatBooking flightBookingUpdated = new SeatBooking(flightUpdated, allocationSetUpdated);
         SeatBooking returnFlightBookingUpdated = new SeatBooking(flightUpdated, allocationSetUpdated);
 
-        Booking update = new Booking(entity.getId(), OffsetDateTime.now().withNano(0), customerUpdated);
+        Booking update = new Booking(entity.getId(), OffsetDateTime.now().withNano(0), customerUpdated, 0);
         update.addFlight(flightBookingUpdated);
         update.addReturnFlight(returnFlightBookingUpdated);
 
@@ -341,7 +341,7 @@ public class BookingMapperImplTests {
         SeatBooking flightBooking = new SeatBooking(flight, allocationSet);
         SeatBooking returnFlightBooking = new SeatBooking(flight, allocationSet);
 
-        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer);
+        Booking entity = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer, 0);
         entity.addFlight(flightBooking);
         entity.addReturnFlight(returnFlightBooking);
 
