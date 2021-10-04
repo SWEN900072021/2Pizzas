@@ -49,10 +49,10 @@ public class AirlineMapperImplTests {
     void testValidUpdate() {
         // GIVEN
         EntityId id = EntityId.nextId();
-        Airline oldEntity = new Airline(id, "airline", "password", "qantas", "QN", User.UserStatus.ACTIVE);
+        Airline oldEntity = new Airline(id, "airline", "password", "qantas", "QN", User.UserStatus.ACTIVE, 0);
         mapper.create(oldEntity);
 
-        Airline updatedEntity = new Airline(id, "newAirline", "newPassword", "newQantas", "newQN", User.UserStatus.INACTIVE);
+        Airline updatedEntity = new Airline(id, "newAirline", "newPassword", "newQantas", "newQN", User.UserStatus.INACTIVE, 0);
         mapper.update(updatedEntity);
 
         Airline persisted = mapper.read(id);

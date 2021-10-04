@@ -8,6 +8,7 @@ import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.flight.Flight;
 import com.twopizzas.domain.flight.FlightSeatAllocation;
 import com.twopizzas.port.data.DataMappingException;
+import com.twopizzas.port.data.OptimisticLockingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.airline.AirlineMapper;
 import com.twopizzas.port.data.airplane.AirplaneProfileMapper;
@@ -42,15 +43,16 @@ class FlightMapperImpl implements FlightMapper {
     static final String COLUMN_FIRST_CLASS_COST = "firstClassCost";
     static final String COLUMN_BUSINESS_CLASS_COST = "businessClassCost";
     static final String COLUMN_ECONOMY_CLASS_COST = "economyClassCost";
+    static final String COLUMN_VERSION = "version";
 
     private static final String INSERT_TEMPLATE =
-            "INSERT INTO " + TABLE_FLIGHT + "(" + COLUMN_ID + " , " + COLUMN_CODE + ", " + COLUMN_DEPARTURE + ", " + COLUMN_ARRIVAL + ", " + COLUMN_ORIGIN + ", " + COLUMN_DESTINATION + ", " + COLUMN_AIRLINE_ID + ", " + COLUMN_AIRPLANE_ID + ", " + COLUMN_STATUS + ", " + COLUMN_FIRST_CLASS_COST + ", " + COLUMN_BUSINESS_CLASS_COST + ", " + COLUMN_ECONOMY_CLASS_COST + ")" +
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "INSERT INTO " + TABLE_FLIGHT + "(" + COLUMN_ID + " , " + COLUMN_CODE + ", " + COLUMN_DEPARTURE + ", " + COLUMN_ARRIVAL + ", " + COLUMN_ORIGIN + ", " + COLUMN_DESTINATION + ", " + COLUMN_AIRLINE_ID + ", " + COLUMN_AIRPLANE_ID + ", " + COLUMN_STATUS + ", " + COLUMN_FIRST_CLASS_COST + ", " + COLUMN_BUSINESS_CLASS_COST + ", " + COLUMN_ECONOMY_CLASS_COST + ", " + COLUMN_VERSION + ")" +
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_FLIGHT +
-            " SET " + COLUMN_CODE + " = ?, " + COLUMN_DEPARTURE + " = ?, " + COLUMN_ARRIVAL + " = ?, " + COLUMN_ORIGIN + " = ?, " + COLUMN_DESTINATION + " = ?, " + COLUMN_AIRLINE_ID + " = ?, " + COLUMN_AIRPLANE_ID + " = ?, " + COLUMN_STATUS + " = ?, " + COLUMN_FIRST_CLASS_COST + " = ?, " + COLUMN_BUSINESS_CLASS_COST + " = ?, " + COLUMN_ECONOMY_CLASS_COST + " = ?" +
-            " WHERE id = ?;";
+            " SET " + COLUMN_CODE + " = ?, " + COLUMN_DEPARTURE + " = ?, " + COLUMN_ARRIVAL + " = ?, " + COLUMN_ORIGIN + " = ?, " + COLUMN_DESTINATION + " = ?, " + COLUMN_AIRLINE_ID + " = ?, " + COLUMN_AIRPLANE_ID + " = ?, " + COLUMN_STATUS + " = ?, " + COLUMN_FIRST_CLASS_COST + " = ?, " + COLUMN_BUSINESS_CLASS_COST + " = ?, " + COLUMN_ECONOMY_CLASS_COST + " = ?" + COLUMN_VERSION + " = ?" +
+            " WHERE id = ? AND version = ?;";
 
     private static final String DELETE_TEMPLATE =
             "DELETE FROM " + TABLE_FLIGHT +
@@ -111,7 +113,8 @@ class FlightMapperImpl implements FlightMapper {
                 entity.getStatus().toString(),
                 entity.getFirstClassCost(),
                 entity.getBusinessClassCost(),
-                entity.getEconomyClassCost()
+                entity.getEconomyClassCost(),
+                entity.getVersion()
         ).doExecute(connectionPool.getCurrentTransaction());
 
         insertAllocations(entity.getAllocatedSeats());
@@ -132,7 +135,7 @@ class FlightMapperImpl implements FlightMapper {
 
     @Override
     public void update(Flight entity) {
-        new SqlStatement(UPDATE_TEMPLATE,
+        long updated = new SqlStatement(UPDATE_TEMPLATE,
                 entity.getCode(),
                 entity.getDeparture().withOffsetSameInstant(ZoneOffset.UTC),
                 entity.getArrival().withOffsetSameInstant(ZoneOffset.UTC),
@@ -144,8 +147,14 @@ class FlightMapperImpl implements FlightMapper {
                 entity.getFirstClassCost(),
                 entity.getBusinessClassCost(),
                 entity.getEconomyClassCost(),
-                entity.getId().toString()
-        ).doExecute(connectionPool.getCurrentTransaction());
+                entity.getVersion() + 1,
+                entity.getId().toString(),
+                entity.getVersion()
+        ).doUpdate(connectionPool.getCurrentTransaction());
+
+        if (updated == 0) {
+            throw new OptimisticLockingException();
+        }
 
         List<FlightSeatAllocation> allocations = entity.getAllocatedSeats();
         deleteAllocations(entity);
@@ -202,7 +211,8 @@ class FlightMapperImpl implements FlightMapper {
                     Flight.FlightStatus.valueOf(resultSet.getObject(COLUMN_STATUS, String.class)),
                             resultSet.getObject(COLUMN_FIRST_CLASS_COST, BigDecimal.class),
                             resultSet.getObject(COLUMN_BUSINESS_CLASS_COST, BigDecimal.class),
-                            resultSet.getObject(COLUMN_ECONOMY_CLASS_COST, BigDecimal.class)
+                            resultSet.getObject(COLUMN_ECONOMY_CLASS_COST, BigDecimal.class),
+                    resultSet.getObject(COLUMN_VERSION, long.class)
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

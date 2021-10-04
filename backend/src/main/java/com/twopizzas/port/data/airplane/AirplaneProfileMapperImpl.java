@@ -130,7 +130,8 @@ class AirplaneProfileMapperImpl implements AirplaneProfileMapper {
                     resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_BUSINESS_CLASS_ROWS),
                     resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_BUSINESS_CLASS_COLUMNS),
                     resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_ECONOMY_CLASS_ROWS),
-                    resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_ECONOMY_CLASS_COLUMNS)
+                    resultSet.getInt(AirplaneProfileMapperImpl.COLUMN_ECONOMY_CLASS_COLUMNS),
+                    0
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

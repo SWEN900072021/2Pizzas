@@ -112,7 +112,8 @@ public class CustomerMapperImpl extends AbstractUserMapper<Customer> implements 
                     resultSet.getObject(CustomerMapperImpl.COLUMN_GIVENNAME, String.class),
                     resultSet.getObject(CustomerMapperImpl.COLUMN_SURNAME, String.class),
                     resultSet.getObject(CustomerMapperImpl.COLUMN_EMAIL, String.class),
-                    User.UserStatus.valueOf(resultSet.getObject(AbstractUserMapper.COLUMN_STATUS, String.class))
+                    User.UserStatus.valueOf(resultSet.getObject(AbstractUserMapper.COLUMN_STATUS, String.class)),
+                    0 // TODO change this to use the actual version!!!
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

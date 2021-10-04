@@ -122,7 +122,8 @@ class AirportMapperImpl implements AirportMapper {
                     resultSet.getObject(COLUMN_NAME, String.class),
                     resultSet.getObject(COLUMN_LOCATION, String.class),
                     ZoneId.of(resultSet.getObject(COLUMN_UTC_OFFSET, String.class)),
-                    Airport.AirportStatus.valueOf(resultSet.getObject(COLUMN_STATUS, String.class))
+                    Airport.AirportStatus.valueOf(resultSet.getObject(COLUMN_STATUS, String.class)),
+                    0 // TODO change this to use the actual version!!!
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

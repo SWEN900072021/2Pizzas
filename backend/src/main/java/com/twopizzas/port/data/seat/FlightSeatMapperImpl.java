@@ -120,7 +120,8 @@ class FlightSeatMapperImpl implements FlightSeatMapper {
                     SeatClass.valueOf(resultSet.getObject(COLUMN_CLASS, String.class)),
                     LazyValueHolderProxy.makeLazy(
                             new FlightByIdLoader(flightMapper, resultSet.getObject(COLUMN_FLIGHT_ID, String.class))
-                    )
+                    ),
+                    0
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

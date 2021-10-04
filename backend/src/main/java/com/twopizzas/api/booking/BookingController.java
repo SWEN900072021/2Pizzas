@@ -57,7 +57,7 @@ public class BookingController {
         }
 
         Customer customer = (Customer) authenticatedUser;
-        Booking booking = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer);
+        Booking booking = new Booking(EntityId.nextId(), OffsetDateTime.now().withNano(0), customer, 0);
         bookingRepository.save(booking);
 
         BookingRequest.BookingRequestBuilder flightBuilder = BookingRequest.builder();

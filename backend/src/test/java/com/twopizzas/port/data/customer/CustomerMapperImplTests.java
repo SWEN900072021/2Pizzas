@@ -50,7 +50,7 @@ public class CustomerMapperImplTests {
 
         // WHEN
         Customer updatedEntity = new Customer(oldEntity.getId(),
-                "newUserName", "newPassword", "newName", "newLastName", "newjohnsmith@gmail.com", User.UserStatus.INACTIVE);
+                "newUserName", "newPassword", "newName", "newLastName", "newjohnsmith@gmail.com", User.UserStatus.INACTIVE, 0);
         mapper.update(updatedEntity);
 
         // THEN

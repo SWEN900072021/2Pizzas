@@ -48,8 +48,8 @@ public class Flight extends DomainEntity {
     public Flight(EntityId id, ValueHolder<List<FlightSeatAllocation>> allocatedSeats, AirplaneProfile airplaneProfile,
                   Airline airline, ValueHolder<List<FlightSeat>> seats, Airport origin, Airport destination,
                   OffsetDateTime departure, OffsetDateTime arrival, List<StopOver> stopOvers, String code, FlightStatus status,
-                  BigDecimal firstClassCost, BigDecimal businessClassCost, BigDecimal economyClassCost) {
-        super(id);
+                  BigDecimal firstClassCost, BigDecimal businessClassCost, BigDecimal economyClassCost, long version) {
+        super(id, version);
         this.allocatedSeats = notNull(allocatedSeats, "bookedSeats");
         this.airplaneProfile = notNull(airplaneProfile, "airplaneProfile");
         this.airline = notNull(airline, "airline");
@@ -78,7 +78,7 @@ public class Flight extends DomainEntity {
     }
 
     public Flight(AirplaneProfile airplaneProfile, Airline airline, Airport origin, Airport destination, List<StopOver> stopOvers, String code, OffsetDateTime departure, OffsetDateTime arrival, BigDecimal firstClassCost, BigDecimal businessClassCost, BigDecimal economyClassCost) {
-        this(EntityId.nextId(), BaseValueHolder.of(new ArrayList<>()), airplaneProfile, airline, null, origin, destination, departure, arrival, stopOvers, code, FlightStatus.TO_SCHEDULE, firstClassCost, businessClassCost, economyClassCost);
+        this(EntityId.nextId(), BaseValueHolder.of(new ArrayList<>()), airplaneProfile, airline, null, origin, destination, departure, arrival, stopOvers, code, FlightStatus.TO_SCHEDULE, firstClassCost, businessClassCost, economyClassCost, 0);
     }
 
     public SeatBooking allocateSeats(BookingRequest request) {

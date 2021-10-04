@@ -72,12 +72,12 @@ public class AirportMapperImplTests {
     void test3() {
         // GIVEN
         Airport entity = new Airport(
-                EntityId.nextId(), "COD",  "New Test Airport", "Berlin", ZoneId.of("Asia/Calcutta"), Airport.AirportStatus.ACTIVE
+                EntityId.nextId(), "COD",  "New Test Airport", "Berlin", ZoneId.of("Asia/Calcutta"), Airport.AirportStatus.ACTIVE, 0
         );
         mapper.create(entity);
 
         Airport update = new Airport(
-                entity.getId(), "CED", "Updated Test Airport", "France", ZoneId.of("Europe/Berlin"), Airport.AirportStatus.INACTIVE
+                entity.getId(), "CED", "Updated Test Airport", "France", ZoneId.of("Europe/Berlin"), Airport.AirportStatus.INACTIVE, 0
         );
 
         // WHEN

@@ -252,7 +252,8 @@ public class FlightMapperImplTests {
                 Flight.FlightStatus.CANCELLED,
                 firstClassCostUpdate,
                 businessClassCostUpdate,
-                economyClassCostUpdate
+                economyClassCostUpdate,
+                flight.getVersion()
         );
 
         // WHEN
@@ -284,6 +285,7 @@ public class FlightMapperImplTests {
         Assertions.assertNotNull(updated.getAllocatedSeats().get(0));
         Assertions.assertEquals(update.getAllocatedSeats().get(0).getSeat(), updated.getAllocatedSeats().get(0).getSeat());
         Assertions.assertEquals(update.getAllocatedSeats().get(0).getPassenger(), updated.getAllocatedSeats().get(0).getPassenger());
+        Assertions.assertEquals(update.getVersion() + 1, updated.getVersion());
     }
 
     @Test

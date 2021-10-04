@@ -113,7 +113,8 @@ public class AirlineMapperImpl extends AbstractUserMapper<Airline> implements Ai
                     resultSet.getObject(AbstractUserMapper.COLUMN_PASSWORD, String.class),
                     resultSet.getObject(AirlineMapperImpl.COLUMN_NAME, String.class),
                     resultSet.getObject(AirlineMapperImpl.COLUMN_CODE, String.class),
-                    User.UserStatus.valueOf(resultSet.getObject(AbstractUserMapper.COLUMN_STATUS, String.class))
+                    User.UserStatus.valueOf(resultSet.getObject(AbstractUserMapper.COLUMN_STATUS, String.class)),
+                    0 // TODO change this to use the actual version!!!
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(

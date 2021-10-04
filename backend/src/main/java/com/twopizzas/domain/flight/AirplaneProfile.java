@@ -20,8 +20,8 @@ public class AirplaneProfile extends DomainEntity {
     private final int economyClassColumns;
 
     public AirplaneProfile(EntityId id, String code, String type, int firstClassRows, int firstClassColumns,
-                           int businessClassRows, int businessClassColumns, int economyClassRows, int economyClassColumns) {
-        super(id);
+                           int businessClassRows, int businessClassColumns, int economyClassRows, int economyClassColumns, long version) {
+        super(id, version);
         this.code = notNullAndNotBlank(code, "code");
         this.type = notNullAndNotBlank(type, "type");
         this.firstClassRows = notNull(firstClassRows, "firstClassRows");
@@ -34,7 +34,7 @@ public class AirplaneProfile extends DomainEntity {
 
     public AirplaneProfile(String code, String type, int firstClassRows, int firstClassColumns,
                            int businessClassRows, int businessClassColumns, int economyClassRows, int economyClassColumns) {
-        this(EntityId.nextId(), code, type, firstClassRows, firstClassColumns, businessClassRows, businessClassColumns, economyClassRows, economyClassColumns);
+        this(EntityId.nextId(), code, type, firstClassRows, firstClassColumns, businessClassRows, businessClassColumns, economyClassRows, economyClassColumns, 0);
     }
 
     public List<SeatProfile> getSeatProfiles() {

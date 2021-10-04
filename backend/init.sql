@@ -9,7 +9,8 @@ CREATE TABLE "user"
     username varchar(255),
     password varchar(255),
     userType varchar(255),
-    status varchar(255)
+    status varchar(255),
+    version bigint
 );
 
 CREATE TABLE customer
@@ -48,7 +49,8 @@ CREATE TABLE airport
     name      varchar(255),
     location  varchar(255),
     utcOffset varchar(255),
-    status varchar(255)
+    status varchar(255),
+    version bigint
 );
 
 CREATE TABLE airplaneProfile
@@ -78,6 +80,7 @@ CREATE TABLE flight
     firstClassCost      numeric,
     businessClassCost   numeric,
     economyClassCost    numeric,
+    version bigint,
     CONSTRAINT airlineFK
         FOREIGN KEY (airlineId)
             REFERENCES airline (id),

@@ -46,11 +46,11 @@ public class AdministratorMapperImplTests {
     void testValidUpdate() {
         // GIVEN
         EntityId id = EntityId.nextId();
-        Administrator oldEntity = new Administrator(id, "username", "password", User.UserStatus.ACTIVE);
+        Administrator oldEntity = new Administrator(id, "username", "password", User.UserStatus.ACTIVE, 0);
         mapper.create(oldEntity);
 
         // WHEN
-        Administrator updated = new Administrator(id, "newUsername", "newPassword", User.UserStatus.INACTIVE);
+        Administrator updated = new Administrator(id, "newUsername", "newPassword", User.UserStatus.INACTIVE, 0);
         mapper.update(updated);
 
         // THEN

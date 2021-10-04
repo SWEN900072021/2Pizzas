@@ -20,8 +20,8 @@ public class Airport extends DomainEntity {
     private final String location;
     private final ZoneId utcOffset;
 
-    public Airport(EntityId id, String code, String name, String location, ZoneId utcOffset, AirportStatus status) {
-        super(id);
+    public Airport(EntityId id, String code, String name, String location, ZoneId utcOffset, AirportStatus status, long version) {
+        super(id, version);
         this.code = max(notNullAndNotBlank(code, "code"), MAX_AIRPORT_CODE_LENGTH, "code");
         this.name = notNullAndNotBlank(name, "name");
         this.location = notNullAndNotBlank(location, "location");
@@ -30,7 +30,7 @@ public class Airport extends DomainEntity {
     }
 
     public Airport(String code, String name, String location, ZoneId utcOffset) {
-        this(EntityId.nextId(), code, name, location, utcOffset, AirportStatus.ACTIVE);
+        this(EntityId.nextId(), code, name, location, utcOffset, AirportStatus.ACTIVE, 0);
     }
 
     public enum AirportStatus {

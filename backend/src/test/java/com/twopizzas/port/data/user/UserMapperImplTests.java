@@ -74,17 +74,17 @@ public class UserMapperImplTests {
     @DisplayName("GIVEN user object in db WHEN update invoked THEN customer object updated in db")
     void testValidUpdate() {
         // GIVEN
-        User customerEntity = new Customer(EntityId.nextId(), "username", "password", "John", "Smith", "johnsmith@gmail.com", User.UserStatus.ACTIVE);
-        User airlineEntity = new Airline(EntityId.nextId(), "airline", "password", "qantas", "QN", User.UserStatus.ACTIVE);
-        User adminEntity = new Administrator(EntityId.nextId(), "admin", "password", User.UserStatus.ACTIVE);
+        User customerEntity = new Customer("username", "password", "John", "Smith", "johnsmith@gmail.com");
+        User airlineEntity = new Airline("airline", "password", "qantas", "QN");
+        User adminEntity = new Administrator("admin", "password");
         mapper.create(customerEntity);
         mapper.create(airlineEntity);
         mapper.create(adminEntity);
 
         // WHEN
-        User updatedCustomerEntity = new Customer(customerEntity.getId(), "username", "newPassword", "John", "Smith", "johnsmith@gmail.com", User.UserStatus.INACTIVE);
-        User updatedAirlineEntity = new Airline(airlineEntity.getId(), "airline", "newPassword", "qantas", "QN", User.UserStatus.INACTIVE);
-        User updatedAdminEntity = new Administrator(adminEntity.getId(), "admin", "newPassword", User.UserStatus.INACTIVE);
+        User updatedCustomerEntity = new Customer(customerEntity.getId(), "username", "newPassword", "John", "Smith", "johnsmith@gmail.com", User.UserStatus.INACTIVE, 0);
+        User updatedAirlineEntity = new Airline(airlineEntity.getId(), "airline", "newPassword", "qantas", "QN", User.UserStatus.INACTIVE, 0);
+        User updatedAdminEntity = new Administrator(adminEntity.getId(), "admin", "newPassword", User.UserStatus.INACTIVE, 0);
         mapper.update(updatedCustomerEntity);
         mapper.update(updatedAirlineEntity);
         mapper.update(updatedAdminEntity);
@@ -144,7 +144,7 @@ public class UserMapperImplTests {
 
         // WHEN
         User updatedCustomerEntity = new Customer(customerEntity.getId(),
-                "username", readCustomer.getPassword(), "John", "Smith", "johnsmith@gmail.com", customerEntity.getStatus());
+                "username", readCustomer.getPassword(), "John", "Smith", "johnsmith@gmail.com", customerEntity.getStatus(), 0);
 
         mapper.update(updatedCustomerEntity);
 
@@ -169,7 +169,7 @@ public class UserMapperImplTests {
 
         // WHEN
         User updatedCustomerEntity = new Customer(customerEntity.getId(),
-                "username", "newPassword", "John", "Smith", "johnsmith@gmail.com", customerEntity.getStatus());
+                "username", "newPassword", "John", "Smith", "johnsmith@gmail.com", customerEntity.getStatus(), 0);
 
         mapper.update(updatedCustomerEntity);
 
