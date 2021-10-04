@@ -16,9 +16,4 @@ class CustomerRepositoryImpl extends AbstractRepository<Customer, CustomerSpecif
     public CustomerRepositoryImpl(CustomerMapper dataMapper) {
         super(dataMapper);
     }
-
-    @Override
-    public List<Customer> findAllCustomers() {
-        return dataMapper.readAll(new AllCustomersSpecification(dataMapper));
-    }
 }

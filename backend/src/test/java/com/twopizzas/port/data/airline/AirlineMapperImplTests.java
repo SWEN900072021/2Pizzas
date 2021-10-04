@@ -2,6 +2,8 @@ package com.twopizzas.port.data.airline;
 
 import com.twopizzas.domain.user.Airline;
 import com.twopizzas.domain.EntityId;
+import com.twopizzas.domain.user.User;
+import com.twopizzas.port.data.DataTestConfig;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import org.junit.jupiter.api.*;
 
@@ -9,11 +11,7 @@ import java.sql.SQLException;
 
 public class AirlineMapperImplTests {
     private AirlineMapperImpl mapper;
-    private final ConnectionPoolImpl connectionPool = new ConnectionPoolImpl(
-            "jdbc:postgresql://ec2-35-153-114-74.compute-1.amazonaws.com:5432/dac5q82fjaj3t6",
-            "imvxeuqwkqsffn",
-            "f4ed9811c5e77c79fc4ac9bae81de7b24ede0452ea454a656ba916c17a347f29"
-    );
+    private final ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
 
     @BeforeEach
     void setup() throws SQLException {
@@ -31,7 +29,7 @@ public class AirlineMapperImplTests {
     @DisplayName("GIVEN valid airline object WHEN create invoked THEN airline persisted in database")
     void testCreate() {
         // GIVEN
-        Airline entity = new Airline(EntityId.nextId(), "username", "password", "qantas", "QN");
+        Airline entity = new Airline("username", "password", "qantas", "QN");
 
         // WHEN
         mapper.create(entity);
@@ -40,6 +38,10 @@ public class AirlineMapperImplTests {
         Airline persisted = mapper.read(entity.getId());
         Assertions.assertNotNull(persisted);
         Assertions.assertEquals(entity.getId(), persisted.getId());
+        Assertions.assertEquals(entity.getName(), persisted.getName());
+        Assertions.assertEquals(entity.getUsername(), persisted.getUsername());
+        Assertions.assertEquals(entity.getCode(), persisted.getCode());
+        Assertions.assertEquals(entity.getStatus(), persisted.getStatus());
     }
 
     @Test
@@ -47,10 +49,10 @@ public class AirlineMapperImplTests {
     void testValidUpdate() {
         // GIVEN
         EntityId id = EntityId.nextId();
-        Airline oldEntity = new Airline(id, "airline", "password", "qantas", "QN");
+        Airline oldEntity = new Airline(id, "airline", "password", "qantas", "QN", User.UserStatus.ACTIVE);
         mapper.create(oldEntity);
 
-        Airline updatedEntity = new Airline(id, "newAirline", "newPassword", "newQantas", "newQN");
+        Airline updatedEntity = new Airline(id, "newAirline", "newPassword", "newQantas", "newQN", User.UserStatus.INACTIVE);
         mapper.update(updatedEntity);
 
         Airline persisted = mapper.read(id);
@@ -59,28 +61,27 @@ public class AirlineMapperImplTests {
         Assertions.assertNotNull(updatedEntity.getPassword());
         Assertions.assertEquals(persisted.getName(), updatedEntity.getName());
         Assertions.assertEquals(persisted.getCode(), updatedEntity.getCode());
+        Assertions.assertEquals(persisted.getStatus(), updatedEntity.getStatus());
     }
 
     @Test
     @DisplayName("GIVEN airline object not in db WHEN update invoked THEN object not persisted in db")
     void testInvalidUpdate()  {
-        EntityId id = EntityId.nextId();
-        Airline entity = new Airline(id, "airline", "password", "qantas", "QN");
+        Airline entity = new Airline("airline", "password", "qantas", "QN");
         mapper.update(entity);
 
-        Airline persisted = mapper.read(id);
+        Airline persisted = mapper.read(entity.getId());
         Assertions.assertNull(persisted);
     }
 
     @Test
     @DisplayName("GIVEN airline object in db WHEN delete invoked THEN object removed from db")
     void testValidDelete() {
-        EntityId id = EntityId.nextId();
-        Airline entity = new Airline(id, "airline", "password", "qantas", "QN");
+        Airline entity = new Airline("airline", "password", "qantas", "QN");
         mapper.create(entity);
 
         mapper.delete(entity);
-        Airline persisted = mapper.read(id);
+        Airline persisted = mapper.read(entity.getId());
         Assertions.assertNull(persisted);
     }
 

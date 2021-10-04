@@ -5,6 +5,7 @@ import com.twopizzas.domain.flight.Flight;
 import com.twopizzas.domain.flight.SeatClass;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -13,14 +14,19 @@ public class FlightDto {
     private String id;
     private OffsetDateTime departure;
     private OffsetDateTime arrival;
+    private OffsetDateTime departureLocal;
+    private OffsetDateTime arrivalLocal;
     private Airport origin;
     private Airport destination;
     private List<Seat> seats;
     private List<StopOver> stopOvers;
-    private Flight.Status status;
+    private Flight.FlightStatus status;
     private Airline airline;
     private String code;
     private AirplaneProfile profile;
+    private BigDecimal firstClassCost;
+    private BigDecimal businessClassCost;
+    private BigDecimal economyClassCost;
 
     @Data
     public static class Seat {
@@ -40,6 +46,8 @@ public class FlightDto {
         private OffsetDateTime arrival;
         private OffsetDateTime departure;
         private FlightSearchResultDto.Airport location;
+        private OffsetDateTime departureLocal;
+        private OffsetDateTime arrivalLocal;
     }
 
     @Data

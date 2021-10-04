@@ -5,6 +5,7 @@ import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Controller;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.booking.TimePeriod;
+import com.twopizzas.domain.flight.Flight;
 import com.twopizzas.domain.flight.FlightRepository;
 import com.twopizzas.domain.flight.FlightSearch;
 import com.twopizzas.web.*;
@@ -58,8 +59,8 @@ public class FlightSearchController {
         }
 
         if (departingAfterOffset != null && departingBeforeOffset != null) {
-            if (departingAfterOffset.isBefore(departingBeforeOffset)) {
-                errors.add("departingAfter must not be before departingBefore");
+            if (departingAfterOffset.isAfter(departingBeforeOffset)) {
+                errors.add("departingAfter must not be after departingBefore");
             } else {
                 builder.departing(new TimePeriod(departingAfterOffset, departingBeforeOffset));
             }
@@ -101,8 +102,10 @@ public class FlightSearchController {
             throw new HttpException(HttpStatus.BAD_REQUEST, String.join(", ", errors));
         }
 
-        return RestResponse.ok(repository.searchFlights(builder.build()).stream().map(MAPPER::map).collect(Collectors.toList()));
+        return RestResponse.ok(repository.searchFlights(builder.build()).stream()
+                .filter(f -> !f.getStatus().equals(Flight.FlightStatus.CANCELLED))
+                .filter(f -> f.getDeparture().isAfter(OffsetDateTime.now()))
+                .map(MAPPER::map)
+                .collect(Collectors.toList()));
     }
-
-
 }

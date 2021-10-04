@@ -16,18 +16,20 @@ public abstract class AbstractUserMapper<T extends User> {
     public static final String COLUMN_USERNAME = "username";
     public static final String COLUMN_PASSWORD = "password";
     public static final String COLUMN_TYPE = "userType";
+    public static final String COLUMN_STATUS = "status";
 
     private static final String CREATE_TEMPLATE =
             "INSERT INTO " + TABLE_USER +
-                    " (" + COLUMN_ID + ", " + COLUMN_USERNAME + ", " + COLUMN_PASSWORD + ", " + COLUMN_TYPE + ")" +
-                    " VALUES (?, ?, crypt(?, gen_salt('bf')), ?);";
+                    " (" + COLUMN_ID + ", " + COLUMN_USERNAME + ", " + COLUMN_PASSWORD + ", " + COLUMN_TYPE + ", " + COLUMN_STATUS + ")" +
+                    " VALUES (?, ?, crypt(?, gen_salt('bf')), ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
   // password has not changed do not encrypt again
             "UPDATE " + TABLE_USER +
             " SET " + COLUMN_USERNAME + " = ?, " +
                     COLUMN_PASSWORD + " = CASE WHEN password = ? THEN ? ELSE crypt(?, gen_salt('bf')) END, " +
-                    COLUMN_TYPE + " = ?" +
+                    COLUMN_TYPE + " = ?, " +
+                    COLUMN_STATUS + " = ?" +
             " WHERE id = ?;";
 
     private static final String DELETE_TEMPLATE =
@@ -48,27 +50,29 @@ public abstract class AbstractUserMapper<T extends User> {
         this.connectionPool = connectionPool;
     }
 
-    public void abstractCreate(T entity) {
+    protected void abstractCreate(T entity) {
         new SqlStatement(CREATE_TEMPLATE,
                 entity.getId().toString(),
                 entity.getUsername(),
                 entity.getPassword(),
-                entity.getUserType()
+                entity.getUserType(),
+                entity.getStatus().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
     }
 
-    public void abstractUpdate(T entity) {
+    protected void abstractUpdate(T entity) {
         new SqlStatement(UPDATE_TEMPLATE,
                 entity.getUsername(),
                 entity.getPassword(),
                 entity.getPassword(),
                 entity.getPassword(),
                 entity.getUserType(),
+                entity.getStatus().toString(),
                 entity.getId().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
     }
 
-    public void abstractDelete(T entity) {
+    protected void abstractDelete(T entity) {
         new SqlStatement(DELETE_TEMPLATE,
                 entity.getId().toString()
         ).doExecute(connectionPool.getCurrentTransaction());

@@ -1,0 +1,40 @@
+@startuml
+
+class Customer {
+  + {static} TYPE : String = "CUSTOMER"
+  - GIVENNAME : String
+  - LASTNAME : String
+  - EMAIL : String
+  + getUserType() : String
+}
+
+class Booking {
+  - DATE : OffsetDateTime
+  - flightBooking : SeatBooking
+  - returnFlightBooking : SeatBooking
+  + addFlight(seatBooking : SeatBooking) : void
+  + addReturnFlight(seatBooking : SeatBooking) : void
+  + getTotalCost() : BigDecimal
+  - getTotalCostForBooking(SeatBooking seatBooking) : BigDecimal
+  + getFlightBooking() : SeatBooking
+  + getReturnFlightBooking() : SeatBooking
+}
+
+object CustomerTable {
+  id
+  givenname
+  surname
+  email
+}
+
+object BookingTable {
+  id
+  customerid
+  flightid
+  returnflightid
+  date
+}
+
+Booking "*" -> "1" Customer
+
+@enduml

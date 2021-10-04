@@ -1,0 +1,106 @@
+@startuml front controller
+
+participant "HttpRequestDelegate" as delegate
+participant "httpRequest:HttpRequest" as req
+participant "PathResolver" as pathRes
+participant "result:PathResolver.PathResult" as result
+participant "handler:Method" as handler
+participant "Authorized" as auth
+participant "AuthenticationProvider" as authProv
+participant "authenticatedUser:User" as user
+participant "args:List<Object>" as args
+participant "objectMapper:ObjectMapper" as objmap
+participant "restResponse:RestResponse" as restres
+participant "WebApplicationContext" as webCtx
+
+[-> delegate: handle(httpRequest)
+activate delegate
+delegate -> req: path = getPath()
+activate req
+deactivate req
+delegate -> pathRes: test(path)
+activate pathRes
+pathRes -> result **: new Result()
+pathRes --> delegate: result
+deactivate pathRes
+delegate -> handler: authorizedAnnotation = getDeclaredAnnotation(Authorized.class)
+activate handler
+deactivate handler
+opt authorizedAnnotation exists
+  delegate -> delegate: doAuthentication(request)
+  activate delegate
+  delegate -> req: headers getHeaders()
+  activate req
+  deactivate req
+  opt headers contains authorization header and token
+    delegate -> authProv: authenticatedUser = autheticate(token)
+    activate authProv
+    alt token is valid and user exists
+      authProv -> user **: new User()
+      authProv --> delegate: Optional.of(authenticatedUser)
+    else
+      authProv --> delegate: Optional.empty()
+      deactivate authProv
+    end
+  end
+  alt authenticatedUser is not empty
+    delegate -> auth: allowUsers = value()
+    activate auth
+    deactivate auth
+    delegate -> user: userType = getUserType()
+    activate user
+    deactivate user
+    opt allowUsers does not contain userType
+      [<-- delegate: Unauthorized
+    end
+  else
+    [<-- delegate: Unauthorized
+  end
+  deactivate delegate
+end
+delegate -> delegate: getArgsFromRequest(request, pathResult, authenticatedUser)
+activate delegate
+delegate -> handler: parameters = getParameters()
+activate handler
+deactivate handler
+delegate -> args **: new ArrayList()
+loop for parameter in parameters
+  alt parameter is annotated with @PathVariable
+    delegate -> pathRes: arg = getPathVariable(annotation.value())
+    activate pathRes
+    deactivate pathRes
+    delegate -> args: add(arg)
+    activate args
+    deactivate args
+  else parameter is annotated with @QueryParameter
+    delegate -> req: arg = getQueries().get(annotation.value())
+    activate req
+    deactivate req
+    delegate -> args: add(arg)
+    activate args
+    deactivate args
+  else parameter is annotated with @Body
+    delegate -> req: body = getBody()
+    activate req
+    deactivate req
+    delegate -> objmap: arg = readValue(body, paramter.getType())
+    activate objmap
+    deactivate objmap
+    delegate -> args: add(arg)
+    activate args
+    deactivate args
+  else parameter type is User
+    delegate -> args: add(authenticatedUser)
+    activate args
+    deactivate args
+  end
+end
+deactivate delegate
+delegate -> handler: invoke(targetController, args)
+activate handler
+handler -> restres **: new RestResponse(status, body)
+handler --> delegate: restResponse
+deactivate handler
+[<-- delegate: restResponse
+deactivate delegate
+@enduml

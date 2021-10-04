@@ -23,12 +23,14 @@ public class FlightController {
     private final FlightRepository repository;
     private final AirportRepository airportRepository;
     private final AirplaneProfileRepository airplaneProfileRepository;
+    private final FlightSeatRepository flightSeatRepository;
 
     @Autowired
-    public FlightController(FlightRepository repository, AirportRepository airportRepository, AirplaneProfileRepository airplaneProfileRepository) {
+    public FlightController(FlightRepository repository, AirportRepository airportRepository, AirplaneProfileRepository airplaneProfileRepository, FlightSeatRepository flightSeatRepository) {
         this.repository = repository;
         this.airportRepository = airportRepository;
         this.airplaneProfileRepository = airplaneProfileRepository;
+        this.flightSeatRepository = flightSeatRepository;
     }
 
     @RequestMapping(
@@ -49,14 +51,20 @@ public class FlightController {
                 .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, String.format("airport %s not found", body.getOrigin())));
         Airport destination = airportRepository.find(EntityId.of(body.getDestination()))
                 .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, String.format("airport %s not found", body.getDestination())));
+
+        assertAirport(origin);
+        assertAirport(destination);
+
         List<StopOver> stopOvers = new ArrayList<>();
-        for (NewFlightDto.StopOver stopOver: body.getStopOvers()) {
-            stopOvers.add(new StopOver(
-                    airportRepository.find(EntityId.of(stopOver.getLocation()))
-                                .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, "airport %s not found")),
-                    stopOver.getArrival(),
-                    stopOver.getDeparture()
+        if (body.getStopOvers() != null) {
+            for (NewFlightDto.StopOver stopOver : body.getStopOvers()) {
+                stopOvers.add(new StopOver(
+                        assertAirport(airportRepository.find(EntityId.of(stopOver.getLocation()))
+                                .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, "airport %s not found"))),
+                        stopOver.getArrival(),
+                        stopOver.getDeparture()
                 ));
+            }
         }
 
         Flight newFlight = repository.save(new Flight(
@@ -72,6 +80,8 @@ public class FlightController {
                 body.getBusinessClassCost(),
                 body.getEconomyClassCost()
         ));
+
+        newFlight.getSeats().forEach(flightSeatRepository::save);
 
         return RestResponse.ok(MAPPER.map(newFlight));
     }
@@ -128,7 +138,35 @@ public class FlightController {
             throw new HttpException(HttpStatus.FORBIDDEN);
         }
 
-        flight.setStatus(body.getStatus());
+        if (body.getStatus() != null) {
+            flight.setStatus(body.getStatus());
+        }
+
+        if (body.getArrival() != null) {
+            flight.setArrival(body.getArrival());
+        }
+
+        if (body.getDeparture() != null) {
+            flight.setDeparture(body.getDeparture());
+        }
+
+        if (flight.getDeparture().isAfter(flight.getArrival())) {
+            throw new HttpException(HttpStatus.CONFLICT, "arrival must occur after departure");
+        }
+
+        if (body.getStopOvers() != null) {
+            List<StopOver> stopOvers = new ArrayList<>();
+            for (NewFlightDto.StopOver stopOver : body.getStopOvers()) {
+                stopOvers.add(new StopOver(
+                        assertAirport(airportRepository.find(EntityId.of(stopOver.getLocation()))
+                                .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, "airport %s not found"))),
+                        stopOver.getArrival(),
+                        stopOver.getDeparture()
+                ));
+            }
+            flight.setStopOvers(stopOvers);
+        }
+
         repository.save(flight);
 
         return RestResponse.ok(MAPPER.map(flight));
@@ -152,5 +190,20 @@ public class FlightController {
         }
 
         return RestResponse.ok(flight.getAllocatedSeats().stream().map(MAPPER::map).collect(Collectors.toList()));
+    }
+
+    private Airport assertAirport(Airport airport) throws HttpException {
+        if (airport.getStatus().equals(Airport.AirportStatus.INACTIVE)) {
+            throw new HttpException(HttpStatus.FORBIDDEN, String.format("airport %s is in %s state", airport.getId(), airport.getStatus()));
+        }
+        return airport;
+    }
+
+    private StopOver assertStopover(StopOver stopOver, Flight flight) throws HttpException {
+        if (flight.getDeparture().isAfter(stopOver.getDeparture()) || flight.getArrival().isBefore(stopOver.getDeparture()) ||
+                flight.getDeparture().isAfter(stopOver.getArrival()) || flight.getArrival().isBefore(stopOver.getArrival())) {
+            throw new HttpException(HttpStatus.CONFLICT, "invalid stopover for flight");
+        }
+        return stopOver;
     }
 }

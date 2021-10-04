@@ -1,0 +1,44 @@
+@startuml
+
+interface AuthenticationProvider {
+
+  authenticate(token: String): Optional<User>
+  login(username: String, password: String): Optional<String>
+  login(User user): String
+
+}
+
+class JwtAuthenticationProvider implements AuthenticationProvider {
+
+  - secret: String
+  - key: SecretKey
+  - timeToLive: String
+  - issuer: String
+
+  - USERREPOSITORY: UserRepository
+
+  + authenticate(token: String): Optional<User>
+  + login(username: String, password: String): Optional<String>
+  + login(User user): String
+
+}
+
+class BaseRequestDelegate {
+
+  - PATHRESOLVER: PathResolver
+  - METHOD: HttpMethod
+  - TARGETCONTROLLER: Object
+  - HANDLER: Method
+  - MAPPER: ObjectMapper
+  - AUTHENTICATIONPROVIDER: AuthenticationProvider
+
+  + handle(request: HttpRequest): RestResponse
+  - getArgsFromRequest(request: HttpRequest, pathResult: PathResolver.PathResult, user: User): List<Object>
+  - doAuthentication(request: HttpRequest): Optional<User>
+  - invokeHandler(args: List<Object>): RestResponse
+
+}
+
+BaseRequestDelegate --> "1" AuthenticationProvider
+
+@enduml

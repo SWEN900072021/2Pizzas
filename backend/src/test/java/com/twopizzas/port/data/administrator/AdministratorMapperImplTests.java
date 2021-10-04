@@ -2,6 +2,8 @@ package com.twopizzas.port.data.administrator;
 
 import com.twopizzas.domain.user.Administrator;
 import com.twopizzas.domain.EntityId;
+import com.twopizzas.domain.user.User;
+import com.twopizzas.port.data.DataTestConfig;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import org.junit.jupiter.api.*;
 
@@ -9,11 +11,7 @@ import java.sql.SQLException;
 
 public class AdministratorMapperImplTests {
     private AdministratorMapperImpl mapper;
-    private final ConnectionPoolImpl connectionPool = new ConnectionPoolImpl(
-            "jdbc:postgresql://ec2-35-153-114-74.compute-1.amazonaws.com:5432/dac5q82fjaj3t6",
-            "imvxeuqwkqsffn",
-            "f4ed9811c5e77c79fc4ac9bae81de7b24ede0452ea454a656ba916c17a347f29"
-    );
+    private final ConnectionPoolImpl connectionPool = new DataTestConfig().getConnectionPool();
 
     @BeforeEach
     void setup() throws SQLException {
@@ -40,6 +38,7 @@ public class AdministratorMapperImplTests {
         Administrator persisted = mapper.read(entity.getId());
         Assertions.assertNotNull(persisted);
         Assertions.assertEquals(entity.getId(), persisted.getId());
+        Assertions.assertEquals(entity.getStatus(), persisted.getStatus());
     }
 
     @Test
@@ -47,18 +46,19 @@ public class AdministratorMapperImplTests {
     void testValidUpdate() {
         // GIVEN
         EntityId id = EntityId.nextId();
-        Administrator oldEntity = new Administrator(id, "username", "password");
+        Administrator oldEntity = new Administrator(id, "username", "password", User.UserStatus.ACTIVE);
         mapper.create(oldEntity);
 
         // WHEN
-        Administrator newEntity = new Administrator(id, "newUsername", "password");
-        mapper.update(newEntity);
+        Administrator updated = new Administrator(id, "newUsername", "newPassword", User.UserStatus.INACTIVE);
+        mapper.update(updated);
 
         // THEN
         Administrator persisted = mapper.read(id);
         Assertions.assertNotNull(persisted);
-        Assertions.assertEquals(newEntity.getId(), persisted.getId());
-        Assertions.assertEquals(newEntity.getUsername(), persisted.getUsername());
+        Assertions.assertEquals(updated.getId(), persisted.getId());
+        Assertions.assertEquals(updated.getUsername(), persisted.getUsername());
+        Assertions.assertEquals(updated.getStatus(), persisted.getStatus());
         Assertions.assertNotNull(persisted.getPassword());
     }
 

@@ -1,0 +1,19 @@
+@startuml identity field
+
+class EntityId {
+  - value: UUID
+  + {static} nextId(): EntityId
+  + getValue(): UUID
+  + hashCode(): int
+  + equals(obj: Object): boolean
+}
+
+abstract class DomainEntity {
+  + getId(): EntityId
+  + hashCode(): int
+  + equals(obj: Object): boolean
+}
+
+DomainEntity "1"-->"1" EntityId: id
+
+@enduml

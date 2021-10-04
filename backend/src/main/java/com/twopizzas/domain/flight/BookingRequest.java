@@ -4,6 +4,7 @@ import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.util.AssertionConcern;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -20,7 +21,7 @@ public class BookingRequest extends AssertionConcern {
     }
 
     public static class BookingRequestBuilder {
-        private List<SeatAllocationRequest> allocations;
+        private List<SeatAllocationRequest> allocations = new ArrayList<>();
 
         public BookingRequestBuilder withSeatAllocation(String seatName, Passenger passenger) {
             allocations.add(new SeatAllocationRequest(seatName, passenger));

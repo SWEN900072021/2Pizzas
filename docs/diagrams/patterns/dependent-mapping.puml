@@ -1,0 +1,34 @@
+@startuml  dependent mapping
+
+participant FlightMapper as mp
+participant "flight:Flight" as f
+participant "connectionPool:ConnectionPool" as cp
+participant "update:SqlStatement" as up
+participant "delete:SqlStatement" as del
+participant "insert:SqlStatement" as ins
+
+[-> mp: update(flight)
+activate mp
+mp -> cp: connection = getCurrentTransaction();
+activate cp
+deactivate cp
+note over up: construction simplified for brevity
+mp -> up **: new SqlStatement(UPDATE_TEMPLATE, flight)
+mp -> up: doExecute(connection)
+activate up
+deactivate up
+note over del: construction simplified for brevity
+mp -> del **: new SqlStatement(DELETE_STOPOVERS_TEMPLATE, flight)
+mp -> del: doExecute(connection)
+activate del
+deactivate del
+mp -> f: stopOvers = getStopOvers()
+loop for stopOver in stopOvers
+  note over ins: construction simplified for brevity
+  mp -> ins **: new SqlStatement(INSERT_STOPOVER_TEMPLATE, stopOver)
+  mp -> ins: doExecute(connection)
+  activate ins
+  deactivate ins
+end
+deactivate mp
+@enduml

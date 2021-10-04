@@ -10,7 +10,9 @@ import java.util.List;
 public class AllAirlinesSpecification implements AirlineSpecification {
 
     private static final String TEMPLATE =
-            "SELECT * FROM airline;";
+            "SELECT * FROM \"user\"" +
+            " LEFT JOIN airline ON \"user\".id = airline.id" +
+            " WHERE userType = '" + Airline.TYPE + "';";
 
     private final AirlineMapper mapper;
 

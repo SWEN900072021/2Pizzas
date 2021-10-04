@@ -3,6 +3,7 @@ package com.twopizzas.auth;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.user.User;
 import com.twopizzas.domain.user.UserRepository;
+import com.twopizzas.web.AuthenticationProvider;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.Assertions;
@@ -39,6 +40,7 @@ public class JwtAuthenticationProviderTests {
         // GIVEN
         User user = Mockito.mock(User.class);
         Mockito.when(user.getId()).thenReturn(EntityId.nextId());
+        Mockito.when(user.getStatus()).thenReturn(User.UserStatus.ACTIVE);
         Mockito.when(userRepository.find(Mockito.any(), Mockito.any())).thenReturn(Optional.of(user));
         Mockito.when(userRepository.find(Mockito.any())).thenReturn(Optional.of(user));
         String username = "username";
@@ -63,6 +65,7 @@ public class JwtAuthenticationProviderTests {
         // GIVEN
         User user = Mockito.mock(User.class);
         Mockito.when(user.getId()).thenReturn(EntityId.nextId());
+        Mockito.when(user.getStatus()).thenReturn(User.UserStatus.ACTIVE);
         Mockito.when(userRepository.find(Mockito.any(), Mockito.any())).thenReturn(Optional.of(user));
         Mockito.when(userRepository.find(Mockito.any())).thenReturn(Optional.of(user));
         String username = "username";

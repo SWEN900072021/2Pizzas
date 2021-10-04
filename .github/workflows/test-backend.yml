@@ -14,5 +14,8 @@ jobs:
       uses: actions/checkout@v2
     - name: Run tests
       working-directory: ./backend
-      run: mvn test
-    
+      run: mvn -Dprofile=test clean test 
+    env:
+      DATABASE_USERNAME: ${{ secrets.DB_USER }}
+      DATABASE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+         

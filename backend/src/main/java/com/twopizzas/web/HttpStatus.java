@@ -11,7 +11,8 @@ public enum HttpStatus {
     BAD_REQUEST(400, "Bad Request"),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
     NO_CONTENT(204, "No Content"),
-    FORBIDDEN(403, "Forbidden");
+    FORBIDDEN(403, "Forbidden"),
+    CONFLICT(409, "Conflict");
 
     private final int statusCode;
     private final String status;

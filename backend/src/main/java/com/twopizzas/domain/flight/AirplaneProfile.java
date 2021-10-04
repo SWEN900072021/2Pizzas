@@ -39,17 +39,17 @@ public class AirplaneProfile extends DomainEntity {
 
     public List<SeatProfile> getSeatProfiles() {
         List<SeatProfile> allSeats = new ArrayList<>();
-        allSeats.addAll(getSeatProfilesForClass(firstClassRows, firstClassColumns, SeatClass.FIRST));
-        allSeats.addAll(getSeatProfilesForClass(businessClassRows, businessClassColumns, SeatClass.BUSINESS));
-        allSeats.addAll(getSeatProfilesForClass(economyClassRows, economyClassColumns, SeatClass.ECONOMY));
+        allSeats.addAll(getSeatProfilesForClass(0, firstClassRows, firstClassColumns, SeatClass.FIRST));
+        allSeats.addAll(getSeatProfilesForClass(firstClassRows, businessClassRows, businessClassColumns, SeatClass.BUSINESS));
+        allSeats.addAll(getSeatProfilesForClass(businessClassRows + firstClassRows, economyClassRows, economyClassColumns, SeatClass.ECONOMY));
         return  allSeats;
     }
 
-    private List<SeatProfile> getSeatProfilesForClass(int rows, int columns, SeatClass seatClass) {
+    private List<SeatProfile> getSeatProfilesForClass(int rowOffset, int rows, int columns, SeatClass seatClass) {
         List<SeatProfile> seatProfiles = new ArrayList<>();
         for (int rowId = 0; rowId < rows; rowId++) {
             for (int columnId = 0; columnId < columns; columnId++) {
-                seatProfiles.add(new SeatProfile(rowId, columnId, seatClass));
+                seatProfiles.add(new SeatProfile(rowId + rowOffset, columnId, seatClass));
             }
         }
         return seatProfiles;

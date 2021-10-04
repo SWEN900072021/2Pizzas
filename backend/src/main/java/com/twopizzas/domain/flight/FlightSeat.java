@@ -1,5 +1,6 @@
 package com.twopizzas.domain.flight;
 
+import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.data.ValueHolder;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.DomainEntity;
@@ -20,7 +21,7 @@ public class FlightSeat extends DomainEntity {
     }
 
     public FlightSeat(String name, SeatClass seatClass, Flight flight) {
-        this(EntityId.nextId(), name, seatClass, () -> flight);
+        this(EntityId.nextId(), name, seatClass, BaseValueHolder.of(flight));
     }
 
     public Flight getFlight() {

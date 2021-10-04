@@ -68,15 +68,16 @@ public class HttpRequestDispatcherImpl implements HttpRequestDispatcher {
             RestResponse<?> restResponse = delegate.handle(request);
 
             String bodyStr = null;
+            Map<String, String> headers = new HashMap<>();
             if (restResponse.getBody() != null) {
                 if (restResponse.getBody() instanceof String) {
                     bodyStr = (String) restResponse.getBody();
                 } else {
                     bodyStr = context.getObjectMapper().writeValueAsString(request.getBody());
+                    headers.put("content-type", "application/json");
                 }
             }
 
-            Map<String, String> headers = new HashMap<>();
             HttpResponse response = new HttpResponse(
                     restResponse.getStatus(),
                     context.getObjectMapper().writeValueAsString(restResponse.getBody()),

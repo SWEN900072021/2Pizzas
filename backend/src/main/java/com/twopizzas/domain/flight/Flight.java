@@ -27,20 +27,27 @@ public class Flight extends DomainEntity {
     private final ValueHolder<List<FlightSeatAllocation>> allocatedSeats;
     private final Airport origin;
     private final Airport destination;
-    private final OffsetDateTime departure;
-    private final OffsetDateTime arrival;
-    private final List<StopOver> stopOvers;
+
+    @Setter
+    private OffsetDateTime departure;
+
+    @Setter
+    private OffsetDateTime arrival;
+
+    @Setter
+    private List<StopOver> stopOvers;
+
     private final String code;
     private final BigDecimal firstClassCost;
     private final BigDecimal businessClassCost;
     private final BigDecimal economyClassCost;
 
     @Setter
-    private Status status;
+    private FlightStatus status;
 
     public Flight(EntityId id, ValueHolder<List<FlightSeatAllocation>> allocatedSeats, AirplaneProfile airplaneProfile,
                   Airline airline, ValueHolder<List<FlightSeat>> seats, Airport origin, Airport destination,
-                  OffsetDateTime departure, OffsetDateTime arrival, List<StopOver> stopOvers, String code, Status status,
+                  OffsetDateTime departure, OffsetDateTime arrival, List<StopOver> stopOvers, String code, FlightStatus status,
                   BigDecimal firstClassCost, BigDecimal businessClassCost, BigDecimal economyClassCost) {
         super(id);
         this.allocatedSeats = notNull(allocatedSeats, "bookedSeats");
@@ -71,7 +78,7 @@ public class Flight extends DomainEntity {
     }
 
     public Flight(AirplaneProfile airplaneProfile, Airline airline, Airport origin, Airport destination, List<StopOver> stopOvers, String code, OffsetDateTime departure, OffsetDateTime arrival, BigDecimal firstClassCost, BigDecimal businessClassCost, BigDecimal economyClassCost) {
-        this(EntityId.nextId(), ArrayList::new, airplaneProfile, airline, null, origin, destination, departure, arrival, stopOvers, code, Status.TO_SCHEDULE, firstClassCost, businessClassCost, economyClassCost);
+        this(EntityId.nextId(), BaseValueHolder.of(new ArrayList<>()), airplaneProfile, airline, null, origin, destination, departure, arrival, stopOvers, code, FlightStatus.TO_SCHEDULE, firstClassCost, businessClassCost, economyClassCost);
     }
 
     public SeatBooking allocateSeats(BookingRequest request) {
@@ -94,18 +101,20 @@ public class Flight extends DomainEntity {
                 ));
 
         Set<FlightSeat> availableSeats = getAvailableSeats();
+        Set<FlightSeat> seatsToBook = getSeats(seatNames);
 
-        Set<FlightSeat> bookingConflicts = getSeats().stream()
+        Set<FlightSeat> bookingConflicts = seatsToBook.stream()
                 .filter(s -> !availableSeats.contains(s))
                 .collect(Collectors.toSet());
 
         if (!bookingConflicts.isEmpty()) {
             throw new BusinessRuleException(String.format("seats %s are already booked for flight %s",
-                    id,
-                    bookingConflicts.stream().map(FlightSeat::getName).collect(Collectors.toList())));
+                    bookingConflicts.stream().map(FlightSeat::getName).collect(Collectors.toList()),
+                    id));
         }
 
         Set<FlightSeatAllocation> newAllocations = availableSeats.stream()
+                .filter(s -> passengerSeatNames.containsKey(s.getName()))
                 .map(s -> new FlightSeatAllocation(s, passengerSeatNames.get(s.getName())))
                 .collect(Collectors.toSet());
 
@@ -126,8 +135,8 @@ public class Flight extends DomainEntity {
         if (matchingSeats.size() != seatNames.size()) {
             List<String> matchedNames = matchingSeats.stream().map(FlightSeat::getName).collect(Collectors.toList());
             throw new BusinessRuleException(String.format("seats %s are invalid for flight %s",
-                    id,
-                    seatNames.stream().filter(n -> !matchedNames.contains(n)).collect(Collectors.toList())));
+                    seatNames.stream().filter(n -> !matchedNames.contains(n)).collect(Collectors.toList()),
+                    id));
         }
 
         return matchingSeats;
@@ -182,7 +191,15 @@ public class Flight extends DomainEntity {
         });
     }
 
-    public enum Status {
+    public OffsetDateTime getDepartureLocal() {
+        return departure.atZoneSameInstant(origin.getUtcOffset()).toOffsetDateTime();
+    }
+
+    public OffsetDateTime getArrivalLocal() {
+        return arrival.atZoneSameInstant(destination.getUtcOffset()).toOffsetDateTime();
+    }
+
+    public enum FlightStatus {
         CANCELLED,
         TO_SCHEDULE,
         DELAYED,

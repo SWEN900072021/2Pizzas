@@ -1,7 +1,10 @@
 package com.twopizzas.api.user;
 
+import com.twopizzas.api.ValidationUtils;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Controller;
+import com.twopizzas.domain.EntityId;
+import com.twopizzas.domain.flight.Flight;
 import com.twopizzas.domain.user.Administrator;
 import com.twopizzas.domain.user.User;
 import com.twopizzas.domain.user.UserRepository;
@@ -29,6 +32,34 @@ public class UserController {
     @Authenticated(Administrator.TYPE)
     public RestResponse<List<UserDto>> getAllUsers() {
         return RestResponse.ok(userRepository.allUsers().stream().map(MAPPER::map).collect(Collectors.toList()));
+    }
+
+    @RequestMapping(
+            path = "/user/{id}",
+            method = HttpMethod.PATCH
+    )
+    @Authenticated(Administrator.TYPE)
+    public RestResponse<UserDto> updateUser(@RequestBody UserUpdateDto body, @PathVariable("id") String id) throws HttpException {
+        if (!ValidationUtils.isUUID(id)) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, "id must be a uuid");
+        }
+
+        List<String> errors = body.validate();
+        if (!errors.isEmpty()) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, String.join(", ", errors));
+        }
+
+        User user = userRepository.find(EntityId.of(id))
+                .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, String.format("user %s not found", id)));
+
+        if (user.getUserType().equals(Administrator.TYPE)) { // admins can not lock each other out
+            throw new HttpException(HttpStatus.FORBIDDEN);
+        }
+
+        user.setStatus(body.getStatus());
+        userRepository.save(user);
+
+        return RestResponse.ok(MAPPER.map(user));
     }
 
     @RequestMapping(

@@ -7,6 +7,7 @@ import com.twopizzas.di.Component;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.user.User;
 import com.twopizzas.domain.user.UserRepository;
+import com.twopizzas.web.AuthenticationProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -73,8 +74,20 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     public Optional<String> login(String username, String password) {
 
         Optional<User> maybeUser = userRepository.find(username, password);
-        if (!maybeUser.isPresent()) {
-            return Optional.empty();
+        if (maybeUser.isPresent()) {
+            if (User.UserStatus.ACTIVE.equals(maybeUser.get().getStatus())) {
+                return Optional.of(login(maybeUser.get()));
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public String login(User user) {
+
+        if (!User.UserStatus.ACTIVE.equals(user.getStatus())) {
+            return null;
         }
 
         Date now = new Date();
@@ -83,16 +96,16 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         gcal.add(Calendar.SECOND, Integer.parseInt(timeToLive));
         Date expires = gcal.getTime();
 
-        return Optional.of(Jwts.builder()
+        return Jwts.builder()
                 .setIssuer(issuer)
                 .setSubject("2-pizzas-api")
                 .setAudience(issuer)
                 .setExpiration(expires)
                 .setNotBefore(now)
                 .setIssuedAt(now)
-                .setId(maybeUser.get().getId().toString())
+                .setId(user.getId().toString())
                 .signWith(getKey())
-                .compact());
+                .compact();
     }
 
     private SecretKey getKey() {

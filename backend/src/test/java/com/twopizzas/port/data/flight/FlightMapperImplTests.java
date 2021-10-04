@@ -249,7 +249,7 @@ public class FlightMapperImplTests {
                         departureUpdate.plus(7, ChronoUnit.HOURS)
                 )),
                 "codeUpdate",
-                Flight.Status.CANCELLED,
+                Flight.FlightStatus.CANCELLED,
                 firstClassCostUpdate,
                 businessClassCostUpdate,
                 economyClassCostUpdate

@@ -1,0 +1,79 @@
+@startuml data mapper
+
+participant "DataMapper" as mapper
+participant "id:EntityId" as id
+participant "SqlStatement" as st
+participant "ConnectionPool" as conn
+participant "connection:Connection" as c
+participant "statement:PreparedStatement" as pst
+participant "Postgresql" as db << Database >>
+participant "resultSet:ResultSet" as rs
+participant "seats:List<FlightSeat>" as seats
+participant "seat:FlightSeat" as fs
+
+
+[-> mapper: read(id)
+activate mapper
+mapper -> id: flightSeatId = toString()
+activate id
+deactivate id
+mapper -> st **: new SqlStatement(READ_TEMPLATE, id)
+mapper -> conn: connection = getCurrentTransaction()
+activate conn
+deactivate conn
+mapper -> st: doQuery(connection)
+activate st
+st -> c: prepareStatement(template)
+activate c
+note over pst: instantiation of PresparedStatement simplified for brevity
+c -> pst **: new PreparedStatement(template)
+c --> st: statement
+deactivate c
+st -> pst: setObject(1, flightSeatId)
+activate pst
+deactivate pst
+st -> pst: execute()
+activate pst
+note over db: interactions with database simplified for brevity
+pst -> db: execute query
+activate db
+db --> pst: data
+deactivate db
+pst -> rs **: new ResultSet(data)
+pst --> st: resultSet
+deactivate pst
+st --> mapper: resultSet
+deactivate st
+mapper -> mapper: map(resultSet)
+activate mapper
+mapper -> seats **: new ArrayList()
+loop for result in resultSet
+  mapper -> rs: seatName = getObject(COLUMN_SEAT_NAME)
+  activate rs
+  deactivate rs
+  mapper -> rs: seatId = getObject(COLUMN_ID)
+  activate rs
+  deactivate rs
+  mapper -> rs: flightId = getObject(COLUMN_FLIGHT_ID)
+  activate rs
+  deactivate rs
+  mapper -> rs: seatClass = getObject(COLUMN_SEAT_CLASS)
+  activate rs
+  deactivate rs
+  note over fs: constructor simplified (lazy load ommitted) for brevity
+  mapper -> fs **: new FlightSeat(seatId, seatName, seatClass, flightId)
+  mapper -> seats: add(seat)
+  activate seats
+  deactivate seats
+end
+alt seats is not empty
+  mapper -> seats: seat = get(0)
+  [<-- mapper: seat
+else
+  [<-- mapper: null
+end
+
+
+
+
+@enduml

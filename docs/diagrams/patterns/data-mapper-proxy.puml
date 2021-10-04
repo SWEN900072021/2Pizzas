@@ -1,0 +1,85 @@
+@startuml  data mapper proxy
+
+participant "DataProxy" as dp
+participant "IdentityMapper" as idmap
+participant "UnitOfWork" as uow
+participant "DataMapper" as dm
+participant "Postgresql" as db << Database >>
+participant "entity:Entity" as ent
+participant "entities:List<Entity>" as ents
+
+[-> dp: create(entity)
+activate dp
+dp -> idmap: entity = testAndGet(entity)
+activate idmap
+deactivate idmap
+dp -> uow: registerNew(entity)
+activate uow
+deactivate uow
+[<-- dp: null
+deactivate dp
+
+...
+
+[-> dp: read(id)
+activate dp
+dp -> idmap: entity = get(id)
+activate idmap
+deactivate idmap
+alt entity exists
+  [<-- dp: entity
+else
+  dp -> dm: read(id)
+  activate dm
+  dm -> db: data = fetch from database
+  activate db
+  deactivate db
+  alt entity data in database
+    dm -> ent **: new Entity(data)
+    dm --> dp: entity
+  else
+    dm --> dp: null
+  end
+  deactivate dm
+  opt entity exits
+    dp -> idmap: entity = testAndGet(entity)
+    activate idmap
+    deactivate idmap
+    dp -> uow: registerClean(entity)
+    activate uow
+    deactivate uow
+  end
+  [<-- dp: entity
+end
+deactivate dp
+
+...
+
+[-> dp: readAll(spec)
+activate dp
+dp -> dm: readAll(spec)
+activate dm
+dm -> ents **: new ArrayList<>()
+dm -> db: data = fetch all from database that match spec
+activate db
+deactivate db
+loop for row in data
+  dm -> ent **: new Entity(row)
+  dm -> ents: add(entity)
+  activate ents
+  deactivate ents
+end
+dm --> dp: entities
+deactivate dm
+loop for entity in entities
+  dp -> idmap: entity = testAndGet(entity)
+  activate idmap
+  deactivate idmap
+  dp -> uow: registerClean(entity)
+  activate uow
+  deactivate uow
+end
+[<-- dp: entities
+deactivate dp
+
+@enduml

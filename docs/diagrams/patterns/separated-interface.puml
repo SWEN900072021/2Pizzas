@@ -1,0 +1,32 @@
+@startuml separated interface
+
+
+package [com.twopizzas.web] {
+  interface AuthenticationProvider {
+    authenticate(token: String): Optional<User>
+    login(username: String, password: String): Optional<String>
+    login(user: User): String
+  }
+}
+
+package [com.twopizzas.auth] {
+  class JwtAuthenticationProvider
+}
+
+package [com.twopizzas.domain.flight] {
+  interface FlightRepository {
+    searchFlights(spec: FlightSearch): List<Flight>
+  }
+}
+
+package [com.twopizzas.port.data.flight] {
+  class FlightRepsitoryImpl
+}
+
+
+AuthenticationProvider .down[hidden].|> FlightRepository
+JwtAuthenticationProvider .down[hidden].|> FlightRepsitoryImpl
+JwtAuthenticationProvider .left.|> AuthenticationProvider
+FlightRepsitoryImpl .left.|> FlightRepository
+
+@enduml

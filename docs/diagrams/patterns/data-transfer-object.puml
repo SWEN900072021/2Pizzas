@@ -1,0 +1,34 @@
+@startuml data transfer object
+
+participant FlightController as fc
+participant "body:NewFlightDTO" as nd
+participant "flight:Flight" as f
+participant FlightRepository as fr
+participant FlightMapper as fm
+participant "flightDto:FlightDTO" as fd
+participant "response:RestResponse" as rs
+
+[-> fc: create(body)
+activate fc
+fc -> nd: errors = validate()
+activate nd
+deactivate nd
+alt errors is not empty
+[<- fc: throw Bad Request Http Exception
+else
+note over f: constructor simplified for brevity
+fc -> f **: new Flight(body)
+fc -> fr: save(flight)
+activate fr
+deactivate fr
+fc -> fm: map(flight)
+activate fm
+fm -> fd **: new FlightDto()
+fm --> fc: flightDto
+deactivate fm
+fc -> rs **: new RestResponse(200, flightDto)
+[<-- fc: response 
+end 
+deactivate fc
+
+@enduml

@@ -39,7 +39,7 @@ const ListAirports = () => {
 
   useEffect(() => {
     refetchAirports()
-  }, [refetchAirports])
+  }, [])
 
   const heading = (
     <header className='flex items-center justify-between'>

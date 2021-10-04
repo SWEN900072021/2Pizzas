@@ -17,9 +17,9 @@ public class NewFlightDto {
     private List<StopOver> stopOvers;
     private String code;
     private String profile;
-    private final BigDecimal firstClassCost;
-    private final BigDecimal businessClassCost;
-    private final BigDecimal economyClassCost;
+    private BigDecimal firstClassCost;
+    private BigDecimal businessClassCost;
+    private BigDecimal economyClassCost;
 
     public List<String> validate() {
         List<String> errors = new ArrayList<>();
@@ -52,35 +52,35 @@ public class NewFlightDto {
         }
 
         if (firstClassCost == null || firstClassCost.compareTo(BigDecimal.ZERO) < 0) {
-            errors.add("first class cost must be a positive numeric value");
+            errors.add("firstClassCost must be greater than 0");
         }
 
         if (businessClassCost == null || businessClassCost.compareTo(BigDecimal.ZERO) < 0) {
-            errors.add("first class cost must be a positive numeric value");
+            errors.add("businessClassCost must be greater than 0");
         }
 
         if (economyClassCost == null || economyClassCost.compareTo(BigDecimal.ZERO) < 0) {
-            errors.add("first class cost must be a positive numeric value");
+            errors.add("economyClassCost must be greater than 0");
         }
 
         if (stopOvers != null ) {
             for (int i = 0; i < stopOvers.size(); i++) {
                 StopOver stopOver = stopOvers.get(i);
-                String path = String.format("stopOvers[%s].", i);
+                String path = String.format("stopOvers[%s]", i);
                 if (stopOver.getDeparture() == null) {
-                    errors.add(path + "departure is required");
+                    errors.add(path + ".departure is required");
                 }
 
                 if (stopOver.getArrival() == null) {
-                    errors.add(path + "arrival is required");
+                    errors.add(path + ".arrival is required");
                 }
 
-                if (stopOver.getDeparture() != null && stopOver.getArrival() != null && stopOver.getDeparture().isAfter(stopOver.getArrival())) {
-                    errors.add(path + "arrival must occur after " + path + "departure");
+                if (stopOver.getDeparture() != null && stopOver.getArrival() != null && stopOver.getDeparture().isBefore(stopOver.getArrival())) {
+                    errors.add(path + ".departure must occur after " + path + ".arrival");
                 }
 
                 if (!ValidationUtils.isUUID(stopOver.getLocation())) {
-                    errors.add(path + "location must be a uuid");
+                    errors.add(path + ".location must be a uuid");
                 }
             }
         }

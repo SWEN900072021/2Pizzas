@@ -1,5 +1,6 @@
 package com.twopizzas.domain.booking;
 
+import com.twopizzas.data.BaseValueHolder;
 import com.twopizzas.data.ValueHolder;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.port.data.DomainEntity;
@@ -27,7 +28,7 @@ public class Passenger extends DomainEntity {
     }
 
     public Passenger(String givenName, String surname, LocalDate dateOfBirth, String nationality, String passportNumber) {
-        this(EntityId.nextId(), givenName, surname, dateOfBirth, nationality, passportNumber, () -> null);
+        this(EntityId.nextId(), givenName, surname, dateOfBirth, nationality, passportNumber, BaseValueHolder.of(null));
     }
 
     public Booking getBooking() {

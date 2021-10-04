@@ -1,0 +1,68 @@
+@startuml
+
+interface DataMapper {
+  create(entity: Entity): void
+  read(ID: EntityId): Entity
+  readAll(specification: Specification): List<Entity>
+  update(entity: Entity): void
+  delete(entity: Entity): void
+  getEntityClass(): Class<Entity>
+  register(registry: DataMapperRegistry): void
+}
+
+interface UserMapper extends DataMapper {
+  getEntityClass() : Class<User>
+}
+
+interface CustomerMapper extends DataMapper {
+  getEntityClass() : Class<Customer>
+}
+
+interface AirlineMapper extends DataMapper {
+  getEntityClass() : Class<Airline>
+}
+
+interface AdministratorMapper extends DataMapper {
+  getEntityClass() : Class<User>
+}
+
+abstract class AbstractUserMapper {
+
+  + abstractCreate(entity: User): void
+  + abstractRead(id: EntityId): Entity
+  + abstractUpdate(entity: User): void
+  + abstractDelete(entity: User): void
+
+}
+
+class UserMapperImpl implements UserMapper {
+
+  ' - CUSTOMERMAPPER : CustomerMapper
+  ' - AIRLINEMAPPER : AirlineMapper
+  ' - ADMINMAPPER : AdministratorMapper
+
+}
+
+class CustomerMapperImpl implements CustomerMapper {
+}
+
+class AirlineMapperImpl implements AirlineMapper {
+}
+
+class AdministratorMapperImpl implements AdministratorMapper {
+}
+
+UserMapper --> "1" CustomerMapper
+UserMapper --> "1" AirlineMapper
+UserMapper --> "1" AdministratorMapper
+
+UserMapperImpl -down-|> AbstractUserMapper
+CustomerMapperImpl -down-|> AbstractUserMapper
+AirlineMapperImpl -down-|> AbstractUserMapper
+AdministratorMapperImpl -down-|> AbstractUserMapper
+
+
+
+
+
+@enduml
