@@ -7,6 +7,7 @@ import com.twopizzas.domain.booking.Booking;
 import com.twopizzas.domain.booking.BookingRepository;
 import com.twopizzas.domain.booking.Passenger;
 import com.twopizzas.domain.booking.PassengerRepository;
+import com.twopizzas.domain.error.BusinessRuleException;
 import com.twopizzas.domain.error.NotFoundException;
 import com.twopizzas.domain.flight.BookingRequest;
 import com.twopizzas.domain.flight.Flight;
@@ -86,26 +87,30 @@ public class BookingController {
                 }
         );
 
-        BookingRequest flightBooking = flightBuilder.build();
-        if (flightBooking.getAllocations().isEmpty()) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, String.format("no seat allocations provided for flight %s", flight.getId()));
-        }
-        SeatBooking flightSeatBooking = flight.allocateSeats(flightBuilder.build());
-        flightRepository.save(flight);
-
-        SeatBooking returnSeatBooking = null;
-        if (returnFlight != null) {
-            BookingRequest returnFlightBooking = returnBuilder.build();
-            if (returnFlightBooking.getAllocations().isEmpty()) {
-                throw new HttpException(HttpStatus.BAD_REQUEST, String.format("no seat allocations provided for return flight %s", returnFlight.getId()));
+        try {
+            BookingRequest flightBooking = flightBuilder.build();
+            if (flightBooking.getAllocations().isEmpty()) {
+                throw new HttpException(HttpStatus.BAD_REQUEST, String.format("no seat allocations provided for flight %s", flight.getId()));
             }
-            returnSeatBooking = returnFlight.allocateSeats(returnFlightBooking);
-            flightRepository.save(returnFlight);
+            SeatBooking flightSeatBooking = flight.allocateSeats(flightBuilder.build());
+            flightRepository.save(flight);
+
+            SeatBooking returnSeatBooking = null;
+            if (returnFlight != null) {
+                BookingRequest returnFlightBooking = returnBuilder.build();
+                if (returnFlightBooking.getAllocations().isEmpty()) {
+                    throw new HttpException(HttpStatus.BAD_REQUEST, String.format("no seat allocations provided for return flight %s", returnFlight.getId()));
+                }
+                returnSeatBooking = returnFlight.allocateSeats(returnFlightBooking);
+                flightRepository.save(returnFlight);
+            }
+
+            booking.addFlight(flightSeatBooking);
+            booking.addReturnFlight(returnSeatBooking);
+        } catch (BusinessRuleException e) {
+            throw new HttpException(HttpStatus.CONFLICT, e.getMessage());
         }
 
-
-        booking.addFlight(flightSeatBooking);
-        booking.addReturnFlight(returnSeatBooking);
         bookingRepository.save(booking);
         return RestResponse.ok(MAPPER.map(booking));
     }
