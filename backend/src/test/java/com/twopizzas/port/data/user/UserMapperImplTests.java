@@ -68,6 +68,9 @@ public class UserMapperImplTests {
         Assertions.assertEquals(customerPersisted.getStatus(), customerEntity.getStatus());
         Assertions.assertEquals(airlinePersisted.getStatus(), airlineEntity.getStatus());
         Assertions.assertEquals(adminPersisted.getStatus(), adminEntity.getStatus());
+        Assertions.assertEquals(customerPersisted.getVersion(), customerEntity.getVersion());
+        Assertions.assertEquals(airlinePersisted.getVersion(), airlineEntity.getVersion());
+        Assertions.assertEquals(adminPersisted.getVersion(), adminEntity.getVersion());
     }
 
     @Test
