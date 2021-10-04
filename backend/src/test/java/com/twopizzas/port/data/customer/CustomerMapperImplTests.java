@@ -3,6 +3,7 @@ package com.twopizzas.port.data.customer;
 import com.twopizzas.domain.user.Customer;
 import com.twopizzas.domain.user.User;
 import com.twopizzas.port.data.DataTestConfig;
+import com.twopizzas.port.data.OptimisticLockingException;
 import com.twopizzas.port.data.db.ConnectionPoolImpl;
 import org.junit.jupiter.api.*;
 
@@ -50,7 +51,7 @@ public class CustomerMapperImplTests {
 
         // WHEN
         Customer updatedEntity = new Customer(oldEntity.getId(),
-                "newUserName", "newPassword", "newName", "newLastName", "newjohnsmith@gmail.com", User.UserStatus.INACTIVE, 0);
+                "newUserName", "newPassword", "newName", "newLastName", "newjohnsmith@gmail.com", User.UserStatus.INACTIVE, oldEntity.getVersion());
         mapper.update(updatedEntity);
 
         // THEN
@@ -62,6 +63,35 @@ public class CustomerMapperImplTests {
         Assertions.assertEquals(persisted.getGivenName(), updatedEntity.getGivenName());
         Assertions.assertEquals(persisted.getLastName(), updatedEntity.getLastName());
         Assertions.assertEquals(persisted.getEmail(), updatedEntity.getEmail());
+        Assertions.assertEquals(updatedEntity.getVersion() + 1, persisted.getVersion());
+    }
+
+    @Test
+    @DisplayName("GIVEN invalid customer version WHEN update invoked THEN throw OptimisticLockingException")
+    void testInvalidVersionUpdate() {
+        // GIVEN
+        Customer oldEntity = new Customer(
+                "username", "password", "John", "Smith", "johnsmith@gmail.com");
+        mapper.create(oldEntity);
+
+        // WHEN
+        Customer updatedEntity = new Customer(oldEntity.getId(),
+                "newUserName", "newPassword", "newName", "newLastName", "newjohnsmith@gmail.com", User.UserStatus.INACTIVE, 10);
+
+        // THEN
+        Assertions.assertThrows(OptimisticLockingException.class, () -> mapper.update(updatedEntity));
+//        mapper.update(updatedEntity);
+
+        Customer persisted = mapper.read(oldEntity.getId());
+        Assertions.assertNotNull(persisted);
+        Assertions.assertEquals(oldEntity.getId(), persisted.getId());
+        Assertions.assertEquals(oldEntity.getUsername(), persisted.getUsername());
+        Assertions.assertNotNull(persisted.getPassword());
+        Assertions.assertEquals(oldEntity.getGivenName(), persisted.getGivenName());
+        Assertions.assertEquals(oldEntity.getLastName(), persisted.getLastName());
+        Assertions.assertEquals(oldEntity.getEmail(), persisted.getEmail());
+        Assertions.assertNotEquals(oldEntity.getVersion() + 1, persisted.getVersion());
+
     }
 
     @Test
@@ -72,7 +102,7 @@ public class CustomerMapperImplTests {
                 "username", "password", "John", "Smith", "johnsmith@gmail.com");
 
         // WHEN
-        mapper.update(entity);
+        Assertions.assertThrows(OptimisticLockingException.class, () -> mapper.update(entity));
 
         // THEN
         Customer persisted = mapper.read(entity.getId());
