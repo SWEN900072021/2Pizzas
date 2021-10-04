@@ -96,7 +96,7 @@ public class ConfigurationContextImplTests {
         configurationManager.init();
 
         // THEN
-        Assertions.assertEquals("jdbc:postgresql://locahost:5432/postgres", configurationManager.getConfigurationProperty("datasource.url"));
+        Assertions.assertEquals("jdbc:postgresql://localhost:5432/postgres", configurationManager.getConfigurationProperty("datasource.url"));
         Assertions.assertEquals("postgres", configurationManager.getConfigurationProperty("datasource.username"));
         Assertions.assertEquals("password", configurationManager.getConfigurationProperty("datasource.password"));
     }
