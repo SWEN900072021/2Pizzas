@@ -72,16 +72,13 @@ public class CustomerMapperImpl extends AbstractUserMapper<Customer> implements 
 
     @Override
     public void update(Customer entity) {
-        long updated = abstractUpdate(entity);
-        if (updated == 1) {
-            new SqlStatement(UPDATE_TEMPLATE,
-                    entity.getGivenName(),
-                    entity.getLastName(),
-                    entity.getEmail(),
-                    entity.getId().toString()).doExecute(connectionPool.getCurrentTransaction());
-        } else {
-            throw new OptimisticLockingException();
-        }
+        abstractUpdate(entity);
+        new SqlStatement(UPDATE_TEMPLATE,
+                entity.getGivenName(),
+                entity.getLastName(),
+                entity.getEmail(),
+                entity.getId().toString()).doExecute(connectionPool.getCurrentTransaction());
+
     }
 
     @Override
