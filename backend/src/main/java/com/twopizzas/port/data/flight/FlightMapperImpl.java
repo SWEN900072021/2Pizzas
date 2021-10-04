@@ -6,6 +6,7 @@ import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.flight.Flight;
+import com.twopizzas.domain.flight.FlightSeatAllocation;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.airline.AirlineMapper;
@@ -113,7 +114,7 @@ class FlightMapperImpl implements FlightMapper {
                 entity.getEconomyClassCost()
         ).doExecute(connectionPool.getCurrentTransaction());
 
-        insertAllocations(entity);
+        insertAllocations(entity.getAllocatedSeats());
         insertStopOvers(entity);
     }
 
@@ -146,8 +147,9 @@ class FlightMapperImpl implements FlightMapper {
                 entity.getId().toString()
         ).doExecute(connectionPool.getCurrentTransaction());
 
+        List<FlightSeatAllocation> allocations = entity.getAllocatedSeats();
         deleteAllocations(entity);
-        insertAllocations(entity);
+        insertAllocations(allocations);
 
         deleteStopOvers(entity);
         insertStopOvers(entity);
@@ -209,8 +211,8 @@ class FlightMapperImpl implements FlightMapper {
         }
     }
 
-    private void insertAllocations(Flight flight) {
-        flight.getAllocatedSeats().forEach(
+    private void insertAllocations(List<FlightSeatAllocation> allocations) {
+        allocations.forEach(
                 a -> new SqlStatement(INSERT_ALLOCATION_TEMPLATE,
                         a.getPassenger().getId().toString(),
                         a.getSeat().getId().toString()

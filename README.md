@@ -12,7 +12,7 @@
 | Submission | Release |
 | - | - |
 | Part 1 | [SWEN90007_2021_Part1_2Pizzas](https://github.com/SWEN900072021/2Pizzas/releases/tag/SWEN90007_2021_Part1_2Pizzas) |
-| Part 2 | [SWEN90007_2021_Part2_2Pizzas](https://github.com/SWEN900072021/2Pizzas/releases/tag/SWEN90007_2021_Part2_2Pizzas) |
+| Part 2 | - |
 | Part 3 | - |
 | Part 4 | - |
 
@@ -21,7 +21,7 @@
 Link to the application [here](https://frontend-2-pizzas.herokuapp.com/)
 
 ## Accounts
-There are three account types present in the application which can be accessed with the following credentials:
+There are various account types present in the application which can be accessed with the following credentials:
 | User Type | Username | Password |
 | - | - | - |
 | Administrator | *admin* | *password*
