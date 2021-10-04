@@ -3,6 +3,7 @@ package com.twopizzas.port.data.user;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.domain.EntityId;
 import com.twopizzas.domain.user.User;
+import com.twopizzas.port.data.OptimisticLockingException;
 import com.twopizzas.port.data.SqlStatement;
 import com.twopizzas.port.data.db.ConnectionPool;
 
@@ -21,8 +22,7 @@ public abstract class AbstractUserMapper<T extends User> {
 
     private static final String CREATE_TEMPLATE =
             "INSERT INTO " + TABLE_USER +
-                    " (" + COLUMN_ID + ", " + COLUMN_USERNAME + ", " + COLUMN_PASSWORD + ", " + COLUMN_TYPE + ", " + COLUMN_STATUS + ", " +
-                    COLUMN_VERSION + ")" +
+                    " (" + COLUMN_ID + ", " + COLUMN_USERNAME + ", " + COLUMN_PASSWORD + ", " + COLUMN_TYPE + ", " + COLUMN_STATUS + ", " + COLUMN_VERSION  + ")" +
                     " VALUES (?, ?, crypt(?, gen_salt('bf')), ?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
@@ -65,7 +65,7 @@ public abstract class AbstractUserMapper<T extends User> {
     }
 
     protected long abstractUpdate(T entity) {
-        return new SqlStatement(UPDATE_TEMPLATE,
+        long updated = new SqlStatement(UPDATE_TEMPLATE,
                 entity.getUsername(),
                 entity.getPassword(),
                 entity.getPassword(),
@@ -76,6 +76,12 @@ public abstract class AbstractUserMapper<T extends User> {
                 entity.getId().toString(),
                 entity.getVersion()
         ).doUpdate(connectionPool.getCurrentTransaction());
+
+        if (updated == 0) {
+            throw new OptimisticLockingException();
+        }
+
+        return updated;
     }
 
     protected void abstractDelete(T entity) {
