@@ -95,7 +95,7 @@ public class CustomerMapperImplTests {
                 "username", "password", "John", "Smith", "johnsmith@gmail.com");
 
         // WHEN
-        mapper.update(entity);
+        Assertions.assertThrows(OptimisticLockingException.class, () -> mapper.update(entity));
 
         // THEN
         Customer persisted = mapper.read(entity.getId());
