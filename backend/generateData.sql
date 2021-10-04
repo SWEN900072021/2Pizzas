@@ -1,17 +1,17 @@
 
 -- User Table
-INSERT INTO "user"(id, username, password, userType, status)
-VALUES (gen_random_uuid(), 'john', crypt('password', gen_salt('bf')), 'customer', 'ACTIVE'),
-       (gen_random_uuid(), 'jane', crypt('password', gen_salt('bf')), 'customer', 'ACTIVE'),
-       (gen_random_uuid(), 'james', crypt('password', gen_salt('bf')), 'customer', 'ACTIVE');
+INSERT INTO "user"(id, username, password, userType, status, version)
+VALUES (gen_random_uuid(), 'john', crypt('password', gen_salt('bf')), 'customer', 'ACTIVE', 0),
+       (gen_random_uuid(), 'jane', crypt('password', gen_salt('bf')), 'customer', 'ACTIVE', 0),
+       (gen_random_uuid(), 'james', crypt('password', gen_salt('bf')), 'customer', 'ACTIVE', 0);
 
-INSERT INTO "user"(id, username, password, userType, status)
-VALUES (gen_random_uuid(), 'qantas', crypt('password', gen_salt('bf')), 'airline', 'ACTIVE'),
-       (gen_random_uuid(), 'virgin', crypt('password', gen_salt('bf')), 'airline', 'ACTIVE'),
-       (gen_random_uuid(), 'emirates', crypt('password', gen_salt('bf')), 'airline', 'ACTIVE');
+INSERT INTO "user"(id, username, password, userType, status, version)
+VALUES (gen_random_uuid(), 'qantas', crypt('password', gen_salt('bf')), 'airline', 'ACTIVE', 0),
+       (gen_random_uuid(), 'virgin', crypt('password', gen_salt('bf')), 'airline', 'ACTIVE', 0),
+       (gen_random_uuid(), 'emirates', crypt('password', gen_salt('bf')), 'airline', 'ACTIVE', 0);
 
-INSERT INTO "user"(id, username, password, userType, status)
-VALUES (gen_random_uuid(), 'admin', crypt('password', gen_salt('bf')), 'administrator', 'ACTIVE');
+INSERT INTO "user"(id, username, password, userType, status, version)
+VALUES (gen_random_uuid(), 'admin', crypt('password', gen_salt('bf')), 'administrator', 'ACTIVE', 0);
 
 -- Customer Table
 INSERT INTO customer(id, givenName, surname, email)
@@ -30,10 +30,10 @@ INSERT INTO administrator(id)
 VALUES ((SELECT id FROM "user" WHERE username = 'admin'));
 
 -- Airport Table
-INSERT INTO airport(id, code, name, location, utcOffset, status)
-VALUES (gen_random_uuid(), 'MEL', 'Tullamarine Airport', 'Melbourne', 'Australia/Melbourne', 'ACTIVE'),
-       (gen_random_uuid(), 'AVV', 'Avalon Airport', 'Geelong', 'Australia/Melbourne', 'ACTIVE'),
-       (gen_random_uuid(), 'SYD', 'Sydney Airport', 'Sydney', 'Australia/Sydney', 'ACTIVE');
+INSERT INTO airport(id, code, name, location, utcOffset, status, version)
+VALUES (gen_random_uuid(), 'MEL', 'Tullamarine Airport', 'Melbourne', 'Australia/Melbourne', 'ACTIVE', 0),
+       (gen_random_uuid(), 'AVV', 'Avalon Airport', 'Geelong', 'Australia/Melbourne', 'ACTIVE', 0),
+       (gen_random_uuid(), 'SYD', 'Sydney Airport', 'Sydney', 'Australia/Sydney', 'ACTIVE', 0);
 
 -- Airplane Table
 -- Qantas Planes
@@ -47,7 +47,7 @@ VALUES (gen_random_uuid(), '747', 'boeing', 6, 3, 8, 4, 40, 7),
 -- Flight Table
 -- Qantas Flights
 INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, status, firstClassCost,
-                   businessClassCost, economyClassCost)
+                   businessClassCost, economyClassCost, version)
 VALUES (gen_random_uuid(),
         'QN111', '2022-01-01 08:00', '2022-01-01 13:00',
         (SELECT id FROM airport WHERE code = 'MEL'),
@@ -56,7 +56,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         100.0,
         80.0,
-        50.0),
+        50.0, 0),
        (gen_random_uuid(),
         'QN112', '2022-01-01 15:00', '2022-01-01 18:00',
         (SELECT id FROM airport WHERE code = 'SYD'),
@@ -65,7 +65,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         100.0,
         80.0,
-        50.0),
+        50.0, 0),
        (gen_random_uuid(),
         'QN113', '2022-01-02 19:00', '2022-01-02 21:00',
         (SELECT id FROM airport WHERE code = 'AVV'),
@@ -74,7 +74,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         100.0,
         80.0,
-        50.0);
+        50.0, 0);
 
 INSERT INTO seat(id, name, flightId, class)
 VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'QN111'), 'FIRST'),
@@ -105,7 +105,7 @@ VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'QN113'), '
 
 -- Virgin Flights
 INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, status, firstClassCost,
-                   businessClassCost, economyClassCost)
+                   businessClassCost, economyClassCost, version)
 VALUES (gen_random_uuid(),
         'VA111', '2022-02-01 08:00', '2022-02-01 13:00',
         (SELECT id FROM airport WHERE code = 'MEL'),
@@ -114,7 +114,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         101.0,
         81.0,
-        51.0),
+        51.0, 0),
        (gen_random_uuid(),
         'VA112', '2022-02-01 15:00', '2022-02-01 18:00',
         (SELECT id FROM airport WHERE code = 'SYD'),
@@ -123,7 +123,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         101.0,
         81.0,
-        51.0),
+        51.0, 0),
        (gen_random_uuid(),
         'VA113', '2022-02-02 19:00', '2022-02-02 21:00',
         (SELECT id FROM airport WHERE code = 'AVV'),
@@ -132,7 +132,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         101.0,
         81.0,
-        51.0);
+        51.0, 0);
 
 INSERT INTO seat(id, name, flightId, class)
 VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'VA111'), 'FIRST'),
@@ -163,7 +163,7 @@ VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'VA113'), '
 
 -- Emirates Flights
 INSERT INTO flight(id, code, departure, arrival, origin, destination, airlineId, airplaneId, status, firstClassCost,
-                   businessClassCost, economyClassCost)
+                   businessClassCost, economyClassCost, version)
 VALUES (gen_random_uuid(),
         'EM111', '2022-03-01 08:00', '2022-03-01 13:00',
         (SELECT id FROM airport WHERE code = 'MEL'),
@@ -172,7 +172,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         102.0,
         82.0,
-        52.0),
+        52.0, 0),
        (gen_random_uuid(),
         'EM112', '2022-03-01 15:00', '2022-03-01 18:00',
         (SELECT id FROM airport WHERE code = 'SYD'),
@@ -181,7 +181,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         102.0,
         82.0,
-        52.0),
+        52.0, 0),
        (gen_random_uuid(),
         'EM113', '2022-03-02 19:00', '2022-03-02 21:00',
         (SELECT id FROM airport WHERE code = 'MEL'),
@@ -190,7 +190,7 @@ VALUES (gen_random_uuid(),
         (SELECT id FROM airplaneProfile WHERE code = 'A220'), 'TO_SCHEDULE',
         102.0,
         82.0,
-        52.0);
+        52.0, 0);
 
 INSERT INTO seat(id, name, flightId, class)
 VALUES (gen_random_uuid(), '1A', (SELECT id FROM flight WHERE code = 'EM111'), 'FIRST'),
