@@ -51,7 +51,7 @@ class FlightMapperImpl implements FlightMapper {
 
     private static final String UPDATE_TEMPLATE =
             "UPDATE " + TABLE_FLIGHT +
-            " SET " + COLUMN_CODE + " = ?, " + COLUMN_DEPARTURE + " = ?, " + COLUMN_ARRIVAL + " = ?, " + COLUMN_ORIGIN + " = ?, " + COLUMN_DESTINATION + " = ?, " + COLUMN_AIRLINE_ID + " = ?, " + COLUMN_AIRPLANE_ID + " = ?, " + COLUMN_STATUS + " = ?, " + COLUMN_FIRST_CLASS_COST + " = ?, " + COLUMN_BUSINESS_CLASS_COST + " = ?, " + COLUMN_ECONOMY_CLASS_COST + " = ?" + COLUMN_VERSION + " = ?" +
+            " SET " + COLUMN_CODE + " = ?, " + COLUMN_DEPARTURE + " = ?, " + COLUMN_ARRIVAL + " = ?, " + COLUMN_ORIGIN + " = ?, " + COLUMN_DESTINATION + " = ?, " + COLUMN_AIRLINE_ID + " = ?, " + COLUMN_AIRPLANE_ID + " = ?, " + COLUMN_STATUS + " = ?, " + COLUMN_FIRST_CLASS_COST + " = ?, " + COLUMN_BUSINESS_CLASS_COST + " = ?, " + COLUMN_ECONOMY_CLASS_COST + " = ?, " + COLUMN_VERSION + " = ?" +
             " WHERE id = ? AND version = ?;";
 
     private static final String DELETE_TEMPLATE =
@@ -212,7 +212,7 @@ class FlightMapperImpl implements FlightMapper {
                             resultSet.getObject(COLUMN_FIRST_CLASS_COST, BigDecimal.class),
                             resultSet.getObject(COLUMN_BUSINESS_CLASS_COST, BigDecimal.class),
                             resultSet.getObject(COLUMN_ECONOMY_CLASS_COST, BigDecimal.class),
-                    resultSet.getObject(COLUMN_VERSION, long.class)
+                    resultSet.getObject(COLUMN_VERSION, Long.class)
             );
         } catch (SQLException e) {
             throw new DataMappingException(String.format(
