@@ -57,7 +57,10 @@ const OriginSearch = ({ airports }) => {
   const searchBar = (
     <section className='text-black'>
       {/* MOBILE */}
-      <section className='flex flex-grow sm:hidden sm:flex-none'>
+      <section
+        data-cy='mobile-origin-input'
+        className='flex flex-grow sm:hidden sm:flex-none'
+      >
         {/* Input Field */}
         <Search
           placeholder='Origin airport'
@@ -104,12 +107,19 @@ const OriginSearch = ({ airports }) => {
                 onClick={() => {
                   updateOriginAirport(airport)
                 }}
+                data-cy='mobile-origin-item'
                 className='flex flex-col w-full px-3 py-2 space-y-1 align-top cursor-pointer group z-11 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none'
               >
-                <span className='self-start text-sm font-semibold cursor-pointer group-hover:text-yellow-600 group-focus:text-yellow-600'>
+                <span
+                  data-cy='mobile-origin-name'
+                  className='self-start text-sm font-semibold cursor-pointer group-hover:text-yellow-600 group-focus:text-yellow-600'
+                >
                   {airport.name} ({airport.code})
                 </span>
-                <span className='self-start text-xs cursor-pointer'>
+                <span
+                  data-cy='mobile-origin-location'
+                  className='self-start text-xs cursor-pointer '
+                >
                   {airport.location}
                 </span>
               </button>
@@ -141,12 +151,19 @@ const OriginSearch = ({ airports }) => {
                 onClick={() => {
                   updateOriginAirport(airport)
                 }}
+                data-cy='origin-item'
                 className='flex flex-col w-full px-3 py-2 space-y-1 align-top cursor-pointer group z-11 focus:outline-none'
               >
-                <span className='self-start text-sm font-semibold cursor-pointer group-hover:text-yellow-600 group-focus:text-yellow-600'>
+                <span
+                  data-cy='origin-name'
+                  className='self-start text-sm font-semibold cursor-pointer group-hover:text-yellow-600 group-focus:text-yellow-600'
+                >
                   {airport.name} ({airport.code})
                 </span>
-                <span className='self-start text-xs cursor-pointer'>
+                <span
+                  data-cy='origin-location'
+                  className='self-start text-xs cursor-pointer '
+                >
                   {airport.location}
                 </span>
               </button>
@@ -160,7 +177,9 @@ const OriginSearch = ({ airports }) => {
             name='searchInput'
             type='text'
             autoComplete='off'
-            className={`flex-grow
+            data-cy='origin-input'
+            className={`
+            flex-grow
             border border-bg-gray rounded-lg 
             py-2 pl-9 pr:2
             md:py-3 md:pl-12 md:pr-3

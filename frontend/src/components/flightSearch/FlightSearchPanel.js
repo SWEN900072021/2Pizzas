@@ -35,6 +35,8 @@ const FlightSearchPanel = () => {
   const disabledDates = (current) => current < moment().startOf('day')
 
   const handleDepartDateChange = (date) => {
+    if (date < moment().startOf('day')) return
+
     if (date > moment(returnDate).startOf('day')) {
       setReturnDate(date)
     }
@@ -42,6 +44,8 @@ const FlightSearchPanel = () => {
   }
 
   const handleReturnDateChange = (date) => {
+    if (date < moment().startOf('day')) return
+
     if (date < moment(departDate).startOf('day')) {
       setDepartDate(date)
     }
@@ -68,6 +72,7 @@ const FlightSearchPanel = () => {
         {/* Search Button for Devices Larger than Tablets */}
         <button
           type='button'
+          data-cy='flight-form-toggle-button'
           onClick={() => setSearchOpen(!searchOpen)}
           className='hidden md:block bg-yellow-500 rounded-3xl p-3.5 hover:bg-yellow-400 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500'
         >
@@ -79,12 +84,16 @@ const FlightSearchPanel = () => {
           <div className='flex items-center gap-5'>
             {/* Depart Location and Date */}
             <section className='flex flex-col justify-center'>
-              <div className='flex items-center self-center justify-center gap-2 font-black sm:font-bold text-md sm:text-lg'>
+              <div
+                data-cy='origin-airport'
+                className='flex items-center self-center justify-center gap-2 font-black sm:font-bold text-md sm:text-lg'
+              >
                 <FaPlaneDeparture />
                 {originAirport.location} ({originAirport.code})
               </div>
               <div className='flex items-center self-center justify-center'>
                 <button
+                  data-cy='depart-date-prev-button'
                   type='button'
                   onClick={() =>
                     handleDepartDateChange(
@@ -110,6 +119,7 @@ const FlightSearchPanel = () => {
                     }}
                   />
                   <button
+                    data-cy='depart-date-picker-button'
                     type='button'
                     onClick={() => {
                       setDepartureOpen(!departureOpen)
@@ -121,6 +131,7 @@ const FlightSearchPanel = () => {
                 </span>
 
                 <button
+                  data-cy='depart-date-next-button'
                   type='button'
                   onClick={() =>
                     handleDepartDateChange(
@@ -134,7 +145,10 @@ const FlightSearchPanel = () => {
             </section>
             {/* Return Location and Date */}
             <section className='flex flex-col self-start min-h-full'>
-              <div className='flex items-center self-center justify-center gap-2 font-black sm:font-bold text-md sm:text-lg'>
+              <div
+                data-cy='destination-airport'
+                className='flex items-center self-center justify-center gap-2 font-black sm:font-bold text-md sm:text-lg'
+              >
                 <FaPlaneArrival />
                 {destinationAirport.location} (
                 {destinationAirport.code})
@@ -145,6 +159,7 @@ const FlightSearchPanel = () => {
                 } flex items-center self-center justify-center`}
               >
                 <button
+                  data-cy='return-date-prev-button'
                   type='button'
                   onClick={() =>
                     handleReturnDateChange(
@@ -170,6 +185,7 @@ const FlightSearchPanel = () => {
                     }}
                   />
                   <button
+                    data-cy='return-date-picker-button'
                     type='button'
                     onClick={() => {
                       setReturnOpen(!returnOpen)
@@ -181,6 +197,7 @@ const FlightSearchPanel = () => {
                 </span>
 
                 <button
+                  data-cy='return-date-next-button'
                   type='button'
                   onClick={() =>
                     handleReturnDateChange(
@@ -203,6 +220,7 @@ const FlightSearchPanel = () => {
         {/* Search Button for Mobile/Tablet Devices */}
         <button
           type='button'
+          data-cy='mobile-flight-form-toggle-button'
           onClick={() => setSearchOpen(!searchOpen)}
           className='block md:hidden bg-yellow-500 rounded-3xl p-3.5 hover:bg-yellow-400 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500'
         >

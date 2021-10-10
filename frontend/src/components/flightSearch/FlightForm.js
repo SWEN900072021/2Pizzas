@@ -93,7 +93,7 @@ const FlightForm = ({ showButton }) => {
   )
 
   const passengersPopover = (
-    <section className='flex flex-col items-start justify-center gap-3 font-semibold'>
+    <section className='flex flex-col items-start justify-center gap-3 font-semibold passenger-popover'>
       {/* ----------------------------- Passenger Count ---------------------------- */}
       <span>
         <h4>Number of Passengers</h4>
@@ -101,14 +101,18 @@ const FlightForm = ({ showButton }) => {
       <span className='flex items-center justify-center gap-4'>
         <button
           type='button'
+          data-cy='remove-passenger-button'
           onClick={removePassenger}
           className='text-yellow-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400'
         >
           <FiMinusCircle />
         </button>
-        <span className='text-black'>{passengerCount}</span>
+        <span data-cy='passenger-count' className='text-black'>
+          {passengerCount}
+        </span>
         <button
           type='button'
+          data-cy='add-passenger-button'
           onClick={addPassenger}
           className='text-yellow-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400'
         >
@@ -138,7 +142,10 @@ const FlightForm = ({ showButton }) => {
   }
 
   return (
-    <section className='flex flex-col flex-wrap items-center justify-center flex-grow gap-3 text-black max-w-max'>
+    <section
+      data-cy='flight-form'
+      className='flex flex-col flex-wrap items-center justify-center flex-grow gap-3 text-black max-w-max'
+    >
       {/* 
             Section 1: 
               - Origin/Destination Airport Search fields
@@ -155,7 +162,7 @@ const FlightForm = ({ showButton }) => {
 
         {/* (Date Pickers) Visible only for Mobile Devices or One-Way Flights */}
         <span
-          className={`${
+          className={`date-pickers ${
             isReturn && (!isMobile || !isReturn) && 'hidden'
           }
                   grid grid-cols-2
@@ -214,7 +221,9 @@ const FlightForm = ({ showButton }) => {
 
         {/* (Date Range Picker) visible only for Return Flights or Non-Mobile Devices */}
         <span
-          className={`${(!isReturn || isMobile) && 'hidden'}
+          className={`
+                range-picker
+                ${(!isReturn || isMobile) && 'hidden'}
                 border border-bg-grey
                 font-light tracking-wide text-gray-800 
                 placeholder-gray-500 focus:placeholder-gray-400
@@ -254,6 +263,7 @@ const FlightForm = ({ showButton }) => {
               onClick={() => {
                 setReturn(true)
               }}
+              data-cy='return-button'
               className={`${
                 isReturn
                   ? 'bg-yellow-500 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400 ring-opacity-50'
@@ -269,6 +279,7 @@ const FlightForm = ({ showButton }) => {
               onClick={() => {
                 setReturn(false)
               }}
+              data-cy='one-way-button'
               className={`${
                 !isReturn
                   ? 'bg-yellow-500 text-xs font-semibold text-white p-2 ring-1 ring-yellow-400 ring-opacity-50'
@@ -294,6 +305,7 @@ const FlightForm = ({ showButton }) => {
               <div>
                 <Search
                   readOnly
+                  datacy='passenger-count-input'
                   placeholder='Add passenger(s)'
                   className='cursor-default'
                   StartIcon={<IoIosPerson />}
@@ -309,11 +321,16 @@ const FlightForm = ({ showButton }) => {
         {showButton && (
           <section className='flex flex-col flex-wrap items-center justify-center gap-4 md:flex-row'>
             <span
+              data-cy='error-text'
               className={`${!errorMessage && 'hidden'} text-red-500`}
             >
               {errorMessage}
             </span>
-            <Button label='Find Flights' onClick={handleSubmit} />
+            <Button
+              datacy='submit-button'
+              label='Find Flights'
+              onClick={handleSubmit}
+            />
           </section>
         )}
       </section>
@@ -321,8 +338,12 @@ const FlightForm = ({ showButton }) => {
   )
 }
 
+FlightForm.defaultProps = {
+  showButton: false
+}
+
 FlightForm.propTypes = {
-  showButton: bool.isRequired
+  showButton: bool
 }
 
 export default FlightForm

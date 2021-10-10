@@ -118,7 +118,10 @@ const Signup = () => {
           alt='Leaning Tower of Pisa in Italy'
           className='fixed object-cover object-center w-screen h-screen'
         />
-        <h1 className='z-10 text-4xl font-bold text-white'>
+        <h1
+          data-cy='signup-title'
+          className='z-10 text-4xl font-bold text-white'
+        >
           Sign Up
         </h1>
         <form
@@ -126,6 +129,7 @@ const Signup = () => {
           className='z-10 flex flex-col flex-wrap p-5 mx-auto space-y-4 rounded-lg bg-yellow-50'
         >
           <TextField
+            datacy='given-name-input'
             required
             className='focus:ring-yellow-500'
             value={givenName}
@@ -134,6 +138,7 @@ const Signup = () => {
             placeholder='Given Name'
           />
           <TextField
+            datacy='surname-input'
             required
             className='focus:ring-yellow-500'
             value={surname}
@@ -142,6 +147,7 @@ const Signup = () => {
             placeholder='Surname'
           />
           <TextField
+            datacy='email-input'
             required
             className='focus:ring-yellow-500'
             value={email}
@@ -150,6 +156,7 @@ const Signup = () => {
             placeholder='Email'
           />
           <TextField
+            datacy='username-input'
             required
             className='focus:ring-yellow-500'
             value={username}
@@ -158,6 +165,7 @@ const Signup = () => {
             placeholder='Username'
           />
           <TextField
+            datacy='password-input'
             required
             className='focus:ring-yellow-500'
             value={password}
@@ -167,6 +175,7 @@ const Signup = () => {
             placeholder='Password'
           />
           <div
+            datacy='error-text'
             className={`${
               !errorMessage
                 ? 'hidden'
@@ -176,6 +185,7 @@ const Signup = () => {
             {errorMessage}
           </div>
           <button
+            datacy='signup-button'
             type='submit'
             className='p-3 font-bold text-white transition-colors bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400'
           >
@@ -190,6 +200,7 @@ const Signup = () => {
             </span>
           </button>
           <Link
+            data-cy='login-link'
             to='/login'
             className='self-center px-1 text-sm text-center text-yellow-700 rounded-sm max-w-max hover:text-yellow-700 hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:underline'
           >

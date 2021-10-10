@@ -32,7 +32,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test --watchAll=false --passWithNoTests",
+    "test": "cypress open",
     "eject": "craco eject",
     "lint": "eslint \"./src\"",
     "lint-fix": "eslint --fix \"./src\""
@@ -50,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "cypress": "^8.5.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",

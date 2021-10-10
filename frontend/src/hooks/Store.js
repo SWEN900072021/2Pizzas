@@ -231,7 +231,7 @@ const useSessionStore = create(
     })),
     {
       name: 'session-store',
-      getStorage: () => sessionStorage
+      getStorage: () => localStorage
     }
   )
 )
@@ -373,7 +373,7 @@ const useFlightStore = create(
     })),
     {
       name: 'flight-store',
-      getStorage: () => sessionStorage
+      getStorage: () => localStorage
     }
   )
 )

@@ -3,6 +3,7 @@ import React from 'react'
 // import { BsEye, BsEyeSlash } from 'react-icons/bs'
 
 const TextField = ({
+  datacy,
   value,
   name,
   label,
@@ -18,6 +19,7 @@ const TextField = ({
     <label htmlFor={label || placeholder} className='space-y-1'>
       <div className='font-medium'>{label}</div>
       <input
+        data-cy={datacy}
         value={value}
         required={required}
         name={name || label || placeholder}
@@ -50,6 +52,7 @@ const TextField = ({
 )
 
 TextField.defaultProps = {
+  datacy: '',
   value: '',
   name: '',
   label: '',
@@ -61,6 +64,7 @@ TextField.defaultProps = {
 }
 
 TextField.propTypes = {
+  datacy: string,
   value: string,
   name: string,
   label: string,
