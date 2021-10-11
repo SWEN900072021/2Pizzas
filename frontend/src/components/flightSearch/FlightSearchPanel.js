@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { DatePicker } from 'antd'
 import {
   FaSearch,
@@ -57,11 +57,6 @@ const FlightSearchPanel = () => {
   const [searchOpen, setSearchOpen] = useState(false)
 
   /* -------------------------------------------------------------------------- */
-
-  useEffect(() => {
-    // update departure and return dates
-    // requery flights
-  }, [])
 
   return (
     <section className='flex flex-col items-center justify-center p-2 py-3 text-white bg-yellow-600 rounded-none max-h-max sm:p-3 md:p-4 md:rounded-md'>

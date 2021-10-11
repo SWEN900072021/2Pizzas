@@ -92,11 +92,13 @@ const Signup = () => {
             })
 
             setLoading(false)
+
             if (isCreatingBooking) {
               setCreatingBooking(false)
               history.push('/booking/create')
+            } else {
+              history.push('/')
             }
-            history.push('/')
           }
         })
       },
@@ -185,7 +187,7 @@ const Signup = () => {
             {errorMessage}
           </div>
           <button
-            datacy='signup-button'
+            data-cy='signup-button'
             type='submit'
             className='p-3 font-bold text-white transition-colors bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400'
           >

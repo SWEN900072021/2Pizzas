@@ -77,7 +77,7 @@ Search.defaultProps = {
   handleChange: () => {},
   handleKeyUp: () => {},
   handleClick: () => {},
-  datacy: ''
+  datacy: 'search'
 }
 
 Search.propTypes = {

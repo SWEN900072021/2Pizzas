@@ -54,13 +54,23 @@ const FlightListings = () => {
   const [flightToggle, setFlightToggle] = useState(flightType[0])
 
   const handleSelectOutboundFlight = (flight) => {
-    setOutboundSelected(true)
-    setOutboundFlight(flight)
+    if (outboundFlight && flight.id === outboundFlight.id) {
+      setOutboundSelected(false)
+      setOutboundFlight(null)
+    } else {
+      setOutboundSelected(true)
+      setOutboundFlight(flight)
+    }
   }
 
   const handleSelectReturnFlight = (flight) => {
-    setReturnSelected(true)
-    setReturnFlight(flight)
+    if (returnFlight && flight.id === returnFlight.id) {
+      setReturnSelected(false)
+      setReturnFlight(null)
+    } else {
+      setReturnSelected(true)
+      setReturnFlight(flight)
+    }
   }
 
   /* -------------------------------------------------------------------------- */
@@ -83,6 +93,16 @@ const FlightListings = () => {
   const passengerCount = useFlightStore(
     (state) => state.passengerCount
   )
+
+  useEffect(() => {
+    if (outboundFlight) {
+      setOutboundSelected(true)
+    }
+
+    if (returnFlight) {
+      setReturnSelected(true)
+    }
+  }, [outboundFlight, returnFlight])
 
   useEffect(() => {
     // console.log(moment(departDate).startOf('day').utc(true))
@@ -248,8 +268,12 @@ const FlightListings = () => {
             >
               {outboundFlights &&
                 outboundFlights.map((flight) => (
-                  <div className='flex items-center justify-center gap-5 md:items-end'>
+                  <div
+                    key={flight.id}
+                    className='flex items-center justify-center gap-5 md:items-end'
+                  >
                     <FlightCard
+                      datacy='outbound-flight'
                       flight={flight}
                       selected={
                         outboundFlight
@@ -274,9 +298,13 @@ const FlightListings = () => {
               >
                 {returnFlights &&
                   returnFlights.map((flight) => (
-                    <div className='flex items-center justify-center gap-5 md:items-end'>
+                    <div
+                      key={flight.id}
+                      className='flex items-center justify-center gap-5 md:items-end'
+                    >
                       <FlightCard
                         flight={flight}
+                        datacy='return-flight'
                         selected={
                           returnFlight
                             ? flight.id === returnFlight.id
@@ -291,6 +319,7 @@ const FlightListings = () => {
           </div>
           <Button
             label='Submit'
+            datacy='submit-button'
             onClick={handleSubmit}
             disabled={
               isReturn

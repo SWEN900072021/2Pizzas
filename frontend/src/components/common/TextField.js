@@ -52,7 +52,7 @@ const TextField = ({
 )
 
 TextField.defaultProps = {
-  datacy: '',
+  datacy: 'text-field',
   value: '',
   name: '',
   label: '',

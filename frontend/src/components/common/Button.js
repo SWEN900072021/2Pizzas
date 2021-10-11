@@ -32,7 +32,7 @@ Button.defaultProps = {
   onClick: () => {},
   className: '',
   disabled: false,
-  datacy: ''
+  datacy: 'button'
 }
 
 Button.propTypes = {
