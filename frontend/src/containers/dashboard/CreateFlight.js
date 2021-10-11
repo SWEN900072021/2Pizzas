@@ -643,7 +643,7 @@ const CreateFlight = () => {
                     <InputNumber
                       required
                       style={{ width: '100%' }}
-                      placeholder='Enter a value'
+                      placeholder='Enter cost for first class'
                       formatter={(value) => `$ ${value}`}
                       min={1}
                       value={state.firstClassCost}
@@ -665,7 +665,7 @@ const CreateFlight = () => {
                     <InputNumber
                       required
                       style={{ width: '100%' }}
-                      placeholder='Enter a value'
+                      placeholder='Enter cost for business class'
                       formatter={(value) => `$ ${value}`}
                       min={1}
                       value={state.businessClassCost}
@@ -687,7 +687,7 @@ const CreateFlight = () => {
                     <InputNumber
                       required
                       style={{ width: '100%' }}
-                      placeholder='Enter a value'
+                      placeholder='Enter cost for economy class'
                       formatter={(value) => `$ ${value}`}
                       min={1}
                       value={state.economyClassCost}

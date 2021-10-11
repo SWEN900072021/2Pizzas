@@ -30,57 +30,9 @@ context('Admin Dashboard', () => {
     cy.get('@add-airport-link').should('be.visible')
   })
 
-  context('View Airlines', () => {
-    beforeEach(() => {
-      cy.get('@view-airlines-link').click()
-      cy.get('[data-cy=add-new-airline-button]').as(
-        'add-new-airline-button'
-      )
-    })
-
-    it('displays table of airlines', () => {
-      cy.getTable().should('be.visible')
-      cy.getTableColumnHeaders().should('have.length', 4)
-      cy.expectTableSortedBy(0)
-    })
-
-    it('navigates to CreateAirline on Add New Airline button click', () => {
-      cy.get('@add-new-airline-button').click()
-      cy.url().should('include', '/create/airline')
-    })
-
-    it('can disable an active airline', () => {
-      cy.getTableRows()
-        .filter(':contains("INACTIVE")')
-        .should('have.length', 0)
-      cy.getTableRows()
-        .filter(':contains("ACTIVE")')
-        .first()
-        .find('td')
-        .last()
-        .find('button')
-        .click()
-      cy.getTableRows()
-        .filter(':contains("INACTIVE")')
-        .should('have.length', 1)
-    })
-
-    it('can enable an inactive airline', () => {
-      cy.getTableRows()
-        .filter(':contains("INACTIVE")')
-        .should('have.length', 1)
-        .find('td')
-        .last()
-        .find('button')
-        .click()
-      cy.getTableRows()
-        .filter(':contains("INACTIVE")')
-        .should('have.length', 0)
-    })
-  })
-
   context('Add Airline', () => {
     beforeEach(() => {
+      cy.fixture('createAirline').as('airline')
       cy.get('@add-airline-link').click()
       cy.get('[data-cy=submit-button]').as('submit-button')
       cy.get('[data-cy=error-text]').as('error-text')
@@ -158,16 +110,16 @@ context('Admin Dashboard', () => {
             .each(($input, index) => {
               switch (index) {
                 case 0:
-                  cy.wrap($input).type('Garuda')
+                  cy.wrap($input).type(airline.name)
                   break
                 case 1:
-                  cy.wrap($input).type('GA')
+                  cy.wrap($input).type(airline.code)
                   break
                 case 2:
-                  cy.wrap($input).type('garuda')
+                  cy.wrap($input).type(airline.username)
                   break
                 case 3:
-                  cy.wrap($input).type('password')
+                  cy.wrap($input).type(airline.password)
                   break
               }
             })
@@ -186,26 +138,26 @@ context('Admin Dashboard', () => {
     })
   })
 
-  context('View Airports', () => {
+  context('View Airlines', () => {
     beforeEach(() => {
-      cy.get('@view-airports-link').click()
-      cy.get('[data-cy=add-new-airport-button]').as(
-        'add-new-airport-button'
+      cy.get('@view-airlines-link').click()
+      cy.get('[data-cy=add-new-airline-button]').as(
+        'add-new-airline-button'
       )
     })
 
-    it('displays table of airports', () => {
+    it('displays table of airlines', () => {
       cy.getTable().should('be.visible')
-      cy.getTableColumnHeaders().should('have.length', 6)
+      cy.getTableColumnHeaders().should('have.length', 4)
       cy.expectTableSortedBy(0)
     })
 
-    it('navigates to CreateAirport on Add New Airport button click', () => {
-      cy.get('@add-new-airport-button').click()
-      cy.url().should('include', '/create/airport')
+    it('navigates to CreateAirline on Add New Airline button click', () => {
+      cy.get('@add-new-airline-button').click()
+      cy.url().should('include', '/create/airline')
     })
 
-    it('can disable an active airport', () => {
+    it('can disable an active airline', () => {
       cy.getTableRows()
         .filter(':contains("INACTIVE")')
         .should('have.length', 0)
@@ -221,7 +173,7 @@ context('Admin Dashboard', () => {
         .should('have.length', 1)
     })
 
-    it('can enable an inactive airport', () => {
+    it('can enable an inactive airline', () => {
       cy.getTableRows()
         .filter(':contains("INACTIVE")')
         .should('have.length', 1)
@@ -237,6 +189,7 @@ context('Admin Dashboard', () => {
 
   context('Add Airport', () => {
     beforeEach(() => {
+      cy.fixture('createAirport').as('airport')
       cy.get('@add-airport-link').click()
       cy.get('[data-cy=submit-button]').as('submit-button')
       cy.get('[data-cy=error-text]').as('error-text')
@@ -314,13 +267,13 @@ context('Admin Dashboard', () => {
             .each(($input, index) => {
               switch (index) {
                 case 0:
-                  cy.wrap($input).type('Port Bouet Airport')
+                  cy.wrap($input).type(airport.name)
                   break
                 case 1:
-                  cy.wrap($input).type('ABJ')
+                  cy.wrap($input).type(airport.code)
                   break
                 case 2:
-                  cy.wrap($input).type('Abidjan')
+                  cy.wrap($input).type(airport.location)
                   break
               }
             })
@@ -329,7 +282,7 @@ context('Admin Dashboard', () => {
             .should('have.length', 1)
             .click()
             .then(() => {
-              cy.chooseSelectDropdownOption('Africa/Abidjan')
+              cy.chooseSelectDropdownOption(airport.timezone)
               cy.get('@submit-button').click()
               cy.url().should('include', '/view/airports')
 
@@ -342,6 +295,55 @@ context('Admin Dashboard', () => {
                 })
             })
         })
+    })
+  })
+
+  context('View Airports', () => {
+    beforeEach(() => {
+      cy.get('@view-airports-link').click()
+      cy.get('[data-cy=add-new-airport-button]').as(
+        'add-new-airport-button'
+      )
+    })
+
+    it('displays table of airports', () => {
+      cy.getTable().should('be.visible')
+      cy.getTableColumnHeaders().should('have.length', 6)
+      cy.expectTableSortedBy(0)
+    })
+
+    it('navigates to CreateAirport on Add New Airport button click', () => {
+      cy.get('@add-new-airport-button').click()
+      cy.url().should('include', '/create/airport')
+    })
+
+    it('can disable an active airport', () => {
+      cy.getTableRows()
+        .filter(':contains("INACTIVE")')
+        .should('have.length', 0)
+      cy.getTableRows()
+        .filter(':contains("ACTIVE")')
+        .first()
+        .find('td')
+        .last()
+        .find('button')
+        .click()
+      cy.getTableRows()
+        .filter(':contains("INACTIVE")')
+        .should('have.length', 1)
+    })
+
+    it('can enable an inactive airport', () => {
+      cy.getTableRows()
+        .filter(':contains("INACTIVE")')
+        .should('have.length', 1)
+        .find('td')
+        .last()
+        .find('button')
+        .click()
+      cy.getTableRows()
+        .filter(':contains("INACTIVE")')
+        .should('have.length', 0)
     })
   })
 })

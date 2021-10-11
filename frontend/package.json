@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "@hon2a/cypress-antd": "^0.3.10",
+    "@testing-library/cypress": "^8.0.1",
     "cypress": "^8.5.0",
     "cypress-localstorage-commands": "^1.5.0",
     "cypress-wait-until": "^1.7.1",

@@ -55,7 +55,10 @@ const ListFlights = () => {
   const heading = (
     <header className='flex items-center justify-between'>
       <h2 className='text-3xl font-bold'>Your flights</h2>
-      <Link to='/dashboard/create/flights'>
+      <Link
+        data-cy='add-new-flight-button'
+        to='/dashboard/create/flights'
+      >
         <button
           type='button'
           className='flex items-center justify-center gap-2 p-2 font-bold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
@@ -217,6 +220,7 @@ const ListFlights = () => {
             render={(text, record) => (
               <Space size='middle'>
                 <Link
+                  data-cy='view-flight-button'
                   to={`/dashboard/view/flights/${record.id}`}
                   className='underline hover:underline'
                 >

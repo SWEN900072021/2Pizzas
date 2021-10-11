@@ -1,0 +1,26 @@
+{
+  "code": "QN500",
+  "airplaneProfile": "A220",
+  "firstClassSeats": 2,
+  "businessClassSeats": 2,
+  "economyClassSeats": 3,
+  "firstClassCost": 10,
+  "businessClassCost": 5,
+  "economyClassCost": 1,
+  "origin": "(AVV) Avalon Airport",
+  "destination": "(SYD) Sydney Airport",
+  "departure": {
+    "year": "2022",
+    "month": "Jan",
+    "day": "1",
+    "hour": "10",
+    "minute": "00"
+  },
+  "arrival": {
+    "year": "2022",
+    "month": "Jan",
+    "day": "2",
+    "hour": "12",
+    "minute": "00"
+  }
+}
