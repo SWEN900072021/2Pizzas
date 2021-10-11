@@ -108,7 +108,12 @@ const CreateAirport = () => {
           onSubmit={handleSubmit}
         >
           <section className='grid items-center w-full grid-cols-5 gap-2 p-3 bg-gray-50'>
-            <p className='col-span-2 font-bold'>Name</p>
+            <p
+              data-cy='name-input-label'
+              className='col-span-2 font-bold'
+            >
+              Name
+            </p>
             <Input
               required
               id='name'
@@ -118,7 +123,12 @@ const CreateAirport = () => {
             />
           </section>
           <section className='grid items-center w-full grid-cols-5 gap-2 p-3 bg-gray-50'>
-            <p className='col-span-2 font-bold'>Code</p>
+            <p
+              data-cy='code-input-label'
+              className='col-span-2 font-bold'
+            >
+              Code
+            </p>
             <Input
               required
               id='code'
@@ -128,7 +138,12 @@ const CreateAirport = () => {
             />
           </section>
           <section className='grid items-center w-full grid-cols-5 gap-2 p-3 bg-gray-50'>
-            <p className='col-span-2 font-bold'>Location</p>
+            <p
+              data-cy='location-input-label'
+              className='col-span-2 font-bold'
+            >
+              Location
+            </p>
             <Input
               required
               id='location'
@@ -138,7 +153,12 @@ const CreateAirport = () => {
             />
           </section>
           <section className='grid items-center w-full grid-cols-5 gap-2 p-3 bg-gray-50'>
-            <p className='col-span-2 font-bold'>Time Zone</p>
+            <p
+              data-cy='timezone-input-label'
+              className='col-span-2 font-bold'
+            >
+              Time Zone
+            </p>
             <Select
               id='zoneId'
               className='col-span-3'
@@ -163,8 +183,11 @@ const CreateAirport = () => {
             </Select>
           </section>
           <span className='flex items-center justify-end w-full gap-3'>
-            <p className='text-red-500'>{error || ''}</p>
+            <p data-cy='error-text' className='text-red-500'>
+              {error || ''}
+            </p>
             <button
+              data-cy='submit-button'
               type='submit'
               onClick={handleSubmit}
               className='flex items-center self-end justify-center w-20 h-10 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'

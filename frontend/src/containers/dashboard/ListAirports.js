@@ -44,7 +44,10 @@ const ListAirports = () => {
   const heading = (
     <header className='flex items-center justify-between'>
       <h2 className='text-3xl font-bold'>Your airports</h2>
-      <Link to='/dashboard/create/airports'>
+      <Link
+        data-cy='add-new-airport-button'
+        to='/dashboard/create/airports'
+      >
         <button
           type='button'
           className='flex items-center justify-center gap-2 p-2 font-bold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
@@ -128,6 +131,7 @@ const ListAirports = () => {
             sorter={{
               compare: (a, b) => sort(a.name, b.name)
             }}
+            defaultSortOrder='ascend'
           />
           <Column
             title='Code'
@@ -147,6 +151,7 @@ const ListAirports = () => {
           <Column
             title='Zone ID'
             dataIndex='zoneId'
+            width={180}
             sorter={{
               compare: (a, b) => sort(a.code, b.code)
             }}
@@ -172,7 +177,6 @@ const ListAirports = () => {
             title='Actions'
             key='actions'
             fixed='right'
-            width={80}
             render={(value, record) => (
               <Space size='middle'>
                 {record.id !== isUpdating && (

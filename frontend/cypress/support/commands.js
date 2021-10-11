@@ -26,6 +26,7 @@
 
 import 'cypress-localstorage-commands'
 import 'cypress-wait-until'
+import '@hon2a/cypress-antd/lib/register'
 import moment from 'moment-timezone'
 
 Cypress.Commands.add(

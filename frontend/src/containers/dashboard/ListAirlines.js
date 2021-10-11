@@ -44,7 +44,10 @@ const ListAirlines = () => {
   const heading = (
     <header className='flex items-center justify-between'>
       <h2 className='text-3xl font-bold'>Your airlines</h2>
-      <Link to='/dashboard/create/airlines'>
+      <Link
+        data-cy='add-new-airline-button'
+        to='/dashboard/create/airlines'
+      >
         <button
           type='button'
           className='flex items-center justify-center gap-2 p-2 font-bold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
@@ -125,6 +128,7 @@ const ListAirlines = () => {
           <Column
             title='Name'
             dataIndex='name'
+            defaultSortOrder='ascend'
             sorter={{
               compare: (a, b) => sort(a.name, b.name)
             }}
@@ -157,7 +161,7 @@ const ListAirlines = () => {
             title='Actions'
             key='actions'
             fixed='right'
-            width={50}
+            // width={100}
             render={(value, record) => (
               <Space size='middle'>
                 {record.id !== isUpdating && (
