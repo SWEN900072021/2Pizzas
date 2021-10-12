@@ -682,10 +682,11 @@ for(var index = 0; index &lt; jsonObject.length; index++) {
         </hashTree>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
         <hashTree>
-          <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
+          <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Seat" enabled="true">
             <stringProp name="ForeachController.inputVal">seatName</stringProp>
             <stringProp name="ForeachController.returnVal">seatName</stringProp>
             <boolProp name="ForeachController.useSeparator">true</boolProp>
+            <stringProp name="ForeachController.endIndex">3</stringProp>
           </ForeachController>
           <hashTree>
             <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter" enabled="true">
