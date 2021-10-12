@@ -25,6 +25,7 @@ import org.mockito.MockitoAnnotations;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -88,7 +89,6 @@ public class FlightMapperImplTests {
         origin = Mockito.mock(Airport.class);
         EntityId originId = EntityId.nextId();
         Mockito.when(origin.getId()).thenReturn(originId);
-
         destination = Mockito.mock(Airport.class);
         EntityId destinationId = EntityId.nextId();
         Mockito.when(destination.getId()).thenReturn(destinationId);
@@ -174,9 +174,69 @@ public class FlightMapperImplTests {
         Assertions.assertEquals(seat, flight.getSeats().iterator().next());
     }
 
+    // create airport and airline
+    // create flight with same airports and airline with diff versions
+    @Test
+    @DisplayName("GIVEN airline and airport with invalid version WHEN create invoked THEN throw OptimisticLockingException")
+    void test2() {
+        // GIVEN
+        Airline newAirline = Mockito.mock(Airline.class);
+        Mockito.doReturn(airline.getId()).when(newAirline).getId();
+        Mockito.doReturn(airline.getVersion() + 1).when(newAirline).getVersion();
+
+        Airport newOrigin = Mockito.mock(Airport.class);
+        Mockito.doReturn(origin.getId()).when(newOrigin).getId();
+        Mockito.doReturn(origin.getVersion() + 1).when(newOrigin).getVersion();
+
+        Airport newDestination = Mockito.mock(Airport.class);
+        Mockito.doReturn(destination.getId()).when(newDestination).getId();
+        Mockito.doReturn(destination.getVersion() + 1).when(newDestination).getVersion();
+
+        Airport stopOverLocation = Mockito.mock(Airport.class);
+        EntityId stopOverLocationId = EntityId.nextId();
+        Mockito.when(stopOverLocation.getId()).thenReturn(stopOverLocationId);
+        Mockito.doReturn(stopOverLocation).when(airportMapper).read(Mockito.eq(stopOverLocationId));
+        insertTestAirports(stopOverLocation.getId());
+
+        Mockito.when(flightSeatMapper.readAll(Mockito.any())).thenReturn(Collections.singletonList(seat));
+
+        OffsetDateTime departure = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC).withNano(0);
+        OffsetDateTime arrival = departure.plus(12, ChronoUnit.HOURS);
+
+        BigDecimal firstClassCost = new BigDecimal(100);
+        BigDecimal businessClassCost = new BigDecimal(80);
+        BigDecimal economyClassCost = new BigDecimal(40);
+
+        Flight flight = new Flight(
+                profile,
+                newAirline,
+                newOrigin,
+                newDestination,
+                Collections.singletonList(new StopOver(
+                        stopOverLocation,
+                        departure.plus(6, ChronoUnit.HOURS),
+                        departure.plus(7, ChronoUnit.HOURS)
+                )),
+                "code",
+                departure,
+                arrival,
+                firstClassCost,
+                businessClassCost,
+                economyClassCost
+        );
+
+        Assertions.assertNotNull(flight.getStatus());
+
+        // WHEN + THEN
+        Assertions.assertThrows(OptimisticLockingException.class, () -> mapper.create(flight));
+
+        Flight read = mapper.read(flight.getId());
+        Assertions.assertNull(read);
+    }
+
     @Test
     @DisplayName("GIVEN valid flight WHEN update invoked THEN flight updated in database")
-    void test2() {
+    void test3() {
         // GIVEN
         Airport stopOverLocation = Mockito.mock(Airport.class);
         EntityId stopOverLocationId = EntityId.nextId();
@@ -291,7 +351,7 @@ public class FlightMapperImplTests {
 
     @Test
     @DisplayName("GIVEN flight version is invalid WHEN update invoked THEN throw OptimisticLockingException")
-    void test3() {
+    void test4() {
         // GIVEN
         Airport stopOverLocation = Mockito.mock(Airport.class);
         EntityId stopOverLocationId = EntityId.nextId();
@@ -336,7 +396,6 @@ public class FlightMapperImplTests {
         Airport stopOverLocationUpdate = Mockito.mock(Airport.class);
         EntityId stopOverLocationIdUpdate = EntityId.nextId();
         Mockito.when(stopOverLocationUpdate.getId()).thenReturn(stopOverLocationIdUpdate);
-        Mockito.doReturn(stopOverLocationUpdate).when(airportMapper).read(Mockito.eq(stopOverLocationIdUpdate));
         insertTestAirports(stopOverLocationUpdate.getId());
 
         OffsetDateTime departureUpdate = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC).withNano(0);
@@ -399,12 +458,11 @@ public class FlightMapperImplTests {
         Assertions.assertNotNull(flight.getSeats());
         Assertions.assertEquals(1, flight.getSeats().size());
         Assertions.assertEquals(seat, flight.getSeats().iterator().next());
-
     }
 
     @Test
     @DisplayName("GIVEN flight in database WHEN delete invoked THEN flight removed from database")
-    void test4() {
+    void test5() {
         // GIVEN
         Airport stopOverLocation = Mockito.mock(Airport.class);
         EntityId stopOverLocationId = EntityId.nextId();
