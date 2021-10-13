@@ -18,28 +18,46 @@ const ListAirlines = () => {
   const history = useHistory()
   const [validUser, setValidUser] = useState(false)
 
-  const {
-    data: airlines,
-    isLoading,
-    isError,
-    isSuccess,
-    refetch: refetchAirlines
-  } = useAirlines()
+  const resetSession = useSessionStore((state) => state.resetSession)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (!token || !user || user.userType !== 'administrator') {
       setValidUser(false)
+      resetSession()
+      queryClient.clear()
       history.push('/')
     } else {
       setValidUser(true)
     }
 
     // console.log('Is valid user:', validUser)
-  }, [token, user, history])
+  }, [token, user, history, resetSession, queryClient])
+
+  /* -------------------------------------------------------------------------- */
+
+  const {
+    data: airlines,
+    isLoading,
+    isError,
+    error,
+    isSuccess,
+    refetch: refetchAirlines
+  } = useAirlines()
 
   useEffect(() => {
     refetchAirlines()
   }, [refetchAirlines])
+
+  useEffect(() => {
+    if (error && error.response && error.response.status === 401) {
+      resetSession()
+      queryClient.clear()
+      history.push('/login')
+    }
+  }, [error, history, queryClient, resetSession])
+
+  /* -------------------------------------------------------------------------- */
 
   const heading = (
     <header className='flex items-center justify-between'>
@@ -66,9 +84,6 @@ const ListAirlines = () => {
   }
 
   const [isUpdating, setIsUpdating] = useState(null)
-
-  const queryClient = useQueryClient()
-  const resetSession = useSessionStore((st) => st.resetSession)
 
   const updateAirline = (id, status) => {
     setIsUpdating(id)

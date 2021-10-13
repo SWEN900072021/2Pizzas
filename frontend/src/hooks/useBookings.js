@@ -6,6 +6,7 @@ const useBookings = (token) => {
 
   return useQuery({
     // enabled: false,
+    retry: false,
     queryKey: ['bookings'],
     queryFn: () => BookingService.getCustomerBookings(token),
     config: {

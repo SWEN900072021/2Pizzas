@@ -72,8 +72,8 @@ const CreateAirport = () => {
           err.response.status &&
           err.response.status === 401
         ) {
-          queryClient.clear()
           resetSession()
+          queryClient.clear()
           history.push('/login')
         }
 

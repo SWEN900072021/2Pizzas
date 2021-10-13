@@ -11,7 +11,7 @@ const UserInfo = () => {
   useEffect(() => {
     if (!token) {
       setValidUser(false)
-      history.push('/')
+      history.push('/login')
     } else {
       setValidUser(true)
     }

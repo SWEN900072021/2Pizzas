@@ -18,14 +18,19 @@ const ListFlights = () => {
 
   const [validUser, setValidUser] = useState(false)
 
+  const resetSession = useSessionStore((state) => state.resetSession)
+  const queryClient = useQueryClient()
+
   useEffect(() => {
     if (!token || !user || user.userType !== 'airline') {
       setValidUser(false)
-      history.push('/')
+      resetSession()
+      queryClient.clear()
+      history.push('/login')
     } else {
       setValidUser(true)
     }
-  }, [token, user, history])
+  }, [token, user, history, resetSession, queryClient])
 
   /* -------------------------------------------------------------------------- */
 
@@ -37,20 +42,19 @@ const ListFlights = () => {
     refetch: refetchFlights
   } = useFlights(token)
 
-  const queryClient = useQueryClient()
-  const resetSession = useSessionStore((state) => state.resetSession)
-
-  useEffect(() => {
-    if (isError) {
-      queryClient.clear()
-      resetSession()
-      history.push('/')
-    }
-  }, [history, isError, queryClient, resetSession])
-
   useEffect(() => {
     refetchFlights()
   }, [refetchFlights])
+
+  useEffect(() => {
+    if (isError) {
+      resetSession()
+      queryClient.clear()
+      history.push('/login')
+    }
+  }, [history, isError, queryClient, resetSession])
+
+  /* -------------------------------------------------------------------------- */
 
   const heading = (
     <header className='flex items-center justify-between'>

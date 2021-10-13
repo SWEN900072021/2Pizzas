@@ -63,7 +63,6 @@ Cypress.Commands.add('login', (username, password) => {
 Cypress.Commands.add('logout', () => {
   cy.get('.ant-dropdown-trigger').should('be.visible').click()
   cy.get('[data-cy=logout-menu-button]').click()
-  cy.get('[data-cy=logged-out-menu]').should('be.visible')
 })
 
 Cypress.Commands.add('getExistingReturnFlightDates', () => {
@@ -163,13 +162,17 @@ Cypress.Commands.add('searchReturnFlights', () => {
   cy.get('[data-cy=origin-input]')
     .click()
     .then(() => {
-      cy.get('[data-cy=origin-item]').first().click({ force: true })
+      cy.get('[data-cy=origin-item]')
+        .wait(1000)
+        .contains('Tullamarine Airport (MEL)')
+        .click({ force: true })
     })
   cy.get('[data-cy=destination-input]')
     .click()
     .then(() => {
       cy.get('[data-cy=destination-item]')
-        .last()
+        .wait(1000)
+        .contains('Sydney Airport (SYD)')
         .click({ force: true })
     })
 

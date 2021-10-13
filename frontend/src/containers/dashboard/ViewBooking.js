@@ -23,29 +23,31 @@ const ViewBooking = () => {
   const history = useHistory()
   const [validUser, setValidUser] = useState(false)
 
+  const resetSession = useSessionStore((state) => state.resetSession)
+  const queryClient = useQueryClient()
+
   useEffect(() => {
     if (!token || !user || user.userType !== 'customer') {
       setValidUser(false)
-      history.push('/')
+      resetSession()
+      queryClient.clear()
+      history.push('/login')
     } else {
       setValidUser(true)
     }
-  }, [token, user, history])
+  }, [token, user, history, resetSession, queryClient])
 
   /* -------------------------------------------------------------------------- */
 
   const { id } = useParams()
-  const resetSession = useSessionStore((state) => state.resetSession)
   const { data, isLoading, isSuccess, isError } = useBookings(token)
   const [booking, setBooking] = useState(null)
-
-  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (isError) {
       resetSession()
       queryClient.clear()
-      history.push('/')
+      history.push('/login')
     }
 
     if (isSuccess && data && id) {

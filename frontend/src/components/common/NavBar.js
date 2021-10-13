@@ -24,7 +24,7 @@ const NavBar = () => {
     e.preventDefault()
     resetSession()
     queryClient.clear()
-    history.push('/')
+    history.push('/login')
   }
 
   const loggedInMenu = (

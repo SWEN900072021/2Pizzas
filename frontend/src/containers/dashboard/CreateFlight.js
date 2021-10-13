@@ -40,17 +40,24 @@ const CreateFlight = () => {
       )
       setAirports(activeAirports)
     })
-  }, [])
+  }, [refetchAirplaneProfiles, refetchAirports])
+
+  const resetSession = useSessionStore((state) => state.resetSession)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
-    if (airplaneProfilesError) {
-      history.push('/')
+    if (airplaneProfilesError || airportsError) {
+      resetSession()
+      queryClient.clear()
+      history.push('/login')
     }
-
-    if (airportsError) {
-      history.push('/')
-    }
-  }, [airportsError, airplaneProfilesError, history])
+  }, [
+    airportsError,
+    airplaneProfilesError,
+    history,
+    resetSession,
+    queryClient
+  ])
 
   /* -------------------------------------------------------------------------- */
   /*                                 Form State                                 */
@@ -144,9 +151,6 @@ const CreateFlight = () => {
 
   /* -------------------------------------------------------------------------- */
 
-  const queryClient = useQueryClient()
-  const resetSession = useSessionStore((st) => st.resetSession)
-
   const handleSubmit = (e) => {
     e.preventDefault()
 
@@ -191,8 +195,8 @@ const CreateFlight = () => {
           err.response.status &&
           err.response.status === 401
         ) {
-          queryClient.clear()
           resetSession()
+          queryClient.clear()
           history.push('/login')
         }
 

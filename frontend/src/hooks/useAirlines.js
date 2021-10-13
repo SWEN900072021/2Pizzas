@@ -6,6 +6,7 @@ const useAirlines = () => {
 
   return useQuery({
     enabled: false,
+    retry: false,
     queryKey: ['airlines'],
     queryFn: () => AirlineService.getAllAirlines(),
     config: {

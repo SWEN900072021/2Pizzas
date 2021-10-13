@@ -46,7 +46,6 @@ context('Login', () => {
         state: { token: null, user: null },
         version: 0
       })
-      cy.logout()
       cy.visit('/login')
     })
 
@@ -66,7 +65,7 @@ context('Login', () => {
     })
 
     it('navigates to Dashboard for successful airline login', () => {
-      cy.login('john', 'password')
+      cy.login('qantas', 'password')
       cy.url().should('include', '/dashboard')
     })
   })

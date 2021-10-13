@@ -8,11 +8,11 @@ context('Home', () => {
       beforeEach(() => {
         cy.get('[data-cy=origin-input]')
           .as('origin-input')
+          .wait(1000)
           .click()
-          .waitUntil(() =>
-            cy.get('.ant-select-dropdown').should('be.visible')
-          )
-        cy.get('[data-cy=origin-item]').as('origin-airports')
+          .then(() => {
+            cy.get('[data-cy=origin-item]').as('origin-airports')
+          })
       })
 
       afterEach(() => {
@@ -20,8 +20,8 @@ context('Home', () => {
         cy.get('@origin-input').blur()
       })
 
-      it('displays 3 airport items by default', () => {
-        cy.get('@origin-airports').should('have.length', 3)
+      it('displays airport items by default', () => {
+        cy.get('@origin-airports').should('not.have.length', 0)
 
         cy.get('[data-cy=origin-name]').each(($el, index) => {
           switch (index) {
@@ -80,13 +80,13 @@ context('Home', () => {
       beforeEach(() => {
         cy.get('[data-cy=destination-input]')
           .as('destination-input')
+          .wait(1000)
           .click()
-          .waitUntil(() =>
-            cy.get('.ant-select-dropdown').should('be.visible')
-          )
-        cy.get('[data-cy=destination-item]').as(
-          'destination-airports'
-        )
+          .then(() => {
+            cy.get('[data-cy=destination-item]').as(
+              'destination-airports'
+            )
+          })
       })
 
       afterEach(() => {
@@ -94,10 +94,10 @@ context('Home', () => {
         cy.get('@destination-input').blur()
       })
 
-      it('displays 3 airport items by default', () => {
+      it('displays airport items by default', () => {
         cy.get('@destination-airports', { timeout: 5000 }).should(
-          'have.length',
-          3
+          'not.have.length',
+          0
         )
 
         cy.get('[data-cy=destination-name]').each(($el, index) => {

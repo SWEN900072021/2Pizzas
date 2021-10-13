@@ -798,7 +798,7 @@ const CreateBooking = () => {
           <p className='text-red-500'>{error || ''}</p>
           <Button
             onClick={handleSubmit}
-            className='flex items-center self-end justify-center w-20 h-10 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
+            className='flex items-center self-end justify-center w-20 h-10 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:text-white hover:border-yellow-400 hover:bg-yellow-500'
           >
             {loading ? <Spinner size={5} /> : 'Submit'}
           </Button>

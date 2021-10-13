@@ -5,6 +5,7 @@ const useFlightPassengers = (token, flightId) => {
   const queryClient = useQueryClient()
   return useQuery({
     // enabled: false,
+    retry: false,
     queryKey: ['passengers'],
     queryFn: () => FlightService.getFlightPassengers(token, flightId),
     config: {
