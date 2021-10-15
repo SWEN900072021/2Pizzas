@@ -82,6 +82,11 @@ public class Flight extends DomainEntity {
     }
 
     public SeatBooking allocateSeats(BookingRequest request) {
+        if (departure.isAfter(OffsetDateTime.now())) {
+            throw new BusinessRuleException(String.format("seats cannot be booked for flight %s as the flight has already departed",
+                    id));
+        }
+
         // assert that the request is valid
         Set<String> seatNames = request.getAllocations().stream().map(BookingRequest.SeatAllocationRequest::getSeatName).collect(Collectors.toSet());
         if (seatNames.size() != request.getAllocations().size()) {

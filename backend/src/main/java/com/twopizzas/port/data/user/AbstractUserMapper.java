@@ -26,7 +26,7 @@ public abstract class AbstractUserMapper<T extends User> {
                     " VALUES (?, ?, crypt(?, gen_salt('bf')), ?, ?, ?);";
 
     private static final String UPDATE_TEMPLATE =
-  // password has not changed do not encrypt again
+    // password has not changed do not encrypt again
             "UPDATE " + TABLE_USER +
             " SET " + COLUMN_USERNAME + " = ?, " +
                     COLUMN_PASSWORD + " = CASE WHEN password = ? THEN ? ELSE crypt(?, gen_salt('bf')) END, " +

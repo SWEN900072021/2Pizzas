@@ -5,8 +5,10 @@ import com.twopizzas.data.LazyValueHolderProxy;
 import com.twopizzas.di.Autowired;
 import com.twopizzas.di.Component;
 import com.twopizzas.domain.EntityId;
+import com.twopizzas.domain.airport.Airport;
 import com.twopizzas.domain.flight.Flight;
 import com.twopizzas.domain.flight.FlightSeatAllocation;
+import com.twopizzas.domain.user.Airline;
 import com.twopizzas.port.data.DataMappingException;
 import com.twopizzas.port.data.OptimisticLockingException;
 import com.twopizzas.port.data.SqlStatement;
@@ -101,6 +103,17 @@ class FlightMapperImpl implements FlightMapper {
 
     @Override
     public void create(Flight entity) {
+
+        Airport origin = airportMapper.read(entity.getOrigin().getId());
+        Airport destination = airportMapper.read(entity.getDestination().getId());
+        Airline airline = airlineMapper.read(entity.getAirline().getId());
+
+        if (origin.getVersion() != entity.getOrigin().getVersion() ||
+            destination.getVersion() != entity.getDestination().getVersion() ||
+            airline.getVersion() != entity.getAirline().getVersion()) {
+            throw new OptimisticLockingException();
+        }
+
         new SqlStatement(INSERT_TEMPLATE,
                 entity.getId().toString(),
                 entity.getCode(),
@@ -116,6 +129,7 @@ class FlightMapperImpl implements FlightMapper {
                 entity.getEconomyClassCost(),
                 entity.getVersion()
         ).doExecute(connectionPool.getCurrentTransaction());
+
 
         insertAllocations(entity.getAllocatedSeats());
         insertStopOvers(entity);
