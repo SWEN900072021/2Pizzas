@@ -82,7 +82,7 @@ public class Flight extends DomainEntity {
     }
 
     public SeatBooking allocateSeats(BookingRequest request) {
-        if (departure.isAfter(OffsetDateTime.now())) {
+        if (OffsetDateTime.now().isAfter(departure)) {
             throw new BusinessRuleException(String.format("seats cannot be booked for flight %s as the flight has already departed",
                     id));
         }
