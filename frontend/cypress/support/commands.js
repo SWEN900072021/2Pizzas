@@ -61,8 +61,12 @@ Cypress.Commands.add('login', (username, password) => {
 })
 
 Cypress.Commands.add('logout', () => {
-  cy.get('.ant-dropdown-trigger').should('be.visible').click()
-  cy.get('[data-cy=logout-menu-button]').click()
+  cy.get('.ant-dropdown-trigger')
+    .should('be.visible')
+    .click()
+    .then(() => {
+      cy.get('[data-cy=logout-menu-button]').click()
+    })
 })
 
 Cypress.Commands.add('getExistingReturnFlightDates', () => {

@@ -475,6 +475,7 @@ const CreateBooking = () => {
             <Input
               required
               id='givenName'
+              data-cy='given-name'
               value={state[passenger].givenName}
               placeholder={`Enter passenger ${passengerNumber} given name`}
               onChange={(e) => handleChange(e, passenger)}
@@ -483,6 +484,7 @@ const CreateBooking = () => {
             <Input
               required
               id='surname'
+              data-cy='surname'
               value={state[passenger].surname}
               placeholder={`Enter passenger ${passengerNumber} surname`}
               onChange={(e) => handleChange(e, passenger)}
@@ -491,6 +493,7 @@ const CreateBooking = () => {
             <Input
               required
               id='passportNumber'
+              data-cy='passport-number'
               value={state[passenger].passportNumber}
               placeholder={`Enter passenger ${passengerNumber} passport number`}
               onChange={(e) => handleChange(e, passenger)}
@@ -499,6 +502,7 @@ const CreateBooking = () => {
             <Input
               required
               id='nationality'
+              data-cy='nationality'
               value={state[passenger].nationality}
               placeholder={`Enter passenger ${passengerNumber} nationality`}
               onChange={(e) => handleChange(e, passenger)}
@@ -507,6 +511,7 @@ const CreateBooking = () => {
             {/* <Space direction='vertical' size={12}> */}
             <DatePicker
               disabledDate={invalidDOB}
+              data-cy='dob-picker'
               value={state[passenger].dateOfBirth}
               onChange={(date) => handleDateChange(date, passenger)}
               dateRender={(current) => {
@@ -543,6 +548,7 @@ const CreateBooking = () => {
               placeholder='Select cabin class'
               value={state[passenger].outboundClass}
               id='outboundClass'
+              data-cy='outbound-class-select'
               style={{ width: '100%' }}
               onChange={(value) =>
                 handleClassSeatChange(
@@ -553,19 +559,31 @@ const CreateBooking = () => {
               }
             >
               {economyAvailableOutbound && (
-                <Option id='economy' value='ECONOMY'>
+                <Option
+                  id='economy'
+                  data-cy='outbound-economy-option'
+                  value='ECONOMY'
+                >
                   Economy Class ($
                   {selectedOutboundFlight.economyClassCost})
                 </Option>
               )}
               {businessAvailableOutbound && (
-                <Option id='business' value='BUSINESS'>
+                <Option
+                  id='business'
+                  data-cy='outbound-business-option'
+                  value='BUSINESS'
+                >
                   Business Class ($
                   {selectedOutboundFlight.businessClassCost})
                 </Option>
               )}
               {firstAvailableOutbound && (
-                <Option id='first' value='FIRST'>
+                <Option
+                  id='first'
+                  data-cy='outbound-first-option'
+                  value='FIRST'
+                >
                   First Class ($
                   {selectedOutboundFlight.firstClassCost})
                 </Option>
@@ -577,6 +595,7 @@ const CreateBooking = () => {
               required
               value={state[passenger].outboundSeat}
               id='outboundSeat'
+              data-cy='outbound-seat-select'
               disabled={!state[passenger].outboundClass}
               style={{ width: '100%' }}
               onChange={(value) =>
@@ -606,7 +625,11 @@ const CreateBooking = () => {
                           )
                         })
                         .map((seat) => (
-                          <Option id={seat} value={seat}>
+                          <Option
+                            id={seat}
+                            data-cy={`outbound-${seat}`}
+                            value={seat}
+                          >
                             {seat}
                           </Option>
                         ))
@@ -634,6 +657,7 @@ const CreateBooking = () => {
                   placeholder='Select cabin class'
                   value={state[passenger].returnClass}
                   id='returnClass'
+                  data-cy='return-class-select'
                   style={{ width: '100%' }}
                   onChange={(value) =>
                     handleClassSeatChange(
@@ -644,19 +668,31 @@ const CreateBooking = () => {
                   }
                 >
                   {economyAvailableReturn && (
-                    <Option id='economy' value='ECONOMY'>
+                    <Option
+                      id='economy'
+                      data-cy='return-economy-option'
+                      value='ECONOMY'
+                    >
                       Economy Class ($
                       {selectedReturnFlight.economyClassCost})
                     </Option>
                   )}
                   {businessAvailableReturn && (
-                    <Option id='business' value='BUSINESS'>
+                    <Option
+                      id='business'
+                      data-cy='return-business-option'
+                      value='BUSINESS'
+                    >
                       Business Class ($
                       {selectedReturnFlight.businessClassCost})
                     </Option>
                   )}
                   {firstAvailableReturn && (
-                    <Option id='first' value='FIRST'>
+                    <Option
+                      id='first'
+                      data-cy='return-first-option'
+                      value='FIRST'
+                    >
                       First Class ($
                       {selectedReturnFlight.firstClassCost})
                     </Option>
@@ -668,6 +704,7 @@ const CreateBooking = () => {
                   required
                   value={state[passenger].returnSeat}
                   id='returnSeat'
+                  data-cy='return-seat-select'
                   disabled={!state[passenger].returnClass}
                   style={{ width: '100%' }}
                   onChange={(value) =>
@@ -699,7 +736,11 @@ const CreateBooking = () => {
                               )
                             })
                             .map((seat) => (
-                              <Option id={seat} value={seat}>
+                              <Option
+                                id={seat}
+                                data-cy={`return-${seat}`}
+                                value={seat}
+                              >
                                 {seat}
                               </Option>
                             ))
@@ -795,8 +836,11 @@ const CreateBooking = () => {
           </Collapse>
         </form>
         <span className='flex items-center justify-end w-full gap-3'>
-          <p className='text-red-500'>{error || ''}</p>
+          <p data-cy='error-text' className='text-red-500'>
+            {error || ''}
+          </p>
           <Button
+            data-cy='submit-button'
             onClick={handleSubmit}
             className='flex items-center self-end justify-center w-20 h-10 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:text-white hover:border-yellow-400 hover:bg-yellow-500'
           >

@@ -200,6 +200,7 @@ const ListAirports = () => {
                     {record.status === 'ACTIVE' ? (
                       <button
                         type='button'
+                        data-cy='disable-airport-button'
                         onClick={() =>
                           updateAirport(record.id, 'INACTIVE')
                         }
@@ -210,6 +211,7 @@ const ListAirports = () => {
                     ) : (
                       <button
                         type='button'
+                        data-cy='enable-airport-button'
                         onClick={() =>
                           updateAirport(record.id, 'ACTIVE')
                         }

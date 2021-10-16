@@ -35,7 +35,10 @@
     "test": "cypress open",
     "eject": "craco eject",
     "lint": "eslint \"./src\"",
-    "lint-fix": "eslint --fix \"./src\""
+    "lint-fix": "eslint --fix \"./src\"",
+    "cy:first": "cypress run --headed --config-file cy-first-actor.json",
+    "cy:second": "cypress run --headed --config-file cy-second-actor.json",
+    "concurrency": "concurrently yarn:cy:first yarn:cy:second"
   },
   "browserslist": {
     "production": [
@@ -53,6 +56,7 @@
     "@hon2a/cypress-antd": "^0.3.10",
     "@testing-library/cypress": "^8.0.1",
     "@testing-library/react-hooks": "^7.0.2",
+    "concurrently": "^6.3.0",
     "cypress": "^8.6.0",
     "cypress-localstorage-commands": "^1.5.0",
     "cypress-wait-until": "^1.7.1",

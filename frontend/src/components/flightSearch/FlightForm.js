@@ -24,20 +24,22 @@ const { RangePicker } = DatePicker
 
 const FlightForm = ({ showButton }) => {
   const history = useHistory()
-  const { refetch: refetchAirports } = useAirports()
+  const { refetch: refetchAirports, isSuccess } = useAirports()
 
   const [airports, setAirports] = useState(null)
 
   useEffect(() => {
     if (!airports) {
       refetchAirports().then((res) => {
-        const validAirports = res.data.filter(
-          (airport) => airport.status === 'ACTIVE'
-        )
-        setAirports(validAirports)
+        if (isSuccess && res.data) {
+          const validAirports = res.data.filter(
+            (airport) => airport.status === 'ACTIVE'
+          )
+          setAirports(validAirports)
+        }
       })
     }
-  }, [airports, refetchAirports])
+  }, [airports, isSuccess, refetchAirports])
 
   /* -------------------------------------------------------------------------- */
 

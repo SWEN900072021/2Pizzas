@@ -183,6 +183,7 @@ const ListAirlines = () => {
                   <>
                     {record.status === 'ACTIVE' ? (
                       <button
+                        data-cy='disable-airline-button'
                         type='button'
                         onClick={() =>
                           updateAirline(record.id, 'INACTIVE')
@@ -194,6 +195,7 @@ const ListAirlines = () => {
                     ) : (
                       <button
                         type='button'
+                        data-cy='enable-airline-button'
                         onClick={() =>
                           updateAirline(record.id, 'ACTIVE')
                         }
