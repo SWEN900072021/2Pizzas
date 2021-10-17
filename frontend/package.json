@@ -32,7 +32,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "cypress open",
+    "test": "cypress run",
     "eject": "craco eject",
     "lint": "eslint \"./src\"",
     "lint-fix": "eslint --fix \"./src\"",
