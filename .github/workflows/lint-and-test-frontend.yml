@@ -31,5 +31,4 @@ jobs:
           start: 'cd frontend && yarn start'
           wait-on: 'http://localhost:3000'
           browser: chrome
-          project: ./frontend
           headless: true
