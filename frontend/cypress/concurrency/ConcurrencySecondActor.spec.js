@@ -5,100 +5,101 @@ context('Concurrency - Actor 2', () => {
   const airline = 'qantas'
   const password = 'password'
 
-  // context('Create Booking with Same Seat', () => {
-  //   before(() => {
-  //     cy.searchReturnFlights()
-  //     cy.getExistingReturnFlightDates()
-  //   })
+  context('Create Booking with Same Seat', () => {
+    before(() => {
+      cy.task('clearValues')
+      cy.searchReturnFlights()
+      cy.getExistingReturnFlightDates()
+    })
 
-  //   it('books an existing flight', () => {
-  //     cy.get('[data-cy=outbound-flight]')
-  //       .should('not.have.length', 0)
-  //       .first()
-  //       .click()
-  //     cy.get('[data-cy=return-flight]')
-  //       .should('not.have.length', 0)
-  //       .first()
-  //       .click()
-  //     cy.get('[data-cy=submit-button]').click()
+    it('books an existing flight', () => {
+      cy.get('[data-cy=outbound-flight]')
+        .should('not.have.length', 0)
+        .first()
+        .click()
+      cy.get('[data-cy=return-flight]')
+        .should('not.have.length', 0)
+        .first()
+        .click()
+      cy.get('[data-cy=submit-button]').click()
 
-  //     cy.get('[data-cy=username-input]').type(customer)
-  //     cy.get('[data-cy=password-input]').type(password)
-  //     cy.get('[data-cy=login-button]').click()
+      cy.get('[data-cy=username-input]').type(customer)
+      cy.get('[data-cy=password-input]').type(password)
+      cy.get('[data-cy=login-button]').click()
 
-  //     cy.url().should('include', '/booking/create')
+      cy.url().should('include', '/booking/create')
 
-  //     cy.get('[data-cy=given-name]').type('Jane')
-  //     cy.get('[data-cy=surname]').type('Tong')
-  //     cy.get('[data-cy=passport-number]').type('B456')
-  //     cy.get('[data-cy=nationality]').type('Singaporean')
-  //     cy.get('[data-cy=dob-picker]')
-  //       .click()
-  //       .then(() => {
-  //         cy.get('.ant-picker-cell').first().click()
-  //       })
-  //     cy.get('[data-cy=outbound-class-select]')
-  //       .click()
-  //       .then(() => {
-  //         cy.get('[data-cy=outbound-economy-option]').click()
-  //         cy.get('[data-cy=outbound-seat-select]')
-  //           .click()
-  //           .then(() => {
-  //             cy.get('[data-cy=outbound-5A]').click()
-  //           })
-  //       })
-  //     cy.get('[data-cy=return-class-select]')
-  //       .click()
-  //       .then(() => {
-  //         cy.get('[data-cy=return-economy-option]').click()
-  //         cy.get('[data-cy=return-seat-select]')
-  //           .click()
-  //           .then(() => {
-  //             cy.get('[data-cy=return-5A]').click()
-  //           })
-  //       })
-  //     cy.get('[data-cy=submit-button]')
-  //       .click()
-  //       .wait(2000)
-  //       .then(() => {
-  //         cy.url().then((url) => {
-  //           cy.task('setValue', {
-  //             key: 'customerTwoUrl',
-  //             value: url
-  //           }).then(() => {
-  //             if (url.endsWith('/booking/create')) {
-  //               cy.get('[data-cy=error-text]').contains('Conflict')
+      cy.get('[data-cy=given-name]').type('Jane')
+      cy.get('[data-cy=surname]').type('Tong')
+      cy.get('[data-cy=passport-number]').type('B456')
+      cy.get('[data-cy=nationality]').type('Singaporean')
+      cy.get('[data-cy=dob-picker]')
+        .click()
+        .then(() => {
+          cy.get('.ant-picker-cell').first().click()
+        })
+      cy.get('[data-cy=outbound-class-select]')
+        .click()
+        .then(() => {
+          cy.get('[data-cy=outbound-economy-option]').click()
+          cy.get('[data-cy=outbound-seat-select]')
+            .click()
+            .then(() => {
+              cy.get('[data-cy=outbound-5A]').click()
+            })
+        })
+      cy.get('[data-cy=return-class-select]')
+        .click()
+        .then(() => {
+          cy.get('[data-cy=return-economy-option]').click()
+          cy.get('[data-cy=return-seat-select]')
+            .click()
+            .then(() => {
+              cy.get('[data-cy=return-5A]').click()
+            })
+        })
+      cy.get('[data-cy=submit-button]')
+        .click()
+        .wait(10000)
+        .then(() => {
+          cy.url().then((url) => {
+            cy.task('setValue', {
+              key: 'customerTwoUrl',
+              value: url
+            }).then(() => {
+              if (url.endsWith('/booking/create')) {
+                cy.get('[data-cy=error-text]').contains('Conflict')
 
-  //               cy.waitUntil(() =>
-  //                 cy.task('getValue', 'customerOneUrl')
-  //               ).then((value) =>
-  //                 cy
-  //                   .wrap(value)
-  //                   .should(
-  //                     'include',
-  //                     '/dashboard/view/bookings/current'
-  //                   )
-  //               )
-  //             } else if (
-  //               url.endsWith('/dashboard/view/bookings/current')
-  //             ) {
-  //               cy.waitUntil(() =>
-  //                 cy.task('getValue', 'customerOneUrl')
-  //               ).then((value) =>
-  //                 cy.wrap(value).should('include', '/booking/create')
-  //               )
-  //             } else {
-  //               throw new Error('Unexpected URL')
-  //             }
-  //           })
-  //         })
-  //       })
-  //   })
+                cy.waitUntil(() =>
+                  cy.task('getValue', 'customerOneUrl')
+                ).then((value) =>
+                  cy
+                    .wrap(value)
+                    .should(
+                      'include',
+                      '/dashboard/view/bookings/current'
+                    )
+                )
+              } else if (
+                url.endsWith('/dashboard/view/bookings/current')
+              ) {
+                cy.waitUntil(() =>
+                  cy.task('getValue', 'customerOneUrl')
+                ).then((value) =>
+                  cy.wrap(value).should('include', '/booking/create')
+                )
+              } else {
+                throw new Error('Unexpected URL')
+              }
+            })
+          })
+        })
+    })
 
-  //   after(() => {
-  //     cy.task('setValue', { key: 'customerTwoUrl', value: null })
-  //   })
-  // })
+    after(() => {
+      cy.task('setValue', { key: 'customerTwoUrl', value: null })
+    })
+  })
 
   context('Create Flight with Invalid Airport and Airline', () => {
     before(() => {
