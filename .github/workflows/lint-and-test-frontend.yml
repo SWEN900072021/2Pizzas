@@ -17,6 +17,11 @@ jobs:
       - name: Lint
         working-directory: ./frontend
         run: docker run 2-pizzas-frontend:$GITHUB_RUN_ID yarn lint
-      - name: Run tests
-        working-directory: ./frontend
-        run: docker run 2-pizzas-frontend:$GITHUB_RUN_ID yarn concurrency
+  cypress-run:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v2
+        with:
+          browser: chrome
+          headless: true
