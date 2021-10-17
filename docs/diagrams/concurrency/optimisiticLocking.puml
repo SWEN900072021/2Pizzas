@@ -1,0 +1,35 @@
+@startuml optimistic locking
+
+participant "DataMapper" as dm
+participant "Database" as db
+participant "entity:DomainEntity" as de
+
+
+[-> dm: read(id)
+activate dm
+dm -> db: read rows for id
+activate db
+db --> dm: data
+deactivate db
+dm -> de **: new DomainEntity(data.version)
+[<-- dm: entity  
+deactivate dm
+
+...
+
+[-> dm: update(entity)
+activate dm
+dm -> de: entityVersion = getVersion()
+activate de
+deactivate de
+dm -> db: update rows where PK is id and version is entityVersion
+activate db
+db --> dm: rowsUpdated
+deactivate db
+alt rowsUpdated > 0
+  [<-- dm: update success
+else
+  [<-- dm: throw new OptimisticLockingException
+end
+
+@enduml
