@@ -18,33 +18,54 @@ const ListAirlines = () => {
   const history = useHistory()
   const [validUser, setValidUser] = useState(false)
 
-  const {
-    data: airlines,
-    isLoading,
-    isError,
-    isSuccess,
-    refetch: refetchAirlines
-  } = useAirlines()
+  const resetSession = useSessionStore((state) => state.resetSession)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (!token || !user || user.userType !== 'administrator') {
       setValidUser(false)
+      resetSession()
+      queryClient.clear()
       history.push('/')
     } else {
       setValidUser(true)
     }
 
     // console.log('Is valid user:', validUser)
-  }, [token, user, history])
+  }, [token, user, history, resetSession, queryClient])
+
+  /* -------------------------------------------------------------------------- */
+
+  const {
+    data: airlines,
+    isLoading,
+    isError,
+    error,
+    isSuccess,
+    refetch: refetchAirlines
+  } = useAirlines()
 
   useEffect(() => {
     refetchAirlines()
   }, [refetchAirlines])
 
+  useEffect(() => {
+    if (error && error.response && error.response.status === 401) {
+      resetSession()
+      queryClient.clear()
+      history.push('/login')
+    }
+  }, [error, history, queryClient, resetSession])
+
+  /* -------------------------------------------------------------------------- */
+
   const heading = (
     <header className='flex items-center justify-between'>
       <h2 className='text-3xl font-bold'>Your airlines</h2>
-      <Link to='/dashboard/create/airlines'>
+      <Link
+        data-cy='add-new-airline-button'
+        to='/dashboard/create/airlines'
+      >
         <button
           type='button'
           className='flex items-center justify-center gap-2 p-2 font-bold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
@@ -63,9 +84,6 @@ const ListAirlines = () => {
   }
 
   const [isUpdating, setIsUpdating] = useState(null)
-
-  const queryClient = useQueryClient()
-  const resetSession = useSessionStore((st) => st.resetSession)
 
   const updateAirline = (id, status) => {
     setIsUpdating(id)
@@ -125,6 +143,7 @@ const ListAirlines = () => {
           <Column
             title='Name'
             dataIndex='name'
+            defaultSortOrder='ascend'
             sorter={{
               compare: (a, b) => sort(a.name, b.name)
             }}
@@ -157,13 +176,14 @@ const ListAirlines = () => {
             title='Actions'
             key='actions'
             fixed='right'
-            width={50}
+            // width={100}
             render={(value, record) => (
               <Space size='middle'>
                 {record.id !== isUpdating && (
                   <>
                     {record.status === 'ACTIVE' ? (
                       <button
+                        data-cy='disable-airline-button'
                         type='button'
                         onClick={() =>
                           updateAirline(record.id, 'INACTIVE')
@@ -175,6 +195,7 @@ const ListAirlines = () => {
                     ) : (
                       <button
                         type='button'
+                        data-cy='enable-airline-button'
                         onClick={() =>
                           updateAirline(record.id, 'ACTIVE')
                         }

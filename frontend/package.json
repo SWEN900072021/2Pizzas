@@ -32,10 +32,13 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test --watchAll=false --passWithNoTests",
+    "test": "cypress open",
     "eject": "craco eject",
     "lint": "eslint \"./src\"",
-    "lint-fix": "eslint --fix \"./src\""
+    "lint-fix": "eslint --fix \"./src\"",
+    "cy:first": "cypress run --headed --config-file cy-first-actor.json",
+    "cy:second": "cypress run --headed --config-file cy-second-actor.json",
+    "concurrency": "concurrently yarn:cy:first yarn:cy:second"
   },
   "browserslist": {
     "production": [
@@ -50,11 +53,19 @@
     ]
   },
   "devDependencies": {
+    "@hon2a/cypress-antd": "^0.3.10",
+    "@testing-library/cypress": "^8.0.1",
+    "@testing-library/react-hooks": "^7.0.2",
+    "concurrently": "^6.3.0",
+    "cypress": "^8.6.0",
+    "cypress-localstorage-commands": "^1.5.0",
+    "cypress-wait-until": "^1.7.1",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.4.0"
+    "prettier": "^2.4.0",
+    "react-test-renderer": "^17.0.2"
   },
   "jest": {
     "coverageReporters": [

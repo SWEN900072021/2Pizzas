@@ -24,21 +24,29 @@ const NavBar = () => {
     e.preventDefault()
     resetSession()
     queryClient.clear()
-    history.push('/')
+    history.push('/login')
   }
 
   const loggedInMenu = (
     <Menu>
       {user && user.userType === 'customer' && (
         <Menu.Item key='0'>
-          <NavLink to='/' className='flex items-center gap-2'>
+          <NavLink
+            data-cy='find-flights-menu-button'
+            to='/'
+            className='flex items-center gap-2'
+          >
             <IoIosAirplane className='w-5 h-5 text-gray-600' />
             Find flights
           </NavLink>
         </Menu.Item>
       )}
       <Menu.Item key='1'>
-        <NavLink to='/dashboard' className='flex items-center gap-2'>
+        <NavLink
+          data-cy='dashboard-menu-button'
+          to='/dashboard'
+          className='flex items-center gap-2'
+        >
           <BsPerson className='w-5 h-5 text-gray-600' />
           Account dashboard
         </NavLink>
@@ -46,6 +54,7 @@ const NavBar = () => {
       <Menu.Divider />
       <Menu.Item key='3'>
         <button
+          data-cy='logout-menu-button'
           type='button'
           onClick={handleLogout}
           className='flex items-center gap-2'
@@ -87,8 +96,8 @@ const NavBar = () => {
       <span className={`${token && 'hidden'}`}>
         {history.location.pathname === '/login' ||
         history.location.pathname === '/signup' ? (
-          <span>
-            <NavLink to='/'>
+          <span data-cy='logged-out-auth-menu'>
+            <NavLink data-cy='back-to-home-menu-button' to='/'>
               <button
                 type='button'
                 className='p-2 font-bold text-white transition-colors bg-yellow-500 border-2 border-yellow-500 rounded-lg sm:py-3 sm:px-4 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400'
@@ -101,8 +110,11 @@ const NavBar = () => {
             </NavLink>
           </span>
         ) : (
-          <span className='flex items-center justify-center gap-3'>
-            <NavLink to='/login'>
+          <span
+            data-cy='logged-out-menu'
+            className='flex items-center justify-center gap-3'
+          >
+            <NavLink data-cy='login-menu-button' to='/login'>
               <button
                 type='button'
                 className='p-2 font-bold text-white transition-colors bg-yellow-500 border-2 border-yellow-500 rounded-lg sm:py-3 sm:px-4 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400'
@@ -110,7 +122,7 @@ const NavBar = () => {
                 Log In
               </button>
             </NavLink>
-            <NavLink to='/signup'>
+            <NavLink data-cy='signup-menu-button' to='/signup'>
               <button
                 type='button'
                 className='p-2 font-bold text-yellow-600 transition-colors bg-white border-2 border-yellow-500 rounded-lg sm:py-3 sm:px-4 hover:border-yellow-500 hover:bg-yellow-600 hover:text-white'

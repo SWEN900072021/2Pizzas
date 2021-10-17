@@ -26,20 +26,24 @@ const ViewFlight = () => {
   const history = useHistory()
   const [validUser, setValidUser] = useState(false)
 
+  const resetSession = useSessionStore((state) => state.resetSession)
+  const queryClient = useQueryClient()
+
   useEffect(() => {
     if (!token || !user || user.userType !== 'airline') {
       setValidUser(false)
-      history.push('/')
+      resetSession()
+      queryClient.clear()
+      history.push('/login')
     } else {
       setValidUser(true)
     }
-  }, [token, user, history])
+  }, [token, user, history, resetSession, queryClient])
 
   /* -------------------------------------------------------------------------- */
 
   const { id } = useParams()
-  const resetSession = useSessionStore((state) => state.resetSession)
-  const queryClient = useQueryClient()
+
   const {
     data,
     isLoading,
@@ -60,7 +64,7 @@ const ViewFlight = () => {
     if (isFlightsError || isPassengersError) {
       resetSession()
       queryClient.clear()
-      history.push('/')
+      history.push('/login')
     }
 
     if (isSuccess && data && id) {
@@ -125,8 +129,8 @@ const ViewFlight = () => {
           err.response.status &&
           err.response.status === 401
         ) {
-          queryClient.clear()
           resetSession()
+          queryClient.clear()
           history.push('/login')
         }
         // console.log('Error cancelling flight:', err.response)
@@ -152,8 +156,8 @@ const ViewFlight = () => {
           err.response.status &&
           err.response.status === 401
         ) {
-          queryClient.clear()
           resetSession()
+          queryClient.clear()
           history.push('/login')
         }
         // console.log('Error delaying flight:', err.response)

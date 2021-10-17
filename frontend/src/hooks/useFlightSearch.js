@@ -11,6 +11,7 @@ const useFlightSearch = ({
 
   return useQuery({
     // enabled: false,
+    retry: false,
     queryKey: ['flights'],
     queryFn: () =>
       FlightSearchService.searchFlights({

@@ -1,0 +1,14 @@
+{
+  "fixturesFolder": "cypress/fixtures",
+  "supportFile": "cypress/support/index.js",
+  "pluginsFile": "cypress/plugins/index.js",
+  "baseUrl": "http://localhost:3000",
+  "integrationFolder": "cypress/concurrency",
+  "testFiles": "**/ConcurrencyFirstActor.spec.js",
+  "viewportWidth": 1280,
+  "viewportHeight": 800,
+  "defaultCommandTimeout": 15000,
+  "videosFolder": "cypress/videos/first-actor",
+  "screenshotsFolder": "cypress/screenshots/first-actor",
+  "$schema": "https://on.cypress.io/cypress.schema.json"
+}

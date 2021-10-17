@@ -6,6 +6,7 @@ const useUsers = (token) => {
 
   return useQuery({
     // enabled: false,
+    retry: false,
     queryKey: ['users'],
     queryFn: () => UserService.getAllUsers(token),
     config: {

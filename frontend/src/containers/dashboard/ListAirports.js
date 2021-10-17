@@ -18,33 +18,54 @@ const ListAirports = () => {
   const history = useHistory()
   const [validUser, setValidUser] = useState(false)
 
-  const {
-    data: airports,
-    isLoading,
-    isError,
-    isSuccess,
-    refetch: refetchAirports
-  } = useAirports()
+  const resetSession = useSessionStore((state) => state.resetSession)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (!token || !user || user.userType !== 'administrator') {
       setValidUser(false)
+      resetSession()
+      queryClient.clear()
       history.push('/')
     } else {
       setValidUser(true)
     }
 
     // console.log('Is valid user:', validUser)
-  }, [token, user, history])
+  }, [token, user, history, resetSession, queryClient])
+
+  /* -------------------------------------------------------------------------- */
+
+  const {
+    data: airports,
+    isLoading,
+    isError,
+    error,
+    isSuccess,
+    refetch: refetchAirports
+  } = useAirports()
 
   useEffect(() => {
     refetchAirports()
-  }, [])
+  }, [refetchAirports])
+
+  useEffect(() => {
+    if (error && error.response && error.response.status === 401) {
+      resetSession()
+      queryClient.clear()
+      history.push('/')
+    }
+  }, [error, history, queryClient, resetSession])
+
+  /* -------------------------------------------------------------------------- */
 
   const heading = (
     <header className='flex items-center justify-between'>
       <h2 className='text-3xl font-bold'>Your airports</h2>
-      <Link to='/dashboard/create/airports'>
+      <Link
+        data-cy='add-new-airport-button'
+        to='/dashboard/create/airports'
+      >
         <button
           type='button'
           className='flex items-center justify-center gap-2 p-2 font-bold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
@@ -63,8 +84,6 @@ const ListAirports = () => {
   }
 
   const [isUpdating, setIsUpdating] = useState(null)
-  const queryClient = useQueryClient()
-  const resetSession = useSessionStore((st) => st.resetSession)
 
   const updateAirport = (id, status) => {
     setIsUpdating(id)
@@ -89,8 +108,8 @@ const ListAirports = () => {
           err.response.status &&
           err.response.status === 401
         ) {
-          queryClient.clear()
           resetSession()
+          queryClient.clear()
           history.push('/login')
         }
         // console.log(err)
@@ -128,6 +147,7 @@ const ListAirports = () => {
             sorter={{
               compare: (a, b) => sort(a.name, b.name)
             }}
+            defaultSortOrder='ascend'
           />
           <Column
             title='Code'
@@ -147,6 +167,7 @@ const ListAirports = () => {
           <Column
             title='Zone ID'
             dataIndex='zoneId'
+            width={180}
             sorter={{
               compare: (a, b) => sort(a.code, b.code)
             }}
@@ -172,7 +193,6 @@ const ListAirports = () => {
             title='Actions'
             key='actions'
             fixed='right'
-            width={80}
             render={(value, record) => (
               <Space size='middle'>
                 {record.id !== isUpdating && (
@@ -180,6 +200,7 @@ const ListAirports = () => {
                     {record.status === 'ACTIVE' ? (
                       <button
                         type='button'
+                        data-cy='disable-airport-button'
                         onClick={() =>
                           updateAirport(record.id, 'INACTIVE')
                         }
@@ -190,6 +211,7 @@ const ListAirports = () => {
                     ) : (
                       <button
                         type='button'
+                        data-cy='enable-airport-button'
                         onClick={() =>
                           updateAirport(record.id, 'ACTIVE')
                         }

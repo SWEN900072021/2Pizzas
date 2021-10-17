@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router'
 import { FaSadTear } from 'react-icons/fa'
 import { Table, Tag } from 'antd'
+import { useQueryClient } from 'react-query'
 
 // Hooks
 import { useSessionStore } from '../../hooks/Store'
@@ -21,21 +22,36 @@ const ListBookings = ({ bookingsStatus }) => {
   const history = useHistory()
   const [validUser, setValidUser] = useState(false)
 
+  const resetSession = useSessionStore((state) => state.resetSession)
+  const queryClient = useQueryClient()
+
   useEffect(() => {
     if (!token || !user || user.userType !== 'customer') {
+      setValidUser(false)
+      resetSession()
+      queryClient.clear()
       history.push('/')
     } else {
       setValidUser(true)
     }
-  }, [token, user, history])
+  }, [token, user, history, resetSession, queryClient])
 
   /* -------------------------------------------------------------------------- */
 
   const {
     data: customerBookings,
+    error,
     isLoading,
     isSuccess
   } = useBookings(token)
+
+  useEffect(() => {
+    if (error && error.response && error.response.status === 401) {
+      resetSession()
+      queryClient.clear()
+      history.push('/login')
+    }
+  }, [error, history, queryClient, resetSession])
 
   const heading = (
     <header>

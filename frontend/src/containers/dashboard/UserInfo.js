@@ -11,7 +11,7 @@ const UserInfo = () => {
   useEffect(() => {
     if (!token) {
       setValidUser(false)
-      history.push('/')
+      history.push('/login')
     } else {
       setValidUser(true)
     }
@@ -20,7 +20,7 @@ const UserInfo = () => {
   const user = useSessionStore((state) => state.user)
 
   const heading = (
-    <header className='flex flex-col gap-3'>
+    <header data-cy='user-type' className='flex flex-col gap-3'>
       <h2 className='text-3xl font-bold'>Your information</h2>
       {user.userType === 'customer' && (
         <span className='text-gray-500'>Customer</span>
@@ -38,7 +38,7 @@ const UserInfo = () => {
     <section className='grid grid-flow-row'>
       <span className='grid items-center justify-center grid-cols-2'>
         <span className='font-semibold'>Username</span>
-        <span>{user.username}</span>
+        <span data-cy='user-name'>{user.username}</span>
       </span>
     </section>
   )
