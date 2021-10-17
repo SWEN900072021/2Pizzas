@@ -18,12 +18,8 @@ jobs:
         working-directory: ./frontend
         run: docker run 2-pizzas-frontend:$GITHUB_RUN_ID yarn lint
   cypress-run:
-    name: Cypress run
     runs-on: ubuntu-latest
+    container: cypress/included:3.8.3
     steps:
       - uses: actions/checkout@v2
-      - uses: cypress-io/github-action@v2
-        with:
-          browser: chrome
-          project: ./frontend
-          headless: true
+      - run: cypress run --project ./frontend
