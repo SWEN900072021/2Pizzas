@@ -22,4 +22,4 @@ jobs:
     container: cypress/included:3.8.3
     steps:
       - uses: actions/checkout@v2
-      - run: cypress run --project ./frontend
+      - run: cd ./frontend && yarn && yarn start && cypress run
