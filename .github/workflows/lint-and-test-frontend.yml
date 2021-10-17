@@ -1,4 +1,4 @@
-name: Lint and Test Frontend
+name: Lint Frontend
 
 on:
   workflow_dispatch:
@@ -19,7 +19,16 @@ jobs:
         run: docker run 2-pizzas-frontend:$GITHUB_RUN_ID yarn lint
   cypress-run:
     runs-on: ubuntu-latest
-    container: cypress/included:3.8.3
     steps:
       - uses: actions/checkout@v2
-      - run: cd ./frontend && yarn && yarn start && cypress run
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.14.1'
+      - run: npm install -g yarn && yarn init -y && yarn
+      - uses: cypress-io/github-action@v2
+        with:
+          wait-on: 'http://localhost:3000'
+          browser: chrome
+          project: ./frontend
+          headless: true
