@@ -1,9 +1,17 @@
 import { bool, element, func, string } from 'prop-types'
 import React from 'react'
 
-const Button = ({ label, onClick, submit, className, disabled }) => (
+const Button = ({
+  datacy,
+  label,
+  onClick,
+  submit,
+  className,
+  disabled
+}) => (
   <div>
     <button
+      data-cy={datacy}
       type={submit ? 'submit' : 'button'}
       onClick={onClick}
       disabled={disabled}
@@ -23,10 +31,12 @@ Button.defaultProps = {
   submit: false,
   onClick: () => {},
   className: '',
-  disabled: false
+  disabled: false,
+  datacy: 'button'
 }
 
 Button.propTypes = {
+  datacy: string,
   label: string || element,
   onClick: func,
   submit: bool,

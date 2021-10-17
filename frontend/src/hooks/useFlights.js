@@ -6,6 +6,7 @@ const useFlights = (token) => {
 
   return useQuery({
     // enabled: false,
+    retry: false,
     queryKey: ['flights'],
     queryFn: () => FlightService.getAllFlights(token),
     config: {

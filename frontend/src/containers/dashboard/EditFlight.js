@@ -23,15 +23,19 @@ const EditFlight = () => {
   const history = useHistory()
 
   const [validUser, setValidUser] = useState(false)
+  const queryClient = useQueryClient()
+  const resetSession = useSessionStore((state) => state.resetSession)
 
   useEffect(() => {
     if (!token || !user || user.userType !== 'airline') {
       setValidUser(false)
+      resetSession()
+      queryClient.clear()
       history.push('/')
     } else {
       setValidUser(true)
     }
-  }, [token, user, history])
+  }, [token, user, history, resetSession, queryClient])
 
   /* -------------------------------------------------------------------------- */
 
@@ -62,16 +66,13 @@ const EditFlight = () => {
       )
       setAirports(activeAirports)
     })
-  }, [])
-
-  const queryClient = useQueryClient()
-  const resetSession = useSessionStore((state) => state.resetSession)
+  }, [refetchAirplaneProfiles, refetchAirports])
 
   useEffect(() => {
     if (airportsError || airplaneProfilesError || flightsError) {
-      queryClient.clear()
       resetSession()
-      history.push('/')
+      queryClient.clear()
+      history.push('/login')
     }
   }, [
     airportsError,
@@ -98,9 +99,6 @@ const EditFlight = () => {
       airplaneProfilesSuccess
     ) {
       const flight = flights.find((f) => f.id === flightId)
-
-      // console.log('Retrieved flight:', flight)
-      // console.log('Airports:', airports)
 
       const flightProfile = airplaneProfiles.find(
         (ap) =>
@@ -249,8 +247,8 @@ const EditFlight = () => {
           err.response.status &&
           err.response.status === 401
         ) {
-          queryClient.clear()
           resetSession()
+          queryClient.clear()
           history.push('/login')
         }
 

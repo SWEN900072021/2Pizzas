@@ -69,12 +69,12 @@ const Home = () => {
       {/* -------------------------------------------------------------------------- */
       /*                                  Jumbotron                                 */
       /* -------------------------------------------------------------------------- */}
-      <section className='flex flex-col items-center justify-start flex-grow h-full gap-5'>
+      <section className='relative flex flex-col items-center justify-start h-full'>
         <img
           draggable={false}
           src={landscapePicture}
           alt='Landscape with hot air balloons'
-          className='relative object-cover object-left w-full h-5/6 md:h-3/4 filter contrast-75'
+          className='object-cover object-left w-full h-full filter contrast-75'
         />
         <div className='absolute self-center mx-6 transform translate-y-36 md:translate-y-32 '>
           <h2 className='text-3xl font-bold text-center text-white select-none sm:text-left md:text-5xl'>
@@ -87,6 +87,12 @@ const Home = () => {
         <section className='absolute flex flex-col flex-wrap items-center justify-center flex-grow p-5 bg-yellow-50 mt-52 max-w-max'>
           <FlightForm showButton />
         </section>
+      </section>
+      <section className='fixed bottom-0 left-0 flex flex-col items-center justify-center flex-grow w-full h-24 bg-white cursor-default'>
+        <p className='font-medium'>Brought to you by</p>
+        <p className='text-2xl font-semibold text-yellow-800 transition-colors hover:text-yellow-600'>
+          2Pizzas
+        </p>
       </section>
     </main>
   )

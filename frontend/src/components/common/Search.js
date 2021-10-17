@@ -4,6 +4,7 @@ import { HiSearch } from 'react-icons/hi'
 
 const Search = ({
   value,
+  datacy,
   placeholder,
   readOnly,
   className,
@@ -36,6 +37,7 @@ const Search = ({
         </span>
       </div>
       <input
+        data-cy={datacy}
         value={value}
         onChange={onChange}
         onKeyUp={onKeyUp}
@@ -74,7 +76,8 @@ Search.defaultProps = {
   EndIcon: <></>,
   handleChange: () => {},
   handleKeyUp: () => {},
-  handleClick: () => {}
+  handleClick: () => {},
+  datacy: 'search'
 }
 
 Search.propTypes = {
@@ -86,7 +89,8 @@ Search.propTypes = {
   EndIcon: element,
   handleChange: func,
   handleKeyUp: func,
-  handleClick: func
+  handleClick: func,
+  datacy: string
 }
 
 export default Search

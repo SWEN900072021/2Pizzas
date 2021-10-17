@@ -40,17 +40,24 @@ const CreateFlight = () => {
       )
       setAirports(activeAirports)
     })
-  }, [])
+  }, [refetchAirplaneProfiles, refetchAirports])
+
+  const resetSession = useSessionStore((state) => state.resetSession)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
-    if (airplaneProfilesError) {
-      history.push('/')
+    if (airplaneProfilesError || airportsError) {
+      resetSession()
+      queryClient.clear()
+      history.push('/login')
     }
-
-    if (airportsError) {
-      history.push('/')
-    }
-  }, [airportsError, airplaneProfilesError, history])
+  }, [
+    airportsError,
+    airplaneProfilesError,
+    history,
+    resetSession,
+    queryClient
+  ])
 
   /* -------------------------------------------------------------------------- */
   /*                                 Form State                                 */
@@ -144,9 +151,6 @@ const CreateFlight = () => {
 
   /* -------------------------------------------------------------------------- */
 
-  const queryClient = useQueryClient()
-  const resetSession = useSessionStore((st) => st.resetSession)
-
   const handleSubmit = (e) => {
     e.preventDefault()
 
@@ -191,8 +195,8 @@ const CreateFlight = () => {
           err.response.status &&
           err.response.status === 401
         ) {
-          queryClient.clear()
           resetSession()
+          queryClient.clear()
           history.push('/login')
         }
 
@@ -570,6 +574,7 @@ const CreateFlight = () => {
                 <p className='col-span-2 font-bold'>Flight Code</p>
                 <Input
                   required
+                  data-cy='code-input'
                   value={state.code}
                   className='col-span-3'
                   placeholder='Enter flight code'
@@ -588,6 +593,7 @@ const CreateFlight = () => {
                     Airplane Profile
                   </p>
                   <Select
+                    data-cy='profile-select'
                     className='col-span-3'
                     style={{ width: '100%' }}
                     placeholder='Select an airplane profile'
@@ -602,7 +608,7 @@ const CreateFlight = () => {
                   >
                     {airplaneProfiles &&
                       airplaneProfiles.map(({ id, code }) => (
-                        <Option key={id}>
+                        <Option key={id} data-cy={code}>
                           <article>
                             <p>{code}</p>
                           </article>
@@ -641,9 +647,10 @@ const CreateFlight = () => {
                   <p className='col-span-2'>First Class Cost</p>
                   <span className='col-span-3'>
                     <InputNumber
+                      data-cy='first-class-input'
                       required
                       style={{ width: '100%' }}
-                      placeholder='Enter a value'
+                      placeholder='Enter cost for first class'
                       formatter={(value) => `$ ${value}`}
                       min={1}
                       value={state.firstClassCost}
@@ -663,9 +670,10 @@ const CreateFlight = () => {
                   <p className='col-span-2'>Business Class Cost</p>
                   <span className='col-span-3'>
                     <InputNumber
+                      data-cy='business-class-input'
                       required
                       style={{ width: '100%' }}
-                      placeholder='Enter a value'
+                      placeholder='Enter cost for business class'
                       formatter={(value) => `$ ${value}`}
                       min={1}
                       value={state.businessClassCost}
@@ -685,9 +693,10 @@ const CreateFlight = () => {
                   <p className='col-span-2'>Economy Class Cost</p>
                   <span className='col-span-3'>
                     <InputNumber
+                      data-cy='economy-class-input'
                       required
                       style={{ width: '100%' }}
-                      placeholder='Enter a value'
+                      placeholder='Enter cost for economy class'
                       formatter={(value) => `$ ${value}`}
                       min={1}
                       value={state.economyClassCost}
@@ -709,6 +718,7 @@ const CreateFlight = () => {
                   Departure
                 </p>
                 <Select
+                  data-cy='origin-select'
                   className='col-span-9 sm:col-span-8'
                   placeholder='Select origin airport'
                   onSelect={(key) => {
@@ -733,7 +743,7 @@ const CreateFlight = () => {
                           : a
                       )
                       .map(({ id, name, code }) => (
-                        <Option key={id}>
+                        <Option key={id} data-cy={`origin-${code}`}>
                           <p>
                             ({code}) {name}
                           </p>
@@ -742,6 +752,7 @@ const CreateFlight = () => {
                 </Select>
                 <span className='hidden sm:block sm:col-span-4' />
                 <DatePicker
+                  data-cy='departure-date-picker'
                   className='col-span-8 sm:col-span-5'
                   disabled={!state.origin.id}
                   disabledDate={invalidDeparture}
@@ -789,6 +800,7 @@ const CreateFlight = () => {
                   Arrival
                 </p>
                 <Select
+                  data-cy='destination-select'
                   className='col-span-9 sm:col-span-8'
                   placeholder='Select destination airport'
                   onSelect={(key) => {
@@ -812,7 +824,10 @@ const CreateFlight = () => {
                         state.origin ? a.id !== state.origin.id : a
                       )
                       .map(({ id, name, code }) => (
-                        <Option key={id}>
+                        <Option
+                          key={id}
+                          data-cy={`destination-${code}`}
+                        >
                           <p>
                             ({code}) {name}
                           </p>
@@ -821,6 +836,7 @@ const CreateFlight = () => {
                 </Select>
                 <span className='hidden sm:block sm:col-span-4' />
                 <DatePicker
+                  data-cy='arrival-date-picker'
                   className='col-span-8 sm:col-span-5'
                   disabled={!state.destination.id}
                   disabledDate={invalidArrival}
@@ -890,9 +906,12 @@ const CreateFlight = () => {
             </main>
 
             <span className='flex items-center justify-end w-full gap-3'>
-              <p className='text-red-500'>{error || ''}</p>
+              <p data-cy='error-text' className='text-red-500'>
+                {error || ''}
+              </p>
               <button
                 type='submit'
+                data-cy='flight-submit-button'
                 className='flex items-center self-end justify-center w-20 p-2 font-semibold text-white transition-colors bg-yellow-600 hover:bg-yellow-500'
               >
                 {loading ? <Spinner size={5} /> : 'Submit'}
