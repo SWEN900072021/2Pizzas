@@ -165,14 +165,15 @@ Cypress.Commands.add('searchReturnFlights', () => {
   // Airport search: MEL -> SYD
   cy.get('[data-cy=origin-input]')
     .click()
+    .wait(10000)
     .then(() => {
       cy.get('[data-cy=origin-item]')
-        .wait(1000)
         .contains('Tullamarine Airport (MEL)')
         .click({ force: true })
     })
   cy.get('[data-cy=destination-input]')
     .click()
+    .wait(10000)
     .then(() => {
       cy.get('[data-cy=destination-item]')
         .wait(1000)
